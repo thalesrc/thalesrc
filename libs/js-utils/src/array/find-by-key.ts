@@ -27,6 +27,6 @@
  * @param value Value to match for the key
  * @return Found object or undefined
  */
-export function findByKey<T, K extends keyof T>(array: T[], key: K, value: T[K]): T {
+export function findByKey<T, K extends keyof T>(array: T[], key: K, value: T[K]): T | undefined {
   return array.find(item => item[key] === value);
 }

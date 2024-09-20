@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@thalesrc/js-utils": ["libs/js-utils/src/index.ts"]
+      "@thalesrc/js-utils": ["libs/js-utils/src/index.ts"],
+      "@thalesrc/ts-utils": ["libs/ts-utils/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

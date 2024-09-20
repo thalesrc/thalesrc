@@ -30,7 +30,7 @@
  * @param itemToRemove Item to remove
  * @return New array
  */
-export function remove<T = any>(array: T[], item: T, multi = false): T[] {
+export function remove<T = unknown>(array: T[], item: T, multi = false): T[] {
   let index: number = array.indexOf(item);
 
   if (index < 0) {
