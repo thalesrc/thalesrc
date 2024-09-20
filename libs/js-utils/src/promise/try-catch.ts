@@ -41,11 +41,13 @@
  * @param defaultResult Setting this will put the value into the result field when the promise throws error
  * @returns Error and result array
  */
-export async function tryCatch<T, E = any>(promise: Promise<T>, defaultResult: T = null): Promise<[E, T]> {
+export async function tryCatch<T, E = unknown>(promise: Promise<T>): Promise<[E | null, T | null]>
+export async function tryCatch<T, E = unknown>(promise: Promise<T>, defaultResult: T): Promise<[E | null, T]>
+export async function tryCatch<T, E = unknown>(promise: Promise<T>, defaultResult?: T): Promise<[E | null, T | null]> {
   try {
     const result = await promise;
     return [null, result];
   } catch (error) {
-    return [error, defaultResult];
+    return [error as E, defaultResult ?? null];
   }
 }

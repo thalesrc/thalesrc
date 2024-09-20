@@ -1,20 +1,22 @@
-import { timeout } from '../promise/timeout';
-import { OpenPromise } from '../open-promise';
+import { timeout } from '@thalesrc/js-utils/promise/timeout';
+import { promisify } from '@thalesrc/js-utils/promise/promisify';
+import { OpenPromise } from '@thalesrc/js-utils/open-promise';
 
-export type TDebounceFunction<T> = (...args: any[]) => (T | Promise<T>);
+export type DebounceFunction<T> = (...args: any[]) => (T | Promise<T>);
 
-interface ICacheObject {
-  timeout: Promise<any>;
+interface CacheObject<T> {
+  timeout: Promise<T>;
   promise: OpenPromise;
 }
 
 export const DEFAULT_DEBOUNCE_TIME = 180;
+
 const KEY_REFERENCES = new Map<Function, symbol>();
-const CACHE = new Map<symbol, ICacheObject>();
+const CACHE = new Map<symbol, CacheObject<any>>();
 
 export function debounceWithKey<T>(
   key: symbol,
-  callback: TDebounceFunction<T>,
+  callback: DebounceFunction<T>,
   time = DEFAULT_DEBOUNCE_TIME,
   thisObject: any = null,
   ...args: any[]
@@ -23,7 +25,8 @@ export function debounceWithKey<T>(
   let promise: OpenPromise;
 
   if (CACHE.has(key)) {
-    const stocked = CACHE.get(key);
+    const stocked = CACHE.get(key)!;
+
     timeoutPromise = stocked.timeout;
     promise = stocked.promise;
     timeout.cancel(timeoutPromise);
@@ -32,13 +35,16 @@ export function debounceWithKey<T>(
   }
 
   timeoutPromise = timeout(time);
-  CACHE.set(key, {promise, timeout: timeoutPromise});
+  CACHE.set(key, { promise, timeout: timeoutPromise });
 
   timeoutPromise
     .then(() => {
       CACHE.delete(key);
+
       const result = callback.call(thisObject, ...args);
-      promise.bindTo(result);
+
+      promise.bindTo(promisify(result));
+
       return result;
     })
     .catch(err => {
@@ -91,7 +97,7 @@ export function debounceWithKey<T>(
  * @return A promise which resolves right after the debouncing sequence has been finished
  */
 export function debounce<T>(
-  callback: TDebounceFunction<T>,
+  callback: DebounceFunction<T>,
   time = DEFAULT_DEBOUNCE_TIME,
   thisObject: any = null,
   ...args: any[]
@@ -100,5 +106,5 @@ export function debounce<T>(
     KEY_REFERENCES.set(callback, Symbol());
   }
 
-  return debounceWithKey(KEY_REFERENCES.get(callback), callback, time, thisObject, ...args);
+  return debounceWithKey(KEY_REFERENCES.get(callback)!, callback, time, thisObject, ...args);
 }

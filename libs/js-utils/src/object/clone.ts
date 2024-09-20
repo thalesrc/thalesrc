@@ -1,6 +1,8 @@
-import { difference } from '../array/difference';
-import { intersection } from '../array/intersection';
-import { merge } from '../map/merge';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { difference } from '@thalesrc/js-utils/array/difference';
+import { intersection } from '@thalesrc/js-utils/array/intersection';
+import { merge } from '@thalesrc/js-utils/map/merge';
 
 /**
  * #### Cloning Options
@@ -103,6 +105,7 @@ export interface ICloneOptions {
    * ```
    * * * *
    */
+  // eslint-disable-next-line @typescript-eslint/ban-types
   customCloners?: Map<Function, TInstanceCloner>;
 }
 
@@ -110,8 +113,8 @@ export interface ICloneOptions {
  * #### Internal Data For Cloning Process
  */
 export interface IClonerInternalData {
-  clonedObjects: Map<Object, Object | Symbol>;
-  parent?: Object;
+  clonedObjects: Map<object, object | symbol>;
+  parent?: Record<any, any>;
   key?: number | string | symbol;
   finalizers: Array<() => void>;
 }
@@ -139,10 +142,11 @@ const CLONING_IN_PROGRESS = Symbol('Cloning In Progress');
 /**
  * Function Map to clone specific objects types
  */
+// eslint-disable-next-line @typescript-eslint/ban-types
 const DEFAULT_INSTANCE_CLONERS = new Map<Function, TInstanceCloner>();
 
 // Set cloning functions
-DEFAULT_INSTANCE_CLONERS.set(Array, arrayCloner);
+DEFAULT_INSTANCE_CLONERS.set(Array, arrayCloner as any);
 DEFAULT_INSTANCE_CLONERS.set(Map, mapCloner as any);
 DEFAULT_INSTANCE_CLONERS.set(Set, setCloner as any);
 DEFAULT_INSTANCE_CLONERS.set(Object, objectCloner as any);
@@ -150,28 +154,28 @@ DEFAULT_INSTANCE_CLONERS.set(Object, objectCloner as any);
 /**
  * Default Array Cloner
  */
-function arrayCloner(objectToClone, options: TNonOptionalCloneOptions, internalData) {
-  return (objectToClone as any).map((val, i, arr) => {
-    if (options.propsToRefer.indexOf(i) > -1) {
+function arrayCloner(objectToClone: any[], options: TNonOptionalCloneOptions, internalData: IClonerInternalData) {
+  return objectToClone.map((val, i, arr) => {
+    if (options.propsToRefer!.indexOf(i) > -1) {
       return val;
     }
 
-    return cloner(val, options, {...internalData, parent: arr, key: i});
+    return cloner(val, options, { ...internalData, parent: arr, key: i });
   }) as any;
 }
 
 /**
  * Default Map Cloner
  */
-function mapCloner(objectToClone: Map<any, any>, options: TNonOptionalCloneOptions, internalData) {
+function mapCloner(objectToClone: Map<any, any>, options: TNonOptionalCloneOptions, internalData: IClonerInternalData) {
   const newMap = new Map();
 
-  intersection(options.propsToRefer, Array.from(objectToClone.keys())).forEach(key => {
+  intersection(options.propsToRefer!, Array.from(objectToClone.keys())).forEach(key => {
     newMap.set(key, objectToClone.get(key));
   });
 
-  difference(Array.from(objectToClone.keys()), options.propsToRefer).forEach(key => {
-    newMap.set(key, cloner(objectToClone.get(key), options, {...internalData, key, parent: newMap}));
+  difference(Array.from(objectToClone.keys()), options.propsToRefer!).forEach(key => {
+    newMap.set(key, cloner(objectToClone.get(key), options, { ...internalData, key, parent: newMap }));
   });
 
   return newMap;
@@ -180,38 +184,38 @@ function mapCloner(objectToClone: Map<any, any>, options: TNonOptionalCloneOptio
 /**
  * Default Set Cloner
  */
-function setCloner(objectToClone: Set<any>, options: TNonOptionalCloneOptions, internalData) {
+function setCloner(objectToClone: Set<any>) {
   return new Set(objectToClone);
 }
 
 /**
  * Default Object Cloner
  */
-function objectCloner(objectToClone, options: TNonOptionalCloneOptions, internalData) {
+function objectCloner(objectToClone: Record<any, any>, options: TNonOptionalCloneOptions, internalData: IClonerInternalData) {
   const { propsToRefer } = options;
 
   /**
    * New Object Clone
    */
-  const _clone = {};
+  const _clone: Record<any, any> = {};
 
   /**
    * Object cloner
    * @param key incoming property of object to clone
    */
-  function cloneObject(key) {
-    _clone[key] = cloner(objectToClone[key], options, {...internalData, parent: _clone, key});
+  function cloneObject(key: any) {
+    _clone[key] = cloner(objectToClone[key], options, { ...internalData, parent: _clone, key });
   }
 
   const allProperties = [...Object.keys(objectToClone), ...Object.getOwnPropertySymbols(objectToClone)];
 
   // Pass unwanted props
-  intersection(propsToRefer, allProperties).forEach(prop => {
+  intersection(<any[]>propsToRefer, allProperties).forEach(prop => {
     _clone[prop] = objectToClone[prop];
   });
 
   // Clone remaining properties
-  difference(allProperties, propsToRefer).forEach(cloneObject);
+  difference(allProperties, propsToRefer!).forEach(cloneObject);
 
   return _clone;
 }
@@ -266,12 +270,12 @@ export function clone<T>(
    * Whole options with defaults
    */
   const mergedCloners = merge(customCloners, DEFAULT_INSTANCE_CLONERS);
-  const allOptions: TNonOptionalCloneOptions = {instancesToRefer, propsToRefer, valueFiltererToRefer, customCloners: mergedCloners};
+  const allOptions: TNonOptionalCloneOptions = { instancesToRefer, propsToRefer, valueFiltererToRefer, customCloners: mergedCloners };
 
-  const finalizers = [];
-  const cloned = cloner(objectToClone, allOptions, {clonedObjects: new Map(), finalizers});
+  const finalizers: (() => void)[] = [];
+  const cloned = cloner(objectToClone, allOptions, { clonedObjects: new Map(), finalizers });
 
-  finalizers.forEach(callback => {callback(); });
+  finalizers.forEach(callback => { callback(); });
 
   return cloned;
 }
@@ -281,7 +285,7 @@ function cloner<T>(
   allOptions: TNonOptionalCloneOptions,
   internalData: IClonerInternalData
 ): T {
-  const { instancesToRefer, propsToRefer, valueFiltererToRefer, customCloners } = allOptions;
+  const { instancesToRefer, valueFiltererToRefer, customCloners } = allOptions;
   const { clonedObjects, finalizers, parent, key } = internalData;
 
   // Pass primitives & functions
@@ -290,12 +294,12 @@ function cloner<T>(
   }
 
   // Pass unwanted references
-  if (instancesToRefer.some(instance => objectToClone instanceof instance)) {
+  if (instancesToRefer!.some(instance => objectToClone instanceof instance)) {
     return objectToClone;
   }
 
   // Pass filterer results
-  if (valueFiltererToRefer(objectToClone)) {
+  if (valueFiltererToRefer!(objectToClone)) {
     return objectToClone;
   }
 
@@ -303,9 +307,10 @@ function cloner<T>(
   if (clonedObjects.has(objectToClone)) {
     if (clonedObjects.get(objectToClone) === CLONING_IN_PROGRESS) {
       finalizers.push(() => {
-        parent[key] = clonedObjects.get(objectToClone);
+        parent![key as any] = clonedObjects.get(objectToClone);
       });
-      return null;
+
+      return null!;
     }
     return clonedObjects.get(objectToClone) as T;
   }
@@ -314,8 +319,8 @@ function cloner<T>(
   clonedObjects.set(objectToClone, CLONING_IN_PROGRESS);
 
   // Clone
-  const customCloner = Array.from(customCloners.keys()).find(val => objectToClone instanceof val);
-  const result = customCloners.get(customCloner)(objectToClone, allOptions, {...internalData});
+  const customCloner = Array.from(customCloners!.keys()).find(val => objectToClone instanceof val);
+  const result = customCloners!.get(customCloner!)!(objectToClone, allOptions, { ...internalData });
   clonedObjects.set(objectToClone, result);
   return result;
 }

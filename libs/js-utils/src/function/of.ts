@@ -1,4 +1,4 @@
-import { SmartMap } from '../smart-map';
+import { SmartMap } from '@thalesrc/js-utils/smart-map';
 
 /**
  * Cache object to store previously created functions
@@ -37,8 +37,8 @@ const CACHE = new SmartMap<any, () => any>();
  */
 export function of<T>(returnValue: T): (...args: any[]) => T {
   if (!CACHE.has(returnValue)) {
-    CACHE.set(returnValue, function() {return returnValue; });
+    CACHE.set(returnValue, function() { return returnValue; });
   }
 
-  return CACHE.get(returnValue);
+  return CACHE.get(returnValue)!;
 }

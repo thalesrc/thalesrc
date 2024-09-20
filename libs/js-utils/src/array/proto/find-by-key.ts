@@ -26,5 +26,5 @@ declare global {
 }
 
 Array.prototype.findByKey = function<T, K extends keyof T>(this: T[], key: K, value: T[K]): T {
-  return findByKey(this, key, value);
+  return findByKey(this, key, value)!;
 };

@@ -1,14 +1,15 @@
-const CACHE: {[key: string]: Iterator<string | number>} = {};
+const CACHE: Record<string, Iterator<string | number>> = {};
 
 /**
  * Unique Id Generator
+ *
  * @param  {string} [prefix]
  */
 function* uniqueIdGenerator(prefix?: string) {
   let counter = 0;
 
   while (true) {
-    yield prefix ? prefix + '-' + counter++ : counter++;
+    yield prefix ? `${prefix}-${counter++}` : counter++;
   }
 }
 
@@ -35,7 +36,7 @@ export function uniqueId(): number;
 export function uniqueId(prefix: string): string;
 export function uniqueId(prefix?: string): string | number {
   if (!prefix || typeof prefix !== 'string') {
-    prefix = undefined;
+    prefix = undefined!;
   }
 
   if (!(prefix in CACHE)) {

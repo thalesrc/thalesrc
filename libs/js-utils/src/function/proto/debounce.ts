@@ -1,4 +1,5 @@
 import { debounce, DEFAULT_DEBOUNCE_TIME } from '../debounce';
+import type { AnyFunction } from '@thalesrc/ts-utils/any-function.type';
 
 declare global {
   export interface Function {
@@ -30,6 +31,6 @@ declare global {
   }
 }
 
-Function.prototype.debounce = function(time = DEFAULT_DEBOUNCE_TIME, thisObject: any = null, ...args: any[]): Promise<any> {
+Function.prototype.debounce = function(this: AnyFunction, time = DEFAULT_DEBOUNCE_TIME, thisObject: any = null, ...args: any[]): Promise<any> {
   return debounce(this, time, thisObject, ...args);
 };

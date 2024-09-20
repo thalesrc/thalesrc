@@ -1,4 +1,5 @@
 export * from './never';
+export * from './promisify';
 export * from './revert';
 export * from './try-catch';
 export * from './try-one-by-one';

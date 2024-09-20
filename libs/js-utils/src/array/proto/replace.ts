@@ -1,3 +1,4 @@
+import { Tail } from '@thalesrc/ts-utils/tail.type';
 import { replace, ReplaceItemsOptions, ReplaceByMapOptions } from '../replace';
 
 declare global {
@@ -74,6 +75,6 @@ declare global {
   }
 }
 
-Array.prototype.replace = <any>function<T>(options: T | ReplaceItemsOptions<T> | ReplaceByMapOptions<T>, itemToReplace: T): T[] {
-  return replace.call(null, this, ...arguments);
+Array.prototype.replace = <Array<any>['replace']>function<T>(this: T[], ...args: Tail<Parameters<typeof replace<T>>>): T[] {
+  return replace(this, ...args);
 };

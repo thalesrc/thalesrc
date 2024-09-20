@@ -1,4 +1,11 @@
+import type { Tail } from '@thalesrc/ts-utils/tail.type';
+
 import { remove } from '../remove';
+
+type FuncType<T> = typeof remove<T>;
+type FuncArgs<T> = Parameters<FuncType<T>>;
+type FuncReturn<T> = ReturnType<FuncType<T>>;
+type ProtoArgs<T> = Tail<FuncArgs<T>>;
 
 declare global {
   export interface Array<T> {
@@ -22,10 +29,10 @@ declare global {
      * @param itemToRemove Item to remove
      * @return New array
      */
-    remove(itemToRemove: T, multi?: boolean): T[];
+    remove(...args: ProtoArgs<T>): FuncReturn<T>;
   }
 }
 
-Array.prototype.remove = <any>function<T>(this: T[], itemToRemove: T, multi = false): T[] {
-  return remove.call(null, this, ...arguments);
+Array.prototype.remove = function<T>(this: T[], ...args: ProtoArgs<T>): FuncReturn<T> {
+  return remove(this, ...args);
 };

@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Difference Substraction Type
  */
-export type TSubstraction = any[] | Set<any>;
+export type Substraction<T = any> = T[] | Set<T>;
 
 /**
  * #### Difference
@@ -42,14 +43,14 @@ export type TSubstraction = any[] | Set<any>;
  * @param allDiff By default all the same items encountered in substraction will be removed, set this argument as true to get real difference
  * @returns Difference of base from substraction
  */
-export function difference<T>(base: T[], substraction: TSubstraction, allDiff?: boolean): T[];
-export function difference<T>(base: Set<T>, substraction: TSubstraction, allDiff?: boolean): Set<T>;
-export function difference<T>(base: T[] | Set<T>, substraction: TSubstraction, allDiff = false): T[] | Set<T> {
+export function difference<T>(base: T[], substraction: Substraction<T>, allDiff?: boolean): T[];
+export function difference<T>(base: Set<T>, substraction: Substraction<T>, allDiff?: boolean): Set<T>;
+export function difference<T>(base: T[] | Set<T>, substraction: Substraction<T>, allDiff = false): T[] | Set<T> {
   if (base instanceof Set) {
     return new Set<T>(difference(Array.from(base), substraction));
   }
 
-  const subs: T[] = Array.from(substraction);
+  const subs = Array.from(substraction);
 
   return base.filter(value => {
     const index = subs.indexOf(value);

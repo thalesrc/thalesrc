@@ -16,7 +16,9 @@
     "baseUrl": ".",
     "paths": {
       "@thalesrc/js-utils": ["libs/js-utils/src/index.ts"],
-      "@thalesrc/ts-utils": ["libs/ts-utils/src/index.ts"]
+      "@thalesrc/js-utils/*": ["libs/js-utils/src/*"],
+      "@thalesrc/ts-utils": ["libs/ts-utils/src/index.ts"],
+      "@thalesrc/ts-utils/*": ["libs/ts-utils/src/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

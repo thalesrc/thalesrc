@@ -1,14 +1,10 @@
-import { noop } from './function/noop';
+import type { ConstructorType } from '@thalesrc/ts-utils/constructor.type';
+import { noop } from '@thalesrc/js-utils/function/noop';
 
-type Resolver<T> = (value?: T) => any;
-type Rejector = (reason?: any) => any;
-type PromiseExecutor<T> = (resolve: Resolver<T>, reject: Rejector) => any;
-
-const RESOLVED = Symbol('Open Promise Resolved');
-const REJECTED = Symbol('Open Promise Rejected');
-
-let resolver: Resolver<any>;
-let rejector: Rejector;
+type Executor<T> = ConstructorParameters<ConstructorType<typeof Promise<T>>>[0];
+type ExecutorParams<T> = Parameters<Executor<T>>;
+type Resolver<T> = ExecutorParams<T>[0];
+type Rejector = ExecutorParams<unknown>[1];
 
 /**
  * #### Open Promise
@@ -32,104 +28,77 @@ let rejector: Rejector;
  * * * *
  * @template T typeof the value which is going to be resolved
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class OpenPromise<T = any> extends Promise<T> {
-  private [RESOLVED] = false;
-  private [REJECTED] = false;
+  #resolved = false;
+  #rejected = false;
+
+  #resolver: Resolver<T> = noop;
+  #rejector: Rejector = noop;
+
+
+  /**
+   * Returns whether is the promise resolved
+   */
+  get resolved() {
+    return this.#resolved;
+  }
+
+  /**
+   * Returns whether is the promise rejected
+   */
+  get rejected() {
+    return this.#rejected;
+  }
+
+  /**
+   * Returns whether is the promise finished
+   */
+  get finished() {
+    return this.#resolved || this.#rejected;
+  }
+
+  /**
+   * Open Promise Constructor
+   */
+  constructor(executor: Executor<T> = noop) {
+    super((resolve, reject) => {
+      this.#resolver = resolve;
+      this.#rejector = reject;
+
+      executor(resolve, reject);
+    });
+  }
 
   /**
    * Resolves promise
    * @param value Value to resolve the promise
    */
-  public resolve: Resolver<T>;
+  resolve(...args: Parameters<Resolver<T>>): void {
+    if (this.finished) throw new Error('Promise is already finished');
+
+    this.#resolved = true;
+    this.#resolver(...args);
+  }
 
   /**
    * Rejects promise
    * @param reason Error to reject promise
    */
-  public reject: Rejector;
+  reject(...args: Parameters<Rejector>): void {
+    if (this.finished) throw new Error('Promise is already finished');
 
-  /**
-   * Returns whether is the promise resolved
-   */
-  public resolved: boolean;
-
-  /**
-   * Returns whether is the promise rejected
-   */
-  public rejected: boolean;
-
-  /**
-   * Returns whether is the promise finished
-   */
-  public finished: boolean;
-
-  /**
-   * Open Promise Constructor
-   */
-  constructor(executor: PromiseExecutor<T> = noop) {
-    super((resolve, reject) => {
-
-      resolver = new Proxy(noop, {
-        apply(t, c, [value]) {
-          this.context[RESOLVED] = true;
-          resolve(value);
-        },
-        set(t, prop, value) {
-          if (prop !== 'context') {
-            return false;
-          }
-
-          this.context = value;
-
-          return true;
-        }
-      });
-
-      rejector = new Proxy(noop, {
-        apply(t, c, [reason]) {
-          this.context[REJECTED] = true;
-          reject(reason);
-        },
-        set(t, prop, value) {
-          if (prop !== 'context') {
-            return false;
-          }
-
-          this.context = value;
-
-          return true;
-        }
-      });
-
-      (executor || noop).call(null, resolver, rejector);
-    });
-
-    resolver['context'] = this;
-    rejector['context'] = this;
-
-    this.resolve = resolver;
-    this.reject = rejector;
+    this.#rejected = true;
+    this.#rejector(...args);
   }
 
   /**
    * Binds a promise to the inner promise to resolve or reject with it
    * @param promise A promise to bind inner promise
    */
-  public bindTo(promise: Promise<T>): void {
-    if (promise instanceof Promise) {
-      promise.then(e => this.resolve(e)).catch(e => this.reject(e));
-    } else {
-      this.resolve(promise);
-    }
+  bindTo(promise: Promise<T>): void {
+    promise
+      .then(e => { this.resolve(e); })
+      .catch(e => this.reject(e));
   }
 }
-
-Object.defineProperty(OpenPromise.prototype, 'resolved', {get() {
-  return this[RESOLVED];
-}});
-Object.defineProperty(OpenPromise.prototype, 'rejected', {get() {
-  return this[REJECTED];
-}});
-Object.defineProperty(OpenPromise.prototype, 'finished', {get() {
-  return this[RESOLVED] || this[REJECTED];
-}});

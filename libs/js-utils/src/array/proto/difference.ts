@@ -1,4 +1,4 @@
-import { difference, TSubstraction } from '../difference';
+import { difference, Substraction } from '../difference';
 
 declare global {
   export interface Array<T> {
@@ -23,10 +23,10 @@ declare global {
      * @param allDiff By default all the same items encountered in substraction will be removed, set this argument as true to get real difference
      * @returns Difference of base from substraction
      */
-    difference(substraction: TSubstraction, allDiff?: boolean): T[];
+    difference(substraction: Substraction, allDiff?: boolean): T[];
   }
 }
 
-Array.prototype.difference = function(substraction: TSubstraction, allDiff = false) {
+Array.prototype.difference = function(substraction: Substraction, allDiff = false) {
   return difference(this, substraction, allDiff);
 };

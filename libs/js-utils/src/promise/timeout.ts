@@ -1,4 +1,4 @@
-import { OpenPromise } from '../open-promise';
+import { OpenPromise } from '@thalesrc/js-utils/open-promise';
 
 export interface PromiseTimeoutFunction {
   /**
@@ -55,42 +55,42 @@ export interface PromiseTimeoutFunction {
    * @param error The error which will be throwed by the cancelled promise
    * @returns A promise which resolves if cancelling process is successfull, rejects otherwise
    */
-  cancel(identifier: Promise<any> | symbol, error?: any): Promise<void>;
+  cancel<T = unknown>(identifier: Promise<T> | symbol, error?: unknown): Promise<void>;
 
   /**
    * Will be throwed in cancelling promise when the timer has already finished or cancelled
    */
-  readonly FINISHED_ALREADY: symbol;
+  readonly FINISHED_ALREADY: unique symbol;
 
   /**
    * Will be throwed in cancelling promise when the timer has not found via identifier
    */
-  readonly IDENTIFIER_NOT_FOUND: symbol;
+  readonly IDENTIFIER_NOT_FOUND: unique symbol;
 
   /**
    * The default timeout cancelling rejection error
    * Will be throwed when the timer has cancelled
    */
-  readonly TIMEOUT_CANCELLED: symbol;
+  readonly TIMEOUT_CANCELLED: unique symbol;
 }
 
-interface ITimeoutCache {
+interface TimeoutCache {
   id: number;
   openPromise: OpenPromise;
 }
 
 // Defined here for documentation
-const promiseTimeoutInitializer = (() => {
-  const REFERANCE_CACHE = new WeakMap<Promise<any>, ITimeoutCache>();
-  const KEY_CACHE = new Map<symbol, ITimeoutCache>();
-
-  const timeout = <T = void>(time: number, value: T = undefined, key: symbol = undefined): Promise<T> => {
-    const openPromise = new OpenPromise<T>();
+function promiseTimeoutInitializer() {
+  const REFERANCE_CACHE = new WeakMap<Promise<unknown>, TimeoutCache>();
+  const KEY_CACHE = new Map<symbol, TimeoutCache>();
+  const timeout = <T = void>(time: number, value?: T, key?: symbol): Promise<T> => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const openPromise = new OpenPromise<any>();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const id: any = setTimeout(() => {
-      openPromise.resolve(value);
+      openPromise.resolve(value!);
     }, time);
-
-    const cacheObject: ITimeoutCache = {openPromise, id};
+    const cacheObject: TimeoutCache = { openPromise, id };
 
     REFERANCE_CACHE.set(openPromise, cacheObject);
 
@@ -116,19 +116,19 @@ const promiseTimeoutInitializer = (() => {
     }
   });
 
-  (<PromiseTimeoutFunction>timeout).cancel = async (identifier: Promise<any> | symbol, error?: any) => {
+  (<PromiseTimeoutFunction>timeout).cancel = async (identifier: Promise<unknown> | symbol, error?: unknown) => {
     const { FINISHED_ALREADY, IDENTIFIER_NOT_FOUND, TIMEOUT_CANCELLED } = <PromiseTimeoutFunction>timeout;
 
     if (typeof error === 'undefined') {
       error = TIMEOUT_CANCELLED;
     }
 
-    let cache: ITimeoutCache;
+    let cache: TimeoutCache;
 
     if (typeof identifier === 'symbol') {
-      cache = KEY_CACHE.get(identifier);
+      cache = KEY_CACHE.get(identifier)!;
     } else {
-      cache = REFERANCE_CACHE.get(identifier);
+      cache = REFERANCE_CACHE.get(identifier)!;
     }
 
     if (!cache) {
@@ -139,6 +139,7 @@ const promiseTimeoutInitializer = (() => {
       throw FINISHED_ALREADY;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     clearTimeout(cache.id as any);
     cache.openPromise.reject(error);
 
@@ -147,8 +148,8 @@ const promiseTimeoutInitializer = (() => {
     }
   };
 
-  return <PromiseTimeoutFunction>timeout;
-})();
+  return timeout as PromiseTimeoutFunction;
+};
 
 /**
  * #### Promise Timeout
@@ -189,4 +190,4 @@ const promiseTimeoutInitializer = (() => {
  * * * *
  * @see PromiseTimeoutFunction#cancel for cancelling
  */
-export const timeout: PromiseTimeoutFunction = promiseTimeoutInitializer;
+export const timeout = promiseTimeoutInitializer();

@@ -26,10 +26,11 @@ declare global {
      * * * *
      * @param defaultResult Setting this will put the value into the result field when the promise throws error
      */
-    tryCatch<E = any>(defaultResult?: T): Promise<[E, T]>;
+    tryCatch<E = unknown>(defaultResult?: T): Promise<[E, T]>;
   }
 }
 
-Promise.prototype.tryCatch = function<T, E>(this: Promise<T>, defaultResult: T = null): Promise<[E, T]> {
-  return tryCatch<T, E>(this, defaultResult);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+Promise.prototype.tryCatch = function(this: Promise<any>, defaultResult?: any): ReturnType<typeof tryCatch<any, any>> {
+  return tryCatch(this, defaultResult);
 };

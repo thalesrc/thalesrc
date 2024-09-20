@@ -24,6 +24,6 @@ declare global {
   }
 }
 
-Array.prototype.uniquifyByKey = <any>function<T>(this: T[], key: keyof T): T[] {
+Array.prototype.uniquifyByKey = function<T extends object>(this: T[], key: keyof T): T[] {
   return uniquifyByKey(this, key);
 };
