@@ -1,8 +1,8 @@
 {
   "name": "@thalesrc/js-utils",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "dependencies": {
-    "tslib": "^2.3.0"
+    "tslib": "*"
   },
   "type": "commonjs",
   "main": "./src/index.js",
