@@ -29,7 +29,8 @@
           "nx run extra-ts-types:build",
           "nx run extra-ts-types:publish/fill-package-json --packageVersion=$PACKAGE_VERSION",
           "nx run extra-ts-types:publish/to-npm"
-        ]
+        ],
+        "parallel": false
       }
     },
     "publish/fill-package-json": {
