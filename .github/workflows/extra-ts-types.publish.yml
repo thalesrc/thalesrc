@@ -6,7 +6,7 @@ on:
 
 jobs:
   publish:
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/extra-ts-types-')
+    if: startsWith(github.ref_name, 'extra-ts-types-')
     runs-on: ubuntu-latest
 
     steps:
