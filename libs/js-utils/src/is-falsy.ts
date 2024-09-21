@@ -1,5 +1,5 @@
 /**
- * #### Returns whether the entered value is falsy
+ * #### Returns whether the entered value is falsy
  *
  * * * *
  * Example usage:
