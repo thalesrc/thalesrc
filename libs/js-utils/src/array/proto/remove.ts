@@ -1,4 +1,4 @@
-import type { Tail } from '@thalesrc/ts-utils/tail.type';
+import type { Tail } from '@thalesrc/extra-ts-types';
 
 import { remove } from '../remove';
 

@@ -1,5 +1,5 @@
 import { debounce, DEFAULT_DEBOUNCE_TIME } from '../debounce';
-import type { AnyFunction } from '@thalesrc/ts-utils/any-function.type';
+import type { AnyFunction } from '@thalesrc/extra-ts-types';
 
 declare global {
   export interface Function {

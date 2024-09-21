@@ -1,0 +1,28 @@
+{
+  "name": "extra-ts-types",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/extra-ts-types/src",
+  "projectType": "library",
+  "release": {
+    "version": {
+      "generatorOptions": {
+        "packageRoot": "dist/{projectRoot}",
+        "currentVersionResolver": "git-tag"
+      }
+    }
+  },
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "options": {
+        "tsConfig": "libs/extra-ts-types/tsconfig.lib.json",
+        "main": "libs/extra-ts-types/src/index.ts",
+        "outputPath": "dist/libs/extra-ts-types",
+        "format": ["esm", "cjs"],
+        "generateExportsField": true
+      },
+      "dependsOn": [{"projects": ["extra-ts-types"], "target": "build"}]
+    }
+  }
+}

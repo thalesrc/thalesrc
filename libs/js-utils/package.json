@@ -2,9 +2,9 @@
   "name": "@thalesrc/js-utils",
   "version": "0.0.0",
   "dependencies": {
+    "@thalesrc/extra-ts-types": "*",
     "tslib": "*"
   },
-  "type": "commonjs",
   "main": "./src/index.js",
   "typings": "./src/index.d.ts"
 }

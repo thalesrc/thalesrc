@@ -1,4 +1,4 @@
-import type { ConstructorType } from '@thalesrc/ts-utils/constructor.type';
+import type { ConstructorType } from '@thalesrc/extra-ts-types';
 import { noop } from '@thalesrc/js-utils/function/noop';
 
 type Executor<T> = ConstructorParameters<ConstructorType<typeof Promise<T>>>[0];

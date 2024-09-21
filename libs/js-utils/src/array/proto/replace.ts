@@ -1,4 +1,4 @@
-import { Tail } from '@thalesrc/ts-utils/tail.type';
+import { Tail } from '@thalesrc/extra-ts-types';
 import { replace, ReplaceItemsOptions, ReplaceByMapOptions } from '../replace';
 
 declare global {

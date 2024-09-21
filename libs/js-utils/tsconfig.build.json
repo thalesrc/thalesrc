@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.lib.json",
+  "compilerOptions": {
+    "paths": {
+      "@thalesrc/js-utils/*": ["libs/js-utils/src/*"],
+      "@thalesrc/extra-ts-types": ["dist/libs/extra-ts-types"]
+    }
+  }
+}
