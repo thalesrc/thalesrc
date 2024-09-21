@@ -1,0 +1,9 @@
+{
+  "executors": {
+    "fill-package-json": {
+      "implementation": "./src/fill-package-json/executor",
+      "schema": "./src/fill-package-json/schema.json",
+      "description": "fill-package-json executor"
+    }
+  }
+}

@@ -4,35 +4,60 @@
   "plugins": ["@nx"],
   "overrides": [
     {
+      "files": "*.json",
+      "parser": "jsonc-eslint-parser",
+      "rules": {}
+    },
+    {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-      "rules": {
-      }
+      "rules": {}
     },
     {
       "files": ["*.ts", "*.tsx"],
       "extends": ["plugin:@nx/typescript"],
       "rules": {
         "@typescript-eslint/no-non-null-assertion": "off",
-        "@typescript-eslint/ban-types": "off", // TODO: use tslint v8
-        // "no-empty-object-type": "error",
-        // "no-unsafe-function-type": "error",
-        // "no-wrapper-object-types": "error",
+        "@typescript-eslint/ban-types": "off",
         "semi": ["error", "always"],
         "object-curly-spacing": ["error", "always"],
         "block-spacing": ["error", "always"],
         "padding-line-between-statements": [
           "error",
-          { "blankLine": "always", "prev": "*", "next": ["return", "throw", "break", "continue", "if", "switch", "try", "while", "do", "for", "class", "function"] },
-          { "blankLine": "always", "prev": "*", "next": ["const", "let", "var"] },
-          { "blankLine": "never", "prev": ["const", "let", "var"], "next": ["const", "let", "var"] }
+          {
+            "blankLine": "always",
+            "prev": "*",
+            "next": [
+              "return",
+              "throw",
+              "break",
+              "continue",
+              "if",
+              "switch",
+              "try",
+              "while",
+              "do",
+              "for",
+              "class",
+              "function"
+            ]
+          },
+          {
+            "blankLine": "always",
+            "prev": "*",
+            "next": ["const", "let", "var"]
+          },
+          {
+            "blankLine": "never",
+            "prev": ["const", "let", "var"],
+            "next": ["const", "let", "var"]
+          }
         ]
       }
     },
     {
       "files": ["*.js", "*.jsx"],
       "extends": ["plugin:@nx/javascript"],
-      "rules": {
-      }
+      "rules": {}
     },
     {
       "files": ["*.spec.ts", "*.spec.tsx", "*.spec.js", "*.spec.jsx"],
@@ -40,6 +65,13 @@
         "jest": true
       },
       "rules": {}
+    },
+    {
+      "files": ["./package.json", "./executors.json"],
+      "parser": "jsonc-eslint-parser",
+      "rules": {
+        "@nx/nx-plugin-checks": "error"
+      }
     }
   ]
 }

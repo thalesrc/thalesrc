@@ -21,6 +21,21 @@
         "outputPath": "dist/libs/extra-ts-types",
         "generateExportsField": true
       }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run extra-ts-types:build",
+          "nx run extra-ts-types:publish/fill-package-json --packageVersion=$PACKAGE_VERSION"
+        ]
+      }
+    },
+    "publish/fill-package-json": {
+      "executor": "@thalesrc/nx-npm-packager:fill-package-json",
+      "options": {
+        "outputPath": "dist/libs/extra-ts-types"
+      }
     }
   }
 }

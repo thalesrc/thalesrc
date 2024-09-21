@@ -46,6 +46,7 @@ export async function tryCatch<T, E = unknown>(promise: Promise<T>, defaultResul
 export async function tryCatch<T, E = unknown>(promise: Promise<T>, defaultResult?: T): Promise<[E | null, T | null]> {
   try {
     const result = await promise;
+
     return [null, result];
   } catch (error) {
     return [error as E, defaultResult ?? null];

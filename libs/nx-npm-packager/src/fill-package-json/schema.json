@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "version": 2,
+  "title": "FillPackageJson executor",
+  "description": "",
+  "type": "object",
+  "properties": {
+    "outputPath": {
+      "type": "string",
+      "description": "The output path where the package.json will be generated."
+    },
+    "packageVersion": {
+      "type": "string",
+      "description": "The version of the package.",
+      "nullable": true
+    }
+  },
+  "required": ["outputPath"]
+}

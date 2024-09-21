@@ -19,6 +19,8 @@
       "@thalesrc/extra-ts-types/*": ["libs/extra-ts-types/src/*"],
       "@thalesrc/js-utils": ["libs/js-utils/src/index.ts"],
       "@thalesrc/js-utils/*": ["libs/js-utils/src/*"],
+      "@thalesrc/node-utils": ["libs/node-utils/src/index.ts"],
+      "@thalesrc/nx-npm-packager": ["libs/nx-npm-packager/src/index.ts"],
       "@thalesrc/ts-utils": ["libs/ts-utils/src/index.ts"],
       "@thalesrc/ts-utils/*": ["libs/ts-utils/src/*"]
     }
