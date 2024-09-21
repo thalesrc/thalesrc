@@ -27,7 +27,8 @@
       "options": {
         "commands": [
           "nx run extra-ts-types:build",
-          "nx run extra-ts-types:publish/fill-package-json --packageVersion=$PACKAGE_VERSION"
+          "nx run extra-ts-types:publish/fill-package-json --packageVersion=$PACKAGE_VERSION",
+          "nx run extra-ts-types:publish/to-npm"
         ]
       }
     },
@@ -35,6 +36,13 @@
       "executor": "@thalesrc/nx-npm-packager:fill-package-json",
       "options": {
         "outputPath": "dist/libs/extra-ts-types"
+      }
+    },
+    "publish/to-npm": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm publish --access public",
+        "cwd": "dist/libs/extra-ts-types"
       }
     }
   }
