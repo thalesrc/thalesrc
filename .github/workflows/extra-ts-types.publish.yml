@@ -1,12 +1,12 @@
 name: Extra TS Types
 
 on:
-  push:
-    tags:
-      - 'extra-ts-types-*'
+  release:
+    types: [created]
 
 jobs:
-  cache-and-install:
+  publish:
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/extra-ts-types-')
     runs-on: ubuntu-latest
 
     steps:
