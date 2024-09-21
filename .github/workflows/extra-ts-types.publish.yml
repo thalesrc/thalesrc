@@ -1,4 +1,4 @@
-name: Extra TS Types
+name: Extra TS Types / Publish
 
 on:
   release:
@@ -14,14 +14,14 @@ jobs:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     steps:
-      - name: Set package version
+      - name: Set package version env variable
         run: echo "PACKAGE_VERSION=${TAG_NAME#extra-ts-types-v}" >> $GITHUB_ENV
 
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
           version: latest
           run_install: false
@@ -35,5 +35,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build
+      - name: Publish
         run: pnpm nx run extra-ts-types:publish
