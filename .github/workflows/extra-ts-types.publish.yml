@@ -11,10 +11,11 @@ jobs:
 
     env:
       TAG_NAME: ${{github.ref_name}}
+      PACKAGE_VERSION: ${TAG_NAME#extra-ts-types-v}
 
     steps:
-      - name: Set package version
-        run: echo "PACKAGE_VERSION=$TAG_NAME#extra-ts-types-v" >> $GITHUB_ENV
+      # - name: Set package version
+      #   run: echo "" >> $GITHUB_ENV
 
       - name: Checkout
         uses: actions/checkout@v4
