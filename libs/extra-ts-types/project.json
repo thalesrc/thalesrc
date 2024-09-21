@@ -21,8 +21,7 @@
         "outputPath": "dist/libs/extra-ts-types",
         "format": ["esm", "cjs"],
         "generateExportsField": true
-      },
-      "dependsOn": [{"projects": ["extra-ts-types"], "target": "build"}]
+      }
     }
   }
 }

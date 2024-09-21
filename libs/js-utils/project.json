@@ -9,9 +9,11 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "tsc -p ./tsconfig.lib.json"
+          "gulp ts:default",
+          "gulp ts:commonjs"
         ],
-        "cwd": "./libs/js-utils"
+        "cwd": "./libs/js-utils",
+        "parallel": true
       },
       "dependsOn": [{"projects": ["extra-ts-types"], "target": "build"}]
     }

@@ -1,3 +1,3 @@
-export * from './clone';
-export * from './compact';
-export * from './deepest';
+export * from '@thalesrc/js-utils/object/clone';
+export * from '@thalesrc/js-utils/object/compact';
+export * from '@thalesrc/js-utils/object/deepest';

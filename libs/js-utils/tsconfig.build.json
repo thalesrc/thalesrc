@@ -1,6 +1,10 @@
 {
   "extends": "./tsconfig.lib.json",
   "compilerOptions": {
+    "outDir": "../../dist",
+    "module": "ESNext",
+    "declaration": false,
+    "sourceMap": false,
     "paths": {
       "@thalesrc/js-utils/*": ["libs/js-utils/src/*"],
       "@thalesrc/extra-ts-types": ["dist/libs/extra-ts-types"]

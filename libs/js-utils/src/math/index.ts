@@ -1,1 +1,1 @@
-export * from './min-max';
+export * from '@thalesrc/js-utils/math/min-max';

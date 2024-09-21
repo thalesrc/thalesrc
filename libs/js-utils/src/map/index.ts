@@ -1,1 +1,1 @@
-export * from './merge';
+export * from '@thalesrc/js-utils/map/merge';
