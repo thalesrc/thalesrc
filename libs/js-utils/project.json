@@ -14,8 +14,7 @@
         ],
         "cwd": "./libs/js-utils",
         "parallel": true
-      },
-      "dependsOn": [{"projects": ["extra-ts-types"], "target": "build"}]
+      }
     }
   }
 }
