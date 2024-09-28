@@ -1,4 +1,4 @@
-name: Extra TS Types / Publish
+name: Js Utils / Publish
 
 on:
   release:
