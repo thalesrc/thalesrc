@@ -34,7 +34,7 @@
       }
     },
     "publish/fill-package-json": {
-      "executor": "@thalesrc/nx-npm-packager:fill-package-json",
+      "executor": "@thalesrc/nx-utils:fill-package-json",
       "options": {
         "outputPath": "dist/libs/extra-ts-types"
       }
