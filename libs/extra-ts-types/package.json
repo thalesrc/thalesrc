@@ -5,7 +5,7 @@
   "keywords": ["typescript", "types", "extra", "advanced", "utility"],
   "homepage": "https://extra-ts-types.thalesrc.com",
   "bugs": "https://github.com/thalesrc/thalesrc/issues",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "author": {
     "name": "Ali Şahin Özçelik",
     "email": "alisahinozcelik@gmail.com",

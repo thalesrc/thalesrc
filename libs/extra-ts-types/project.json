@@ -45,7 +45,7 @@
     "publish/prepare/copy": {
       "executor": "@thalesrc/nx-utils:copy",
       "options": {
-        "input": ["libs/extra-ts-types/readme.md", "libs/extra-ts-types/LICENSE"],
+        "input": ["libs/extra-ts-types/README.md", "libs/extra-ts-types/LICENSE"],
         "output": "dist/libs/extra-ts-types"
       }
     },
