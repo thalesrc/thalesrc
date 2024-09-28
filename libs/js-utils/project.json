@@ -15,6 +15,13 @@
         "cwd": "./libs/js-utils",
         "parallel": true
       }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "libs/js-utils/jest.config.ts",
+        "passWithNoTests": true
+      }
     }
   }
 }

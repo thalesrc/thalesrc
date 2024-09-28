@@ -1,4 +1,3 @@
-import 'jest';
 
 import './intersection';
 import { intersection } from '../../array/intersection';

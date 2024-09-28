@@ -1,4 +1,3 @@
-import 'jest';
 
 import { limit } from './limit';
 

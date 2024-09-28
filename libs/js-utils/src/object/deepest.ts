@@ -1,5 +1,7 @@
+import { DeepestObject } from "@thalesrc/extra-ts-types";
+
 /**
- * #### Get deepest value in an object chain
+ * #### Get deepest object in an object chain
  *
  *  * * * *
  * Example usage:
@@ -43,12 +45,12 @@
  * @param object Object to deep dive
  * @param key key of the object which contains same type instance
  */
-export function deepest<T, K extends {[P in keyof T]: T[P] extends T ? P : never}[keyof T]>(object: T, key: K): T {
-  let obj: any = object;
+export function deepest<T, K extends keyof T>(object: T, key: K): DeepestObject<T, K> {
+  let obj = object;
 
   while (obj[key]) {
-    obj = obj[key];
+    obj = obj[key] as T;
   }
 
-  return obj;
+  return obj as DeepestObject<T, K>;
 }

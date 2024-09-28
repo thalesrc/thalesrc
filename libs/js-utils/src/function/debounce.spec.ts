@@ -1,6 +1,5 @@
-import 'jest';
 
-import { debounce, debounceWithKey } from './debounce';
+import { debounce } from './debounce';
 
 class CustomError {
   constructor(public message: string) {}
@@ -8,6 +7,7 @@ class CustomError {
 
 describe('Debounce Function', () => {
   let foo = 0;
+
   function bar() {
     foo++;
   }
@@ -53,9 +53,9 @@ describe('Debounce Function', () => {
   });
 
   it('should use passed this object', done => {
-    const john = {x: 0};
+    const john = { x: 0 };
 
-    function baz() {
+    function baz(this: { x: number }) {
       this.x++;
     }
 
@@ -67,9 +67,9 @@ describe('Debounce Function', () => {
   });
 
   it('should use passed arguments', done => {
-    let john;
+    let john: number;
 
-    function baz(a, b) {
+    function baz(a: number, b: number) {
       john = a + b;
     }
 

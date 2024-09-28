@@ -1,4 +1,3 @@
-import 'jest';
 
 import { minMax } from './min-max';
 

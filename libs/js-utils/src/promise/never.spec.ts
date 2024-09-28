@@ -1,4 +1,3 @@
-import 'jest';
 
 import { never, NEVER } from './never';
 import { timeout } from './timeout';

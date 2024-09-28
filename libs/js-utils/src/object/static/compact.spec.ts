@@ -1,4 +1,3 @@
-import 'jest';
 
 import './compact';
 import { compact } from '../compact';

@@ -28,7 +28,7 @@ export function compact<T extends Object>(object: T): Partial<T>;
  * * * *
  * @param arrayOrObject Array or Object to compact
  */
-export function compact<T extends (U[] | Object), U>(arrayOrObject: T): T extends U[] ? U[] : Object {
+export function compact<T extends (any[] | Object)>(arrayOrObject: T): T extends Array<infer U> ? U[] : Partial<T> {
   if (arrayOrObject instanceof Array) {
     return arrCompact(arrayOrObject) as any;
   }

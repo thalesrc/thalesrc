@@ -1,4 +1,3 @@
-import 'jest';
 
 import './of';
 import { of } from '../of';

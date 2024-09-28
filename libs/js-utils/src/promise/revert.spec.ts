@@ -1,4 +1,3 @@
-import 'jest';
 
 import { revert } from './revert';
 

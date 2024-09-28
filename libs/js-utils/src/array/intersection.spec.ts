@@ -1,4 +1,3 @@
-import 'jest';
 
 import { intersection } from './intersection';
 

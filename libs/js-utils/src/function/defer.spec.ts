@@ -1,6 +1,5 @@
 
 import { fail } from 'assert';
-import 'jest';
 
 import { defer } from './defer';
 

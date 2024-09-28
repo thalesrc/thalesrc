@@ -1,4 +1,3 @@
-import 'jest';
 
 import { tryCatch } from './try-catch';
 

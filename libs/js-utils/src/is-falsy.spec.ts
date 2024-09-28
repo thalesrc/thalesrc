@@ -1,4 +1,3 @@
-import 'jest';
 
 import { isFalsy } from './is-falsy';
 

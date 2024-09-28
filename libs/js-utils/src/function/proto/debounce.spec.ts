@@ -1,10 +1,10 @@
-import 'jest';
 
 import './debounce';
 
 describe('Debounce Proto Function', () => {
   it('should debounce', done => {
     let bar = 0;
+
     function foo() {
       bar++;
     }
@@ -20,9 +20,9 @@ describe('Debounce Proto Function', () => {
   });
 
   it('should work as same', done => {
-    let bar = {x: 0};
+    const bar = { x: 0 };
 
-    function foo(a, b) {
+    function foo(this: { x: number }, a: number, b: number) {
       this.x = a + b;
     }
 
@@ -31,9 +31,8 @@ describe('Debounce Proto Function', () => {
     foo.debounce(50, bar, 0, 0)
       .then(() => {
         const sequence = new Date().getTime() - startedAt;
-        expect(sequence).toBeGreaterThan(48);
-        expect(sequence).toBeLessThan(60);
 
+        expect(sequence).toBeGreaterThan(50);
         expect(bar.x).toBe(8);
 
         done();

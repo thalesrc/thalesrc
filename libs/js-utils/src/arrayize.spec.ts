@@ -1,4 +1,3 @@
-import 'jest';
 
 import { arrayize } from './arrayize';
 

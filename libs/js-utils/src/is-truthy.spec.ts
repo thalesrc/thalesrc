@@ -1,4 +1,3 @@
-import 'jest';
 
 import { isTruthy } from './is-truthy';
 

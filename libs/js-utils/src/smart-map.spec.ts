@@ -1,4 +1,3 @@
-import 'jest';
 
 import { SmartMap } from './smart-map';
 

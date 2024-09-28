@@ -1,4 +1,3 @@
-import 'jest';
 
 import './replace';
 import { replace } from '../replace';

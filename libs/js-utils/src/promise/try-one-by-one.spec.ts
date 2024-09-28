@@ -1,4 +1,3 @@
-import 'jest';
 
 import { tryOneByOne } from './try-one-by-one';
 

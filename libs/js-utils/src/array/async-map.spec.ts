@@ -1,4 +1,3 @@
-import 'jest';
 
 import { asyncMap } from './async-map';
 import { timeout } from '../promise/timeout';

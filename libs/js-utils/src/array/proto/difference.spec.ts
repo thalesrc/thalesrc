@@ -1,4 +1,3 @@
-import 'jest';
 
 import './difference';
 import { difference } from '../difference';

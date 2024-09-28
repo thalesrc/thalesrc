@@ -1,4 +1,3 @@
-import 'jest';
 
 import { uniqueId } from './unique-id';
 

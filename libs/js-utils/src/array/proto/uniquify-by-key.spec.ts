@@ -1,4 +1,3 @@
-import 'jest';
 
 import './uniquify-by-key';
 import { uniquifyByKey } from '../uniquify-by-key';

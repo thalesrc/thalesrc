@@ -1,4 +1,3 @@
-import 'jest';
 
 import { OpenPromise } from './open-promise';
 import { noop } from './function/noop';

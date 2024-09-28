@@ -1,4 +1,3 @@
-import 'jest';
 
 import './find-by-key';
 import { findByKey } from '../find-by-key';

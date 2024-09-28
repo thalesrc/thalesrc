@@ -30,6 +30,9 @@ type Rejector = ExecutorParams<unknown>[1];
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class OpenPromise<T = any> extends Promise<T> {
+  static #resolverHolder: Resolver<any> = noop;
+  static #rejectorHolder: Rejector = noop;
+
   #resolved = false;
   #rejected = false;
 
@@ -63,11 +66,17 @@ export class OpenPromise<T = any> extends Promise<T> {
    */
   constructor(executor: Executor<T> = noop) {
     super((resolve, reject) => {
-      this.#resolver = resolve;
-      this.#rejector = reject;
+      OpenPromise.#resolverHolder = resolve;
+      OpenPromise.#rejectorHolder = reject;
 
       executor(resolve, reject);
     });
+
+    this.#resolver = OpenPromise.#resolverHolder;
+    this.#rejector = OpenPromise.#rejectorHolder;
+
+    OpenPromise.#resolverHolder = noop;
+    OpenPromise.#rejectorHolder = noop;
   }
 
   /**

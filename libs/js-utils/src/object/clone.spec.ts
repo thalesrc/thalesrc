@@ -1,4 +1,4 @@
-import 'jest';
+/* eslint-disable @typescript-eslint/no-empty-function */
 
 import { clone } from './clone';
 
@@ -17,6 +17,7 @@ describe('Clone Function', () => {
     expect(clone(sym)).toBe(sym);
 
     function foo() {}
+
     const bar = foo;
 
     expect(clone(foo)).toBe(foo);
@@ -24,7 +25,7 @@ describe('Clone Function', () => {
   });
 
   it('should clone object', () => {
-    const foo = {x: 1, y: 2};
+    const foo = { x: 1, y: 2 };
     const bar = clone(foo);
 
     expect(bar).not.toBe(foo);
@@ -59,7 +60,7 @@ describe('Clone Function', () => {
     const map = new Map();
     map.set(1, 'a');
 
-    const foo = {x: 1, y: 2, z: {a: 'a', b: 'b'}, t: [1, 2], m: map};
+    const foo = { x: 1, y: 2, z: { a: 'a', b: 'b' }, t: [1, 2], m: map };
     const bar = clone(foo);
 
     expect(bar).toEqual(foo);
@@ -76,7 +77,7 @@ describe('Clone Function', () => {
 
 
   it('should clone array deeply', () => {
-    const foo: any = [[1, 2], {a: 1, b: ['x', 'y']}];
+    const foo: any = [[1, 2], { a: 1, b: ['x', 'y'] }];
     const bar = clone(foo);
 
     expect(bar).toEqual(foo);
@@ -93,10 +94,11 @@ describe('Clone Function', () => {
 
   it('should reference unwanted instances', () => {
     class Foo {}
+
     class Foo2 {}
 
-    const bar = {x: new Foo(), y: new Foo(), z: new Foo2()};
-    const baz = clone(bar, {instancesToRefer: [Foo, Foo2]});
+    const bar = { x: new Foo(), y: new Foo(), z: new Foo2() };
+    const baz = clone(bar, { instancesToRefer: [Foo, Foo2] });
 
     expect(baz).toEqual(bar);
 
@@ -106,8 +108,8 @@ describe('Clone Function', () => {
   });
 
   it('should reference filtered values', () => {
-    const foo = {a: {x: true}, b: {x: false}};
-    const bar = clone(foo, {valueFiltererToRefer: value => value.x});
+    const foo = { a: { x: true }, b: { x: false } };
+    const bar = clone(foo, { valueFiltererToRefer: value => value.x });
 
     expect(bar.a).toBe(foo.a);
     expect(bar.b).not.toBe(foo.b);
@@ -118,10 +120,10 @@ describe('Clone Function', () => {
     const sym = Symbol();
     const anObjKey = {};
     const map = new Map();
-    map.set(anObjKey, {x: 5});
+    map.set(anObjKey, { x: 5 });
 
-    const foo = {a: {x: 1}, b: {x: 2}, [sym]: {x: 3}, c: [{x: 3}, {x: 4}], d: map};
-    const bar = clone(foo, {propsToRefer: ['a', sym, 1, anObjKey]});
+    const foo = { a: { x: 1 }, b: { x: 2 }, [sym]: { x: 3 }, c: [{ x: 3 }, { x: 4 }], d: map };
+    const bar = clone(foo, { propsToRefer: ['a', sym, 1, anObjKey] });
 
     expect(bar.a).toBe(foo.a);
 
@@ -141,14 +143,15 @@ describe('Clone Function', () => {
       public customCloned = false;
     }
 
-    function aCloner<T>(object: T, options, internal): T {
+    function aCloner<T>(): T {
       const obj = new A();
       obj.customCloned = true;
+
       return obj as any;
     }
 
     const foo = [new A()];
-    const bar = clone(foo, {customCloners: new Map([[A, aCloner]])});
+    const bar = clone(foo, { customCloners: new Map([[A, aCloner]]) });
 
     expect(bar[0].customCloned).toBe(true);
   });
@@ -157,15 +160,15 @@ describe('Clone Function', () => {
     const foo: {[key: string]: any} = {};
     const bar: {[key: string]: any} = {};
     const x: {[key: string]: any} = {};
-    foo.bar = bar;
-    foo.x = x;
-    x.bar = bar;
-    foo.foo = foo;
+    foo['bar'] = bar;
+    foo['x'] = x;
+    x['bar'] = bar;
+    foo['foo'] = foo;
 
     const baz = clone(foo);
 
-    expect(baz.foo).toBe(baz);
-    expect(baz.foo.bar).toBe(baz.bar);
-    expect(baz.foo.x.bar).toBe(baz.bar);
+    expect(baz['foo']).toBe(baz);
+    expect(baz['foo']['bar']).toBe(baz['bar']);
+    expect(baz['foo']['x']['bar']).toBe(baz['bar']);
   });
 });
