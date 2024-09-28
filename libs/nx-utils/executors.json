@@ -1,5 +1,10 @@
 {
   "executors": {
+    "copy": {
+      "implementation": "./src/copy/executor",
+      "schema": "./src/copy/schema.json",
+      "description": "copy executor"
+    },
     "fill-package-json": {
       "implementation": "./src/fill-package-json/executor",
       "schema": "./src/fill-package-json/schema.json",

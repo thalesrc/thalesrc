@@ -1,0 +1,92 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "version": 2,
+  "title": "Copy executor",
+  "description": "",
+  "type": "object",
+  "properties": {
+    "input": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "#/definitions/Input"
+        },
+        {
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/definitions/Input"
+              }
+            ]
+          },
+          "type": "array"
+        }
+      ],
+      "description": "File glob pattern"
+    },
+    "output": {
+      "description": "Base output",
+      "type": "string"
+    },
+    "watch": {
+      "description": "Watch file changes",
+      "default": false,
+      "type": "boolean"
+    }
+  },
+  "definitions": {
+    "Input": {
+      "additionalProperties": false,
+      "properties": {
+        "output": {
+          "description": "Output path",
+          "type": "string"
+        },
+        "path": {
+          "description": "File glob",
+          "type": "string"
+        },
+        "replace": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Replace strings in file content",
+          "type": "object"
+        },
+        "resize": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "items": {
+                "type": "number"
+              },
+              "maxItems": 2,
+              "minItems": 2,
+              "type": "array"
+            },
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            }
+          ],
+          "description": "Resize an image\n\nExp: ``` resize: 40 // width 40px height 40px resize: [80, 60] // width 80px height 60px resize: { // create multiple copies   \"20x20\": \"{name}-20x20.{ext}\",   \"40x40\": \"{name}-40x40.{ext}\",   \"128x128\": \"{name}-128x128.{ext}\", } ```"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "required": ["input"]
+}

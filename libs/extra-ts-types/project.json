@@ -27,13 +27,29 @@
       "options": {
         "commands": [
           "nx run extra-ts-types:build",
-          "nx run extra-ts-types:publish/fill-package-json --packageVersion=$PACKAGE_VERSION",
+          "nx run extra-ts-types:publish/prepare",
           "nx run extra-ts-types:publish/to-npm"
         ],
         "parallel": false
       }
     },
-    "publish/fill-package-json": {
+    "publish/prepare": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run extra-ts-types:publish/prepare/copy",
+          "nx run extra-ts-types:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
+        ]
+      }
+    },
+    "publish/prepare/copy": {
+      "executor": "@thalesrc/nx-utils:copy",
+      "options": {
+        "input": "libs/extra-ts-types/readme.md",
+        "output": "dist/libs/extra-ts-types"
+      }
+    },
+    "publish/prepare/fill-package-json": {
       "executor": "@thalesrc/nx-utils:fill-package-json",
       "options": {
         "outputPath": "dist/libs/extra-ts-types"
