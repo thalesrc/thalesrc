@@ -1,4 +1,4 @@
-# extra-ts-types
+# @thalesrc/extra-ts-types
 
 This library was generated with [Nx](https://nx.dev).
 
