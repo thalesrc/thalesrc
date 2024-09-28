@@ -1,6 +1,25 @@
 {
   "name": "@thalesrc/extra-ts-types",
   "version": "0.0.0",
+  "description": "Extra TypeScript types",
+  "keywords": ["typescript", "types", "extra", "advanced", "utility"],
+  "homepage": "https://extra-ts-types.thalesrc.com",
+  "bugs": "https://github.com/thalesrc/thalesrc/issues",
+  "license": "SEE LICENSE IN LICENSE",
+  "author": {
+    "name": "Ali Şahin Özçelik",
+    "email": "alisahinozcelik@gmail.com",
+    "url": "https://alisah.in"
+  },
+  "funding": {
+    "type": "patreon",
+    "url": "https://www.patreon.com/alisahin"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thalesrc/thalesrc.git",
+    "directory": "libs/extra-ts-types"
+  },
   "dependencies": {
     "tslib": "*"
   },
