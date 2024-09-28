@@ -1,7 +1,7 @@
 /**
  * Intersection Inclusion Type
  */
-export type TInclusion = any[] | Set<any>;
+export type Inclusion = any[] | Set<any>;
 
 /**
  * Intersection
@@ -42,9 +42,9 @@ export type TInclusion = any[] | Set<any>;
  * @param allEquals By default all the same items encountered in the inclusion will be included, set this argument as false to get real intersection
  * @returns Intersection of base and inclusion
  */
-export function intersection<T>(base: T[], inclusion: TInclusion, allEquals?: boolean): T[];
-export function intersection<T>(base: Set<T>, inclusion: TInclusion, allEquals?: boolean): Set<T>;
-export function intersection<T>(base: T[] | Set<T>, inclusion: TInclusion, allEquals = true): T[] | Set<T> {
+export function intersection<T>(base: T[], inclusion: Inclusion, allEquals?: boolean): T[];
+export function intersection<T>(base: Set<T>, inclusion: Inclusion, allEquals?: boolean): Set<T>;
+export function intersection<T>(base: T[] | Set<T>, inclusion: Inclusion, allEquals = true): T[] | Set<T> {
   if (base instanceof Set) {
     return new Set<T>(intersection(Array.from(base), inclusion));
   }

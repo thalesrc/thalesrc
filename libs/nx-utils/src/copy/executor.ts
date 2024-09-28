@@ -15,7 +15,7 @@ import { ensureDirectory } from "@thalesrc/node-utils";
 import { CopyExecutorSchema } from './schema';
 
 // Apply root .env config
-config({override: true});
+config({ override: true });
 
 const isWindows = process.platform === "win32";
 
@@ -30,7 +30,7 @@ function getFileName(path: string) {
   return path.split(isWindows ? '\\' : '/').at(-1);
 }
 
-async function readReplaceWrite({file, output, replace}: Input) {
+async function readReplaceWrite({ file, output, replace }: Input) {
   let fileContent = await readFile(file, 'utf-8');
 
   for (const [find, replaceStr] of replace) {
@@ -40,11 +40,11 @@ async function readReplaceWrite({file, output, replace}: Input) {
   await writeFile(`${output}/${getFileName(file)}`, fileContent, 'utf-8');
 }
 
-async function basicCopy({file, output}: Input) {
+async function basicCopy({ file, output }: Input) {
   await fsCopyFile(file, `${output}/${getFileName(file)}`);
 }
 
-function resize({file, output, resize: {width, height, name}}: Input) {
+function resize({ file, output, resize: { width, height, name } }: Input) {
   const [fileName, ext] = getFileName(file).split('.');
 
   sharp(file).resize(width, height).toFile(`${output}/${name.replace('{name}', fileName).replace('{ext}', ext)}`);
@@ -69,6 +69,7 @@ async function watchAndCopy(input: Input) {
   for await (const event of fsWatch(input.file)) {
     if (event.eventType !== 'change') {
       logger.error(`Stopped watching '${input.file}'`);
+
       break;
     }
 
@@ -92,7 +93,6 @@ export default async function runExecutor(
 
   // Get default output path
   const baseOutput = normalizePath(output);
-
   // Adjust inputs
   const inputsWithGlobs = await arrayize(input)
     .asyncMap(async (item) => typeof item === 'string' ? {
@@ -111,14 +111,13 @@ export default async function runExecutor(
           ? [{ width: item.resize, height: item.resize, name: '{name}.{ext}' }]
           : item.resize instanceof Array
           ? [{ width: item.resize[0], height: item.resize[1], name: '{name}.{ext}' }]
-          : Object.entries(item.resize).map(([key, value]) => ({width: +key.split('x')[0], height: +key.split('x')[1], name: value}))
+          : Object.entries(item.resize).map(([key, value]) => ({ width: +key.split('x')[0], height: +key.split('x')[1], name: value }))
       });
-
   // Populate all files into single array
   const inputs: Input[] = inputsWithGlobs
-    .map(({glob, ...rest}) => glob.map(file => ({file, ...rest})))
+    .map(({ glob, ...rest }) => glob.map(file => ({ file, ...rest })))
     .flat()
-    .map(({resize, ...rest}) => !resize ? rest : resize.map(r => ({resize: r, ...rest})))
+    .map(({ resize, ...rest }) => !resize ? rest : resize.map(r => ({ resize: r, ...rest })))
     .flat();
 
   await Promise.all(inputs.map(input => copyFile(input)));

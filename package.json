@@ -1,7 +1,22 @@
 {
   "name": "@thalesrc/thalesrc",
   "version": "0.0.0",
+  "bugs": "https://github.com/thalesrc/thalesrc/issues",
   "license": "MIT",
+  "homepage": "https://open-source.thalesrc.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thalesrc/thalesrc.git"
+  },
+  "author": {
+    "name": "Ali Şahin Özçelik",
+    "email": "alisahinozcelik@gmail.com",
+    "url": "https://alisah.in"
+  },
+  "funding": {
+    "type": "patreon",
+    "url": "https://www.patreon.com/alisahin"
+  },
   "scripts": {
     "nx": "nx"
   },
@@ -43,6 +58,8 @@
     "prettier": "^2.6.2",
     "ts-jest": "^29.1.0",
     "ts-node": "10.9.1",
+    "typedoc": "^0.26.7",
+    "typedoc-plugin-markdown": "^4.2.8",
     "typescript": "~5.5.2",
     "verdaccio": "^5.0.4"
   }

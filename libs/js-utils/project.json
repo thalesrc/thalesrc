@@ -22,6 +22,46 @@
         "jestConfig": "libs/js-utils/jest.config.ts",
         "passWithNoTests": true
       }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run js-utils:publish/prepare",
+          "nx run js-utils:publish/to-npm"
+        ],
+        "parallel": false
+      }
+    },
+    "publish/prepare": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run js-utils:build",
+          "nx run js-utils:publish/prepare/copy",
+          "nx run js-utils:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
+        ]
+      }
+    },
+    "publish/prepare/copy": {
+      "executor": "@thalesrc/nx-utils:copy",
+      "options": {
+        "input": ["libs/js-utils/README.md", "libs/js-utils/LICENSE"],
+        "output": "dist/libs/js-utils"
+      }
+    },
+    "publish/prepare/fill-package-json": {
+      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "options": {
+        "outputPath": "dist/libs/js-utils"
+      }
+    },
+    "publish/to-npm": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm publish --access public",
+        "cwd": "dist/libs/js-utils"
+      }
     }
   }
 }

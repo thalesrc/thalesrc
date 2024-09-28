@@ -1,0 +1,15 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "./src/array/index.ts",
+    "./src/boolean/index.ts",
+    "./src/function/index.ts",
+    "./src/map/index.ts",
+    "./src/math/index.ts",
+    "./src/object/index.ts",
+    "./src/promise/index.ts",
+    "./src/set/index.ts",
+    "./src/string/index.ts",
+    "./src/index.ts"
+  ]
+}

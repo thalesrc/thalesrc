@@ -1,3 +1,4 @@
+export * from '@thalesrc/js-utils/array/arrayize';
 export * from '@thalesrc/js-utils/array/async-map';
 export * from '@thalesrc/js-utils/array/compact';
 export * from '@thalesrc/js-utils/array/difference';

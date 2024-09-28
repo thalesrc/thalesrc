@@ -3,7 +3,7 @@ import { isFalsy } from '../../is-falsy';
 declare global {
   export interface BooleanConstructor {
     /**
-     * #### Returns whether the entered value is falsy
+     * #### Returns whether the entered value is falsy
      *
      * * * *
      * Example usage:

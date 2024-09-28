@@ -15,6 +15,7 @@ const runExecutor: PromiseExecutor<FillPackageJsonExecutorSchema> = async (
     }
   }
 ) => {
+  // Read package.json files
   const [rootErr, rootPackageJson] = await tryCatch(import(`package.json`));
   const [packageErr, packagePackageJson] = await tryCatch(import(`${root}/package.json`));
 
@@ -26,19 +27,30 @@ const runExecutor: PromiseExecutor<FillPackageJsonExecutorSchema> = async (
     };
   }
 
+  // Replace * dependencies with the root dependencies
   for (const key in packagePackageJson.dependencies) {
     if (packagePackageJson.dependencies[key] !== '*') continue;
 
-    packagePackageJson.dependencies[key] = rootPackageJson.dependencies[key];
+    packagePackageJson.dependencies[key] = { ...rootPackageJson.devDependencies, ...rootPackageJson.dependencies }[key];
   }
 
+  // Fill package.json fields
+  for (const key of ['bugs', 'license', 'homepage', 'repository', 'author', 'funding']) {
+    if (packagePackageJson[key]) continue;
+
+    packagePackageJson[key] = rootPackageJson[key];
+  }
+
+  // Set version if it is provided
   if (packageVersion) {
     packagePackageJson.version = packageVersion;
     console.log('Version is set to', packageVersion);
   }
 
+  // Prepare output path
   await ensureDirectory(outputPath);
 
+  // Write package.json
   const [writeErr] = await tryCatch(writeFile(`${outputPath}/package.json`, JSON.stringify(packagePackageJson, null, 2)));
 
   if (writeErr) {

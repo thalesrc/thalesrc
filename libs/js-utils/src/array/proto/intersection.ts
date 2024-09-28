@@ -1,4 +1,4 @@
-import { intersection, TInclusion } from '../intersection';
+import { intersection, Inclusion } from '../intersection';
 
 declare global {
   export interface Array<T> {
@@ -23,10 +23,10 @@ declare global {
      * @param allEquals By default all the same items encountered in the inclusion will be included, set this argument as false to get real intersection
      * @returns Intersection of base and inclusion
      */
-    intersection(inclusion: TInclusion, allEquals?: boolean): T[];
+    intersection(inclusion: Inclusion, allEquals?: boolean): T[];
   }
 }
 
-Array.prototype.intersection = function(inclusion: TInclusion, allEquals = true) {
+Array.prototype.intersection = function(inclusion: Inclusion, allEquals = true) {
   return intersection(this, inclusion, allEquals);
 };

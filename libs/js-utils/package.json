@@ -1,10 +1,400 @@
 {
   "name": "@thalesrc/js-utils",
   "version": "0.0.0",
+  "description": "Javascript utility functions for web development",
+  "keywords": [
+    "object",
+    "deep clone",
+    "array",
+    "async",
+    "map",
+    "find by key",
+    "try catch",
+    "compact",
+    "difference",
+    "intersecion",
+    "promise",
+    "defer",
+    "open",
+    "is truthy",
+    "is falsy",
+    "math",
+    "min max",
+    "noop",
+    "unique id",
+    "replace",
+    "remove",
+    "deepest",
+    "never",
+    "arrayize"
+  ],
+  "homepage": "https://js-utils.thalesrc.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thalesrc/thalesrc.git",
+    "directory": "libs/js-utils"
+  },
   "dependencies": {
     "@thalesrc/extra-ts-types": "^1.1.0",
     "tslib": "*"
   },
   "main": "./src/index.js",
-  "typings": "./src/index.d.ts"
+  "typings": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./index.cjs",
+      "default": "./index.js",
+      "types": "./index.d.ts"
+    },
+    "./compact": {
+      "require": "./compact.cjs",
+      "default": "./compact.js",
+      "types": "./compact.d.ts"
+    },
+    "./is-falsy": {
+      "require": "./is-falsy.cjs",
+      "default": "./is-falsy.js",
+      "types": "./is-falsy.d.ts"
+    },
+    "./is-truthy": {
+      "require": "./is-truthy.cjs",
+      "default": "./is-truthy.js",
+      "types": "./is-truthy.d.ts"
+    },
+    "./limit": {
+      "require": "./limit.cjs",
+      "default": "./limit.js",
+      "types": "./limit.d.ts"
+    },
+    "./open-promise": {
+      "require": "./open-promise.cjs",
+      "default": "./open-promise.js",
+      "types": "./open-promise.d.ts"
+    },
+    "./smart-map": {
+      "require": "./smart-map.cjs",
+      "default": "./smart-map.js",
+      "types": "./smart-map.d.ts"
+    },
+    "./unique-id": {
+      "require": "./unique-id.cjs",
+      "default": "./unique-id.js",
+      "types": "./unique-id.d.ts"
+    },
+    "./array": {
+      "require": "./array/index.cjs",
+      "default": "./array/index.js",
+      "types": "./array/index.d.ts"
+    },
+    "./array/proto/async-map": {
+      "require": "./array/proto/async-map.cjs",
+      "default": "./array/proto/async-map.js",
+      "types": "./array/proto/async-map.d.ts"
+    },
+    "./array/proto/compact": {
+      "require": "./array/proto/compact.cjs",
+      "default": "./array/proto/compact.js",
+      "types": "./array/proto/compact.d.ts"
+    },
+    "./array/proto/difference": {
+      "require": "./array/proto/difference.cjs",
+      "default": "./array/proto/difference.js",
+      "types": "./array/proto/difference.d.ts"
+    },
+    "./array/proto/find-by-key": {
+      "require": "./array/proto/find-by-key.cjs",
+      "default": "./array/proto/find-by-key.js",
+      "types": "./array/proto/find-by-key.d.ts"
+    },
+    "./array/proto/intersection": {
+      "require": "./array/proto/intersection.cjs",
+      "default": "./array/proto/intersection.js",
+      "types": "./array/proto/intersection.d.ts"
+    },
+    "./array/proto/limit": {
+      "require": "./array/proto/limit.cjs",
+      "default": "./array/proto/limit.js",
+      "types": "./array/proto/limit.d.ts"
+    },
+    "./array/proto/remove": {
+      "require": "./array/proto/remove.cjs",
+      "default": "./array/proto/remove.js",
+      "types": "./array/proto/remove.d.ts"
+    },
+    "./array/proto/replace": {
+      "require": "./array/proto/replace.cjs",
+      "default": "./array/proto/replace.js",
+      "types": "./array/proto/replace.d.ts"
+    },
+    "./array/proto/uniquify-by-key": {
+      "require": "./array/proto/uniquify-by-key.cjs",
+      "default": "./array/proto/uniquify-by-key.js",
+      "types": "./array/proto/uniquify-by-key.d.ts"
+    },
+    "./array/proto/uniquify": {
+      "require": "./array/proto/uniquify.cjs",
+      "default": "./array/proto/uniquify.js",
+      "types": "./array/proto/uniquify.d.ts"
+    },
+    "./array/static/arrayize": {
+      "require": "./array/static/arrayize.cjs",
+      "default": "./array/static/arrayize.js",
+      "types": "./array/static/arrayize.d.ts"
+    },
+    "./array/arrayize": {
+      "require": "./array/arrayize.cjs",
+      "default": "./array/arrayize.js",
+      "types": "./array/arrayize.d.ts"
+    },
+    "./array/async-map": {
+      "require": "./array/async-map.cjs",
+      "default": "./array/async-map.js",
+      "types": "./array/async-map.d.ts"
+    },
+    "./array/compact": {
+      "require": "./array/compact.cjs",
+      "default": "./array/compact.js",
+      "types": "./array/compact.d.ts"
+    },
+    "./array/difference": {
+      "require": "./array/difference.cjs",
+      "default": "./array/difference.js",
+      "types": "./array/difference.d.ts"
+    },
+    "./array/find-by-key": {
+      "require": "./array/find-by-key.cjs",
+      "default": "./array/find-by-key.js",
+      "types": "./array/find-by-key.d.ts"
+    },
+    "./array/intersection": {
+      "require": "./array/intersection.cjs",
+      "default": "./array/intersection.js",
+      "types": "./array/intersection.d.ts"
+    },
+    "./array/limit": {
+      "require": "./array/limit.cjs",
+      "default": "./array/limit.js",
+      "types": "./array/limit.d.ts"
+    },
+    "./array/remove": {
+      "require": "./array/remove.cjs",
+      "default": "./array/remove.js",
+      "types": "./array/remove.d.ts"
+    },
+    "./array/replace": {
+      "require": "./array/replace.cjs",
+      "default": "./array/replace.js",
+      "types": "./array/replace.d.ts"
+    },
+    "./array/uniquify-by-key": {
+      "require": "./array/uniquify-by-key.cjs",
+      "default": "./array/uniquify-by-key.js",
+      "types": "./array/uniquify-by-key.d.ts"
+    },
+    "./array/uniquify": {
+      "require": "./array/uniquify.cjs",
+      "default": "./array/uniquify.js",
+      "types": "./array/uniquify.d.ts"
+    },
+    "./boolean/static/is-falsy": {
+      "require": "./boolean/static/is-falsy.cjs",
+      "default": "./boolean/static/is-falsy.js",
+      "types": "./boolean/static/is-falsy.d.ts"
+    },
+    "./boolean/static/is-truthy": {
+      "require": "./boolean/static/is-truthy.cjs",
+      "default": "./boolean/static/is-truthy.js",
+      "types": "./boolean/static/is-truthy.d.ts"
+    },
+    "./function": {
+      "require": "./function/index.cjs",
+      "default": "./function/index.js",
+      "types": "./function/index.d.ts"
+    },
+    "./function/proto/debounce": {
+      "require": "./function/proto/debounce.cjs",
+      "default": "./function/proto/debounce.js",
+      "types": "./function/proto/debounce.d.ts"
+    },
+    "./function/static/defer": {
+      "require": "./function/static/defer.cjs",
+      "default": "./function/static/defer.js",
+      "types": "./function/static/defer.d.ts"
+    },
+    "./function/static/noop": {
+      "require": "./function/static/noop.cjs",
+      "default": "./function/static/noop.js",
+      "types": "./function/static/noop.d.ts"
+    },
+    "./function/static/of": {
+      "require": "./function/static/of.cjs",
+      "default": "./function/static/of.js",
+      "types": "./function/static/of.d.ts"
+    },
+    "./function/debounce": {
+      "require": "./function/debounce.cjs",
+      "default": "./function/debounce.js",
+      "types": "./function/debounce.d.ts"
+    },
+    "./function/defer": {
+      "require": "./function/defer.cjs",
+      "default": "./function/defer.js",
+      "types": "./function/defer.d.ts"
+    },
+    "./function/noop": {
+      "require": "./function/noop.cjs",
+      "default": "./function/noop.js",
+      "types": "./function/noop.d.ts"
+    },
+    "./function/of": {
+      "require": "./function/of.cjs",
+      "default": "./function/of.js",
+      "types": "./function/of.d.ts"
+    },
+    "./map": {
+      "require": "./map/index.cjs",
+      "default": "./map/index.js",
+      "types": "./map/index.d.ts"
+    },
+    "./map/merge": {
+      "require": "./map/merge.cjs",
+      "default": "./map/merge.js",
+      "types": "./map/merge.d.ts"
+    },
+    "./math": {
+      "require": "./math/index.cjs",
+      "default": "./math/index.js",
+      "types": "./math/index.d.ts"
+    },
+    "./math/static/min-max": {
+      "require": "./math/static/min-max.cjs",
+      "default": "./math/static/min-max.js",
+      "types": "./math/static/min-max.d.ts"
+    },
+    "./math/min-max": {
+      "require": "./math/min-max.cjs",
+      "default": "./math/min-max.js",
+      "types": "./math/min-max.d.ts"
+    },
+    "./object": {
+      "require": "./object/index.cjs",
+      "default": "./object/index.js",
+      "types": "./object/index.d.ts"
+    },
+    "./object/static/clone": {
+      "require": "./object/static/clone.cjs",
+      "default": "./object/static/clone.js",
+      "types": "./object/static/clone.d.ts"
+    },
+    "./object/static/compact": {
+      "require": "./object/static/compact.cjs",
+      "default": "./object/static/compact.js",
+      "types": "./object/static/compact.d.ts"
+    },
+    "./object/static/deepest": {
+      "require": "./object/static/deepest.cjs",
+      "default": "./object/static/deepest.js",
+      "types": "./object/static/deepest.d.ts"
+    },
+    "./object/clone": {
+      "require": "./object/clone.cjs",
+      "default": "./object/clone.js",
+      "types": "./object/clone.d.ts"
+    },
+    "./object/compact": {
+      "require": "./object/compact.cjs",
+      "default": "./object/compact.js",
+      "types": "./object/compact.d.ts"
+    },
+    "./object/deepest": {
+      "require": "./object/deepest.cjs",
+      "default": "./object/deepest.js",
+      "types": "./object/deepest.d.ts"
+    },
+    "./promise": {
+      "require": "./promise/index.cjs",
+      "default": "./promise/index.js",
+      "types": "./promise/index.d.ts"
+    },
+    "./promise/proto/revert": {
+      "require": "./promise/proto/revert.cjs",
+      "default": "./promise/proto/revert.js",
+      "types": "./promise/proto/revert.d.ts"
+    },
+    "./promise/proto/try-catch": {
+      "require": "./promise/proto/try-catch.cjs",
+      "default": "./promise/proto/try-catch.js",
+      "types": "./promise/proto/try-catch.d.ts"
+    },
+    "./promise/static/never": {
+      "require": "./promise/static/never.cjs",
+      "default": "./promise/static/never.js",
+      "types": "./promise/static/never.d.ts"
+    },
+    "./promise/static/timeout": {
+      "require": "./promise/static/timeout.cjs",
+      "default": "./promise/static/timeout.js",
+      "types": "./promise/static/timeout.d.ts"
+    },
+    "./promise/static/try-one-by-one": {
+      "require": "./promise/static/try-one-by-one.cjs",
+      "default": "./promise/static/try-one-by-one.js",
+      "types": "./promise/static/try-one-by-one.d.ts"
+    },
+    "./promise/never": {
+      "require": "./promise/never.cjs",
+      "default": "./promise/never.js",
+      "types": "./promise/never.d.ts"
+    },
+    "./promise/promisify": {
+      "require": "./promise/promisify.cjs",
+      "default": "./promise/promisify.js",
+      "types": "./promise/promisify.d.ts"
+    },
+    "./promise/revert": {
+      "require": "./promise/revert.cjs",
+      "default": "./promise/revert.js",
+      "types": "./promise/revert.d.ts"
+    },
+    "./promise/timeout": {
+      "require": "./promise/timeout.cjs",
+      "default": "./promise/timeout.js",
+      "types": "./promise/timeout.d.ts"
+    },
+    "./promise/try-catch": {
+      "require": "./promise/try-catch.cjs",
+      "default": "./promise/try-catch.js",
+      "types": "./promise/try-catch.d.ts"
+    },
+    "./promise/try-one-by-one": {
+      "require": "./promise/try-one-by-one.cjs",
+      "default": "./promise/try-one-by-one.js",
+      "types": "./promise/try-one-by-one.d.ts"
+    },
+    "./set/proto/difference": {
+      "require": "./set/proto/difference.cjs",
+      "default": "./set/proto/difference.js",
+      "types": "./set/proto/difference.d.ts"
+    },
+    "./set/proto/intersection": {
+      "require": "./set/proto/intersection.cjs",
+      "default": "./set/proto/intersection.js",
+      "types": "./set/proto/intersection.d.ts"
+    },
+    "./string": {
+      "require": "./string/index.cjs",
+      "default": "./string/index.js",
+      "types": "./string/index.d.ts"
+    },
+    "./string/proto/limit": {
+      "require": "./string/proto/limit.cjs",
+      "default": "./string/proto/limit.js",
+      "types": "./string/proto/limit.d.ts"
+    },
+    "./string/limit": {
+      "require": "./string/limit.cjs",
+      "default": "./string/limit.js",
+      "types": "./string/limit.d.ts"
+    }
+  }
 }
