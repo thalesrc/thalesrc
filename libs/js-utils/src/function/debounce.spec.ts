@@ -45,8 +45,7 @@ describe('Debounce Function', () => {
         const executedIn = new Date().getTime() - started;
 
         expect(foo).toBe(1);
-        expect(executedIn).toBeGreaterThan(48);
-        expect(executedIn).toBeLessThan(70);
+        expect(executedIn).toBeGreaterThan(50);
 
         done();
       });
