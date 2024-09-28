@@ -9,6 +9,11 @@
       "implementation": "./src/fill-package-json/executor",
       "schema": "./src/fill-package-json/schema.json",
       "description": "fill-package-json executor"
+    },
+    "ts-builder": {
+      "implementation": "./src/ts-builder/executor",
+      "schema": "./src/ts-builder/schema.json",
+      "description": "Builds typescript files"
     }
   }
 }

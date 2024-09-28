@@ -25,3 +25,4 @@ gulp.task('ts:commonjs', function () {
     .pipe(rename({ extname: '.cjs' }))
     .pipe(gulp.dest(outputPath));
 });
+

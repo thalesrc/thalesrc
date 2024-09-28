@@ -62,6 +62,13 @@
         "command": "npm publish --access public",
         "cwd": "dist/libs/js-utils"
       }
+    },
+    "foo": {
+      "executor": "@thalesrc/nx-utils:ts-builder",
+      "options": {
+        "tsConfig": "libs/js-utils/tsconfig.json",
+        "outputPath": "dist/libs/js-utils"
+      }
     }
   }
 }

@@ -1,13 +1,17 @@
 {
   "name": "@thalesrc/nx-utils",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "dependencies": {
+    "@nx/devkit": "*",
+    "gulp": "*",
+    "gulp-typescript": "*",
+    "gulp-rename": "*",
+    "gulp-sourcemaps": "*",
     "sharp": "*",
     "tslib": "*"
   },
   "type": "commonjs",
   "main": "./src/index.js",
   "typings": "./src/index.d.ts",
-  "private": true,
   "executors": "./executors.json"
 }
