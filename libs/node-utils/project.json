@@ -12,7 +12,7 @@
         "outputPath": "dist/libs/node-utils",
         "main": "libs/node-utils/src/index.ts",
         "tsConfig": "libs/node-utils/tsconfig.lib.json",
-        "assets": ["libs/node-utils/*.md"]
+        "assets": ["libs/node-utils/*.md", "libs/node-utils/LICENSE"]
       }
     },
     "test": {

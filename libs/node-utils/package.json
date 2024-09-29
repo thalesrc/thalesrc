@@ -1,6 +1,14 @@
 {
   "name": "@thalesrc/node-utils",
   "version": "0.0.0",
+  "description": "Utility functions for nodejs development",
+  "keywords": ["node", "utils", "ensure", "directory"],
+  "homepage": "https://node-utils.thalesrc.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thalesrc/thalesrc.git",
+    "directory": "libs/node-utils"
+  },
   "dependencies": {
     "tslib": "*"
   },
