@@ -10,7 +10,7 @@
     "directory": "libs/node-utils"
   },
   "bin": {
-    "ensureDir": "./bin/ensureDir.js"
+    "nu": "./cli.js"
   },
   "dependencies": {
     "tslib": "*",
