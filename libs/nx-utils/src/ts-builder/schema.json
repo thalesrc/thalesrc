@@ -1,9 +1,28 @@
 {
-  "$schema": "https://json-schema.org/schema",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "version": 2,
-  "title": "TsBuilder executor",
-  "description": "",
+  "title": "TsBuilderExecutorSchema",
   "type": "object",
-  "properties": {},
+  "properties": {
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of files to compile\n\nPaths are relative to the project root",
+      "default": ["src/**/*.ts", "!src/**/*.spec.ts"]
+    },
+    "outputPath": {
+      "type": "string",
+      "description": "Destination path relative to the workspace root",
+      "default": "dist"
+    },
+    "tsConfigPath": {
+      "type": "string",
+      "description": "Path to the tsconfig file\n\nStart with './' or '../' to indicate a relative path, otherwise it will be considered an absolute path relative to the root of the workspace",
+      "default": "tsconfig.json"
+    }
+  },
+  "additionalProperties": false,
   "required": []
 }

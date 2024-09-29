@@ -1,30 +1,62 @@
 import { PromiseExecutor } from '@nx/devkit';
 import { TsBuilderExecutorSchema } from './schema';
-import { exec } from 'child_process';
-import { OpenPromise } from '@thalesrc/js-utils';
+import * as gulp from 'gulp';
+import * as ts from 'gulp-typescript';
+import * as sourcemaps from 'gulp-sourcemaps';
+import * as rename from 'gulp-rename';
+
+function promisifyStream(stream: NodeJS.ReadableStream) {
+  return new Promise((resolve, reject) => {
+    stream.on('end', resolve);
+    stream.on('error', reject);
+  });
+}
 
 const runExecutor: PromiseExecutor<TsBuilderExecutorSchema> = async (
   {
-    tsConfigPath = 'tsconfig.json',
+    files = ['src/**/*.ts', '!src/**/*.spec.ts'],
+    tsConfigPath = './tsconfig.json',
+    outputPath = 'dist',
   },
-  { projectName, projectsConfigurations: {
+  { projectName, root: workspaceRoot, projectsConfigurations: {
     projects: {
       [projectName]: { root }
     }
   } }
 ) => {
-  const promise = new OpenPromise<void>();
-  const normalizedTsConfigPath = tsConfigPath.startsWith('.') ? `${root}/${tsConfigPath}` : tsConfigPath;
-  const ch = exec(`tsc -p ${normalizedTsConfigPath}`, { }, (err, stdout, stderr) => {
-    console.log(err, stdout, stderr);
-  });
+  const normalizedTsConfigPath = tsConfigPath.startsWith('.') ? `${root}/${tsConfigPath}` : `${workspaceRoot}/${tsConfigPath}`;
 
-  ch.on('exit', (code) => {
-    console.log('Exit code:', code);
-    promise.resolve();
-  });
+  function getFileStream() {
+    return gulp.src(files.map(file => file.startsWith('!') ? `!${root}/${file.substring(1)}` : `${root}/${file}`));
+  }
 
-  await promise;
+  function getDestStream() {
+    return gulp.dest(`${workspaceRoot}/${outputPath}`);
+  }
+
+  function defaultTask() {
+    return promisifyStream(getFileStream()
+      .pipe(sourcemaps.init())
+      .pipe(ts.createProject(normalizedTsConfigPath, {
+        module: 'ESNext',
+        declaration: true,
+      })())
+      .pipe(sourcemaps.write('.'))
+      .pipe(getDestStream()));
+  }
+
+  function commonjsTask() {
+    return promisifyStream(getFileStream()
+      .pipe(ts.createProject(normalizedTsConfigPath, {
+        module: 'CommonJS',
+        declaration: false,
+      })())
+      .pipe(rename({ extname: '.cjs' }))
+      .pipe(getDestStream()));
+  }
+
+  // Run tasks
+  await Promise.all([defaultTask(), commonjsTask()]);
 
   return {
     success: true,
@@ -32,24 +64,5 @@ const runExecutor: PromiseExecutor<TsBuilderExecutorSchema> = async (
 };
 
 export default runExecutor;
-
-// gulp.task('ts:default', function () {
-//   return gulp.src(files)
-//     .pipe(sourcemaps.init())
-//     .pipe(ts.createProject(tsConfigPath, {
-//       declaration: true
-//     })())
-//     .pipe(sourcemaps.write('.'))
-//     .pipe(gulp.dest(outputPath));
-// });
-
-// gulp.task('ts:commonjs', function () {
-//   return gulp.src(files)
-//     .pipe(ts.createProject(tsConfigPath, {
-//       module: 'commonjs'
-//     })())
-//     .pipe(rename({ extname: '.cjs' }))
-//     .pipe(gulp.dest(outputPath));
-// });
 
 
