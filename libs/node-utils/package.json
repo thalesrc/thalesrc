@@ -9,8 +9,12 @@
     "url": "git+https://github.com/thalesrc/thalesrc.git",
     "directory": "libs/node-utils"
   },
+  "bin": {
+    "ensureDir": "./bin/ensureDir.js"
+  },
   "dependencies": {
-    "tslib": "*"
+    "tslib": "*",
+    "yargs": "*"
   },
   "main": "./src/index.js",
   "typings": "./src/index.d.ts"
