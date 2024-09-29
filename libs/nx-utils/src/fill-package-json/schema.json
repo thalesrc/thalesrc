@@ -1,6 +1,5 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "version": 2,
   "title": "FillPackageJson executor",
   "description": "",
   "type": "object",
@@ -13,6 +12,63 @@
       "type": "string",
       "description": "The version of the package.",
       "nullable": true
+    },
+    "populateExports": {
+      "oneOf": [
+        {
+          "const": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "exports": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["require", "default", "import", "node", "types"]
+              },
+              "default": ["require", "default", "import", "node", "types"]
+            },
+            "exportsTemplateProperty": {
+              "type": "string",
+              "default": "_exports"
+            },
+            "barrelFileName": {
+              "type": "string",
+              "default": "index",
+              "nullable": true
+            },
+            "templates": {
+              "type": "object",
+              "properties": {
+                "require": {
+                  "type": "string",
+                  "default": "<path>.cjs"
+                },
+                "default": {
+                  "type": "string",
+                  "default": "<path>.js"
+                },
+                "import": {
+                  "type": "string",
+                  "default": "<path>.mjs"
+                },
+                "node": {
+                  "type": "string",
+                  "default": "<path>.cjs"
+                },
+                "types": {
+                  "type": "string",
+                  "default": "<path>.d.ts"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "required": []
+        }
+      ],
+      "default": false
     }
   },
   "required": ["outputPath"]

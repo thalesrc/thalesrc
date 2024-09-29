@@ -5,7 +5,7 @@ import { ensureDirectory } from '@thalesrc/node-utils';
 import { writeFile } from 'fs/promises';
 
 const runExecutor: PromiseExecutor<FillPackageJsonExecutorSchema> = async (
-  { outputPath, packageVersion },
+  { outputPath, packageVersion, populateExports },
   {
     projectName,
     projectsConfigurations: {
@@ -45,6 +45,42 @@ const runExecutor: PromiseExecutor<FillPackageJsonExecutorSchema> = async (
   if (packageVersion) {
     packagePackageJson.version = packageVersion;
     console.log('Version is set to', packageVersion);
+  }
+
+  if (populateExports) {
+    const {
+      exports = ['default', 'import', 'node', 'require', 'types'],
+      exportsTemplateProperty = '_exports',
+      barrelFileName = 'index',
+      templates: configTemplates = {}
+    } = populateExports;
+    const templates = Object.assign({
+      require: '<path>.cjs',
+      default: '<path>.js',
+      import: '<path>.mjs',
+      node: '<path>.cjs',
+      types: '<path>.d.ts',
+    }, configTemplates);
+    const exportsObject = {
+      '.': exports.reduce((acc, field) => (acc[field] = `./${templates[field].replace('<path>', barrelFileName)}`, acc), {})
+    };
+
+    for (const exp of packagePackageJson[exportsTemplateProperty] ?? []) {
+      exportsObject[`./${exp}`.replace(/\/$/, '')] = exports.reduce((acc, field) => {
+        acc[field] = `./${templates[field].replace('<path>', exp.endsWith('/') ? `${exp}${barrelFileName}` : exp)}`;
+
+        return acc;
+      }, {});
+    }
+
+    packagePackageJson.exports = {
+      ...packagePackageJson.exports ?? {},
+      ...exportsObject
+    };
+
+    delete packagePackageJson[exportsTemplateProperty];
+
+    console.log('Exports are populated');
   }
 
   // Prepare output path
