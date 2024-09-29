@@ -38,7 +38,7 @@
     "@thalesrc/extra-ts-types": "^1.1.0",
     "tslib": "*"
   },
-  "main": "./src/index.js",
+  "main": "./src/index.cjs",
   "typings": "./src/index.d.ts",
   "exports": {
     ".": {
