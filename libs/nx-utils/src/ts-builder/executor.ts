@@ -41,8 +41,8 @@ const runExecutor: PromiseExecutor<TsBuilderExecutorSchema> = async (
         module: 'ESNext',
         declaration: true,
       })())
-      .pipe(rename({ extname: '.mjs' }))
       .pipe(sourcemaps.write('.'))
+      .pipe(rename({ extname: '.mjs' }))
       .pipe(getDestStream()));
   }
 
