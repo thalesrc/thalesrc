@@ -43,6 +43,39 @@
       "options": {
         "jestConfig": "libs/nx-utils/jest.config.ts"
       }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run nx-utils:publish/prepare",
+          "nx run nx-utils:publish/to-npm"
+        ],
+        "parallel": false
+      }
+    },
+    "publish/prepare": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run nx-utils:build",
+          "nx run nx-utils:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
+        ],
+        "parallel": false
+      }
+    },
+    "publish/prepare/fill-package-json": {
+      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "options": {
+        "outputPath": "dist/libs/nx-utils"
+      }
+    },
+    "publish/to-npm": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm publish --access public",
+        "cwd": "dist/libs/js-utils"
+      }
     }
   }
 }
