@@ -8,7 +8,7 @@ import { config, parse } from 'dotenv';
 import { glob } from 'glob';
 //@ts-expect-error this import shows error but works anyway
 import * as regexParser from 'regex-parser';
-import * as sharp from 'sharp';
+import sharp from 'sharp';
 
 import { ensureDirectory } from "@thalesrc/node-utils";
 

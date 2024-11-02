@@ -39,6 +39,7 @@
     "tslib": "*"
   },
   "main": "./index.cjs",
+  "module": "./index.js",
   "typings": "./index.d.ts",
   "_exports": [
     "compact",

@@ -16,8 +16,8 @@ const runExecutor: PromiseExecutor<FillPackageJsonExecutorSchema> = async (
   }
 ) => {
   // Read package.json files
-  const [rootErr, rootPackageJson] = await tryCatch(import(`package.json`));
-  const [packageErr, packagePackageJson] = await tryCatch(import(`${root}/package.json`));
+  const [rootErr, rootPackageJson] = await tryCatch(import(`package.json`).then((module) => module.default));
+  const [packageErr, packagePackageJson] = await tryCatch(import(`${root}/package.json`).then((module) => module.default));
 
   if (packageErr || rootErr) {
     console.error('Error reading package.json');
