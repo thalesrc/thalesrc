@@ -52,7 +52,7 @@
         "outputPath": "dist/libs/js-utils",
         "populateExports": {
           "templates": {
-            "import": "<path>.js"
+            "default": "<path>.mjs"
           }
         }
       }

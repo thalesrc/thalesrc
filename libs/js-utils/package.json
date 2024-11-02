@@ -38,8 +38,9 @@
     "@thalesrc/extra-ts-types": "^1.1.0",
     "tslib": "*"
   },
+  "type": "module",
+  "module": "./index.mjs",
   "main": "./index.cjs",
-  "module": "./index.js",
   "typings": "./index.d.ts",
   "_exports": [
     "compact",
