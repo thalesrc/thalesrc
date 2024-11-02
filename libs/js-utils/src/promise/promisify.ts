@@ -4,6 +4,6 @@
  * @param promiseOrValue The promise or value to convert to a promise
  * @returns The promise of the given promise or value
  */
-export function promisify<T>(promiseOrValue: T | Promise<T>): Promise<T> {
-  return Promise.resolve().then(() => promiseOrValue);
+export async function promisify<T>(promiseOrValue: T | Promise<T>): Promise<T> {
+  return await promiseOrValue;
 }

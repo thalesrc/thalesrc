@@ -281,6 +281,15 @@ deepest(c, 'x'); // {x: null} (a)
 
 ### Promise
 
+#### [Chain](https://thalesrc.github.io/js-utils/modules/_promise_chain_.html)
+Chains promises in a sequential order
+
+```typescript
+import { chain } from '@thalesrc/js-utils/promise';
+
+const lastResult = await chain([() => getUserDetails(), ({photoUrl}) => getUserPhoto(photoUrl)]);
+```
+
 #### [Never](https://thalesrc.github.io/js-utils/modules/_promise_never_.html)
 A promise which never resolves
 
