@@ -50,11 +50,7 @@
       "executor": "@thalesrc/nx-utils:fill-package-json",
       "options": {
         "outputPath": "dist/libs/js-utils",
-        "populateExports": {
-          "templates": {
-            "default": "<path>.mjs"
-          }
-        }
+        "populateExports": {}
       }
     },
     "publish/to-npm": {

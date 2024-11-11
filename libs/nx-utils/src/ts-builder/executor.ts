@@ -39,10 +39,9 @@ const runExecutor: PromiseExecutor<TsBuilderExecutorSchema> = async (
       .pipe(sourcemaps.init())
       .pipe(ts.createProject(normalizedTsConfigPath, {
         module: 'ESNext',
-        declaration: true,
+        declaration: true
       })())
       .pipe(sourcemaps.write('.'))
-      .pipe(rename({ extname: '.mjs' }))
       .pipe(getDestStream()));
   }
 
@@ -56,8 +55,17 @@ const runExecutor: PromiseExecutor<TsBuilderExecutorSchema> = async (
       .pipe(getDestStream()));
   }
 
+  function renameDefault() {
+    return promisifyStream(
+      gulp.src(`${workspaceRoot}/${outputPath}/**/*.js`)
+        .pipe(rename({ extname: '.mjs' }))
+        .pipe(gulp.dest(`${workspaceRoot}/${outputPath}`))
+    );
+  }
+
   // Run tasks
   await Promise.all([defaultTask(), commonjsTask()]);
+  await renameDefault();
 
   return {
     success: true,
