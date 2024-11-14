@@ -1,4 +1,4 @@
-import { uniquifyByKey } from '../uniquify-by-key';
+import { uniquifyByKey } from '@thalesrc/js-utils/array/uniquify-by-key';
 
 declare global {
   export interface Array<T> {

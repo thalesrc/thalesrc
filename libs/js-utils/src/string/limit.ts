@@ -1,4 +1,4 @@
-import { limit as arrLimit } from '../array/limit';
+import { limit as arrLimit } from '@thalesrc/js-utils/array/limit';
 
 /**
  * #### Limit

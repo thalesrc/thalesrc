@@ -1,5 +1,5 @@
-import { limit as strLimit } from './string';
-import { limit as arrLimit } from './array';
+import { limit as strLimit } from '@thalesrc/js-utils/string/limit';
+import { limit as arrLimit } from '@thalesrc/js-utils/array/limit';
 
 export function limit<T = any>(array: T[], count: number): T[];
 export function limit(str: string, count: number): string;

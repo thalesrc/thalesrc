@@ -1,4 +1,4 @@
-import { clone } from '../clone';
+import { clone } from '@thalesrc/js-utils/object/clone';
 
 declare global {
   export interface ObjectConstructor {

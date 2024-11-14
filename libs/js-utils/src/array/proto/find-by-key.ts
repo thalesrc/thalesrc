@@ -1,4 +1,4 @@
-import { findByKey } from '../find-by-key';
+import { findByKey } from '@thalesrc/js-utils/array/find-by-key';
 
 declare global {
   export interface Array<T> {

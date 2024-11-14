@@ -1,4 +1,4 @@
-import { isTruthy } from '../is-truthy';
+import { isTruthy } from '@thalesrc/js-utils/is-truthy';
 
 /**
  * #### Filters falsy values of the given array

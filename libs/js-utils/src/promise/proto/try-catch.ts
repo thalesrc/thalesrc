@@ -1,4 +1,4 @@
-import { tryCatch } from '../try-catch';
+import { tryCatch } from '@thalesrc/js-utils/promise/try-catch';
 
 declare global {
   export interface Promise<T> {

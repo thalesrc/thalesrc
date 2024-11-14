@@ -1,10 +1,11 @@
+import { exec } from 'child_process';
 import { PromiseExecutor, logger } from '@nx/devkit';
 import { chain } from '@thalesrc/js-utils/promise/chain';
 import { tryCatch } from '@thalesrc/js-utils/promise/try-catch';
 import { arrayize } from '@thalesrc/js-utils/array/arrayize';
 import { never } from '@thalesrc/js-utils/promise/never';
+
 import { RunParallelExecutorSchema } from './schema';
-import { exec } from 'child_process';
 
 const runExecutor: PromiseExecutor<RunParallelExecutorSchema> = async (
   { commands, cwd: defaultCwd },

@@ -1,5 +1,6 @@
-import { Tail } from '@thalesrc/extra-ts-types';
-import { replace, ReplaceItemsOptions, ReplaceByMapOptions } from '../replace';
+import type { Tail } from '@thalesrc/extra-ts-types';
+
+import { replace, ReplaceItemsOptions, ReplaceByMapOptions } from '@thalesrc/js-utils/array/replace';
 
 declare global {
   export interface Array<T> {

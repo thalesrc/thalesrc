@@ -1,4 +1,4 @@
-import { never, NEVER } from '../never';
+import { never, NEVER } from '@thalesrc/js-utils/promise/never';
 
 declare global {
   export interface PromiseConstructor {

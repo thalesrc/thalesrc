@@ -1,5 +1,5 @@
-import { compact as objCompact } from './object';
-import { compact as arrCompact } from './array';
+import { compact as objCompact } from '@thalesrc/js-utils/object/compact';
+import { compact as arrCompact } from '@thalesrc/js-utils/array/compact';
 
 export function compact<T = any>(array: T[]): T[];
 export function compact<T extends Object>(object: T): Partial<T>;

@@ -1,4 +1,4 @@
-import { of } from '../of';
+import { of } from '@thalesrc/js-utils/function/of';
 
 declare global {
   export interface FunctionConstructor {

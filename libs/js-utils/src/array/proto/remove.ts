@@ -1,6 +1,6 @@
 import type { Tail } from '@thalesrc/extra-ts-types';
 
-import { remove } from '../remove';
+import { remove } from '@thalesrc/js-utils/array/remove';
 
 type FuncType<T> = typeof remove<T>;
 type FuncArgs<T> = Parameters<FuncType<T>>;

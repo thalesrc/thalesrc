@@ -1,4 +1,4 @@
-import { isTruthy } from '../../is-truthy';
+import { isTruthy } from '@thalesrc/js-utils/is-truthy';
 
 declare global {
   export interface BooleanConstructor {

@@ -1,4 +1,4 @@
-import { intersection, Inclusion } from '../../array/intersection';
+import { intersection, Inclusion } from '@thalesrc/js-utils/array/intersection';
 
 declare global {
   export interface Set<T> {

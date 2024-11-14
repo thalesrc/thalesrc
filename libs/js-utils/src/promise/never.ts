@@ -1,4 +1,4 @@
-import { noop } from '../function/noop';
+import { noop } from '@thalesrc/js-utils/function/noop';
 
 /**
  * A promise which never resolves

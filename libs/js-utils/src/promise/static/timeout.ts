@@ -1,4 +1,4 @@
-import { timeout, PromiseTimeoutFunction } from '../timeout';
+import { timeout, PromiseTimeoutFunction } from '@thalesrc/js-utils/promise/timeout';
 
 declare global {
   export interface PromiseConstructor {

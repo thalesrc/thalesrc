@@ -1,4 +1,4 @@
-import { limit } from '../limit';
+import { limit } from '@thalesrc/js-utils/array/limit';
 
 declare global {
   export interface Array<T> {

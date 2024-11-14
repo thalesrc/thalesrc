@@ -1,4 +1,4 @@
-import { minMax } from '../min-max';
+import { minMax } from '@thalesrc/js-utils/math/min-max';
 
 declare global {
   export interface Math {

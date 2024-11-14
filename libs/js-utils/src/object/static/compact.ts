@@ -1,4 +1,4 @@
-import { compact } from '../compact';
+import { compact } from '@thalesrc/js-utils/object/compact';
 
 declare global {
   export interface ObjectConstructor {

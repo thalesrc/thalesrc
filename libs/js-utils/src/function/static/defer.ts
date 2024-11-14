@@ -1,4 +1,4 @@
-import { defer } from '../defer';
+import { defer } from '@thalesrc/js-utils/function/defer';
 
 declare global {
   export interface FunctionConstructor {

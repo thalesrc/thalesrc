@@ -1,6 +1,6 @@
 import type { Tail } from '@thalesrc/extra-ts-types';
 
-import { limit } from '../limit';
+import { limit } from '@thalesrc/js-utils/string/limit';
 
 type FuncType = typeof limit;
 type FuncArgs = Parameters<FuncType>;

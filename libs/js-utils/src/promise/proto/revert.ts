@@ -1,4 +1,4 @@
-import { revert } from '../revert';
+import { revert } from '@thalesrc/js-utils/promise/revert';
 
 declare global {
   export interface Promise<T> {

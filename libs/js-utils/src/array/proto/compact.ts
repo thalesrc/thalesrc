@@ -1,4 +1,4 @@
-import { compact } from '../compact';
+import { compact } from '@thalesrc/js-utils/array/compact';
 
 declare global {
   export interface Array<T> {

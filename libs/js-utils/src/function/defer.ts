@@ -1,4 +1,4 @@
-import { noop } from './noop';
+import { noop } from '@thalesrc/js-utils/function/noop';
 
 /**
  * #### Delays the execution of the passed function to increase the render performance

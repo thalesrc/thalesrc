@@ -1,4 +1,4 @@
-import { asyncMap } from '../async-map';
+import { asyncMap } from '@thalesrc/js-utils/array/async-map';
 
 declare global {
   export interface Array<T> {

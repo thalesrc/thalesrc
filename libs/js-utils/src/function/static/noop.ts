@@ -1,4 +1,4 @@
-import { noop } from '../noop';
+import { noop } from '@thalesrc/js-utils/function/noop';
 
 declare global {
   export interface FunctionConstructor {

@@ -1,4 +1,4 @@
-import { tryOneByOne } from '../try-one-by-one';
+import { tryOneByOne } from '@thalesrc/js-utils/promise/try-one-by-one';
 
 declare global {
   export interface PromiseConstructor {

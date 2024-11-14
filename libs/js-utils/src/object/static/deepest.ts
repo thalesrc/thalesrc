@@ -1,4 +1,4 @@
-import { deepest } from '../deepest';
+import { deepest } from '@thalesrc/js-utils/object/deepest';
 
 declare global {
   export interface ObjectConstructor {

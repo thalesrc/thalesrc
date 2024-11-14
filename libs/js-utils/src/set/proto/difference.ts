@@ -1,4 +1,4 @@
-import { difference, Substraction } from '../../array/difference';
+import { difference, Substraction } from '@thalesrc/js-utils/array/difference';
 
 declare global {
   export interface Set<T> {

@@ -1,4 +1,4 @@
-import { uniquify } from '../uniquify';
+import { uniquify } from '@thalesrc/js-utils/array/uniquify';
 
 declare global {
   export interface Array<T> {
