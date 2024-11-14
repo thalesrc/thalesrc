@@ -62,6 +62,7 @@
     "array/proto/uniquify-by-key",
     "array/proto/uniquify",
     "array/static/arrayize",
+    "array/arrayize",
     "array/async-map",
     "array/compact",
     "array/difference",
