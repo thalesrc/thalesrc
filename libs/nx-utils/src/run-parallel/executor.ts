@@ -3,6 +3,7 @@ import { chain } from '@thalesrc/js-utils/promise/chain';
 import { tryCatch } from '@thalesrc/js-utils/promise/try-catch';
 import { RunParallelExecutorSchema } from './schema';
 import { exec } from 'child_process';
+import { arrayize } from '@thalesrc/js-utils/array/arrayize';
 
 const runExecutor: PromiseExecutor<RunParallelExecutorSchema> = async (
   { commands, cwd: defaultCwd },
@@ -20,7 +21,7 @@ const runExecutor: PromiseExecutor<RunParallelExecutorSchema> = async (
     child.stdout.on('data', (data) => {
       logger.log(data.toString());
 
-      if (readyWhen && data.toString().includes(readyWhen)) {
+      if (readyWhen && arrayize(readyWhen).some(defining => data.toString().includes(defining))) {
         if (stopWhenReady) {
           child.kill();
         }
