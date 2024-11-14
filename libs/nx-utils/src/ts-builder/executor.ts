@@ -51,19 +51,11 @@ const runExecutor: PromiseExecutor<TsBuilderExecutorSchema> = async (
         module: 'CommonJS',
         declaration: false,
       })())
+      .pipe(rename({ extname: '.cjs' }))
       .pipe(getDestStream()));
   }
 
-  function renameDefault() {
-    return promisifyStream(
-      gulp.src(`${workspaceRoot}/${outputPath}/**/*.js`)
-        .pipe(rename({ extname: '.mjs' }))
-        .pipe(gulp.dest(`${workspaceRoot}/${outputPath}`))
-    );
-  }
-
   await defaultTask();
-  await renameDefault();
   await commonjsTask();
 
   return {

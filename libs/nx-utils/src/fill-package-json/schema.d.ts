@@ -33,22 +33,22 @@ export interface FillPackageJsonExecutorSchema {
 
     templates?: {
       /**
-       * @default '<path>.js'
+       * @default '<path>.cjs'
        */
       require?: string;
 
       /**
-       * @default '<path>.mjs'
+       * @default '<path>.cjs'
        */
       default?: string;
 
       /**
-       * @default '<path>.mjs'
+       * @default '<path>.js'
        */
       import?: string;
 
       /**
-       * @default '<path>.js'
+       * @default '<path>.cjs'
        */
       node?: string;
 

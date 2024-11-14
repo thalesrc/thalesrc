@@ -55,10 +55,10 @@ const runExecutor: PromiseExecutor<FillPackageJsonExecutorSchema> = async (
       templates: configTemplates = {}
     } = populateExports;
     const templates = Object.assign({
-      require: '<path>.js',
-      default: '<path>.mjs',
-      import: '<path>.mjs',
-      node: '<path>.js',
+      require: '<path>.cjs',
+      default: '<path>.cjs',
+      import: '<path>.js',
+      node: '<path>.cjs',
       types: '<path>.d.ts',
     }, configTemplates);
     const exportsObject = {
