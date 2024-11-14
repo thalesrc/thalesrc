@@ -51,7 +51,6 @@ const runExecutor: PromiseExecutor<TsBuilderExecutorSchema> = async (
         module: 'CommonJS',
         declaration: false,
       })())
-      .pipe(rename({ extname: '.cjs' }))
       .pipe(getDestStream()));
   }
 
@@ -63,9 +62,9 @@ const runExecutor: PromiseExecutor<TsBuilderExecutorSchema> = async (
     );
   }
 
-  // Run tasks
-  await Promise.all([defaultTask(), commonjsTask()]);
+  await defaultTask();
   await renameDefault();
+  await commonjsTask();
 
   return {
     success: true,
