@@ -36,6 +36,13 @@
     "cwd": {
       "type": "string",
       "description": "The default directory to run the commands in"
+    },
+    "aliases": {
+      "type": "object",
+      "description": "The strings to replace in the commands with the format `<<key>>`",
+      "additionalProperties": {
+        "type": "string"
+      }
     }
   },
   "required": ["commands"],
