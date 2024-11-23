@@ -30,4 +30,9 @@ export interface RunParallelExecutorSchema {
    * The default directory to run the commands in
    */
   cwd?: string;
+
+  /**
+   * The strings to replace in the commands with the format `<<key>>`
+   */
+  aliases?: Record<string, string>;
 }

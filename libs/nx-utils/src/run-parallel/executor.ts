@@ -7,12 +7,16 @@ import { never } from '@thalesrc/js-utils/promise/never';
 
 import { RunParallelExecutorSchema } from './schema';
 
+function replaceCommandString(command: string, aliases: Record<string, string>) {
+  return Object.entries(aliases).reduce((command, [alias, value]) => command.replace(new RegExp(`<<${alias}>>`, 'g'), value), command);
+}
+
 const runExecutor: PromiseExecutor<RunParallelExecutorSchema> = async (
-  { commands, cwd: defaultCwd },
+  { commands, cwd: defaultCwd, aliases = {} },
   { projectName, projectsConfigurations: { projects: { [projectName]: projectConfig } } }
 ) => {
   const cmds = commands.map(({ command, cwd, readyWhen, stopWhenReady }) => () => new Promise<void>((resolve, reject) => {
-    const child = exec(command, { ...(!cwd || !defaultCwd ? null : { cwd: cwd ?? defaultCwd }) }, (error) => {
+    const child = exec(replaceCommandString(command, aliases), { ...(!cwd || !defaultCwd ? null : { cwd: cwd ?? defaultCwd }) }, (error) => {
       if (error) {
         reject(error);
       }
