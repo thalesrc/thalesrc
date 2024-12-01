@@ -8,8 +8,14 @@
     "@thalesrc/rx-utils": "^1.0.0",
     "@thalesrc/ts-utils": "^1.0.0"
   },
-  "type": "commonjs",
-  "main": "./src/index.js",
-  "typings": "./src/index.d.ts",
-  "private": true
+  "type": "module",
+  "module": "./index.js",
+  "main": "./index.cjs",
+  "typings": "./index.d.ts",
+  "_exports": [
+    "reactive-storage",
+    "reactive-web-storage",
+    "reactive-web-local-storage",
+    "reactive-web-session-storage"
+  ]
 }

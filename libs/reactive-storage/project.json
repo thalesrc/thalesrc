@@ -6,13 +6,10 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@thalesrc/nx-utils:ts-builder",
       "options": {
-        "outputPath": "dist/libs/reactive-storage",
-        "main": "libs/reactive-storage/src/index.ts",
-        "tsConfig": "libs/reactive-storage/tsconfig.lib.json",
-        "assets": ["libs/reactive-storage/*.md"]
+        "tsConfigPath": "libs/reactive-storage/tsconfig.lib.json",
+        "outputPath": "dist/libs/reactive-storage"
       }
     },
     "test": {
@@ -20,6 +17,47 @@
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "libs/reactive-storage/jest.config.ts"
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run reactive-storage:publish/prepare",
+          "nx run reactive-storage:publish/to-npm"
+        ],
+        "parallel": false
+      }
+    },
+    "publish/prepare": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run reactive-storage:build",
+          "nx run reactive-storage:publish/prepare/copy",
+          "nx run reactive-storage:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
+        ]
+      }
+    },
+    "publish/prepare/copy": {
+      "executor": "@thalesrc/nx-utils:copy",
+      "options": {
+        "input": ["libs/reactive-storage/README.md", "libs/reactive-storage/LICENSE"],
+        "output": "dist/libs/reactive-storage"
+      }
+    },
+    "publish/prepare/fill-package-json": {
+      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "options": {
+        "outputPath": "dist/libs/reactive-storage",
+        "populateExports": {}
+      }
+    },
+    "publish/to-npm": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm publish --access public",
+        "cwd": "dist/libs/reactive-storage"
       }
     }
   }
