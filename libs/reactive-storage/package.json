@@ -4,7 +4,6 @@
   "dependencies": {
     "tslib": "*",
     "rxjs": "*",
-    "observable-to-async-generator": "*",
     "@thalesrc/js-utils": "^3.3.1",
     "@thalesrc/rx-utils": "^1.0.0",
     "@thalesrc/ts-utils": "^1.0.1"
