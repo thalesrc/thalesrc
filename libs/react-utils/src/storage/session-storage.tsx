@@ -16,6 +16,6 @@ export function SessionStorageContextProvider({ appName, children }: PropsWithCh
   </SessionStorageContext.Provider>;
 }
 
-export function useSessionStorage<T>(key: string, defaultValue?: T) {
-  return useStorage(SessionStorageContext, key, defaultValue);
+export function useSessionStorage<T>(storeName: string, key: string, defaultValue?: T) {
+  return useStorage(SessionStorageContext, storeName, key, defaultValue);
 }
