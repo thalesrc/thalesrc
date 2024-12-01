@@ -5,7 +5,7 @@
     "tslib": "*",
     "react": "*",
     "rxjs": "*",
-    "@thalesrc/reactive-storage": "^1.0.0"
+    "@thalesrc/reactive-storage": "^1.0.1"
   },
   "type": "module",
   "module": "./src/index.js",
@@ -16,6 +16,7 @@
     "hooks/subscribe.hook",
     "storage/",
     "storage/local-storage",
-    "storage/session-storage"
+    "storage/session-storage",
+    "storage/storage.hook"
   ]
 }

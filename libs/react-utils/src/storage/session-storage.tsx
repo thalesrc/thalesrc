@@ -2,9 +2,9 @@ import { createContext, PropsWithChildren } from "react";
 import { ReactiveWebSessionStorage } from "@thalesrc/reactive-storage/reactive-web-session-storage";
 import type { ReactiveWebStorage } from "@thalesrc/reactive-storage/reactive-web-storage";
 import { useConstant } from "@thalesrc/react-utils/hooks/constant.hook";
+import { useStorage } from "@thalesrc/react-utils/storage/storage.hook";
 
 import { StorageContextProps } from "./storage.type";
-import { useStorage } from "@thalesrc/react-utils/storage/storage.hook";
 
 export const SessionStorageContext = createContext<ReactiveWebStorage>(null!);
 

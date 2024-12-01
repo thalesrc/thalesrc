@@ -4,9 +4,9 @@
   "dependencies": {
     "tslib": "*",
     "rxjs": "*",
-    "@thalesrc/js-utils": "^3.3.0",
+    "@thalesrc/js-utils": "^3.3.1",
     "@thalesrc/rx-utils": "^1.0.0",
-    "@thalesrc/ts-utils": "^1.0.0"
+    "@thalesrc/ts-utils": "^1.0.1"
   },
   "type": "module",
   "module": "./index.js",
