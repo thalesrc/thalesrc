@@ -23,9 +23,10 @@
   "dependencies": {
     "dotenv": "^16.4.5",
     "glob": "^11.0.0",
+    "observable-to-async-generator": "^1.0.5",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "rxjs": "8.0.0-alpha.14",
+    "rxjs": "^7.8.1",
     "sharp": "^0.33.5",
     "tslib": "^2.3.0",
     "yargs": "^17.7.2"

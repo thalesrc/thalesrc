@@ -1,4 +1,5 @@
 import { Subject } from 'rxjs';
+import otag from "observable-to-async-generator";
 
 import { ReactiveStorage, ReactiveStorageChangeEvent } from "./reactive-storage";
 import { RegexParser } from './regex-parser';
@@ -31,8 +32,7 @@ export abstract class AbstractReactiveWebStorage<S extends string = string> exte
     ]));
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	protected [ReactiveStorage.Props.CHANGES] = (this.#changes$ as any)[Symbol.asyncIterator];
+	protected [ReactiveStorage.Props.CHANGES] = otag(this.#changes$) as any;
 
 	protected async [ReactiveStorage.Props.SET](storeName: S, value: unknown) {
     this.storage.setItem(`${this.appName}/${storeName}`, JSON.stringify(value));

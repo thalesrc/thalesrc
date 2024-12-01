@@ -5,7 +5,7 @@
     "tslib": "*",
     "react": "*",
     "rxjs": "*",
-    "@thalesrc/reactive-storage": "^1.0.2"
+    "@thalesrc/reactive-storage": "^1.0.3"
   },
   "type": "module",
   "module": "./src/index.js",
