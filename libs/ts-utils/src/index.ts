@@ -1,1 +1,1 @@
-
+export * from './fifo-promise';
