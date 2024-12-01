@@ -1,0 +1,21 @@
+{
+  "name": "@thalesrc/react-utils",
+  "version": "0.0.0",
+  "dependencies": {
+    "tslib": "*",
+    "react": "*",
+    "rxjs": "*",
+    "@thalesrc/reactive-storage": "^1.0.0"
+  },
+  "type": "module",
+  "module": "./src/index.js",
+  "typings": "./src/index.d.ts",
+  "_exports": [
+    "hooks/",
+    "hooks/constant.hook",
+    "hooks/subscribe.hook",
+    "storage/",
+    "storage/local-storage",
+    "storage/session-storage"
+  ]
+}

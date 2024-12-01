@@ -11,6 +11,64 @@
       "options": {
         "jestConfig": "libs/react-utils/jest.config.ts"
       }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["tsc -p libs/react-utils/tsconfig.lib.json"]
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run react-utils:publish/prepare",
+          "nx run react-utils:publish/to-npm"
+        ],
+        "parallel": false
+      }
+    },
+    "publish/prepare": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run react-utils:build",
+          "nx run react-utils:publish/prepare/copy",
+          "nx run react-utils:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
+        ]
+      }
+    },
+    "publish/prepare/copy": {
+      "executor": "@thalesrc/nx-utils:copy",
+      "options": {
+        "input": ["libs/react-utils/README.md", "libs/react-utils/LICENSE"],
+        "output": "dist/libs/react-utils"
+      }
+    },
+    "publish/prepare/fill-package-json": {
+      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "options": {
+        "outputPath": "dist/libs/react-utils",
+        "populateExports": {
+          "exports": [
+            "default",
+            "import",
+            "types"
+          ],
+          "templates": {
+            "types": "src/<path>.d.ts",
+            "default": "src/<path>.js",
+            "import": "src/<path>.js"
+          }
+        }
+      }
+    },
+    "publish/to-npm": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm publish --access public",
+        "cwd": "dist/libs/react-utils"
+      }
     }
   }
 }
