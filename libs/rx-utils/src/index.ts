@@ -1,1 +1,1 @@
-export * from './lib/rx-utils';
+export * from './operators';
