@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { ReactiveStorage, ReactiveStorageChangeEvent } from "./reactive-storage";
 import { RegexParser } from './regex-parser';
 
-export abstract class ReactiveWebStorage<S extends string = string> extends ReactiveStorage<S> {
+export abstract class AbstractReactiveWebStorage<S extends string = string> extends ReactiveStorage<S> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static JsonParse(string: string): any {
     try {
@@ -27,7 +27,7 @@ export abstract class ReactiveWebStorage<S extends string = string> extends Reac
 
     return Object.fromEntries(keys.map(key => [
       key.split('/')[1],
-      ReactiveWebStorage.JsonParse(this.storage.getItem(key)!)
+      AbstractReactiveWebStorage.JsonParse(this.storage.getItem(key)!)
     ]));
 	}
 
@@ -42,5 +42,14 @@ export abstract class ReactiveWebStorage<S extends string = string> extends Reac
   protected async [ReactiveStorage.Props.REMOVE](storeName: S) {
     this.storage.removeItem(`${this.appName}/${storeName}`);
     this.#changes$.next({ storeName, value: undefined });
+  }
+}
+
+export class ReactiveWebStorage<S extends string = string> extends AbstractReactiveWebStorage<S> {
+  constructor(
+    override readonly storage: Storage,
+    override readonly appName = 'app',
+  ) {
+    super();
   }
 }

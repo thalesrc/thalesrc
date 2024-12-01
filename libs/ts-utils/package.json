@@ -1,10 +1,15 @@
 {
   "name": "@thalesrc/ts-utils",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "dependencies": {
-    "tslib": "^2.3.0"
+    "tslib": "*",
+    "@thalesrc/js-utils": "^3.3.0"
   },
-  "type": "commonjs",
-  "main": "./src/index.js",
-  "typings": "./src/index.d.ts"
+  "type": "module",
+  "module": "./index.js",
+  "main": "./index.cjs",
+  "typings": "./index.d.ts",
+  "_exports": [
+    "fifo-promise"
+  ]
 }

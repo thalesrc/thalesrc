@@ -1,6 +1,6 @@
-import { ReactiveWebStorage } from "./reactive-web-storage";
+import { AbstractReactiveWebStorage } from "./reactive-web-storage";
 
-export class ReactiveWebLocalStorage<S extends string = string> extends ReactiveWebStorage<S> {
+export class ReactiveWebSessionStorage<S extends string = string> extends AbstractReactiveWebStorage<S> {
   override readonly storage = window.sessionStorage;
 
   constructor(

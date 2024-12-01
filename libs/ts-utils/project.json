@@ -3,29 +3,13 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ts-utils/src",
   "projectType": "library",
-  "release": {
-    "version": {
-      "generatorOptions": {
-        "packageRoot": "dist/{projectRoot}",
-        "currentVersionResolver": "git-tag"
-      }
-    }
-  },
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@thalesrc/nx-utils:ts-builder",
       "options": {
-        "outputPath": "dist/libs/ts-utils",
-        "main": "libs/ts-utils/src/index.ts",
-        "tsConfig": "libs/ts-utils/tsconfig.lib.json",
-        "assets": ["libs/ts-utils/*.md"]
-      }
-    },
-    "nx-release-publish": {
-      "options": {
-        "packageRoot": "dist/{projectRoot}"
+        "tsConfigPath": "libs/ts-utils/tsconfig.lib.json",
+        "outputPath": "dist/libs/ts-utils"
       }
     },
     "test": {
@@ -33,6 +17,47 @@
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "libs/ts-utils/jest.config.ts"
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run ts-utils:publish/prepare",
+          "nx run ts-utils:publish/to-npm"
+        ],
+        "parallel": false
+      }
+    },
+    "publish/prepare": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run ts-utils:build",
+          "nx run ts-utils:publish/prepare/copy",
+          "nx run ts-utils:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
+        ]
+      }
+    },
+    "publish/prepare/copy": {
+      "executor": "@thalesrc/nx-utils:copy",
+      "options": {
+        "input": ["libs/ts-utils/README.md", "libs/ts-utils/LICENSE"],
+        "output": "dist/libs/ts-utils"
+      }
+    },
+    "publish/prepare/fill-package-json": {
+      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "options": {
+        "outputPath": "dist/libs/ts-utils",
+        "populateExports": {}
+      }
+    },
+    "publish/to-npm": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm publish --access public",
+        "cwd": "dist/libs/ts-utils"
       }
     }
   }
