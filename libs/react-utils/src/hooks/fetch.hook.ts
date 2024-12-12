@@ -13,7 +13,7 @@ export interface RequestType<R, B extends BodyType, Q extends QueryType> extends
 export function baseHandleResponse(res: Response) {
   if (res.ok) return res.json();
 
-  throw res.json();
+  throw res;
 }
 
 export function useFetch<
