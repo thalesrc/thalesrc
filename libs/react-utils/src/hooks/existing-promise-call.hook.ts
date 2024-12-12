@@ -2,12 +2,12 @@
 
 import { useCallback, useRef } from "react";
 
-export function useExistingPromiseCall<T = any, S = any, F extends (this: S, ...args: any[]) => T = any>(
+export function useExistingPromiseCall<F extends (this: any, ...args: any[]) => Promise<any>>(
   func: F,
-  thisArg: S | null = null,
+  thisArg: ThisParameterType<F> | null = null,
   args: Parameters<F> = [] as any
-): () => Promise<T> {
-  const ref = useRef<Promise<T>>(null);
+) {
+  const ref = useRef<ReturnType<F>>(null);
 
   return useCallback(() => {
     if (!ref.current) {
