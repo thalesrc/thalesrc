@@ -7,14 +7,15 @@ export function useExistingPromiseCall<T = any, S = any, F extends (this: S, ...
   thisArg: S | null = null,
   args: Parameters<F> = [] as any
 ): () => Promise<T> {
-  const ref = useRef<() => Promise<T>>(null);
-  const caller = useCallback(() => Promise.resolve().then(() => func.apply(thisArg!, args)).then(res => {
-    (ref as any).current = null;
+  const ref = useRef<Promise<T>>(null);
 
-    return res;
-  }), [func, thisArg, args]);
+  return useCallback(() => {
+    if (!ref.current) {
+      (ref as any).current = Promise.resolve().then(() => func.apply(thisArg!, args)).finally(() => {
+        (ref as any).current = null;
+      });
+    }
 
-  (ref as any).current = ref.current ?? caller;
-
-  return ref.current!;
+    return ref.current!;
+  }, [func, thisArg, args]);
 }
