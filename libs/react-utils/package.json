@@ -13,6 +13,7 @@
   "_exports": [
     "hooks/",
     "hooks/constant.hook",
+    "hooks/existing-promise-call.hook",
     "hooks/fetch.hook",
     "hooks/subscribe.hook",
     "storage/",
