@@ -38,6 +38,10 @@ const runExecutor: PromiseExecutor<RunParallelExecutorSchema> = async (
 
       child.stdout.on('data', handleMessage);
       child.stdout.on('error', handleMessage);
+
+      child.stderr.on('data', message => {
+        logger.error(message.toString());
+      });
     }
   }));
   const [error] = await tryCatch(chain(cmds));
