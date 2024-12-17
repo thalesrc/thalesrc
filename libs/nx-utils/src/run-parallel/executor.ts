@@ -25,7 +25,7 @@ const runExecutor: PromiseExecutor<RunParallelExecutorSchema> = async (
 
       if (!readyWhen) resolve();
 
-      child.stdout.on('data', (data) => {
+      const handleMessage = (data: Buffer) => {
         logger.log(data.toString());
 
         if (readyWhen && arrayize(readyWhen).some(defining => data.toString().includes(defining))) {
@@ -34,7 +34,10 @@ const runExecutor: PromiseExecutor<RunParallelExecutorSchema> = async (
           }
           resolve();
         }
-      });
+      };
+
+      child.stdout.on('data', handleMessage);
+      child.stdout.on('error', handleMessage);
     }
   }));
   const [error] = await tryCatch(chain(cmds));
