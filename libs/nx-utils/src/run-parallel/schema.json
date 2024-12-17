@@ -9,10 +9,13 @@
       "items": {
         "type": "object",
         "properties": {
-          "command": {
-            "type": "string",
-            "description": "The command to run"
-          },
+            "command": {
+            "oneOf": [
+              { "type": "string" },
+              { "type": "array", "items": { "type": "string" } }
+            ],
+            "description": "The command or multiple commands to run"
+            },
           "cwd": {
             "type": "string",
             "description": "The directory to run the command in"

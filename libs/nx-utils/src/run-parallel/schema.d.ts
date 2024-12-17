@@ -1,8 +1,8 @@
 interface Command {
   /**
-   * The command to run
+   * The command or multiple commands to run
    */
-  command: string;
+  command: string | string[];
 
   /**
    * The directory to run the command in

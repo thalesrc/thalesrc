@@ -16,24 +16,26 @@ const runExecutor: PromiseExecutor<RunParallelExecutorSchema> = async (
   { projectName, projectsConfigurations: { projects: { [projectName]: projectConfig } } }
 ) => {
   const cmds = commands.map(({ command, cwd, readyWhen, stopWhenReady }) => () => new Promise<void>((resolve, reject) => {
-    const child = exec(replaceCommandString(command, aliases), { ...(!cwd || !defaultCwd ? null : { cwd: cwd ?? defaultCwd }) }, (error) => {
-      if (error) {
-        reject(error);
-      }
-    });
-
-    if (!readyWhen) resolve();
-
-    child.stdout.on('data', (data) => {
-      logger.log(data.toString());
-
-      if (readyWhen && arrayize(readyWhen).some(defining => data.toString().includes(defining))) {
-        if (stopWhenReady) {
-          child.kill();
+    for (const cmd of arrayize(command)) {
+      const child = exec(replaceCommandString(cmd, aliases), { ...(!cwd || !defaultCwd ? null : { cwd: cwd ?? defaultCwd }) }, (error) => {
+        if (error) {
+          reject(error);
         }
-        resolve();
-      }
-    });
+      });
+
+      if (!readyWhen) resolve();
+
+      child.stdout.on('data', (data) => {
+        logger.log(data.toString());
+
+        if (readyWhen && arrayize(readyWhen).some(defining => data.toString().includes(defining))) {
+          if (stopWhenReady) {
+            child.kill();
+          }
+          resolve();
+        }
+      });
+    }
   }));
   const [error] = await tryCatch(chain(cmds));
 
