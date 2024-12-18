@@ -9,12 +9,12 @@ export type BodyType = BodyInit | {} | null | undefined;
 /**
  * The type of the parameters of a request.
  */
-export type ParamType = Record<string, string | number | boolean | null | undefined> | undefined;
+export type ParamType = {[key: string]: string | number | boolean | null | undefined} | undefined | null;
 
 /**
  * The type of the query parameters of a request.
  */
-export type QueryType = Record<string, string> | undefined;
+export type QueryType = {[key: string]: string | number | boolean | null | undefined} | undefined | null;
 
 /**
  * The type of a request configuration object.
@@ -61,9 +61,9 @@ export function baseHandleResponse(res: Response) {
  */
 export function useFetch<
   Res = any,
-  Body extends BodyType = undefined,
-  Params extends ParamType = undefined,
-  Query extends QueryType = undefined,
+  Body extends BodyType = null,
+  Params extends ParamType = null,
+  Query extends QueryType = null,
 >(
   url: string,
   request: RequestType<Res, Body, Params, Query> = {},
