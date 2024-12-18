@@ -93,7 +93,7 @@ export function useFetch<
       });
 
       return fetch(
-        `${parsedUrl}${query ? '?' : ''}${new URLSearchParams(query).toString()}`,
+        `${parsedUrl}${query ? '?' : ''}${new URLSearchParams(query as {[key: string]: string}).toString()}`,
         {
           headers: new Headers({ Accept: 'application/json', 'Content-Type': 'application/json' }),
           ...request,
