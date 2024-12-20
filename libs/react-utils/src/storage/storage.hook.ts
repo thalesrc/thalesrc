@@ -9,6 +9,7 @@ export function useStorage<T>(context: Context<ReactiveWebStorage>, storeName: s
     store.set(storeName, key, value);
   }, [store, storeName, key]);
   const operations = useMemo(() => ({
+    patch: (value: Partial<T>) => store.patch(storeName, key, value),
     delete: () => store.delete(storeName, key),
     drop: (value: T) => store.drop(storeName, key, value),
     push: (value: T) => store.push(storeName, key, value),
