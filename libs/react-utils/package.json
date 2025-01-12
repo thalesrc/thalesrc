@@ -23,6 +23,7 @@
     "hooks/fetch/auto-fetch.hook",
     "hooks/fetch/fetch.hook",
     "hooks/subscribe.hook",
+    "hooks/unique-id.hook",
     "storage/",
     "storage/local-storage",
     "storage/session-storage",
