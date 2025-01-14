@@ -102,7 +102,8 @@ export function useFetch<
           headers: new Headers({
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            ...(overrides.headers instanceof Headers ? Object.fromEntries((overrides.headers as any).entries()) : overrides.headers), // TODO: Remove any when the type is fixed.
+            ...headersToObject(request.headers),
+            ...headersToObject(overrides.headers),
           }),
           body: body as BodyInit,
         }
@@ -111,4 +112,8 @@ export function useFetch<
     // eslint-disable-next-line react-hooks/exhaustive-deps
     deps
   );
+}
+
+function headersToObject(headers: HeadersInit | undefined): Record<string, string> {
+  return Object.fromEntries((new Headers(headers) as any).entries());
 }
