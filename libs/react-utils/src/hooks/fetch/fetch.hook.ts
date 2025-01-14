@@ -97,9 +97,13 @@ export function useFetch<
       return fetch(
         `${parsedUrl}${query ? '?' : ''}${new URLSearchParams(query as {[key: string]: string}).toString()}`,
         {
-          headers: new Headers({ Accept: 'application/json', 'Content-Type': 'application/json' }),
           ...request,
           ...overrides,
+          headers: new Headers({
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            ...(overrides.headers instanceof Headers ? Object.fromEntries((overrides.headers as any).entries()) : overrides.headers), // TODO: Remove any when the type is fixed.
+          }),
           body: body as BodyInit,
         }
       ).then(handleResponse);
