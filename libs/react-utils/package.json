@@ -22,6 +22,7 @@
     "hooks/fetch/",
     "hooks/fetch/auto-fetch.hook",
     "hooks/fetch/fetch.hook",
+    "hooks/previous.hook",
     "hooks/subscribe.hook",
     "hooks/unique-id.hook",
     "storage/",
