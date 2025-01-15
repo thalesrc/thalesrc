@@ -13,7 +13,7 @@
       }
     },
     "command": {
-      "description": "The command or commands to run when the glob or globs change",
+      "description": "The command or commands to run when the glob or globs change\n\n<path> will be replaced with the path to the file\n<fileName> will be replaced with the file name\n<fileExt> will be replaced with the file extension",
       "type": ["string", "array"],
       "items": {
         "type": "string"
