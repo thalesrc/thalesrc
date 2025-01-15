@@ -19,6 +19,11 @@
       "implementation": "./src/ts-builder/executor",
       "schema": "./src/ts-builder/schema.json",
       "description": "Builds typescript files"
+    },
+    "watch": {
+      "implementation": "./src/watch/executor",
+      "schema": "./src/watch/schema.json",
+      "description": "watch executor"
     }
   }
 }
