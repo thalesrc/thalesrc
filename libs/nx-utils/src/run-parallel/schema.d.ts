@@ -24,7 +24,7 @@ export interface RunParallelExecutorSchema {
   /**
    * The commands to run in parallel but sequentially
    */
-  commands: Command[];
+  commands: (Command | string)[];
 
   /**
    * The default directory to run the commands in

@@ -7,33 +7,54 @@
       "type": "array",
       "description": "The commands to run in parallel but sequentially",
       "items": {
-        "type": "object",
-        "properties": {
-            "command": {
-            "oneOf": [
-              { "type": "string" },
-              { "type": "array", "items": { "type": "string" } }
-            ],
-            "description": "The command or multiple commands to run"
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "command": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ],
+                "description": "The command or multiple commands to run"
+              },
+              "cwd": {
+                "type": "string",
+                "description": "The directory to run the command in"
+              },
+              "readyWhen": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ],
+                "description": "The string or strings to look for in the output to determine if the task is ready to continue to the next task"
+              },
+              "stopWhenReady": {
+                "type": "boolean",
+                "description": "Whether to stop the running child process of the command when the task is ready to continue to the next task"
+              }
             },
-          "cwd": {
-            "type": "string",
-            "description": "The directory to run the command in"
-          },
-          "readyWhen": {
-            "oneOf": [
-              { "type": "string" },
-              { "type": "array", "items": { "type": "string" } }
-            ],
-            "description": "The string or strings to look for in the output to determine if the task is ready to continue to the next task"
-          },
-          "stopWhenReady": {
-            "type": "boolean",
-            "description": "Whether to stop the running child process of the command when the task is ready to continue to the next task"
+            "required": ["command"],
+            "additionalProperties": false
           }
-        },
-        "required": ["command"],
-        "additionalProperties": false
+        ]
       }
     },
     "cwd": {

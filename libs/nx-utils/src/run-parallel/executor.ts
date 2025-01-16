@@ -15,7 +15,14 @@ const runExecutor: PromiseExecutor<RunParallelExecutorSchema> = async (
   { commands, cwd: defaultCwd, aliases = {} },
   { projectName, projectsConfigurations: { projects: { [projectName]: projectConfig } } }
 ) => {
-  const cmds = commands.map(({ command, cwd, readyWhen, stopWhenReady }) => () => new Promise<void>((resolve, reject) => {
+  /**
+   * Normalize the commands to have the same structure
+   */
+  const normalizedCommands = commands.map(cmd => typeof cmd === 'string' ? { command: cmd } : cmd);
+  /**
+   * Create the command functions
+   */
+  const cmds = normalizedCommands.map(({ command, cwd, readyWhen, stopWhenReady }) => () => new Promise<void>((resolve, reject) => {
     for (const cmd of arrayize(command)) {
       const child = exec(replaceCommandString(cmd, aliases), { ...(!cwd || !defaultCwd ? null : { cwd: cwd ?? defaultCwd }) }, (error) => {
         if (error) {
@@ -44,8 +51,14 @@ const runExecutor: PromiseExecutor<RunParallelExecutorSchema> = async (
       });
     }
   }));
+  /**
+   * Run the commands
+   */
   const [error] = await tryCatch(chain(cmds));
 
+  /**
+   * Handle the error
+   */
   if (error) {
     logger.error(error);
 
@@ -54,7 +67,10 @@ const runExecutor: PromiseExecutor<RunParallelExecutorSchema> = async (
     };
   }
 
-  if (!commands.at(-1).readyWhen) {
+  /**
+   * If the last command is not readyWhen, wait forever
+   */
+  if (!normalizedCommands.at(-1).readyWhen) {
     await never();
   }
 
