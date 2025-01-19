@@ -4,6 +4,16 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { BodyType, ParamType, QueryType, RequestType } from "@thalesrc/react-utils/hooks/fetch/fetch.hook";
 import { useAuthFetch } from "@thalesrc/react-utils/hooks/auth-fetch/auth-fetch.hook";
 
+/**
+ * A custom hook for making HTTP requests with Bearer token and automatically fetching data. It automatically refreshes the token if it is expired.
+ *
+ * @param path The URL to which the request is sent.
+ * @param request The request configuration object.
+ * @param initialVal The initial value of the data.
+ * @param reloadDeps The dependency array that reloads the data.
+ * @param deps The dependency array
+ * @returns The data and the function to reload the data.
+ */
 export function useAuthAutoFetch<
   Res,
   ReqBody extends BodyType = undefined,

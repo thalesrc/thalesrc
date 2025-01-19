@@ -5,6 +5,14 @@ import { useFetch, QueryType, BodyType, RequestType, ParamType } from "@thalesrc
 import { tryCatch } from "@thalesrc/js-utils/promise/try-catch";
 import { AuthFetchContext } from "@thalesrc/react-utils/hooks/auth-fetch/AuthFetch.context";
 
+/**
+ * A custom hook for making HTTP requests with bearer token. It automatically refreshes the token if it is expired.
+ *
+ * @param path The URL to which the request is sent.
+ * @param requestOptions The request configuration object.
+ * @param deps The dependency array
+ * @returns A function that makes the HTTP request when called.
+ */
 export function useAuthFetch<
   Res,
   ReqBody extends BodyType = undefined,

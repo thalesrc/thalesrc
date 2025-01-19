@@ -34,9 +34,11 @@ export interface RequestType<R, B extends BodyType, P extends ParamType, Q exten
  * @returns The JSON representation of the response.
  */
 export function baseHandleResponse(res: Response) {
-  if (res.ok) return res.json();
+  if (!res.ok) throw res;
 
-  throw res;
+  if (res.body) return res.json();
+
+  return Promise.resolve(null);
 }
 
 /**
@@ -100,8 +102,8 @@ export function useFetch<
           ...request,
           ...overrides,
           headers: new Headers({
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
+            Accept: body instanceof FormData ? 'multipart/form-data' : 'application/json',
+            'Content-Type': body instanceof FormData ? 'multipart/form-data' : 'application/json',
             ...headersToObject(request.headers),
             ...headersToObject(overrides.headers),
           }),
