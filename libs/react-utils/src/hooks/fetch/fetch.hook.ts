@@ -36,9 +36,11 @@ export interface RequestType<R, B extends BodyType, P extends ParamType, Q exten
 export function baseHandleResponse(res: Response) {
   if (!res.ok) throw res;
 
-  if (res.body) return res.json();
+  if (res.headers.get('Content-Type')?.includes('application/json')) {
+    return res.json();
+  }
 
-  return Promise.resolve(null);
+  return res.text();
 }
 
 /**
