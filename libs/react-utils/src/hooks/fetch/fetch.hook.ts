@@ -97,18 +97,25 @@ export function useFetch<
 
         return encodeURIComponent(String(value));
       });
+      const headers = new Headers({
+        ...headersToObject(request.headers),
+        ...headersToObject(overrides.headers),
+      });
+
+      if (!headers.has('Accept')) {
+        headers.set('Accept', body instanceof FormData ? 'multipart/form-data' : 'application/json');
+      }
+
+      if (!headers.has('Content-Type')) {
+        headers.set('Content-Type', body instanceof FormData ? 'multipart/form-data' : 'application/json');
+      }
 
       return fetch(
         `${parsedUrl}${query ? '?' : ''}${new URLSearchParams(query as {[key: string]: string}).toString()}`,
         {
           ...request,
           ...overrides,
-          headers: new Headers({
-            Accept: body instanceof FormData ? 'multipart/form-data' : 'application/json',
-            'Content-Type': body instanceof FormData ? 'multipart/form-data' : 'application/json',
-            ...headersToObject(request.headers),
-            ...headersToObject(overrides.headers),
-          }),
+          headers,
           body: body as BodyInit,
         }
       ).then(handleResponse);
