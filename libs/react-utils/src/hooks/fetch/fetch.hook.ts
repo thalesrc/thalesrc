@@ -11,12 +11,12 @@ export type BodyType = BodyInit | {} | null | undefined;
 /**
  * The type of the parameters of a request.
  */
-export type ParamType = {[key: string]: StringLike} | Record<string, StringLike> | object | {} | undefined | null;
+export type ParamType = { [key: string]: StringLike } | Record<string, StringLike> | object | {} | undefined | null;
 
 /**
  * The type of the query parameters of a request.
  */
-export type QueryType = {[key: string]: StringLike} | Record<string, StringLike> | object | {} | undefined | null;
+export type QueryType = { [key: string]: StringLike } | Record<string, StringLike> | object | {} | undefined | null;
 
 /**
  * The type of a request configuration object.
@@ -84,7 +84,9 @@ export function useFetch<
       query = request.query,
       ...overrides
     }: RequestType<Res, Body, Params, Query> = {}) => {
-      if (![Blob, ArrayBuffer, FormData, URLSearchParams].some(type => body instanceof type)) {
+      const isBodyJson = isJsonBody(body);
+
+      if (isBodyJson) {
         body = JSON.stringify(body) as Body;
       }
 
@@ -102,16 +104,18 @@ export function useFetch<
         ...headersToObject(overrides.headers),
       });
 
-      if (!headers.has('Accept')) {
-        headers.set('Accept', body instanceof FormData ? 'multipart/form-data' : 'application/json');
-      }
+      if (isBodyJson) {
+        if (!headers.has('Accept')) {
+          headers.set('Accept', 'application/json');
+        }
 
-      if (!headers.has('Content-Type')) {
-        headers.set('Content-Type', body instanceof FormData ? 'multipart/form-data' : 'application/json');
+        if (!headers.has('Content-Type')) {
+          headers.set('Content-Type', 'application/json');
+        }
       }
 
       return fetch(
-        `${parsedUrl}${query ? '?' : ''}${new URLSearchParams(query as {[key: string]: string}).toString()}`,
+        `${parsedUrl}${query ? '?' : ''}${new URLSearchParams(query as { [key: string]: string }).toString()}`,
         {
           ...request,
           ...overrides,
@@ -127,4 +131,8 @@ export function useFetch<
 
 function headersToObject(headers: HeadersInit | undefined): Record<string, string> {
   return Object.fromEntries((new Headers(headers) as any).entries());
+}
+
+function isJsonBody(body: BodyType): body is object {
+  return ![Blob, ArrayBuffer, FormData, URLSearchParams].some(type => body instanceof type);
 }
