@@ -6,10 +6,12 @@ import { EffectCallback, useEffect } from "react";
  * @param time The interval time in milliseconds
  * @param callback The callback to run
  */
-export function useInterval(time: number, callback: EffectCallback) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function useInterval(time: number, callback: EffectCallback, deps: any[] = []) {
   useEffect(() => {
     const id = setInterval(callback, time);
 
     return () => clearInterval(id);
-  }, [callback, time]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [time, ...deps]);
 }
