@@ -18,6 +18,7 @@
     "hooks/auth-fetch/auth-auto-fetch.hook",
     "hooks/auth-fetch/auth-fetch.hook",
     "hooks/constant.hook",
+    "hooks/debounced-effect.hook",
     "hooks/existing-promise-call.hook",
     "hooks/fetch/",
     "hooks/fetch/auto-fetch.hook",
