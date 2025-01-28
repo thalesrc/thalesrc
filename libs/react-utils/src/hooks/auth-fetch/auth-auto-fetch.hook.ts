@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BodyType, ParamType, QueryType, RequestType } from "@thalesrc/react-utils/hooks/fetch/fetch.hook";
 import { useAuthFetch } from "@thalesrc/react-utils/hooks/auth-fetch/auth-fetch.hook";
 
@@ -28,12 +28,25 @@ export function useAuthAutoFetch<
 ) {
   const [value, setValue] = useState(initialVal);
   const fetcher = useAuthFetch(path, request, deps);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const load = useCallback(() => fetcher(request).then(value => setValue(value!)), deps);
+  const aborterRef = useRef<AbortController | null>(null);
+  const load = useCallback(() => {
+    if (aborterRef.current) {
+      aborterRef.current.abort();
+    }
+
+    aborterRef.current = new AbortController();
+
+    return fetcher({ ...request, signal: aborterRef.current.signal })
+      .then(value => setValue(value!))
+      .finally(() => {
+        aborterRef.current = null;
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
 
   useEffect(() => {
     load();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, reloadDeps);
 
   return useMemo(() => [value, load] as const, [value, load]);
