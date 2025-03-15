@@ -24,6 +24,11 @@
       "implementation": "./src/watch/executor",
       "schema": "./src/watch/schema.json",
       "description": "watch executor"
+    },
+    "platform-runner": {
+      "implementation": "./src/platform-runner/executor",
+      "schema": "./src/platform-runner/schema.json",
+      "description": "Allows you modify scripts by platforms it is running on"
     }
   }
 }

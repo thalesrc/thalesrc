@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "version": 2,
+  "title": "PlatformRunner executor",
+  "description": "",
+  "type": "object",
+  "properties": {
+    "script": {
+      "type": "string",
+      "description": "The script to execute. Wrap the alias names with <<>> to replace them with the corresponding values."
+    },
+    "default": {
+      "type": "object",
+      "description": "The default aliases to replace in the script. If the platform-specific aliases are not provided, the default aliases are used.",
+      "additionalProperties": {
+        "type": ["string", "number", "boolean"]
+      }
+    },
+    "win32": {
+      "type": "object",
+      "description": "Windows-specific aliases to replace in the script.",
+      "additionalProperties": {
+        "type": ["string", "number", "boolean"]
+      }
+    },
+    "darwin": {
+      "type": "object",
+      "description": "macOS-specific aliases to replace in the script.",
+      "additionalProperties": {
+        "type": ["string", "number", "boolean"]
+      }
+    },
+    "linux": {
+      "type": "object",
+      "description": "Linux-specific aliases to replace in the script.",
+      "additionalProperties": {
+        "type": ["string", "number", "boolean"]
+      }
+    },
+    "aix": {
+      "type": "object",
+      "description": "AIX-specific aliases to replace in the script.",
+      "additionalProperties": {
+        "type": ["string", "number", "boolean"]
+      }
+    },
+    "freebsd": {
+      "type": "object",
+      "description": "FreeBSD-specific aliases to replace in the script.",
+      "additionalProperties": {
+        "type": ["string", "number", "boolean"]
+      }
+    },
+    "openbsd": {
+      "type": "object",
+      "description": "OpenBSD-specific aliases to replace in the script.",
+      "additionalProperties": {
+        "type": ["string", "number", "boolean"]
+      }
+    },
+    "sunos": {
+      "type": "object",
+      "description": "SunOS-specific aliases to replace in the script.",
+      "additionalProperties": {
+        "type": ["string", "number", "boolean"]
+      }
+    },
+    "android": {
+      "type": "object",
+      "description": "Android-specific aliases to replace in the script.",
+      "additionalProperties": {
+        "type": ["string", "number", "boolean"]
+      }
+    }
+  },
+  "required": ["script", "default"]
+}
