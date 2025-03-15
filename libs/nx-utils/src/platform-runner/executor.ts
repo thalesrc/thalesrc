@@ -1,6 +1,7 @@
 import { PromiseExecutor, logger } from '@nx/devkit';
 import { PlatformRunnerExecutorSchema } from './schema';
 import { exec } from 'child_process';
+import { promisify } from 'util';
 
 const runExecutor: PromiseExecutor<PlatformRunnerExecutorSchema> = async (
   options
@@ -15,21 +16,20 @@ const runExecutor: PromiseExecutor<PlatformRunnerExecutorSchema> = async (
     options.script
   );
 
-  exec(script, (error, stdout, stderr) => {
-    if (error) {
-      logger.error(error);
+  logger.info(`Running script: ${script}`);
 
-      return;
-    }
+  const promisifiedExec = promisify(exec);
+  const { stderr, stdout } = await promisifiedExec(script);
 
-    if (stderr) {
-      logger.error(stderr);
-    }
+  if (stderr) {
+    logger.error(stderr);
 
-    if (stdout) {
-      logger.log(stdout);
-    }
-  });
+    return {
+      success: false,
+    };
+  }
+
+  logger.info(stdout);
 
   return {
     success: true,
