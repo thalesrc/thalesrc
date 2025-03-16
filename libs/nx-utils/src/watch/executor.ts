@@ -1,6 +1,5 @@
 import { logger, PromiseExecutor } from '@nx/devkit';
 import { WatchExecutorSchema } from './schema';
-// @ts-expect-error - no types available
 import * as watch from 'glob-watcher';
 import { never } from '@thalesrc/js-utils/promise/never';
 import { exec, ExecException } from 'child_process';
