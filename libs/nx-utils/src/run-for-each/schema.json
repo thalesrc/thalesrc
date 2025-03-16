@@ -4,6 +4,62 @@
   "title": "RunForEach executor",
   "description": "",
   "type": "object",
+  "definitions": {
+    "Alias": {
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "string",
+          "number",
+          "boolean"
+        ]
+      }
+    },
+    "PlatformRunnerExecutorSchema": {
+      "type": "object",
+      "properties": {
+        "default": {
+          "$ref": "#/definitions/Alias",
+          "description": "The default aliases to replace in the script.\n\nIf the platform-specific aliases are not provided, the default aliases are used."
+        },
+        "win32": {
+          "$ref": "#/definitions/Alias",
+          "description": "Windows-specific aliases to replace in the script."
+        },
+        "darwin": {
+          "$ref": "#/definitions/Alias",
+          "description": "macOS-specific aliases to replace in the script."
+        },
+        "linux": {
+          "$ref": "#/definitions/Alias",
+          "description": "Linux-specific aliases to replace in the script."
+        },
+        "aix": {
+          "$ref": "#/definitions/Alias",
+          "description": "AIX-specific aliases to replace in the script."
+        },
+        "freebsd": {
+          "$ref": "#/definitions/Alias",
+          "description": "FreeBSD-specific aliases to replace in the script."
+        },
+        "openbsd": {
+          "$ref": "#/definitions/Alias",
+          "description": "OpenBSD-specific aliases to replace in the script."
+        },
+        "sunos": {
+          "$ref": "#/definitions/Alias",
+          "description": "SunOS-specific aliases to replace in the script."
+        },
+        "android": {
+          "$ref": "#/definitions/Alias",
+          "description": "Android-specific aliases to replace in the script."
+        }
+      },
+      "required": [
+        "default"
+      ]
+    }
+  },
   "properties": {
     "command": {
       "type": "string",
@@ -24,6 +80,11 @@
       "type": "boolean",
       "description": "Run the commands in parallel. Default: true.",
       "default": true
+    },
+    "platformVariables": {
+      "description": "The platform-specific variables to replace in the command\n\n<<variableName>> will be replaced with the value of the variable",
+      "$ref": "#/definitions/PlatformRunnerExecutorSchema",
+      "additionalProperties": true
     }
   },
   "required": ["command"]

@@ -4,9 +4,10 @@ import { RunForEachExecutorSchema } from './schema';
 import { globCommandParser } from '../watch/glob-command-parser';
 import { promisifiedExec } from '../utils/promisified-exec';
 import { chain } from '@thalesrc/js-utils';
+import { platformScriptReplacer } from '../platform-runner/platform-script-replacer';
 
 const runExecutor: PromiseExecutor<RunForEachExecutorSchema> = async (
-  { command, items, glob: globPattern, parallel = true }
+  { command, items, glob: globPattern, parallel = true, platformVariables = null },
 ) => {
   if (!items && !globPattern) {
     throw new Error('Either items or glob must be provided');
@@ -17,13 +18,14 @@ const runExecutor: PromiseExecutor<RunForEachExecutorSchema> = async (
   }
 
   const scripts = items ? items.map((item) => command.replace(/<item>/ig, item)) : globSync(globPattern).map((file) => globCommandParser(command, file));
+  const platformBasedScripts = !platformVariables ? scripts : scripts.map((script) => platformScriptReplacer({ ...platformVariables, script }));
 
-  logger.info(`Running scripts: ${scripts.map((script) => `\n${script}`).join('')}`);
+  logger.info(`Running scripts: ${platformBasedScripts.map((script) => `\n${script}`).join('')}`);
 
   if (parallel) {
-    await Promise.all(scripts.map((script) => promisifiedExec(script)));
+    await Promise.all(platformBasedScripts.map((script) => promisifiedExec(script)));
   } else {
-    await chain(scripts.map((script) => () => promisifiedExec(script)));
+    await chain(platformBasedScripts.map((script) => () => promisifiedExec(script)));
   }
 
   logger.info('All scripts have been executed');

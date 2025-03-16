@@ -1,3 +1,5 @@
+import { PlatformRunnerExecutorSchema } from "../platform-runner/schema";
+
 export interface RunForEachExecutorSchema {
   /**
    * Command to run for each item
@@ -26,4 +28,11 @@ export interface RunForEachExecutorSchema {
    * Default: true
    */
   parallel?: boolean;
+
+  /**
+   * The platform-specific variables to replace in the command
+   *
+   * <<variableName>> will be replaced with the value of the variable
+   */
+  platformVariables?: Omit<PlatformRunnerExecutorSchema, 'script'>;
 }
