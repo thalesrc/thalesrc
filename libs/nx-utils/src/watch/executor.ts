@@ -5,6 +5,7 @@ import { never } from '@thalesrc/js-utils/promise/never';
 import { exec, ExecException } from 'child_process';
 import { arrayize } from '@thalesrc/js-utils/array/arrayize';
 import { platformScriptReplacer } from '../platform-runner/platform-script-replacer';
+import { globCommandParser } from './glob-command-parser';
 
 function handleCommandEvents(error: ExecException, stdout: string, stderr: string) {
   if (error) {
@@ -26,13 +27,8 @@ const runExecutor: PromiseExecutor<WatchExecutorSchema> = async ({ glob, command
   const platformBasedCommands = !platformVariables ? commands : commands.map(command => platformScriptReplacer({ ...platformVariables, script: command }));
 
   function handleChange(path: string) {
-    const [fileName, fileExt] = path.split('/').pop().split('.');
-
     for (const cmd of platformBasedCommands) {
-      const parsedCommand = cmd
-        .replace(/<fileName>/ig, fileName)
-        .replace(/<path>/ig, path)
-        .replace(/<fileExt>/ig, fileExt);
+      const parsedCommand = globCommandParser(cmd, path);
 
       logger.info(`Running command: ${parsedCommand}`);
 
