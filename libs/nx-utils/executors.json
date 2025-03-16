@@ -29,6 +29,11 @@
       "implementation": "./src/platform-runner/executor",
       "schema": "./src/platform-runner/schema.json",
       "description": "Allows you modify scripts by platforms it is running on"
+    },
+    "run-for-each": {
+      "implementation": "./src/run-for-each/executor",
+      "schema": "./src/run-for-each/schema.json",
+      "description": "Run script for each item provided"
     }
   }
 }
