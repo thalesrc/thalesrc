@@ -4,6 +4,27 @@
   "title": "RunForEach executor",
   "description": "",
   "type": "object",
-  "properties": {},
-  "required": []
+  "properties": {
+    "command": {
+      "type": "string",
+      "description": "Command to run for each item. <item> will be replaced with the item."
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of items to run the command for."
+    },
+    "glob": {
+      "type": "string",
+      "description": "Glob to get items from. <path> will be replaced with the path to the file, <fileName> will be replaced with the file name, <fileExt> will be replaced with the file extension."
+    },
+    "parallel": {
+      "type": "boolean",
+      "description": "Run the commands in parallel. Default: true.",
+      "default": true
+    }
+  },
+  "required": ["command"]
 }
