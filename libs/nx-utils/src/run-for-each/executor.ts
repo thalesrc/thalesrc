@@ -2,9 +2,9 @@ import { PromiseExecutor, logger } from '@nx/devkit';
 import { globSync } from 'glob';
 import { RunForEachExecutorSchema } from './schema';
 import { globCommandParser } from '../watch/glob-command-parser';
-import { promisifiedExec } from '../utils/promisified-exec';
 import { chain } from '@thalesrc/js-utils';
 import { platformScriptReplacer } from '../platform-runner/platform-script-replacer';
+import { promisifiedSpawn } from '../utils/promisified-spawn';
 
 const runExecutor: PromiseExecutor<RunForEachExecutorSchema> = async (
   { command, items, glob: globPattern, parallel = true, platformVariables = null },
@@ -23,9 +23,9 @@ const runExecutor: PromiseExecutor<RunForEachExecutorSchema> = async (
   logger.info(`Running scripts: ${platformBasedScripts.map((script) => `\n${script}`).join('')}`);
 
   if (parallel) {
-    await Promise.all(platformBasedScripts.map((script) => promisifiedExec(script)));
+    await Promise.all(platformBasedScripts.map((script) => promisifiedSpawn(script)));
   } else {
-    await chain(platformBasedScripts.map((script) => () => promisifiedExec(script)));
+    await chain(platformBasedScripts.map((script) => () => promisifiedSpawn(script)));
   }
 
   logger.info('All scripts have been executed');
