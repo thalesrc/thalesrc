@@ -4,9 +4,9 @@ import { chain } from '@thalesrc/js-utils/promise/chain';
 import { tryCatch } from '@thalesrc/js-utils/promise/try-catch';
 import { arrayize } from '@thalesrc/js-utils/array/arrayize';
 import { never } from '@thalesrc/js-utils/promise/never';
-import { default as chalk, foregroundColorNames } from 'chalk';
-
+import chalk from 'chalk';
 import { RunParallelExecutorSchema } from './schema';
+import { randomChalkColor } from '../utils/chalk-hex-colors';
 
 function replaceCommandString(command: string, aliases: Record<string, string>) {
   return Object.entries(aliases).reduce((command, [alias, value]) => command.replace(new RegExp(`<<${alias}>>`, 'g'), value), command);
@@ -16,7 +16,10 @@ const runExecutor: PromiseExecutor<RunParallelExecutorSchema> = async (
   { commands, cwd: defaultCwd, aliases = {} },
   { projectName, targetName, projectsConfigurations: { projects: { [projectName]: projectConfig } } }
 ) => {
-  const logColor = foregroundColorNames[Math.floor(Math.random()*foregroundColorNames.length)];
+  /**
+   * Get the log color
+   */
+  const logColor = randomChalkColor();
   /**
    * Normalize the commands to have the same structure
    */
@@ -37,7 +40,7 @@ const runExecutor: PromiseExecutor<RunParallelExecutorSchema> = async (
 
       const handleMessage = (data: Buffer | string) => {
         const str = data.toString();
-        console.log(`${chalk.reset[logColor](`[${projectName}:${targetName}]`)} ${str}`);
+        console.log(`${chalk.reset.hex(logColor)(`[${projectName}:${targetName}]`)} ${str}`);
 
         if (readyWhen && arrayize(readyWhen).some(defining => str.includes(defining))) {
           if (stopWhenReady) {
