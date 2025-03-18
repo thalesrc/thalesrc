@@ -4,7 +4,7 @@ import { chain } from '@thalesrc/js-utils/promise/chain';
 import { tryCatch } from '@thalesrc/js-utils/promise/try-catch';
 import { arrayize } from '@thalesrc/js-utils/array/arrayize';
 import { never } from '@thalesrc/js-utils/promise/never';
-import chalk, { foregroundColorNames } from 'chalk';
+import { default as chalk, foregroundColorNames } from 'chalk';
 
 import { RunParallelExecutorSchema } from './schema';
 
@@ -27,7 +27,7 @@ const runExecutor: PromiseExecutor<RunParallelExecutorSchema> = async (
   const cmds = normalizedCommands.map(({ command, cwd, readyWhen, stopWhenReady }) => () => new Promise<void>((resolve, reject) => {
     for (const cmd of arrayize(command)) {
       const [cmdName, ...cmdArgs] = replaceCommandString(cmd, aliases).split(' ');
-      const child = spawn(cmdName, cmdArgs, { ...(!cwd || !defaultCwd ? null : { cwd: cwd ?? defaultCwd }) });
+      const child = spawn(cmdName, cmdArgs, { ...(!cwd || !defaultCwd ? null : { cwd: cwd ?? defaultCwd }), shell: true });
 
       child.on('error', (error) => {
         reject(error);
@@ -37,7 +37,7 @@ const runExecutor: PromiseExecutor<RunParallelExecutorSchema> = async (
 
       const handleMessage = (data: Buffer | string) => {
         const str = data.toString();
-        console.log(`[${chalk[logColor](`[${projectName}:${targetName}]`)}] ${str}`);
+        console.log(`${chalk.reset[logColor](`[${projectName}:${targetName}]`)} ${str}`);
 
         if (readyWhen && arrayize(readyWhen).some(defining => str.includes(defining))) {
           if (stopWhenReady) {
