@@ -51,8 +51,6 @@ function resize({ file, output, resize: { width, height, name } }: Input) {
 }
 
 async function copyFile(input: Input) {
-  logger.log(`Copying ${input.file} to ${input.output}`);
-
   await ensureDirectory(input.output);
 
   if (input.replace)

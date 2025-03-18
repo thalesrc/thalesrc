@@ -1,4 +1,4 @@
-import { exec } from 'child_process';
+import { spawn } from 'child_process';
 import { PromiseExecutor, logger } from '@nx/devkit';
 import { chain } from '@thalesrc/js-utils/promise/chain';
 import { tryCatch } from '@thalesrc/js-utils/promise/try-catch';
@@ -24,18 +24,20 @@ const runExecutor: PromiseExecutor<RunParallelExecutorSchema> = async (
    */
   const cmds = normalizedCommands.map(({ command, cwd, readyWhen, stopWhenReady }) => () => new Promise<void>((resolve, reject) => {
     for (const cmd of arrayize(command)) {
-      const child = exec(replaceCommandString(cmd, aliases), { ...(!cwd || !defaultCwd ? null : { cwd: cwd ?? defaultCwd }) }, (error) => {
-        if (error) {
-          reject(error);
-        }
+      const [cmdName, ...cmdArgs] = replaceCommandString(cmd, aliases).split(' ');
+      const child = spawn(cmdName, cmdArgs, { ...(!cwd || !defaultCwd ? null : { cwd: cwd ?? defaultCwd }) });
+
+      child.on('error', (error) => {
+        reject(error);
       });
 
       if (!readyWhen) resolve();
 
-      const handleMessage = (data: Buffer) => {
-        logger.log(data.toString());
+      const handleMessage = (data: Buffer | string) => {
+        const str = data.toString();
+        str.split('\n').forEach(logger.log);
 
-        if (readyWhen && arrayize(readyWhen).some(defining => data.toString().includes(defining))) {
+        if (readyWhen && arrayize(readyWhen).some(defining => str.includes(defining))) {
           if (stopWhenReady) {
             child.kill();
           }
@@ -43,9 +45,9 @@ const runExecutor: PromiseExecutor<RunParallelExecutorSchema> = async (
         }
       };
 
+      child.on('message', handleMessage);
       child.stdout.on('data', handleMessage);
       child.stdout.on('error', handleMessage);
-
       child.stderr.on('data', message => {
         logger.error(message.toString());
       });
