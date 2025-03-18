@@ -4,9 +4,11 @@ import { chain } from '@thalesrc/js-utils/promise/chain';
 import { tryCatch } from '@thalesrc/js-utils/promise/try-catch';
 import { arrayize } from '@thalesrc/js-utils/array/arrayize';
 import { never } from '@thalesrc/js-utils/promise/never';
-import chalk from 'chalk';
 import { RunParallelExecutorSchema } from './schema';
 import { randomChalkColor } from '../utils/chalk-hex-colors';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const chalk = require('chalk');
 
 function replaceCommandString(command: string, aliases: Record<string, string>) {
   return Object.entries(aliases).reduce((command, [alias, value]) => command.replace(new RegExp(`<<${alias}>>`, 'g'), value), command);
