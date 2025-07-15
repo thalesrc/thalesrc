@@ -1,0 +1,52 @@
+{
+  "name": "drag-drop",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/drag-drop/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/drag-drop",
+        "main": "libs/drag-drop/src/index.ts",
+        "tsConfig": "libs/drag-drop/tsconfig.lib.json",
+        "assets": ["libs/drag-drop/*.md"]
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run drag-drop:publish/prepare",
+          "nx run drag-drop:publish/to-npm"
+        ],
+        "parallel": false
+      }
+    },
+    "publish/prepare": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run drag-drop:build",
+          "nx run drag-drop:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
+        ]
+      }
+    },
+    "publish/prepare/fill-package-json": {
+      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "options": {
+        "outputPath": "dist/libs/drag-drop",
+        "populateExports": {}
+      }
+    },
+    "publish/to-npm": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm publish --access public",
+        "cwd": "dist/libs/drag-drop"
+      }
+    }
+  }
+}
