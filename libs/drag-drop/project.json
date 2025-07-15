@@ -31,7 +31,8 @@
         "commands": [
           "nx run drag-drop:build",
           "nx run drag-drop:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
-        ]
+        ],
+        "parallel": false
       }
     },
     "publish/prepare/fill-package-json": {

@@ -1,4 +1,4 @@
-name: Extra TS Types / Publish
+name: Drag Drop / Publish
 
 on:
   release:
