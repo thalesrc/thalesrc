@@ -1,4 +1,4 @@
-import { defer } from "@thalesrc/js-utils";
+import { defer } from "@thalesrc/js-utils/function/defer";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 

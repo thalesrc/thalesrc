@@ -1,0 +1,1 @@
+import '@thalesrc/drag-drop';

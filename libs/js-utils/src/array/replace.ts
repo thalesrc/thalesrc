@@ -53,7 +53,6 @@ const REPLACE_ITEMS_DEFAULT_OPTIONS: Required<ReplaceItemsOptions<any>> = {
   itemsToReplace: [],
   startingIndex: 0
 };
-
 /**
  * Default Options for Replace By Map Mode
  */
@@ -161,7 +160,7 @@ export function replace<T>(array: T[], replaceOptions: ReplaceItemsOptions<T>): 
 export function replace<T>(array: T[], replaceOptions: ReplaceByMapOptions<T>): T[];
 export function replace<T>(
   array: T[],
-  options: T | ReplaceItemsOptions<T> | ReplaceByMapOptions<T>,
+  options: T | ReplaceItemsOptions<T> | ReplaceByMapOptions<T>,
   itemToReplace?: T
 ): T[] {
   if (arguments.length > 2) {
@@ -185,8 +184,7 @@ export function replace<T>(
  * @param options Replace options
  */
 function _replaceItems<T>(array: T[], options: ReplaceItemsOptions<T>): T[] {
-  const { startingIndex, deleteCount, itemsToReplace}: Required<ReplaceItemsOptions<T>> = Object.assign({}, REPLACE_ITEMS_DEFAULT_OPTIONS, options);
-
+  const { startingIndex, deleteCount, itemsToReplace }: Required<ReplaceItemsOptions<T>> = Object.assign({}, REPLACE_ITEMS_DEFAULT_OPTIONS, options);
   const newArray = [...array];
 
   // If item not found or index number is negative; do nothing
@@ -208,7 +206,6 @@ function _replaceItems<T>(array: T[], options: ReplaceItemsOptions<T>): T[] {
 function _replaceByMap<T>(array: T[], options: ReplaceByMapOptions<T>): T[] {
   const { itemsToReplace, multi }: Required<ReplaceByMapOptions<T>> = Object.assign({}, REPLACE_BY_MAP_DEFAULT_OPTIONS, options);
   const iterationMethod = multi ? Array.prototype.forEach : Array.prototype.some;
-
   const newArray = [...array];
 
   itemsToReplace.forEach((value, key) => {
