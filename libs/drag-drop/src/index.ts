@@ -1,22 +1,22 @@
-import type { TMDragEvent } from './tm-drag-event';
+import type { ThaDragEvent } from './tha-drag-event';
 
 declare global {
   interface GlobalEventHandlersEventMap {
-    tmdrag: TMDragEvent;
-    tmdragstart: TMDragEvent;
-    tmdragend: TMDragEvent;
-    tmdrop: TMDragEvent;
-    tmdropend: TMDragEvent;
-    tmdropped: TMDragEvent;
-    tmdragenter: TMDragEvent;
-    tmdragleave: TMDragEvent;
-    tmdragover: TMDragEvent;
-    tmdropzoneenter: TMDragEvent;
-    tmdropzoneleave: TMDragEvent;
-    tmdropzoneover: TMDragEvent;
+    thadrag: ThaDragEvent;
+    thadragstart: ThaDragEvent;
+    thadragend: ThaDragEvent;
+    thadrop: ThaDragEvent;
+    thadropend: ThaDragEvent;
+    thadropped: ThaDragEvent;
+    thadragenter: ThaDragEvent;
+    thadragleave: ThaDragEvent;
+    thadragover: ThaDragEvent;
+    thadropzoneenter: ThaDragEvent;
+    thadropzoneleave: ThaDragEvent;
+    thadropzoneover: ThaDragEvent;
   }
 }
 
 export * from './drag-element';
 export * from './dropzone-element';
-export * from './tm-drag-event';
+export * from './tha-drag-event';

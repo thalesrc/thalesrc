@@ -4,7 +4,7 @@ import './drag-element'; // Assuming the element is defined and registered here.
 
 const meta: Meta = {
   title: 'Elements/DragElement',
-  component: 'tm-drag',
+  component: 'tha-drag',
   tags: ['autodocs'],
   argTypes: {
     // Define arg types for component properties if any
@@ -18,8 +18,8 @@ const meta: Meta = {
         border: 1px solid #ccc;
         border-radius: 4px;
       }
-      tm-drag,
-      tm-drag-clone {
+      tha-drag,
+      tha-drag-clone {
         width: 150px;
         height: 150px;
         background-color: dodgerblue;
@@ -31,12 +31,12 @@ const meta: Meta = {
         user-select: none;
         border-radius: 8px;
       }
-      tm-drag:active {
+      tha-drag:active {
         cursor: grabbing;
       }
     </style>
     <div class="container">
-      <tm-drag replaceclone>Drag Me</tm-drag>
+      <tha-drag replaceclone>Drag Me</tha-drag>
     </div>
   `,
 };

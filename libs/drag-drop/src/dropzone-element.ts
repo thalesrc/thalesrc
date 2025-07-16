@@ -1,21 +1,21 @@
 import { CSSResultGroup, LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { DragElementEventTypes, DropElementEventTypes, TMDragEvent } from "./tm-drag-event";
+import { DragElementEventTypes, DropElementEventTypes, ThaDragEvent } from "./tha-drag-event";
 
 declare global {
   interface HTMLElementTagNameMap {
-    "tm-dropzone": DropZoneElement;
+    "tha-dropzone": DropZoneElement;
   }
 }
 
-let LAST_DRAG_EVENT: TMDragEvent;
+let LAST_DRAG_EVENT: ThaDragEvent;
 
-document.addEventListener('tmdragstart', event => {
+document.addEventListener('thadragstart', event => {
   LAST_DRAG_EVENT = event;
 });
 
-@customElement('tm-dropzone')
+@customElement('tha-dropzone')
 export class DropZoneElement extends LitElement {
   static override styles?: CSSResultGroup = css``;
 
@@ -40,9 +40,9 @@ export class DropZoneElement extends LitElement {
   override connectedCallback(): void {
     super.connectedCallback();
 
-    document.addEventListener('tmdragstart', this.#handleGlobalDragStart);
-    document.addEventListener('tmdragend', this.#handleGlobalDragEnd);
-    document.addEventListener('tmdropend', this.#handleGlobalDragEnd);
+    document.addEventListener('thadragstart', this.#handleGlobalDragStart);
+    document.addEventListener('thadragend', this.#handleGlobalDragEnd);
+    document.addEventListener('thadropend', this.#handleGlobalDragEnd);
     this.addEventListener('dragenter', this.#handleDragEnter);
     this.addEventListener('dragleave', this.#handleDragLeave);
     this.addEventListener('dragover', this.#handleDragOver);
@@ -52,16 +52,16 @@ export class DropZoneElement extends LitElement {
   override disconnectedCallback(): void {
     super.disconnectedCallback();
 
-    document.removeEventListener('tmdragstart', this.#handleGlobalDragStart);
-    document.removeEventListener('tmdragend', this.#handleGlobalDragEnd);
-    document.removeEventListener('tmdropend', this.#handleGlobalDragEnd);
+    document.removeEventListener('thadragstart', this.#handleGlobalDragStart);
+    document.removeEventListener('thadragend', this.#handleGlobalDragEnd);
+    document.removeEventListener('thadropend', this.#handleGlobalDragEnd);
     this.removeEventListener('dragenter', this.#handleDragEnter);
     this.removeEventListener('dragleave', this.#handleDragLeave);
     this.removeEventListener('dragover', this.#handleDragOver);
     this.removeEventListener('drop', this.#handleDrop);
   }
 
-  #handleGlobalDragStart = (event: TMDragEvent) => {
+  #handleGlobalDragStart = (event: ThaDragEvent) => {
     if (!this.accept.length || this.accept.includes(event.name!)) {
       this.acceptableDrag = true;
     }
@@ -79,7 +79,7 @@ export class DropZoneElement extends LitElement {
     if (++this.#enterCount > 1) return;
 
     this.itemDragged = LAST_DRAG_EVENT.name ?? '';
-    this.#dispatchEventWithCounter('tmdragenter', 'tmdropzoneenter', event);
+    this.#dispatchEventWithCounter('thadragenter', 'thadropzoneenter', event);
   };
 
   #handleDragLeave = (event: DragEvent) => {
@@ -88,19 +88,19 @@ export class DropZoneElement extends LitElement {
     if (--this.#enterCount > 0) return;
 
     this.itemDragged = null;
-    this.#dispatchEventWithCounter('tmdragleave', 'tmdropzoneleave', event);
+    this.#dispatchEventWithCounter('thadragleave', 'thadropzoneleave', event);
   };
 
   #handleDragOver = (event: DragEvent) => {
     if (!this.#isAcceptableDrag()) return;
 
-    this.#dispatchEventWithCounter('tmdragover', 'tmdropzoneover', event);
+    this.#dispatchEventWithCounter('thadragover', 'thadropzoneover', event);
   };
 
   #handleDrop = (event: DragEvent) => {
     if (!this.#isAcceptableDrag()) return;
 
-    this.#dispatchEventWithCounter('tmdrop', 'tmdropped', event);
+    this.#dispatchEventWithCounter('thadrop', 'thadropped', event);
   };
 
   #isAcceptableDrag(): boolean {
@@ -111,7 +111,7 @@ export class DropZoneElement extends LitElement {
     const { dragTarget } = LAST_DRAG_EVENT;
     const dropzoneTarget = new WeakRef(this);
 
-    this.dispatchEvent(new TMDragEvent(eventName, { dragTarget, dropzoneTarget }, event));
-    dragTarget.deref()?.dispatchEvent(new TMDragEvent(counterEventName, { dragTarget, dropzoneTarget }, event));
+    this.dispatchEvent(new ThaDragEvent(eventName, { dragTarget, dropzoneTarget }, event));
+    dragTarget.deref()?.dispatchEvent(new ThaDragEvent(counterEventName, { dragTarget, dropzoneTarget }, event));
   }
 }
