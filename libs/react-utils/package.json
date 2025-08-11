@@ -5,6 +5,7 @@
     "tslib": "*",
     "react": "*",
     "rxjs": "*",
+    "react-hook-form": "*",
     "@thalesrc/reactive-storage": "^1.0.5",
     "@thalesrc/extra-ts-types": "^1.2.0"
   },

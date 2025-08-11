@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BodyType, ParamType, QueryType, RequestType, useFetch } from "@thalesrc/react-utils/hooks/fetch/fetch.hook";
+import { noop } from "@thalesrc/js-utils/function/noop";
 
 /**
  * A custom hook for making HTTP requests with fetch and automatically fetching data.
@@ -56,5 +57,5 @@ export function useAutoFetch<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, reloadDeps);
 
-  return useMemo(() => [value, load] as const, [value, load]);
+  return useMemo(() => [value, load, aborterRef.current ?? noop] as const, [value, load]);
 }
