@@ -3,8 +3,9 @@ import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import type { DropZoneElement } from "./dropzone-element";
-import { ACCEPT_DROP_PROP } from "./private-props";
+import { ACCEPT_DROP_PROP, REGISTER_HANDLE_PROP } from "./private-props";
 import { ThaDragEvent } from "./tha-drag-event";
+import type { DragHandleElement } from "./drag-handle-element";
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -99,6 +100,8 @@ export class DragElement extends LitElement {
 
   #acceptedDropzone: WeakRef<DropZoneElement> | null = null;
   #clone: WeakRef<HTMLElement> = null!;
+  #handles = new WeakSet<DragHandleElement>();
+
   get clone() { return this.#clone.deref(); }
 
   @property({ type: String })
@@ -163,6 +166,10 @@ export class DragElement extends LitElement {
     for (const prop in { width, height, left, right, top, bottom }) {
       this.style.setProperty(`--tha-target-${prop}`, `${rect[prop as keyof DOMRect]}px`);
     }
+  }
+
+  [REGISTER_HANDLE_PROP](handle: WeakRef<DragHandleElement>) {
+    this.#handles.add(handle.deref()!);
   }
 
   #setUpDragDataAttrs() {

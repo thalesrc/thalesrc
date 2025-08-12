@@ -13,6 +13,9 @@
   "module": "./src/index.js",
   "typings": "./src/index.d.ts",
   "_exports": [
+    "form/",
+    "form/Field",
+    "form/Form",
     "hooks/",
     "hooks/auth-fetch/",
     "hooks/auth-fetch/AuthFetch.context",
