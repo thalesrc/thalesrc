@@ -1,0 +1,42 @@
+{
+  "name": "@thalesrc/dom-utils",
+  "version": "0.0.0",
+  "description": "DOM utility functions for web development",
+  "keywords": [
+    "dom",
+    "utilities",
+    "utils",
+    "parents",
+    "web",
+    "html",
+    "elements",
+    "manipulation",
+    "selectors",
+    "events",
+    "attributes",
+    "node",
+    "document",
+    "query",
+    "traversal",
+    "style",
+    "class",
+    "visibility",
+    "position"
+  ],
+  "homepage": "https://dom-utils.thalesrc.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thalesrc/thalesrc.git",
+    "directory": "libs/dom-utils"
+  },
+  "type": "module",
+  "module": "./index.js",
+  "main": "./index.cjs",
+  "typings": "./index.d.ts",
+  "dependencies": {
+    "tslib": "*"
+  },
+  "_exports": [
+    "get-parents"
+  ]
+}

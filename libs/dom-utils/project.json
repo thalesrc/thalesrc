@@ -1,0 +1,58 @@
+{
+  "name": "dom-utils",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/dom-utils/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project dom-utils --web",
+  "targets": {
+    "build": {
+      "executor": "@thalesrc/nx-utils:ts-builder",
+      "options": {
+        "tsConfigPath": "libs/dom-utils/tsconfig.lib.json",
+        "outputPath": "dist/libs/dom-utils"
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run dom-utils:publish/prepare",
+          "nx run dom-utils:publish/to-npm"
+        ],
+        "parallel": false
+      }
+    },
+    "publish/prepare": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run dom-utils:build",
+          "nx run dom-utils:publish/prepare/copy",
+          "nx run dom-utils:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
+        ]
+      }
+    },
+    "publish/prepare/copy": {
+      "executor": "@thalesrc/nx-utils:copy",
+      "options": {
+        "input": ["libs/dom-utils/README.md", "libs/dom-utils/LICENSE"],
+        "output": "dist/libs/dom-utils"
+      }
+    },
+    "publish/prepare/fill-package-json": {
+      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "options": {
+        "outputPath": "dist/libs/dom-utils",
+        "populateExports": {}
+      }
+    },
+    "publish/to-npm": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm publish --access public",
+        "cwd": "dist/libs/dom-utils"
+      }
+    }
+  }
+}
