@@ -19,4 +19,5 @@ declare global {
 
 export * from './drag-element';
 export * from './dropzone-element';
+export * from './drag-handle-element';
 export * from './tha-drag-event';

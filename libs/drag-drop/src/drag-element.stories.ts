@@ -34,9 +34,27 @@ const meta: Meta = {
       tha-drag:active {
         cursor: grabbing;
       }
+
+      tha-drag-handle {
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 5px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
     </style>
     <div class="container">
-      <tha-drag replaceclone>Drag Me</tha-drag>
+      <tha-drag replaceclone>
+        <tha-drag-handle>Drag Handle</tha-drag-handle>
+        Drag Me
+      </tha-drag>
+      <tha-drag replaceclone>
+        <tha-drag-handle>Drag Handle</tha-drag-handle>
+        <tha-drag-handle>Drag Handle</tha-drag-handle>
+        Drag Me
+      </tha-drag>
+      <tha-drag replaceclone>
+        Drag Me
+      </tha-drag>
     </div>
   `,
 };

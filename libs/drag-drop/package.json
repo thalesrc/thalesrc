@@ -8,6 +8,7 @@
     "directory": "libs/drag-drop"
   },
   "dependencies": {
+    "@thalesrc/dom-utils": "^1.0.0",
     "@thalesrc/js-utils": "^3.3.1",
     "lit": "*"
   },

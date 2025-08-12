@@ -1,34 +1,42 @@
-import { LitElement } from "lit";
-import { customElement } from "lit/decorators";
+import { getParents } from "@thalesrc/dom-utils/get-parents";
+import { html, LitElement } from "lit";
+import { customElement } from "lit/decorators.js";
+
 import { DragElement } from "./drag-element";
-import { REGISTER_HANDLE_PROP } from "./private-props";
+import { REGISTER_HANDLE_PROP, UNREGISTER_HANDLE_PROP } from "./private-props";
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "tha-drag-handle": DragHandleElement;
+  }
+}
 
 @customElement("tha-drag-handle")
 export class DragHandleElement extends LitElement {
-  override connectedCallback(): void {
-    super.connectedCallback();
-
-    const parent = this.#getParent();
-
-    if (!parent) return;
-
-    parent[REGISTER_HANDLE_PROP](new WeakRef(this));
-  }
-
-  #getParent(): DragElement | null {
-    let parent: HTMLElement | null = this.parentElement;
-
-    while (parent) {
+  get #parent(): DragElement | null {
+    for (const parent of getParents(this)) {
       if (parent instanceof DragElement) {
         return parent;
-      }
-      parent = parent.parentElement;
-
-      if (parent instanceof HTMLHtmlElement || parent instanceof Window) {
-        break;
       }
     }
 
     return null;
+  }
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+
+    this.draggable = true;
+    this.#parent?.[REGISTER_HANDLE_PROP](this);
+  }
+
+  override disconnectedCallback(): void {
+    super.disconnectedCallback();
+
+    this.#parent?.[UNREGISTER_HANDLE_PROP](this);
+  }
+
+  protected override render() {
+    return html`<slot></slot>`;
   }
 }
