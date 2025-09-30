@@ -55,6 +55,13 @@ const meta: Meta = {
       <tha-drag replaceclone>
         Drag Me
       </tha-drag>
+      <tha-drag replaceclone>
+        <tha-drag-handle>Outer Handle</tha-drag-handle>
+        <tha-drag replaceclone>
+          <tha-drag-handle>Nested Handle</tha-drag-handle>
+          Nested Drag
+        </tha-drag>
+      </tha-drag>
     </div>
   `,
 };

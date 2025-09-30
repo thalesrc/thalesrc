@@ -292,6 +292,9 @@ export class DragElement extends LitElement {
   #handleDragStart = (event: DragEvent) => {
     if (!this.#shouldHandleEvent(event)) return event.preventDefault();
 
+    // Stop propagation to prevent parent draggable elements from interfering.
+    event.stopPropagation();
+
     // Modify base event properties to prevent default behavior and set up drag image.
     event.dataTransfer?.setDragImage(DragElement.TRANSPARENT_IMAGE, 0, 0);
     event.dataTransfer!.effectAllowed = this.draggingStrategy;
