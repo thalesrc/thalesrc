@@ -30,18 +30,25 @@ Docker-aware nginx reverse proxy with automatic SSL and service discovery. Perfe
 ### Method 1: HOST_MAPPING Format
 
 ```bash
+# Start the auto-proxy
 docker run --detach \
   --name thales-auto-proxy \
   --publish 80:80 \
-  --publish 8080:8080 \
   --publish 443:443 \
   --publish 50051:50051 \
-  --publish 9000:9000 \
   --volume /var/run/docker.sock:/tmp/docker.sock:ro \
-  --env HOST_MAPPING="HTTP:::api.myapp.local:::3000,GRPC:::api.myapp.local:::50051,HTTP:::web.myapp.local:::8080" \
-  --env HTTP_PORTS="80,8080" \
-  --env GRPC_PORTS="50051,9000" \
   thalesrc/auto-proxy
+
+# Start your services with HOST_MAPPING
+docker run --detach \
+  --name api-service \
+  --env HOST_MAPPING="HTTP:::api.myapp.local:::3000,GRPC:::api.myapp.local:::50051" \
+  your-api-service
+
+docker run --detach \
+  --name web-service \
+  --env HOST_MAPPING="HTTP:::web.myapp.local:::8080" \
+  your-web-service
 ```
 
 ### Method 2: Standard nginx-proxy VIRTUAL_HOST Format
@@ -74,25 +81,19 @@ services:
     image: thalesrc/auto-proxy
     ports:
       - "80:80"          # HTTP port
-      - "8080:8080"      # Additional HTTP port
       - "443:443"        # HTTPS port
-      - "50051:50051"    # gRPC port (standard)
-      - "9000:9000"      # gRPC port (alternative)
-    environment:
-      - HOST_MAPPING=HTTP:::api.myapp.local:::3000,HTTP:::web.myapp.local:::8080,GRPC:::api.myapp.local:::50051
-      # Port configuration (optional - these are the defaults)
-      - HTTP_PORTS=80,8080
-      - HTTPS_PORTS=443
-      - GRPC_PORTS=50051,9000
+      - "50051:50051"    # gRPC port
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - auto_proxy_certs:/etc/nginx/certs
     networks:
       - app-network
 
-  # Your services
+  # Your services with HOST_MAPPING
   api-service:
     image: your-api-service
+    environment:
+      - HOST_MAPPING=HTTP:::api.myapp.local:::3000,GRPC:::api.myapp.local:::50051
     ports:
       - "3000:3000"  # HTTP
       - "50051:50051" # gRPC
@@ -100,7 +101,9 @@ services:
       - app-network
 
   web-service:
-    image: your-web-service  
+    image: your-web-service
+    environment:
+      - HOST_MAPPING=HTTP:::web.myapp.local:::8080
     ports:
       - "8080:80"
     networks:
@@ -149,7 +152,7 @@ Thales Auto Proxy supports **two configuration methods**:
 
 ### Method 1: HOST_MAPPING Environment Variable
 
-The `HOST_MAPPING` environment variable uses this format:
+Set the `HOST_MAPPING` environment variable **on your service containers** (not on auto-proxy). Format:
 
 ```
 PROTOCOL:::HOSTNAME:::PORT,PROTOCOL:::HOSTNAME:::PORT,...
@@ -158,13 +161,13 @@ PROTOCOL:::HOSTNAME:::PORT,PROTOCOL:::HOSTNAME:::PORT,...
 **Examples:**
 ```bash
 # Single HTTP service
-HOST_MAPPING="HTTP:::api.myapp.local:::3000"
+docker run -d --env HOST_MAPPING="HTTP:::api.myapp.local:::3000" my-api-service
 
-# Multiple services  
-HOST_MAPPING="HTTP:::api.myapp.local:::3000,HTTP:::web.myapp.local:::8080,GRPC:::api.myapp.local:::50051"
+# Multiple services from one container
+docker run -d --env HOST_MAPPING="HTTP:::api.myapp.local:::3000,GRPC:::api.myapp.local:::50051" my-service
 
 # Complex setup with multiple protocols
-HOST_MAPPING="HTTP:::api.myapp.local:::3000,GRPC:::api.myapp.local:::50051,HTTP:::admin.myapp.local:::4000"
+docker run -d --env HOST_MAPPING="HTTP:::admin.myapp.local:::4000,GRPC:::admin.myapp.local:::50052" my-admin-service
 ```
 
 ### Method 2: VIRTUAL_HOST (nginx-proxy Compatible)
@@ -181,9 +184,16 @@ docker run --detach \
 
 ### Environment Variables
 
+#### For Service Containers:
+| Variable | Description |
+|----------|-------------|
+| `HOST_MAPPING` | Custom format: `PROTOCOL:::HOSTNAME:::PORT,...` |
+| `VIRTUAL_HOST` | nginx-proxy compatible hostname |
+| `VIRTUAL_PORT` | nginx-proxy compatible port |
+
+#### For Auto-Proxy Container:
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `HOST_MAPPING` | `""` | Custom format: `PROTOCOL:::HOSTNAME:::PORT,...` |
 | `TARGET_HOST` | `host.docker.internal` | Default target host for HOST_MAPPING services |
 | `HTTP_PORTS` | `80,8080` | Comma-separated list of HTTP proxy ports |
 | `HTTPS_PORTS` | `443` | Comma-separated list of HTTPS proxy ports |
@@ -192,7 +202,6 @@ docker run --detach \
 | `DEFAULT_ROOT` | `404` | Default response (404, 503, or redirect) |
 | `ENABLE_IPV6` | `false` | Enable IPv6 support |
 | `SSL_POLICY` | `Mozilla-Intermediate` | SSL configuration policy |
-| `DHPARAM_BITS` | `2048` | DH parameter bits for SSL |
 | `AUTO_SSL` | `true` | Enable automatic SSL certificate generation |
 | `CERT_DIR` | `/etc/nginx/certs` | Directory to store SSL certificates |
 | `CERT_VALIDITY_DAYS` | `365` | SSL certificate validity period in days |
@@ -243,15 +252,17 @@ services:
     image: thalesrc/auto-proxy
     ports: ["80:80", "443:443", "50051:50051"]
     volumes: ["/var/run/docker.sock:/tmp/docker.sock:ro"]
-    environment:
-      - HOST_MAPPING=HTTP:::api.dev.local:::3000,HTTP:::web.dev.local:::8080,GRPC:::api.dev.local:::50051
 
   user-service:
     image: user-service
+    environment:
+      - HOST_MAPPING=HTTP:::api.dev.local:::3000,GRPC:::api.dev.local:::50051
     ports: ["3000:3000", "50051:50051"]
     
   frontend:
     image: react-app
+    environment:
+      - HOST_MAPPING=HTTP:::web.dev.local:::8080
     ports: ["8080:80"]
 ```
 
@@ -275,7 +286,14 @@ grpcurl -plaintext grpc.local:50051 list
 Route different domains to different services:
 
 ```bash
-HOST_MAPPING="HTTP:::tenant1.app.local:::3001,HTTP:::tenant2.app.local:::3002,HTTP:::admin.app.local:::4000"
+# Tenant 1 service
+docker run -d --env HOST_MAPPING="HTTP:::tenant1.app.local:::3001" tenant1-service
+
+# Tenant 2 service  
+docker run -d --env HOST_MAPPING="HTTP:::tenant2.app.local:::3002" tenant2-service
+
+# Admin service
+docker run -d --env HOST_MAPPING="HTTP:::admin.app.local:::4000" admin-service
 ```
 
 ### 4. API Gateway Pattern
@@ -283,7 +301,14 @@ HOST_MAPPING="HTTP:::tenant1.app.local:::3001,HTTP:::tenant2.app.local:::3002,HT
 Central gateway for all API services:
 
 ```bash
-HOST_MAPPING="HTTP:::users.api.local:::3001,HTTP:::orders.api.local:::3002,HTTP:::payments.api.local:::3003"
+# Users API
+docker run -d --env HOST_MAPPING="HTTP:::users.api.local:::3001" users-api
+
+# Orders API
+docker run -d --env HOST_MAPPING="HTTP:::orders.api.local:::3002" orders-api
+
+# Payments API
+docker run -d --env HOST_MAPPING="HTTP:::payments.api.local:::3003" payments-api
 ```
 
 ## 🔧 Advanced Configuration
@@ -415,13 +440,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🗺️ Roadmap
 
-- [ ] Kubernetes integration
-- [ ] Let's Encrypt integration
-- [ ] Web UI for configuration
-- [ ] Metrics dashboard
-- [ ] Load balancing support
-- [ ] Rate limiting
-- [ ] WebSocket support enhancement
+- [ ] Better documentation and examples
+- [ ] Performance optimizations
+- [ ] Enhanced logging and debugging
 
 ---
 
