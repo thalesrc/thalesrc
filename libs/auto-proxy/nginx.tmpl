@@ -1,0 +1,248 @@
+# Thales Auto Proxy Template
+# Based on nginx-proxy but enhanced for HOST_MAPPING environment variable support
+# Format: HOST_MAPPING=PROTOCOL:::HOSTNAME:::CONTAINER_PORT
+#
+# Architecture:
+# - Auto Proxy listens on standard ports: 80 (HTTP), GRPC_PORT (gRPC, default 50051)
+# - HOST_MAPPING specifies container's internal service ports
+# - Routing by hostname to correct container:port
+
+{{ $CurrentContainer := where $ "ID" .Docker.CurrentContainerID | first }}
+
+# Auto Proxy Configuration Variables
+{{ $https_ports := split (coalesce $.Env.HTTPS_PORTS "443") "," }}
+{{ $http_ports := split (coalesce $.Env.HTTP_PORTS "80,8080") "," }}
+{{ $grpc_ports := split (coalesce $.Env.GRPC_PORTS "50051,9000") "," }}
+{{ $enable_ipv6 := parseBool (coalesce $.Env.ENABLE_IPV6 "false") }}
+{{ $proxy_x_forwarded_ssl := coalesce $.Env.PROXY_X_FORWARDED_SSL "false" }}
+{{ $proxy_x_forwarded_proto := coalesce $.Env.PROXY_X_FORWARDED_PROTO "https" }}
+{{ $proxy_x_forwarded_port := coalesce $.Env.PROXY_X_FORWARDED_PORT (index $https_ports 0) }}
+
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    '' close;
+}
+
+# Discover containers with HOST_MAPPING environment variables
+{{ range $host_mapping, $containers := groupByMulti $ "Env.HOST_MAPPING" "," }}
+{{ if $host_mapping }}
+# Container HOST_MAPPING found: {{ $host_mapping }}
+{{ $mappings := split $host_mapping "," }}
+{{ range $mapping := $mappings }}
+{{ $parts := split $mapping ":::" }}
+{{ if eq (len $parts) 3 }}
+{{ $protocol := index $parts 0 }}
+{{ $hostname := index $parts 1 }}
+{{ $port := index $parts 2 }}
+
+{{ if eq $protocol "HTTP" }}
+# HTTP upstream: {{ $hostname }} -> containers:{{ $port }}
+upstream {{ $hostname }} {
+{{ range $container := $containers }}
+    {{ $network := index $container.Networks 0 }}
+    # {{ $container.Name }}
+    server {{ $network.IP }}:{{ $port }};
+{{ end }}
+}
+{{ end }}
+
+{{ if eq $protocol "GRPC" }}
+# gRPC upstream: {{ $hostname }} -> containers:{{ $port }}
+upstream {{ $hostname }}-grpc {
+{{ range $container := $containers }}
+    {{ $network := index $container.Networks 0 }}
+    # {{ $container.Name }}
+    server {{ $network.IP }}:{{ $port }};
+{{ end }}
+}
+{{ end }}
+
+{{ end }}
+{{ end }}
+{{ end }}
+{{ end }}
+
+# Generate servers for dynamic container HOST_MAPPING discovery
+{{ range $host_mapping, $containers := groupByMulti $ "Env.HOST_MAPPING" "," }}
+{{ if $host_mapping }}
+{{ $mappings := split $host_mapping "," }}
+{{ range $mapping := $mappings }}
+{{ $parts := split $mapping ":::" }}
+{{ if eq (len $parts) 3 }}
+{{ $protocol := index $parts 0 }}
+{{ $hostname := index $parts 1 }}
+{{ $port := index $parts 2 }}
+
+{{ end }}
+{{ end }}
+{{ end }}
+{{ end }}
+
+# HTTP Servers - Separate server block for each hostname
+{{ range $host_mapping, $containers := groupByMulti $ "Env.HOST_MAPPING" "," }}
+{{ if $host_mapping }}
+{{ $mappings := split $host_mapping "," }}
+{{ range $mapping := $mappings }}
+{{ $parts := split $mapping ":::" }}
+{{ if eq (len $parts) 3 }}
+{{ $protocol := index $parts 0 }}
+{{ $hostname := index $parts 1 }}
+{{ $port := index $parts 2 }}
+
+{{ if eq $protocol "HTTP" }}
+# HTTP Server: {{ $hostname }} -> container:{{ $port }}
+server {
+    server_name {{ $hostname }};
+    server_tokens off;
+    {{ range $http_port := $http_ports }}
+    listen {{ $http_port }};
+    {{ if $enable_ipv6 }}
+    listen [::]:{{ $http_port }};
+    {{ end }}
+    {{ end }}
+
+    # SSL Configuration
+    {{ $cert_file := printf "/etc/nginx/certs/%s.crt" $hostname }}
+    {{ $key_file := printf "/etc/nginx/certs/%s.key" $hostname }}
+    {{ range $https_port := $https_ports }}
+    listen {{ $https_port }} ssl http2;
+    {{ if $enable_ipv6 }}
+    listen [::]:{{ $https_port }} ssl http2;
+    {{ end }}
+    {{ end }}
+
+    # SSL Certificate files
+    ssl_certificate {{ $cert_file }};
+    ssl_certificate_key {{ $key_file }};
+
+    # SSL Security configuration
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384;
+    ssl_prefer_server_ciphers off;
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:SSL:50m;
+    ssl_stapling off;
+
+    # Security headers
+    add_header Strict-Transport-Security "max-age=63072000" always;
+    add_header X-Frame-Options DENY always;
+    add_header X-Content-Type-Options nosniff always;
+
+    location / {
+        proxy_pass http://{{ $hostname }};
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Port $server_port;
+        proxy_set_header X-Original-URI $request_uri;
+        proxy_connect_timeout       30;
+        proxy_send_timeout          30;
+        proxy_read_timeout          30;
+        proxy_redirect              off;
+        proxy_set_header Proxy "";
+    }
+}
+{{ end }}
+
+{{ end }}
+{{ end }}
+{{ end }}
+{{ end }}
+
+# gRPC Servers - Separate server block for each hostname
+{{ range $host_mapping, $containers := groupByMulti $ "Env.HOST_MAPPING" "," }}
+{{ if $host_mapping }}
+{{ $mappings := split $host_mapping "," }}
+{{ range $mapping := $mappings }}
+{{ $parts := split $mapping ":::" }}
+{{ if eq (len $parts) 3 }}
+{{ $protocol := index $parts 0 }}
+{{ $hostname := index $parts 1 }}
+{{ $port := index $parts 2 }}
+
+{{ if eq $protocol "GRPC" }}
+# gRPC Server: {{ $hostname }} -> container:{{ $port }}
+server {
+    server_name {{ $hostname }};
+    server_tokens off;
+    {{ range $grpc_port := $grpc_ports }}
+    listen {{ $grpc_port }} http2;
+    {{ if $enable_ipv6 }}
+    listen [::]:{{ $grpc_port }} http2;
+    {{ end }}
+    {{ end }}
+
+    # gRPC Configuration
+    http2 on;
+
+    location / {
+        grpc_pass grpc://{{ $hostname }}-grpc;
+        grpc_set_header Host $http_host;
+        grpc_set_header X-Real-IP $remote_addr;
+        grpc_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        grpc_set_header X-Forwarded-Proto $scheme;
+        grpc_connect_timeout 30;
+        grpc_send_timeout 30;
+        grpc_read_timeout 30;
+        error_page 502 = /grpc_internal_error;
+    }
+
+    location = /grpc_internal_error {
+        internal;
+        default_type application/grpc;
+        add_header grpc-status 14;
+        add_header grpc-message "Service unavailable";
+        return 204;
+    }
+}
+{{ end }}
+
+{{ end }}
+{{ end }}
+{{ end }}
+{{ end }}
+
+{{ if $.Env.DEFAULT_HOST }}
+# Default host: {{ $.Env.DEFAULT_HOST }}
+{{ end }}
+
+# Default HTTP server
+server {
+    server_name _; # This is just an invalid value which will never trigger on a real hostname.
+    server_tokens off;
+    {{ range $http_port := $http_ports }}
+    listen {{ $http_port }};
+    {{ if $enable_ipv6 }}
+    listen [::]:{{ $http_port }};
+    {{ end }}
+    {{ end }}
+    return 503;
+}
+
+# Default HTTPS server (with self-signed certificate fallback)
+server {
+    server_name _; # Default server for HTTPS
+    server_tokens off;
+    {{ range $https_port := $https_ports }}
+    listen {{ $https_port }} ssl http2 default_server;
+    {{ if $enable_ipv6 }}
+    listen [::]:{{ $https_port }} ssl http2 default_server;
+    {{ end }}
+    {{ end }}
+
+    # Default self-signed certificate (will be generated)
+    ssl_certificate /etc/nginx/certs/default.crt;
+    ssl_certificate_key /etc/nginx/certs/default.key;
+
+    # SSL Security configuration
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384;
+    ssl_prefer_server_ciphers off;
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:SSL:50m;
+
+    return 503;
+}
+
+# Default HTTPS server disabled for demo
