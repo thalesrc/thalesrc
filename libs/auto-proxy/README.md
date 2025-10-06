@@ -12,8 +12,7 @@ Docker-aware nginx reverse proxy with automatic SSL and service discovery. Perfe
 - 🌐 **Automatic HTTPS**: Self-signed SSL certificates generated on-demand  
 - 🔌 **gRPC Support**: Native HTTP/2 gRPC proxying with proper protocol handling
 - 📝 **HOST_MAPPING**: Custom environment variable format for easy configuration
-- 🏷️ **VIRTUAL_HOST**: Full compatibility with nginx-proxy conventions
-- 🐳 **Docker Ready**: Drop-in replacement for nginx-proxy in development
+- 🐳 **Docker Ready**: Lightweight reverse proxy for development environments
 - 🎯 **Local Development**: Optimized for development workflows and local domains
 - ⚡ **High Performance**: nginx-powered with zero-downtime container discovery
 - 📊 **Monitoring**: nginx access logs and container health status
@@ -27,7 +26,7 @@ Docker-aware nginx reverse proxy with automatic SSL and service discovery. Perfe
 
 ## 🚀 Quick Start
 
-### Method 1: HOST_MAPPING Format
+### Usage
 
 ```bash
 # Start the auto-proxy
@@ -51,25 +50,7 @@ docker run --detach \
   your-web-service
 ```
 
-### Method 2: Standard nginx-proxy VIRTUAL_HOST Format
 
-```bash
-docker run --detach \
-  --name thales-auto-proxy \
-  --publish 80:80 \
-  --publish 443:443 \
-  --volume /var/run/docker.sock:/tmp/docker.sock:ro \
-  thalesrc/auto-proxy
-```
-
-Then start your services with `VIRTUAL_HOST`:
-
-```bash
-docker run --detach \
-  --name your-app \
-  --env VIRTUAL_HOST=myapp.local \
-  your-app-image
-```
 
 ### Docker Compose Example
 
@@ -148,9 +129,7 @@ Add these entries to your hosts file:
 
 ## ⚙️ Configuration
 
-Thales Auto Proxy supports **two configuration methods**:
-
-### Method 1: HOST_MAPPING Environment Variable
+### HOST_MAPPING Environment Variable
 
 Set the `HOST_MAPPING` environment variable **on your service containers** (not on auto-proxy). Format:
 
@@ -170,17 +149,7 @@ docker run -d --env HOST_MAPPING="HTTP:::api.myapp.local:::3000,GRPC:::api.myapp
 docker run -d --env HOST_MAPPING="HTTP:::admin.myapp.local:::4000,GRPC:::admin.myapp.local:::50052" my-admin-service
 ```
 
-### Method 2: VIRTUAL_HOST (nginx-proxy Compatible)
 
-Standard nginx-proxy format using container environment variables:
-
-```bash
-# Start a service with VIRTUAL_HOST
-docker run --detach \
-  --env VIRTUAL_HOST=myapp.local \
-  --env VIRTUAL_PORT=3000 \
-  my-app-image
-```
 
 ### Environment Variables
 
@@ -188,8 +157,6 @@ docker run --detach \
 | Variable | Description |
 |----------|-------------|
 | `HOST_MAPPING` | Custom format: `PROTOCOL:::HOSTNAME:::PORT,...` |
-| `VIRTUAL_HOST` | nginx-proxy compatible hostname |
-| `VIRTUAL_PORT` | nginx-proxy compatible port |
 
 #### For Auto-Proxy Container:
 | Variable | Default | Description |
@@ -273,8 +240,7 @@ Native support for gRPC services with HTTP/2:
 ```bash
 # Start gRPC services
 docker run -d --name grpc-service \
-  -e VIRTUAL_HOST=grpc.local \
-  -e VIRTUAL_GRPC_PORT=50051 \
+  --env HOST_MAPPING="GRPC:::grpc.local:::50051" \
   my-grpc-service
 
 # Test with grpcurl
