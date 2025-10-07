@@ -30,8 +30,8 @@ jobs:
           # Copy the auto-proxy README to the root for GitHub Container Registry
           cp libs/auto-proxy/README.md ./README.md
 
-          # Also copy it to the Docker context
-          cp libs/auto-proxy/README.md libs/auto-proxy/README.md
+          # Verify the README exists in the Docker context
+          ls -la libs/auto-proxy/README.md
 
       - name: Log in to Container Registry
         uses: docker/login-action@v3
