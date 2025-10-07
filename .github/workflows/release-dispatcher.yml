@@ -49,9 +49,13 @@ jobs:
             ts-utils-v*)
               LIBRARY="ts-utils"
               ;;
+            auto-proxy-v*)
+              LIBRARY="auto-proxy"
+              ;;
             *)
               echo "❌ No matching library found for tag: $TAG_NAME"
               echo "Expected format: <library-name>-v<version>"
+              echo "Valid libraries: dom-utils, drag-drop, js-utils, extra-ts-types, node-utils, nx-utils, react-utils, reactive-storage, rx-utils, ts-utils, auto-proxy"
               exit 0
               ;;
           esac
