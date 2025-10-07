@@ -29,6 +29,7 @@ COPY docker-entrypoint.sh /app/docker-entrypoint.sh
 COPY start.sh /app/start.sh
 COPY orchestrator.sh /app/orchestrator.sh
 COPY generate-certs.sh /app/generate-certs.sh
+COPY README.md /app/README.md
 
 # Make scripts executable
 RUN chmod +x /app/docker-entrypoint.sh /app/start.sh /app/orchestrator.sh /app/generate-certs.sh

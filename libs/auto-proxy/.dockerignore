@@ -2,9 +2,6 @@
 .git
 .gitignore
 
-# Documentation
-README.md
-
 # IDE and editors
 .vscode/
 .idea/
