@@ -73,16 +73,13 @@ jobs:
 
       - name: Update GitHub Container Registry description
         run: |
-          # Get the auto-proxy README content
-          README_CONTENT=$(cat libs/auto-proxy/README.md | jq -Rs .)
-
-          # Update the package description using GitHub API
+          # Update the package description using GitHub API (organization endpoint)
           curl -L \
             -X PATCH \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/user/packages/container/auto-proxy \
+            https://api.github.com/orgs/thalesrc/packages/container/auto-proxy \
             -d "{\"description\":\"Docker-aware nginx reverse proxy with automatic SSL and service discovery\"}" || true
 
       - name: Create release summary
