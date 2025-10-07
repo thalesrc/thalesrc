@@ -40,13 +40,12 @@ jobs:
           tags: |
             type=raw,value=latest
             type=raw,value=${{ env.PACKAGE_VERSION }}
-            type=raw,value=${{ env.TAG_NAME }}
           labels: |
             org.opencontainers.image.title=Thales Auto Proxy
             org.opencontainers.image.description=Docker-aware nginx reverse proxy with automatic SSL and service discovery
             org.opencontainers.image.vendor=Thales
             org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
-            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/auto-proxy
             org.opencontainers.image.revision=${{ github.sha }}
 
       - name: Set up Docker Buildx
@@ -76,7 +75,6 @@ jobs:
           echo "### 📦 Available Tags:" >> $GITHUB_STEP_SUMMARY
           echo "- \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest\`" >> $GITHUB_STEP_SUMMARY
           echo "- \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$PACKAGE_VERSION\`" >> $GITHUB_STEP_SUMMARY
-          echo "- \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$TAG_NAME\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 🚀 Usage:" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
