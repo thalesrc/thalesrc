@@ -87,10 +87,9 @@ upstream {{ $hostname }}-mongodb {
 server {
     listen {{ $postgresql_port }};
     proxy_pass {{ $hostname }}-postgresql;
-    proxy_timeout 3s;
+    proxy_timeout 60s;
+    proxy_connect_timeout 10s;
     proxy_responses 1;
-    proxy_connect_timeout 1s;
-    proxy_bind $remote_addr transparent;
 }
 {{ end }}
 {{ end }}
@@ -117,10 +116,9 @@ server {
 server {
     listen {{ $mysql_port }};
     proxy_pass {{ $hostname }}-mysql;
-    proxy_timeout 3s;
+    proxy_timeout 60s;
+    proxy_connect_timeout 10s;
     proxy_responses 1;
-    proxy_connect_timeout 1s;
-    proxy_bind $remote_addr transparent;
 }
 {{ end }}
 {{ end }}
@@ -147,9 +145,8 @@ server {
 server {
     listen {{ $redis_port }};
     proxy_pass {{ $hostname }}-redis;
-    proxy_timeout 3s;
-    proxy_responses 1;
-    proxy_connect_timeout 1s;
+    proxy_timeout 60s;
+    proxy_connect_timeout 10s;
 }
 {{ end }}
 {{ end }}
@@ -176,9 +173,9 @@ server {
 server {
     listen {{ $mongodb_port }};
     proxy_pass {{ $hostname }}-mongodb;
-    proxy_timeout 3s;
+    proxy_timeout 60s;
+    proxy_connect_timeout 10s;
     proxy_responses 1;
-    proxy_connect_timeout 1s;
 }
 {{ end }}
 {{ end }}
