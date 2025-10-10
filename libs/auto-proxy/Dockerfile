@@ -60,8 +60,8 @@ RUN echo 'server { listen 80 default_server; listen [::]:80 default_server; serv
 # Set working directory
 WORKDIR /app
 
-# Expose standard HTTP, HTTPS, gRPC, and database ports
-EXPOSE 80 8080 443 50051 9000 9001 9002 5432 3306 6379 27017
+# Expose standard HTTP, HTTPS, gRPC, database ports, and database SSL ports
+EXPOSE 80 8080 443 50051 9000 9001 9002 5432 5433 3306 3307 6379 6380 27017 27018
 
 # Set default environment variables
 ENV DOCKER_HOST=unix:///tmp/docker.sock
@@ -71,9 +71,13 @@ ENV HTTP_PORTS="80,8080"
 ENV HTTPS_PORTS="443"
 ENV GRPC_PORTS="50051,9000"
 ENV POSTGRESQL_PORTS="5432"
+ENV POSTGRESQL_SSL_PORTS="5433"
 ENV MYSQL_PORTS="3306"
+ENV MYSQL_SSL_PORTS="3307"
 ENV REDIS_PORTS="6379"
+ENV REDIS_SSL_PORTS="6380"
 ENV MONGODB_PORTS="27017"
+ENV MONGODB_SSL_PORTS="27018"
 ENV DEFAULT_ROOT="404"
 ENV ENABLE_IPV6="false"
 ENV SSL_POLICY="Mozilla-Intermediate"

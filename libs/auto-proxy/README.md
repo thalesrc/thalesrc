@@ -242,9 +242,13 @@ docker run -d --env HOST_MAPPING="HTTP:::admin.myapp.local:::4000,GRPC:::admin.m
 | `HTTPS_PORTS` | `443` | Comma-separated list of HTTPS proxy ports |
 | `GRPC_PORTS` | `50051,9000` | Comma-separated list of gRPC proxy ports |
 | `POSTGRESQL_PORTS` | `5432` | Comma-separated list of PostgreSQL proxy ports |
+| `POSTGRESQL_SSL_PORTS` | `5433` | Comma-separated list of PostgreSQL SSL proxy ports |
 | `MYSQL_PORTS` | `3306` | Comma-separated list of MySQL proxy ports |
+| `MYSQL_SSL_PORTS` | `3307` | Comma-separated list of MySQL SSL proxy ports |
 | `REDIS_PORTS` | `6379` | Comma-separated list of Redis proxy ports |
+| `REDIS_SSL_PORTS` | `6380` | Comma-separated list of Redis SSL proxy ports |
 | `MONGODB_PORTS` | `27017` | Comma-separated list of MongoDB proxy ports |
+| `MONGODB_SSL_PORTS` | `27018` | Comma-separated list of MongoDB SSL proxy ports |
 | `DEFAULT_HOST` | `""` | Default host for unknown requests |
 | `DEFAULT_ROOT` | `404` | Default response (404, 503, or redirect) |
 | `ENABLE_IPV6` | `false` | Enable IPv6 support |
@@ -413,14 +417,23 @@ services:
 
 **Connect to databases:**
 ```bash
-# PostgreSQL
+# PostgreSQL (regular)
 psql -h db-primary.local -p 5432 -U user -d myapp
 
-# MySQL 
+# PostgreSQL (SSL)
+psql "host=db-primary.local port=5433 user=user dbname=myapp sslmode=require"
+
+# MySQL (regular)
 mysql -h mysql.local -P 3306 -u root -p
 
-# Redis
+# MySQL (SSL)
+mysql -h mysql.local -P 3307 -u root -p --ssl-mode=REQUIRED
+
+# Redis (regular)
 redis-cli -h cache-master.local -p 6379
+
+# Redis (SSL)
+redis-cli -h cache-master.local -p 6380 --tls
 ```
 
 ## 🔧 Advanced Configuration
@@ -466,6 +479,61 @@ SSL_CIPHERS="ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256"
 
 # Disable weak protocols
 SSL_PROTOCOLS="TLSv1.2 TLSv1.3"
+```
+
+### Database SSL Configuration
+
+The auto-proxy supports SSL termination for database connections. SSL certificates are automatically generated for each hostname defined in `HOST_MAPPING`.
+
+```bash
+# Start auto-proxy with both regular and SSL database ports
+docker run -d \
+  --name thales-auto-proxy \
+  --publish 5432:5432 \    # PostgreSQL regular
+  --publish 5433:5433 \    # PostgreSQL SSL
+  --publish 3306:3306 \    # MySQL regular  
+  --publish 3307:3307 \    # MySQL SSL
+  --volume /var/run/docker.sock:/tmp/docker.sock:ro \
+  thalesrc/auto-proxy
+
+# Start PostgreSQL container (same HOST_MAPPING for both regular and SSL)
+docker run -d \
+  --name postgres \
+  --env HOST_MAPPING="POSTGRESQL:::db.myapp.local:::5432" \
+  --env POSTGRES_DB=myapp \
+  postgres:15
+```
+
+**SSL Connection Examples:**
+
+```bash
+# PostgreSQL with SSL
+psql "host=db.myapp.local port=5433 user=myuser dbname=myapp sslmode=require"
+
+# MySQL with SSL  
+mysql -h db.myapp.local -P 3307 -u root -p --ssl-mode=REQUIRED
+
+# Python with psycopg2 (PostgreSQL)
+import psycopg2
+conn = psycopg2.connect(
+    host="db.myapp.local",
+    port=5433,
+    database="myapp", 
+    user="myuser",
+    password="mypass",
+    sslmode="require"
+)
+
+# Python with mysql-connector (MySQL)
+import mysql.connector
+conn = mysql.connector.connect(
+    host="db.myapp.local",
+    port=3307,
+    database="myapp",
+    user="myuser", 
+    password="mypass",
+    ssl_disabled=False
+)
 ```
 
 ## 📊 Monitoring and Logging
