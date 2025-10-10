@@ -105,11 +105,14 @@ server {
     {{ $cert_file := printf "/etc/nginx/certs/%s.crt" $hostname }}
     {{ $key_file := printf "/etc/nginx/certs/%s.key" $hostname }}
     {{ range $https_port := $https_ports }}
-    listen {{ $https_port }} ssl http2;
+    listen {{ $https_port }} ssl;
     {{ if $enable_ipv6 }}
-    listen [::]:{{ $https_port }} ssl http2;
+    listen [::]:{{ $https_port }} ssl;
     {{ end }}
     {{ end }}
+
+    # Enable HTTP/2
+    http2 on;
 
     # SSL Certificate files
     ssl_certificate {{ $cert_file }};
@@ -167,9 +170,9 @@ server {
     server_name {{ $hostname }};
     server_tokens off;
     {{ range $grpc_port := $grpc_ports }}
-    listen {{ $grpc_port }} http2;
+    listen {{ $grpc_port }};
     {{ if $enable_ipv6 }}
-    listen [::]:{{ $grpc_port }} http2;
+    listen [::]:{{ $grpc_port }};
     {{ end }}
     {{ end }}
 
@@ -225,11 +228,14 @@ server {
     server_name _; # Default server for HTTPS
     server_tokens off;
     {{ range $https_port := $https_ports }}
-    listen {{ $https_port }} ssl http2 default_server;
+    listen {{ $https_port }} ssl default_server;
     {{ if $enable_ipv6 }}
-    listen [::]:{{ $https_port }} ssl http2 default_server;
+    listen [::]:{{ $https_port }} ssl default_server;
     {{ end }}
     {{ end }}
+
+    # Enable HTTP/2
+    http2 on;
 
     # Default self-signed certificate (will be generated)
     ssl_certificate /etc/nginx/certs/default.crt;

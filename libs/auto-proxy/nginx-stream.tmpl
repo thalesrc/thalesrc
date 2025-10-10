@@ -6,13 +6,9 @@
 
 # Database Protocol Configuration Variables
 {{ $postgresql_ports := split (coalesce $.Env.POSTGRESQL_PORTS "5432") "," }}
-{{ $postgresql_ssl_ports := split (coalesce $.Env.POSTGRESQL_SSL_PORTS "5433") "," }}
 {{ $mysql_ports := split (coalesce $.Env.MYSQL_PORTS "3306") "," }}
-{{ $mysql_ssl_ports := split (coalesce $.Env.MYSQL_SSL_PORTS "3307") "," }}
 {{ $redis_ports := split (coalesce $.Env.REDIS_PORTS "6379") "," }}
-{{ $redis_ssl_ports := split (coalesce $.Env.REDIS_SSL_PORTS "6380") "," }}
 {{ $mongodb_ports := split (coalesce $.Env.MONGODB_PORTS "27017") "," }}
-{{ $mongodb_ssl_ports := split (coalesce $.Env.MONGODB_SSL_PORTS "27018") "," }}
 
 # Database upstream definitions
 {{ range $host_mapping, $containers := groupByMulti $ "Env.HOST_MAPPING" "," }}
@@ -86,7 +82,7 @@ upstream {{ $hostname }}-mongodb {
 {{ $port := index $parts 2 }}
 
 {{ if eq $protocol "POSTGRESQL" }}
-# PostgreSQL Server: {{ $hostname }} -> container:{{ $port }}
+# PostgreSQL Server: {{ $hostname }} -> container:{{ $port }} (SSL Passthrough)
 {{ range $postgresql_port := $postgresql_ports }}
 server {
     listen {{ $postgresql_port }};
@@ -94,28 +90,7 @@ server {
     proxy_timeout 60s;
     proxy_connect_timeout 10s;
     proxy_responses 1;
-}
-{{ end }}
-
-# PostgreSQL SSL Server: {{ $hostname }} -> container:{{ $port }} (SSL Passthrough)
-{{ range $postgresql_ssl_port := $postgresql_ssl_ports }}
-server {
-    listen {{ $postgresql_ssl_port }} ssl;
-    proxy_pass {{ $hostname }}-postgresql;
-    proxy_timeout 60s;
-    proxy_connect_timeout 10s;
-    proxy_responses 1;
-
-    # SSL Configuration
-    {{ $cert_file := printf "/etc/nginx/certs/%s.crt" $hostname }}
-    {{ $key_file := printf "/etc/nginx/certs/%s.key" $hostname }}
-    ssl_certificate {{ $cert_file }};
-    ssl_certificate_key {{ $key_file }};
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384;
-    ssl_prefer_server_ciphers off;
-    ssl_session_cache shared:SSL:50m;
-    ssl_session_timeout 1d;
+    # SSL negotiation handled by PostgreSQL server
 }
 {{ end }}
 {{ end }}
@@ -137,7 +112,7 @@ server {
 {{ $port := index $parts 2 }}
 
 {{ if eq $protocol "MYSQL" }}
-# MySQL Server: {{ $hostname }} -> container:{{ $port }}
+# MySQL Server: {{ $hostname }} -> container:{{ $port }} (SSL Passthrough)
 {{ range $mysql_port := $mysql_ports }}
 server {
     listen {{ $mysql_port }};
@@ -145,28 +120,7 @@ server {
     proxy_timeout 60s;
     proxy_connect_timeout 10s;
     proxy_responses 1;
-}
-{{ end }}
-
-# MySQL SSL Server: {{ $hostname }} -> container:{{ $port }} (SSL Termination)
-{{ range $mysql_ssl_port := $mysql_ssl_ports }}
-server {
-    listen {{ $mysql_ssl_port }} ssl;
-    proxy_pass {{ $hostname }}-mysql;
-    proxy_timeout 60s;
-    proxy_connect_timeout 10s;
-    proxy_responses 1;
-
-    # SSL Configuration
-    {{ $cert_file := printf "/etc/nginx/certs/%s.crt" $hostname }}
-    {{ $key_file := printf "/etc/nginx/certs/%s.key" $hostname }}
-    ssl_certificate {{ $cert_file }};
-    ssl_certificate_key {{ $key_file }};
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384;
-    ssl_prefer_server_ciphers off;
-    ssl_session_cache shared:SSL:50m;
-    ssl_session_timeout 1d;
+    # SSL negotiation handled by MySQL server
 }
 {{ end }}
 {{ end }}
