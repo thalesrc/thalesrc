@@ -24,7 +24,9 @@ RUN wget --quiet https://github.com/nginx-proxy/docker-gen/releases/download/$DO
     && rm /docker-gen-alpine-linux-amd64-$DOCKER_GEN_VERSION.tar.gz
 
 # Copy application files
+COPY nginx.conf /etc/nginx/nginx.conf
 COPY nginx.tmpl /app/nginx.tmpl
+COPY nginx-stream.tmpl /app/nginx-stream.tmpl
 COPY docker-entrypoint.sh /app/docker-entrypoint.sh
 COPY start.sh /app/start.sh
 COPY orchestrator.sh /app/orchestrator.sh
@@ -36,6 +38,7 @@ RUN chmod +x /app/docker-entrypoint.sh /app/start.sh /app/orchestrator.sh /app/g
 
 # Create required directories and set permissions
 RUN mkdir -p /etc/nginx/conf.d \
+    && mkdir -p /etc/nginx/stream.d \
     && mkdir -p /etc/nginx/vhost.d \
     && mkdir -p /etc/nginx/certs \
     && mkdir -p /etc/nginx/dhparam \
@@ -57,8 +60,8 @@ RUN echo 'server { listen 80 default_server; listen [::]:80 default_server; serv
 # Set working directory
 WORKDIR /app
 
-# Expose standard HTTP, HTTPS, and gRPC ports
-EXPOSE 80 8080 443 50051 9000 9001 9002
+# Expose standard HTTP, HTTPS, gRPC, and database ports
+EXPOSE 80 8080 443 50051 9000 9001 9002 5432 3306 6379 27017
 
 # Set default environment variables
 ENV DOCKER_HOST=unix:///tmp/docker.sock
@@ -67,6 +70,10 @@ ENV TARGET_HOST="host.docker.internal"
 ENV HTTP_PORTS="80,8080"
 ENV HTTPS_PORTS="443"
 ENV GRPC_PORTS="50051,9000"
+ENV POSTGRESQL_PORTS="5432"
+ENV MYSQL_PORTS="3306"
+ENV REDIS_PORTS="6379"
+ENV MONGODB_PORTS="27017"
 ENV DEFAULT_ROOT="404"
 ENV ENABLE_IPV6="false"
 ENV SSL_POLICY="Mozilla-Intermediate"

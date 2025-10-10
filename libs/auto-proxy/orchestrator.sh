@@ -15,7 +15,9 @@ set -e
 # Configuration
 CERT_DIR="${CERT_DIR:-/etc/nginx/certs}"
 NGINX_CONF="/etc/nginx/conf.d/default.conf"
+NGINX_STREAM_CONF="/etc/nginx/stream.d/default.conf"
 NGINX_TEMPLATE="/app/nginx.tmpl"
+NGINX_STREAM_TEMPLATE="/app/nginx-stream.tmpl"
 
 # Colors for output
 RED='\033[0;31m'
@@ -132,8 +134,8 @@ discover_hostnames() {
                 local hostname="${remainder%%:::*}"
                 local port="${remainder#*:::}"
 
-                # Only include HTTP and GRPC protocols with valid hostnames
-                if [[ -n "$protocol" && -n "$hostname" && -n "$port" ]] && [[ "$protocol" == "HTTP" || "$protocol" == "GRPC" ]] && [[ "$hostname" =~ ^[a-zA-Z0-9.-]+$ ]]; then
+                # Include HTTP, GRPC, and database protocols with valid hostnames
+                if [[ -n "$protocol" && -n "$hostname" && -n "$port" ]] && [[ "$protocol" == "HTTP" || "$protocol" == "GRPC" || "$protocol" == "POSTGRESQL" || "$protocol" == "MYSQL" || "$protocol" == "REDIS" || "$protocol" == "MONGODB" ]] && [[ "$hostname" =~ ^[a-zA-Z0-9.-]+$ ]]; then
                     # Avoid duplicates
                     if [[ ! " ${hostnames[*]} " =~ " ${hostname} " ]]; then
                         hostnames+=("$hostname")
@@ -177,9 +179,14 @@ check_ssl_changes_needed() {
         done
     fi
 
-    # Check if nginx config exists and is readable
+    # Check if nginx configs exist and are readable
     if [[ ! -f "$NGINX_CONF" ]] || [[ ! -r "$NGINX_CONF" ]]; then
-        log_info "Nginx configuration missing or unreadable"
+        log_info "Nginx HTTP configuration missing or unreadable"
+        changes_needed=true
+    fi
+
+    if [[ ! -f "$NGINX_STREAM_CONF" ]] || [[ ! -r "$NGINX_STREAM_CONF" ]]; then
+        log_info "Nginx Stream configuration missing or unreadable"
         changes_needed=true
     fi
 
@@ -236,13 +243,19 @@ ensure_certificates() {
 update_nginx_config() {
     log_info "Updating nginx configuration..."
 
-    # Generate new configuration using docker-gen
+    # Generate new HTTP configuration using docker-gen
     docker-gen "$NGINX_TEMPLATE" "$NGINX_CONF" || {
-        log_error "Failed to generate nginx configuration"
+        log_error "Failed to generate nginx HTTP configuration"
         return 1
     }
 
-    log_success "Nginx configuration updated"
+    # Generate new Stream configuration using docker-gen
+    docker-gen "$NGINX_STREAM_TEMPLATE" "$NGINX_STREAM_CONF" || {
+        log_error "Failed to generate nginx Stream configuration"
+        return 1
+    }
+
+    log_success "Nginx configuration updated (HTTP and Stream)"
 }
 
 # Main orchestration cycle

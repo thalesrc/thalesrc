@@ -11,7 +11,8 @@ Docker-aware nginx reverse proxy with automatic SSL and service discovery. Perfe
 - 🚀 **nginx + docker-gen Architecture**: Based on proven nginx-proxy design
 - 🌐 **Automatic HTTPS**: Self-signed SSL certificates generated on-demand  
 - 🔌 **gRPC Support**: Native HTTP/2 gRPC proxying with proper protocol handling
-- 📝 **HOST_MAPPING**: Custom environment variable format for easy configuration
+- �️ **Database Support**: PostgreSQL, MySQL, Redis, and MongoDB TCP proxying
+- �📝 **HOST_MAPPING**: Custom environment variable format for easy configuration
 - 🐳 **Docker Ready**: Lightweight reverse proxy for development environments
 - 🎯 **Local Development**: Optimized for development workflows and local domains
 - ⚡ **High Performance**: nginx-powered with zero-downtime container discovery
@@ -21,20 +22,24 @@ Docker-aware nginx reverse proxy with automatic SSL and service discovery. Perfe
 - 💚 **Health Checks**: Built-in monitoring and status endpoints
 - 🔒 **SSL Policies**: Configurable SSL security policies
 - 🌍 **IPv6 Support**: Optional IPv6 support
-- 🎛️ **Multi-Protocol**: HTTP/HTTPS/gRPC protocol support
-- 🚪 **Multi-Port**: Configurable HTTP, HTTPS, and gRPC ports
+- 🎛️ **Multi-Protocol**: HTTP/HTTPS/gRPC/Database protocol support
+- 🚪 **Multi-Port**: Configurable HTTP, HTTPS, gRPC, and database ports
 
 ## 🚀 Quick Start
 
 ### Usage
 
 ```bash
-# Start the auto-proxy
+# Start the auto-proxy with all protocol support
 docker run --detach \
-  --name thales-auto-proxy \
+  --name thalesrc-auto-proxy \
   --publish 80:80 \
   --publish 443:443 \
   --publish 50051:50051 \
+  --publish 5432:5432 \
+  --publish 3306:3306 \
+  --publish 6379:6379 \
+  --publish 27017:27017 \
   --volume /var/run/docker.sock:/tmp/docker.sock:ro \
   thalesrc/auto-proxy
 
@@ -48,6 +53,20 @@ docker run --detach \
   --name web-service \
   --env HOST_MAPPING="HTTP:::web.myapp.local:::8080" \
   your-web-service
+
+# Start database services
+docker run --detach \
+  --name postgres-service \
+  --env HOST_MAPPING="POSTGRESQL:::db.myapp.local:::5432" \
+  --env POSTGRES_DB=myapp \
+  --env POSTGRES_USER=user \
+  --env POSTGRES_PASSWORD=password \
+  postgres:15
+
+docker run --detach \
+  --name redis-service \
+  --env HOST_MAPPING="REDIS:::cache.myapp.local:::6379" \
+  redis:7-alpine
 ```
 
 
@@ -64,6 +83,10 @@ services:
       - "80:80"          # HTTP port
       - "443:443"        # HTTPS port
       - "50051:50051"    # gRPC port
+      - "5432:5432"      # PostgreSQL port
+      - "3306:3306"      # MySQL port
+      - "6379:6379"      # Redis port
+      - "27017:27017"    # MongoDB port
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - auto_proxy_certs:/etc/nginx/certs
@@ -90,8 +113,43 @@ services:
     networks:
       - app-network
 
+  # Database services
+  postgres:
+    image: postgres:15
+    environment:
+      - HOST_MAPPING=POSTGRESQL:::db.myapp.local:::5432
+      - POSTGRES_DB=myapp
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  redis:
+    image: redis:7-alpine
+    environment:
+      - HOST_MAPPING=REDIS:::cache.myapp.local:::6379
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:8
+    environment:
+      - HOST_MAPPING=MYSQL:::mysql.myapp.local:::3306
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=myapp
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+
 volumes:
   auto_proxy_certs:
+  postgres_data:
+  mysql_data:
 
 networks:
   app-network:
@@ -107,6 +165,9 @@ Add these entries to your hosts file:
 127.0.0.1 api.myapp.local
 127.0.0.1 web.myapp.local
 127.0.0.1 admin.myapp.local
+127.0.0.1 db.myapp.local
+127.0.0.1 cache.myapp.local
+127.0.0.1 mysql.myapp.local
 ```
 
 **Windows** (`C:\Windows\System32\drivers\etc\hosts`):
@@ -114,16 +175,26 @@ Add these entries to your hosts file:
 127.0.0.1 api.myapp.local
 127.0.0.1 web.myapp.local  
 127.0.0.1 admin.myapp.local
+127.0.0.1 db.myapp.local
+127.0.0.1 cache.myapp.local
+127.0.0.1 mysql.myapp.local
 ```
 
 ### Access Your Services
 
+**Web Services:**
 - `http://api.myapp.local/` - API service (HTTP)
 - `https://api.myapp.local/` - API service (HTTPS with auto-generated SSL)
 - `http://web.myapp.local/` - Web application (HTTP)  
 - `https://web.myapp.local/` - Web application (HTTPS with auto-generated SSL)
 - `api.myapp.local:50051` - API service gRPC (standard port)
 - `api.myapp.local:9000` - API service gRPC (alternative port)
+
+**Database Services:**
+- `db.myapp.local:5432` - PostgreSQL database
+- `cache.myapp.local:6379` - Redis cache
+- `mysql.myapp.local:3306` - MySQL database
+- Connect using standard database clients with the mapped hostnames
 
 **🔐 SSL certificates are automatically generated** for all hostnames when containers start!
 
@@ -145,6 +216,11 @@ docker run -d --env HOST_MAPPING="HTTP:::api.myapp.local:::3000" my-api-service
 # Multiple services from one container
 docker run -d --env HOST_MAPPING="HTTP:::api.myapp.local:::3000,GRPC:::api.myapp.local:::50051" my-service
 
+# Database services
+docker run -d --env HOST_MAPPING="POSTGRESQL:::db.myapp.local:::5432" postgres:15
+docker run -d --env HOST_MAPPING="REDIS:::cache.myapp.local:::6379" redis:7-alpine
+docker run -d --env HOST_MAPPING="MYSQL:::mysql.myapp.local:::3306" mysql:8
+
 # Complex setup with multiple protocols
 docker run -d --env HOST_MAPPING="HTTP:::admin.myapp.local:::4000,GRPC:::admin.myapp.local:::50052" my-admin-service
 ```
@@ -154,9 +230,9 @@ docker run -d --env HOST_MAPPING="HTTP:::admin.myapp.local:::4000,GRPC:::admin.m
 ### Environment Variables
 
 #### For Service Containers:
-| Variable | Description |
-|----------|-------------|
-| `HOST_MAPPING` | Custom format: `PROTOCOL:::HOSTNAME:::PORT,...` |
+| Variable | Description | Supported Protocols |
+|----------|-------------|---------------------|
+| `HOST_MAPPING` | Custom format: `PROTOCOL:::HOSTNAME:::PORT,...` | `HTTP`, `GRPC`, `POSTGRESQL`, `MYSQL`, `REDIS`, `MONGODB` |
 
 #### For Auto-Proxy Container:
 | Variable | Default | Description |
@@ -165,6 +241,10 @@ docker run -d --env HOST_MAPPING="HTTP:::admin.myapp.local:::4000,GRPC:::admin.m
 | `HTTP_PORTS` | `80,8080` | Comma-separated list of HTTP proxy ports |
 | `HTTPS_PORTS` | `443` | Comma-separated list of HTTPS proxy ports |
 | `GRPC_PORTS` | `50051,9000` | Comma-separated list of gRPC proxy ports |
+| `POSTGRESQL_PORTS` | `5432` | Comma-separated list of PostgreSQL proxy ports |
+| `MYSQL_PORTS` | `3306` | Comma-separated list of MySQL proxy ports |
+| `REDIS_PORTS` | `6379` | Comma-separated list of Redis proxy ports |
+| `MONGODB_PORTS` | `27017` | Comma-separated list of MongoDB proxy ports |
 | `DEFAULT_HOST` | `""` | Default host for unknown requests |
 | `DEFAULT_ROOT` | `404` | Default response (404, 503, or redirect) |
 | `ENABLE_IPV6` | `false` | Enable IPv6 support |
@@ -185,6 +265,12 @@ HTTPS_PORTS="443,8443"
 
 # gRPC ports (comma-separated)
 GRPC_PORTS="50051,9000,9001"
+
+# Database ports (comma-separated)
+POSTGRESQL_PORTS="5432,5433"
+MYSQL_PORTS="3306,3307"
+REDIS_PORTS="6379,6380"
+MONGODB_PORTS="27017,27018"
 ```
 
 ### SSL Configuration
@@ -277,6 +363,66 @@ docker run -d --env HOST_MAPPING="HTTP:::orders.api.local:::3002" orders-api
 docker run -d --env HOST_MAPPING="HTTP:::payments.api.local:::3003" payments-api
 ```
 
+### 5. Database Development Environment
+
+Unified database access through the proxy:
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  auto-proxy:
+    image: thalesrc/auto-proxy
+    ports: ["80:80", "443:443", "5432:5432", "3306:3306", "6379:6379"]
+    volumes: ["/var/run/docker.sock:/tmp/docker.sock:ro"]
+
+  # PostgreSQL cluster
+  postgres-primary:
+    image: postgres:15
+    environment:
+      - HOST_MAPPING=POSTGRESQL:::db-primary.local:::5432
+      - POSTGRES_DB=myapp
+    volumes: [postgres_primary:/var/lib/postgresql/data]
+    
+  postgres-replica:
+    image: postgres:15
+    environment:
+      - HOST_MAPPING=POSTGRESQL:::db-replica.local:::5432
+      - POSTGRES_DB=myapp
+    volumes: [postgres_replica:/var/lib/postgresql/data]
+
+  # Redis cluster
+  redis-master:
+    image: redis:7-alpine
+    environment:
+      - HOST_MAPPING=REDIS:::cache-master.local:::6379
+      
+  redis-slave:
+    image: redis:7-alpine
+    environment:
+      - HOST_MAPPING=REDIS:::cache-slave.local:::6379
+
+  # MySQL
+  mysql:
+    image: mysql:8
+    environment:
+      - HOST_MAPPING=MYSQL:::mysql.local:::3306
+      - MYSQL_ROOT_PASSWORD=password
+    volumes: [mysql_data:/var/lib/mysql]
+```
+
+**Connect to databases:**
+```bash
+# PostgreSQL
+psql -h db-primary.local -p 5432 -U user -d myapp
+
+# MySQL 
+mysql -h mysql.local -P 3306 -u root -p
+
+# Redis
+redis-cli -h cache-master.local -p 6379
+```
+
 ## 🔧 Advanced Configuration
 
 ### Custom nginx Configuration
@@ -330,7 +476,7 @@ nginx access logs are available at `/var/log/nginx/access.log`:
 
 ```bash
 # View real-time logs
-docker exec thales-auto-proxy tail -f /var/log/nginx/access.log
+docker exec thalesrc-auto-proxy tail -f /var/log/nginx/access.log
 
 # Custom log format
 NGINX_LOG_FORMAT='$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"'
@@ -342,7 +488,7 @@ Monitor container discovery and SSL certificate generation:
 
 ```bash
 # View orchestrator logs
-docker logs thales-auto-proxy
+docker logs thalesrc-auto-proxy
 
 # Enable debug logging
 DEBUG=true
@@ -371,7 +517,7 @@ docker build -t thalesrc/auto-proxy .
 
 # Run locally
 docker run -d \
-  --name thales-auto-proxy \
+  --name thalesrc-auto-proxy \
   -p 80:80 -p 443:443 \
   -v /var/run/docker.sock:/tmp/docker.sock:ro \
   thalesrc/auto-proxy
@@ -406,15 +552,19 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🗺️ Roadmap
 
+- [x] Database protocol support (PostgreSQL, MySQL, Redis, MongoDB)
+- [x] Layer 4 TCP proxying with nginx stream module
 - [ ] Better documentation and examples
-- [ ] Performance optimizations
+- [ ] Performance optimizations for database connections
 - [ ] Enhanced logging and debugging
+- [ ] Database connection pooling support
+- [ ] SSL/TLS support for database connections
 
 ---
 
 <div align="center">
 
-**Made with ❤️ by [Thales](https://github.com/thalesrc)**
+**Made with ❤️ by [Thalesrc](https://github.com/thalesrc)**
 
 [Website](https://thalesrc.com) • [GitHub](https://github.com/thalesrc) • [NPM](https://www.npmjs.com/org/thalesrc)
 
