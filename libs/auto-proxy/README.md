@@ -1,4 +1,8 @@
-# @thalesrc/auto-proxy
+# @thalesrc/- 🔌 **gRPC Support**: Native HTTP/2 gRPC proxying with proper protocol handling
+- 🗄️ **Database Support**: Unified DATABASE protocol for PostgreSQL, MySQL, Redis, MongoDB and other TCP databases
+- 🌐 **WebSocket & SSE Support**: Real-time bidirectional and server-sent events
+- 📹 **WebRTC Compatible**: ICE/STUN/TURN traffic passthrough support
+- 📝 **HOST_MAPPING**: Custom environment variable format for easy configurationo-proxy
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Docker Pulls](https://img.shields.io/docker/pulls/thalesrc/auto-proxy)](https://hub.docker.com/r/thalesrc/auto-proxy)
@@ -57,7 +61,7 @@ docker run --detach \
 # Start database services
 docker run --detach \
   --name postgres-service \
-  --env HOST_MAPPING="POSTGRESQL:::db.myapp.local:::5432" \
+  --env HOST_MAPPING="DATABASE:::db.myapp.local:::5432" \
   --env POSTGRES_DB=myapp \
   --env POSTGRES_USER=user \
   --env POSTGRES_PASSWORD=password \
@@ -65,7 +69,7 @@ docker run --detach \
 
 docker run --detach \
   --name redis-service \
-  --env HOST_MAPPING="REDIS:::cache.myapp.local:::6379" \
+  --env HOST_MAPPING="DATABASE:::cache.myapp.local:::6379" \
   redis:7-alpine
 ```
 
@@ -83,10 +87,10 @@ services:
       - "80:80"          # HTTP port
       - "443:443"        # HTTPS port
       - "50051:50051"    # gRPC port
-      - "5432:5432"      # PostgreSQL port (with SSL support)
-      - "3306:3306"      # MySQL port (with SSL support)
-      - "6379:6379"      # Redis port (with SSL support)
-      - "27017:27017"    # MongoDB port (with SSL support)
+      - "5432:5432"      # Database port (PostgreSQL)
+      - "3306:3306"      # Database port (MySQL)
+      - "6379:6379"      # Database port (Redis)
+      - "27017:27017"    # Database port (MongoDB)
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - auto_proxy_certs:/etc/nginx/certs
@@ -117,7 +121,7 @@ services:
   postgres:
     image: postgres:15
     environment:
-      - HOST_MAPPING=POSTGRESQL:::db.myapp.local:::5432
+      - HOST_MAPPING=DATABASE:::db.myapp.local:::5432
       - POSTGRES_DB=myapp
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
@@ -129,7 +133,7 @@ services:
   redis:
     image: redis:7-alpine
     environment:
-      - HOST_MAPPING=REDIS:::cache.myapp.local:::6379
+      - HOST_MAPPING=DATABASE:::cache.myapp.local:::6379
     networks:
       - app-network
 
@@ -232,7 +236,7 @@ docker run -d --env HOST_MAPPING="HTTP:::admin.myapp.local:::4000,GRPC:::admin.m
 #### For Service Containers:
 | Variable | Description | Supported Protocols |
 |----------|-------------|---------------------|
-| `HOST_MAPPING` | Custom format: `PROTOCOL:::HOSTNAME:::PORT,...` | `HTTP`, `GRPC`, `POSTGRESQL`, `MYSQL`, `REDIS`, `MONGODB` |
+| `HOST_MAPPING` | Custom format: `PROTOCOL:::HOSTNAME:::PORT,...` | `HTTP`, `GRPC`, `DATABASE` |
 
 #### For Auto-Proxy Container:
 | Variable | Default | Description |
@@ -241,10 +245,7 @@ docker run -d --env HOST_MAPPING="HTTP:::admin.myapp.local:::4000,GRPC:::admin.m
 | `HTTP_PORTS` | `80,8080` | Comma-separated list of HTTP proxy ports |
 | `HTTPS_PORTS` | `443` | Comma-separated list of HTTPS proxy ports |
 | `GRPC_PORTS` | `50051,9000` | Comma-separated list of gRPC proxy ports |
-| `POSTGRESQL_PORTS` | `5432` | Comma-separated list of PostgreSQL proxy ports |
-| `MYSQL_PORTS` | `3306` | Comma-separated list of MySQL proxy ports |
-| `REDIS_PORTS` | `6379` | Comma-separated list of Redis proxy ports |
-| `MONGODB_PORTS` | `27017` | Comma-separated list of MongoDB proxy ports |
+| `DATABASE_PORTS` | `5432,3306,6379,27017` | Comma-separated list of database proxy ports (PostgreSQL, MySQL, Redis, MongoDB) |
 | `DEFAULT_HOST` | `""` | Default host for unknown requests |
 | `DEFAULT_ROOT` | `404` | Default response (404, 503, or redirect) |
 | `ENABLE_IPV6` | `false` | Enable IPv6 support |
@@ -267,10 +268,7 @@ HTTPS_PORTS="443,8443"
 GRPC_PORTS="50051,9000,9001"
 
 # Database ports (comma-separated)
-POSTGRESQL_PORTS="5432,5433"
-MYSQL_PORTS="3306,3307"
-REDIS_PORTS="6379,6380"
-MONGODB_PORTS="27017,27018"
+DATABASE_PORTS="5432,3306,6379,27017"
 ```
 
 ### SSL Configuration
@@ -363,7 +361,45 @@ docker run -d --env HOST_MAPPING="HTTP:::orders.api.local:::3002" orders-api
 docker run -d --env HOST_MAPPING="HTTP:::payments.api.local:::3003" payments-api
 ```
 
-### 5. Database Development Environment
+### 5. Real-time Applications
+
+WebSocket, SSE, and WebRTC applications:
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  auto-proxy:
+    image: thalesrc/auto-proxy
+    ports: ["80:80", "443:443"]
+    volumes: ["/var/run/docker.sock:/tmp/docker.sock:ro"]
+
+  # WebSocket chat server
+  chat-ws:
+    image: my-chat-server
+    environment:
+      - HOST_MAPPING=HTTP:::chat.app.local:::3000
+
+  # SSE notification server
+  notifications:
+    image: my-notification-server
+    environment:
+      - HOST_MAPPING=HTTP:::notify.app.local:::4000
+      
+  # WebRTC signaling server
+  webrtc-signaling:
+    image: my-webrtc-server
+    environment:
+      - HOST_MAPPING=HTTP:::webrtc.app.local:::5000
+
+  # Real-time dashboard
+  dashboard:
+    image: my-dashboard
+    environment:
+      - HOST_MAPPING=HTTP:::dashboard.app.local:::8080
+```
+
+### 6. Database Development Environment
 
 Unified database access through the proxy:
 
@@ -413,23 +449,17 @@ services:
 
 **Connect to databases:**
 ```bash
-# PostgreSQL (regular)
+# PostgreSQL
 psql -h db-primary.local -p 5432 -U user -d myapp
 
-# PostgreSQL (SSL - same port, different connection parameters)
-psql "host=db-primary.local port=5432 user=user dbname=myapp sslmode=require"
-
-# MySQL (regular)
+# MySQL
 mysql -h mysql.local -P 3306 -u root -p
 
-# MySQL (SSL - same port, different connection parameters)
-mysql -h mysql.local -P 3306 -u root -p --ssl-mode=REQUIRED
-
-# Redis (regular)
+# Redis
 redis-cli -h cache-master.local -p 6379
 
-# Redis (SSL - same port, different connection parameters)
-redis-cli -h cache-master.local -p 6379 --tls
+# MongoDB
+mongosh mongodb://mongo.local:27017/myapp
 ```
 
 ## 🔧 Advanced Configuration
@@ -477,97 +507,154 @@ SSL_CIPHERS="ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256"
 SSL_PROTOCOLS="TLSv1.2 TLSv1.3"
 ```
 
-### Database SSL Configuration
+### Database Configuration
 
-The auto-proxy supports **SSL passthrough** for database connections. SSL negotiation is handled directly by your database servers - the proxy simply forwards all traffic (both plain and SSL) through the same port.
+The auto-proxy provides **TCP passthrough** for database connections. Database protocols are proxied at Layer 4 (TCP level), allowing your database servers to handle their own authentication and encryption.
 
 ```bash
 # Start auto-proxy with database ports
 docker run -d \
   --name thales-auto-proxy \
-  --publish 5432:5432 \    # PostgreSQL (supports both plain and SSL)
-  --publish 3306:3306 \    # MySQL (supports both plain and SSL)
+  --publish 5432:5432 \    # PostgreSQL
+  --publish 3306:3306 \    # MySQL
+  --publish 6379:6379 \    # Redis
+  --publish 27017:27017 \  # MongoDB
   --volume /var/run/docker.sock:/tmp/docker.sock:ro \
   thalesrc/auto-proxy
 
-# Start PostgreSQL container with SSL enabled
+# Start database services
 docker run -d \
   --name postgres \
-  --env HOST_MAPPING="POSTGRESQL:::db.myapp.local:::5432" \
+  --env HOST_MAPPING="DATABASE:::db.myapp.local:::5432" \
   --env POSTGRES_DB=myapp \
   --env POSTGRES_USER=myuser \
   --env POSTGRES_PASSWORD=mypass \
   postgres:15
+
+docker run -d \
+  --name mysql \
+  --env HOST_MAPPING="DATABASE:::mysql.myapp.local:::3306" \
+  --env MYSQL_ROOT_PASSWORD=rootpass \
+  --env MYSQL_DATABASE=myapp \
+  mysql:8
+
+docker run -d \
+  --name redis \
+  --env HOST_MAPPING="DATABASE:::cache.myapp.local:::6379" \
+  redis:7-alpine
 ```
 
-**SSL Connection Examples (Same Port, Different SSL Mode):**
+**Database Connection Examples:**
 
 ```bash
-# PostgreSQL - Plain connection
+# PostgreSQL
 psql -h db.myapp.local -p 5432 -U myuser -d myapp
 
-# PostgreSQL - SSL connection (same port!)
-psql "host=db.myapp.local port=5432 user=myuser dbname=myapp sslmode=require"
+# MySQL
+mysql -h mysql.myapp.local -P 3306 -u root -p
 
-# MySQL - Plain connection
-mysql -h db.myapp.local -P 3306 -u root -p
-
-# MySQL - SSL connection (same port!)
-mysql -h db.myapp.local -P 3306 -u root -p --ssl-mode=REQUIRED
-
-# Redis - Plain connection
+# Redis
 redis-cli -h cache.myapp.local -p 6379
 
-# Redis - SSL connection (same port!)
-redis-cli -h cache.myapp.local -p 6379 --tls
+# MongoDB
+mongosh mongodb://mongo.myapp.local:27017/myapp
 ```
 
-**Python Examples:**
+**Note**: SSL/TLS support is handled by your database servers directly. Configure SSL in your database containers as needed for your security requirements.
 
-```python
-# PostgreSQL with psycopg2 - SSL on same port
-import psycopg2
+### Real-time Communication Support
 
-# Plain connection
-conn_plain = psycopg2.connect(
-    host="db.myapp.local",
-    port=5432,
-    database="myapp", 
-    user="myuser",
-    password="mypass"
-)
+The auto-proxy provides comprehensive support for real-time web technologies:
 
-# SSL connection (same port, different sslmode)
-conn_ssl = psycopg2.connect(
-    host="db.myapp.local", 
-    port=5432,  # Same port!
-    database="myapp",
-    user="myuser",
-    password="mypass", 
-    sslmode="require"  # SSL enabled
-)
+#### WebSocket Support
 
-# MySQL with mysql-connector - SSL on same port
-import mysql.connector
+WebSockets are automatically supported for all HTTP services. No additional configuration needed!
 
-# Plain connection
-conn_plain = mysql.connector.connect(
-    host="db.myapp.local",
-    port=3306,
-    database="myapp",
-    user="myuser",
-    password="mypass"
-)
+```bash
+# Start WebSocket server
+docker run -d \
+  --name websocket-server \
+  --env HOST_MAPPING="HTTP:::ws.myapp.local:::8080" \
+  my-websocket-app
 
-# SSL connection (same port, SSL enabled)
-conn_ssl = mysql.connector.connect(
-    host="db.myapp.local",
-    port=3306,  # Same port!
-    database="myapp", 
-    user="myuser",
-    password="mypass",
-    ssl_disabled=False  # SSL enabled
-)
+# Connect via JavaScript
+const ws = new WebSocket('ws://ws.myapp.local/socket');
+const wss = new WebSocket('wss://ws.myapp.local/socket'); // SSL
+```
+
+#### Server-Sent Events (SSE) Support
+
+SSE is optimized with disabled buffering for real-time event streaming:
+
+```bash
+# Start SSE server
+docker run -d \
+  --name sse-server \
+  --env HOST_MAPPING="HTTP:::events.myapp.local:::3000" \
+  my-sse-app
+
+# Connect via JavaScript
+const eventSource = new EventSource('https://events.myapp.local/stream');
+eventSource.onmessage = function(event) {
+    console.log('Received:', event.data);
+};
+```
+
+#### WebRTC Support
+
+WebRTC signaling servers work seamlessly through HTTP/WebSocket proxying:
+
+```bash
+# Start WebRTC signaling server
+docker run -d \
+  --name webrtc-signaling \
+  --env HOST_MAPPING="HTTP:::webrtc.myapp.local:::4000" \
+  my-webrtc-signaling-server
+
+# Your WebRTC app can use standard STUN/TURN servers
+# ICE candidates and media traffic work with the proxy
+```
+
+#### Example: Real-time Chat Application
+
+```yaml
+version: '3.8'
+services:
+  auto-proxy:
+    image: thalesrc/auto-proxy
+    ports: ["80:80", "443:443"]
+    volumes: ["/var/run/docker.sock:/tmp/docker.sock:ro"]
+
+  chat-backend:
+    image: my-chat-backend
+    environment:
+      - HOST_MAPPING=HTTP:::chat.myapp.local:::3000
+    # WebSocket connections to /ws endpoint
+
+  chat-frontend:
+    image: my-chat-frontend  
+    environment:
+      - HOST_MAPPING=HTTP:::app.myapp.local:::8080
+    # Serves the chat UI
+
+  notification-service:
+    image: my-notification-service
+    environment:
+      - HOST_MAPPING=HTTP:::notifications.myapp.local:::4000
+    # Server-Sent Events for real-time notifications
+```
+
+**Connection Examples:**
+
+```javascript
+// WebSocket connection
+const chatWs = new WebSocket('wss://chat.myapp.local/ws');
+
+// SSE connection
+const notifications = new EventSource('https://notifications.myapp.local/events');
+
+// WebRTC signaling through WebSocket
+const signalingWs = new WebSocket('wss://chat.myapp.local/webrtc-signaling');
 ```
 
 ## 📊 Monitoring and Logging

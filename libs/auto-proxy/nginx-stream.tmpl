@@ -1,14 +1,12 @@
 # Thales Auto Proxy Stream Configuration Template
 # Stream module for Layer 4 (TCP/UDP) database protocol proxying
-# Format: HOST_MAPPING=PROTOCOL:::HOSTNAME:::CONTAINER_PORT
+# Format: HOST_MAPPING=DATABASE:::HOSTNAME:::CONTAINER_PORT
+# Supports: PostgreSQL, MySQL, Redis, MongoDB, and other TCP-based databases
 
 {{ $CurrentContainer := where $ "ID" .Docker.CurrentContainerID | first }}
 
 # Database Protocol Configuration Variables
-{{ $postgresql_ports := split (coalesce $.Env.POSTGRESQL_PORTS "5432") "," }}
-{{ $mysql_ports := split (coalesce $.Env.MYSQL_PORTS "3306") "," }}
-{{ $redis_ports := split (coalesce $.Env.REDIS_PORTS "6379") "," }}
-{{ $mongodb_ports := split (coalesce $.Env.MONGODB_PORTS "27017") "," }}
+{{ $database_ports := split (coalesce $.Env.DATABASE_PORTS "5432,3306,6379,27017") "," }}
 
 # Database upstream definitions
 {{ range $host_mapping, $containers := groupByMulti $ "Env.HOST_MAPPING" "," }}
@@ -21,42 +19,9 @@
 {{ $hostname := index $parts 1 }}
 {{ $port := index $parts 2 }}
 
-{{ if eq $protocol "POSTGRESQL" }}
-# PostgreSQL upstream: {{ $hostname }} -> containers:{{ $port }}
-upstream {{ $hostname }}-postgresql {
-{{ range $container := $containers }}
-    {{ $network := index $container.Networks 0 }}
-    # {{ $container.Name }}
-    server {{ $network.IP }}:{{ $port }};
-{{ end }}
-}
-{{ end }}
-
-{{ if eq $protocol "MYSQL" }}
-# MySQL upstream: {{ $hostname }} -> containers:{{ $port }}
-upstream {{ $hostname }}-mysql {
-{{ range $container := $containers }}
-    {{ $network := index $container.Networks 0 }}
-    # {{ $container.Name }}
-    server {{ $network.IP }}:{{ $port }};
-{{ end }}
-}
-{{ end }}
-
-{{ if eq $protocol "REDIS" }}
-# Redis upstream: {{ $hostname }} -> containers:{{ $port }}
-upstream {{ $hostname }}-redis {
-{{ range $container := $containers }}
-    {{ $network := index $container.Networks 0 }}
-    # {{ $container.Name }}
-    server {{ $network.IP }}:{{ $port }};
-{{ end }}
-}
-{{ end }}
-
-{{ if eq $protocol "MONGODB" }}
-# MongoDB upstream: {{ $hostname }} -> containers:{{ $port }}
-upstream {{ $hostname }}-mongodb {
+{{ if eq $protocol "DATABASE" }}
+# Database upstream: {{ $hostname }} -> containers:{{ $port }}
+upstream {{ $hostname }}-database {
 {{ range $container := $containers }}
     {{ $network := index $container.Networks 0 }}
     # {{ $container.Name }}
@@ -70,7 +35,7 @@ upstream {{ $hostname }}-mongodb {
 {{ end }}
 {{ end }}
 
-# PostgreSQL Servers
+# Database Servers (PostgreSQL, MySQL, Redis, MongoDB, etc.)
 {{ range $host_mapping, $containers := groupByMulti $ "Env.HOST_MAPPING" "," }}
 {{ if $host_mapping }}
 {{ $mappings := split $host_mapping "," }}
@@ -81,103 +46,16 @@ upstream {{ $hostname }}-mongodb {
 {{ $hostname := index $parts 1 }}
 {{ $port := index $parts 2 }}
 
-{{ if eq $protocol "POSTGRESQL" }}
-# PostgreSQL Server: {{ $hostname }} -> container:{{ $port }} (SSL Passthrough)
-{{ range $postgresql_port := $postgresql_ports }}
+{{ if eq $protocol "DATABASE" }}
+# Database Server: {{ $hostname }} -> container:{{ $port }} (TCP Passthrough)
+{{ range $database_port := $database_ports }}
 server {
-    listen {{ $postgresql_port }};
-    proxy_pass {{ $hostname }}-postgresql;
+    listen {{ $database_port }};
+    proxy_pass {{ $hostname }}-database;
     proxy_timeout 60s;
     proxy_connect_timeout 10s;
     proxy_responses 1;
-    # SSL negotiation handled by PostgreSQL server
-}
-{{ end }}
-{{ end }}
-
-{{ end }}
-{{ end }}
-{{ end }}
-{{ end }}
-
-# MySQL Servers
-{{ range $host_mapping, $containers := groupByMulti $ "Env.HOST_MAPPING" "," }}
-{{ if $host_mapping }}
-{{ $mappings := split $host_mapping "," }}
-{{ range $mapping := $mappings }}
-{{ $parts := split $mapping ":::" }}
-{{ if eq (len $parts) 3 }}
-{{ $protocol := index $parts 0 }}
-{{ $hostname := index $parts 1 }}
-{{ $port := index $parts 2 }}
-
-{{ if eq $protocol "MYSQL" }}
-# MySQL Server: {{ $hostname }} -> container:{{ $port }} (SSL Passthrough)
-{{ range $mysql_port := $mysql_ports }}
-server {
-    listen {{ $mysql_port }};
-    proxy_pass {{ $hostname }}-mysql;
-    proxy_timeout 60s;
-    proxy_connect_timeout 10s;
-    proxy_responses 1;
-    # SSL negotiation handled by MySQL server
-}
-{{ end }}
-{{ end }}
-
-{{ end }}
-{{ end }}
-{{ end }}
-{{ end }}
-
-# Redis Servers
-{{ range $host_mapping, $containers := groupByMulti $ "Env.HOST_MAPPING" "," }}
-{{ if $host_mapping }}
-{{ $mappings := split $host_mapping "," }}
-{{ range $mapping := $mappings }}
-{{ $parts := split $mapping ":::" }}
-{{ if eq (len $parts) 3 }}
-{{ $protocol := index $parts 0 }}
-{{ $hostname := index $parts 1 }}
-{{ $port := index $parts 2 }}
-
-{{ if eq $protocol "REDIS" }}
-# Redis Server: {{ $hostname }} -> container:{{ $port }}
-{{ range $redis_port := $redis_ports }}
-server {
-    listen {{ $redis_port }};
-    proxy_pass {{ $hostname }}-redis;
-    proxy_timeout 60s;
-    proxy_connect_timeout 10s;
-}
-{{ end }}
-{{ end }}
-
-{{ end }}
-{{ end }}
-{{ end }}
-{{ end }}
-
-# MongoDB Servers
-{{ range $host_mapping, $containers := groupByMulti $ "Env.HOST_MAPPING" "," }}
-{{ if $host_mapping }}
-{{ $mappings := split $host_mapping "," }}
-{{ range $mapping := $mappings }}
-{{ $parts := split $mapping ":::" }}
-{{ if eq (len $parts) 3 }}
-{{ $protocol := index $parts 0 }}
-{{ $hostname := index $parts 1 }}
-{{ $port := index $parts 2 }}
-
-{{ if eq $protocol "MONGODB" }}
-# MongoDB Server: {{ $hostname }} -> container:{{ $port }}
-{{ range $mongodb_port := $mongodb_ports }}
-server {
-    listen {{ $mongodb_port }};
-    proxy_pass {{ $hostname }}-mongodb;
-    proxy_timeout 60s;
-    proxy_connect_timeout 10s;
-    proxy_responses 1;
+    # SSL/TLS negotiation handled by database server
 }
 {{ end }}
 {{ end }}

@@ -135,7 +135,7 @@ discover_hostnames() {
                 local port="${remainder#*:::}"
 
                 # Include HTTP, GRPC, and database protocols with valid hostnames
-                if [[ -n "$protocol" && -n "$hostname" && -n "$port" ]] && [[ "$protocol" == "HTTP" || "$protocol" == "GRPC" || "$protocol" == "POSTGRESQL" || "$protocol" == "MYSQL" || "$protocol" == "REDIS" || "$protocol" == "MONGODB" ]] && [[ "$hostname" =~ ^[a-zA-Z0-9.-]+$ ]]; then
+                if [[ -n "$protocol" && -n "$hostname" && -n "$port" ]] && [[ "$protocol" == "HTTP" || "$protocol" == "GRPC" || "$protocol" == "DATABASE" ]] && [[ "$hostname" =~ ^[a-zA-Z0-9.-]+$ ]]; then
                     # Avoid duplicates
                     if [[ ! " ${hostnames[*]} " =~ " ${hostname} " ]]; then
                         hostnames+=("$hostname")
