@@ -11,8 +11,8 @@
   "main": "./index.cjs",
   "typings": "./index.d.ts",
   "_exports": [
-    "to-async-iterator",
-    "static/to-async-iterator",
+    "to-async-iteratable",
+    "static/async-iterator",
     "operators/",
     "operators/share-last"
   ]
