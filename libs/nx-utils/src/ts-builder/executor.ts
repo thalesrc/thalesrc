@@ -12,19 +12,41 @@ function promisifyStream(stream: NodeJS.ReadableStream) {
   });
 }
 
+const DEFAULT_FILES_GLOB = ['src/**/*.ts', '!src/**/*.spec.ts'];
+
 const runExecutor: PromiseExecutor<TsBuilderExecutorSchema> = async (
   {
-    files = ['src/**/*.ts', '!src/**/*.spec.ts'],
+    files,
     tsConfigPath = './tsconfig.json',
     outputPath = 'dist',
   },
-  { projectName, root: workspaceRoot, projectsConfigurations: {
-    projects: {
-      [projectName]: { root }
+  {
+    projectName,
+    root: workspaceRoot,
+    projectsConfigurations: {
+      projects: {
+        [projectName]: { root }
+      }
     }
-  } }
+  }
 ) => {
+  // Normalize the tsconfig path
   const normalizedTsConfigPath = tsConfigPath.startsWith('.') ? `${root}/${tsConfigPath}` : `${workspaceRoot}/${tsConfigPath}`;
+
+  // If no files are specified, try to read them from the tsconfig
+  if (!files || files.length === 0) {
+    const tsProject = ts.createProject(normalizedTsConfigPath);
+
+    if (!tsProject?.config?.include) {
+      files = DEFAULT_FILES_GLOB;
+    } else {
+      const { include, exclude } = tsProject.config;
+
+      files = [...include, ...exclude.map((e: string) => `!${e}`)];
+    }
+  }
+
+  console.log('Building files:', files);
 
   function getFileStream() {
     return gulp.src(files.map(file => file.startsWith('!') ? `!${root}/${file.substring(1)}` : `${root}/${file}`));

@@ -1,5 +1,5 @@
 import { defer } from "@thalesrc/js-utils/function/defer";
-import { LitElement, css, html } from "lit";
+import { LitElement, css, html, type CSSResultGroup, type TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import type { DropZoneElement } from "./dropzone-element";
@@ -48,7 +48,7 @@ export class DragElement extends LitElement {
     }
   });
 
-  static override styles = css`
+  static override styles: CSSResultGroup = css`
     :host {
       --tha-diff-x: calc(var(--tha-cx) - var(--tha-x));
       --tha-diff-y: calc(var(--tha-cy) - var(--tha-y));
@@ -234,7 +234,7 @@ export class DragElement extends LitElement {
     this.removeEventListener('thadropzoneleave', this.#handleDropZoneLeave);
   }
 
-  protected override render() {
+  protected override render(): TemplateResult {
     return html`<slot></slot>`;
   }
 

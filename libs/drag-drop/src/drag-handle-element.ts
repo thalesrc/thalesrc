@@ -1,5 +1,5 @@
 import { getParents } from "@thalesrc/dom-utils/get-parents";
-import { html, LitElement } from "lit";
+import { html, LitElement, type TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import { DragElement } from "./drag-element";
@@ -36,7 +36,7 @@ export class DragHandleElement extends LitElement {
     this.#parent?.[UNREGISTER_HANDLE_PROP](this);
   }
 
-  protected override render() {
+  protected override render(): TemplateResult {
     return html`<slot></slot>`;
   }
 }

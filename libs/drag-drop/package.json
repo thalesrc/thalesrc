@@ -13,7 +13,12 @@
     "lit": "*"
   },
   "main": "./index.js",
-  "module": "./index.mjs",
+  "module": "./index.cjs",
   "typings": "./index.d.ts",
-  "private": false
+  "private": false,
+  "_exports": [
+    "drag-element",
+    "drag-handle-element",
+    "dropzone-element"
+  ]
 }

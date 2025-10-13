@@ -1,4 +1,4 @@
-import { CSSResultGroup, LitElement, css, html } from "lit";
+import { CSSResultGroup, LitElement, css, html, type TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { DragElementEventTypes, DropElementEventTypes, ThaDragEvent } from "./tha-drag-event";
@@ -33,7 +33,7 @@ export class DropZoneElement extends LitElement {
   @property({ type: Boolean, reflect: true })
   acceptableDrag = false;
 
-  protected override render() {
+  protected override render(): TemplateResult {
     return html`<slot></slot>`;
   }
 

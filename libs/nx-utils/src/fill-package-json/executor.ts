@@ -27,11 +27,16 @@ const runExecutor: PromiseExecutor<FillPackageJsonExecutorSchema> = async (
     };
   }
 
+  const mergedDependencies = {
+    ...rootPackageJson.devDependencies,
+    ...rootPackageJson.dependencies
+  };
+
   // Replace * dependencies with the root dependencies
   for (const key in packagePackageJson.dependencies) {
     if (packagePackageJson.dependencies[key] !== '*') continue;
 
-    packagePackageJson.dependencies[key] = { ...rootPackageJson.devDependencies, ...rootPackageJson.dependencies }[key];
+    packagePackageJson.dependencies[key] = mergedDependencies[key];
   }
 
   // Fill package.json fields
@@ -80,7 +85,7 @@ const runExecutor: PromiseExecutor<FillPackageJsonExecutorSchema> = async (
 
     delete packagePackageJson[exportsTemplateProperty];
 
-    console.log('Exports are populated');
+    console.log('Exports are populated for', Object.keys(exportsObject).length, 'entries');
   }
 
   // Prepare output path

@@ -10,12 +10,7 @@ export default defineConfig({
   cacheDir: '../../node_modules/.vite/libs/drag-drop',
 
   plugins: [
-    nxViteTsPaths(),
-    nxCopyAssetsPlugin(['*.md', 'LICENSE']),
-    dts({
-      entryRoot: 'src',
-      tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
-    }),
+    nxViteTsPaths({debug: true, buildLibsFromSource: true}),
   ],
 
   // Uncomment this if you are using workers.
@@ -27,8 +22,9 @@ export default defineConfig({
   // See: https://vitejs.dev/guide/build.html#library-mode
   build: {
     outDir: '../../dist/libs/drag-drop',
-    emptyOutDir: true,
+    emptyOutDir: false,
     reportCompressedSize: true,
+    sourcemap: false,
     commonjsOptions: {
       transformMixedEsModules: true,
     },
@@ -36,7 +32,7 @@ export default defineConfig({
       // Could also be a dictionary or array of multiple entry points.
       entry: 'src/index.ts',
       name: 'drag-drop',
-      fileName: 'index',
+      fileName: 'bundle',
       // Change this to the formats you want to support.
       // Don't forget to update your package.json as well.
       formats: ['es', 'cjs'],

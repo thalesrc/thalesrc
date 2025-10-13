@@ -9,8 +9,7 @@
       "items": {
         "type": "string"
       },
-      "description": "List of files to compile\n\nPaths are relative to the project root",
-      "default": ["src/**/*.ts", "!src/**/*.spec.ts"]
+      "description": "List of files to compile\n\nPaths are relative to the project root"
     },
     "outputPath": {
       "type": "string",

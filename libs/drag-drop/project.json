@@ -6,19 +6,33 @@
   "tags": [],
   "targets": {
     "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run drag-drop:build/ts",
+          "nx run drag-drop:build/bundle"
+        ],
+        "parallel": true
+      }
+    },
+    "build/bundle": {
       "executor": "@nx/vite:build",
       "outputs": [
         "{options.outputPath}"
       ],
       "options": {
-        "outputPath": "dist/libs/drag-drop",
-        "main": "libs/drag-drop/src/index.ts",
+        "configFile": "libs/drag-drop/vite.config.ts",
         "tsConfig": "libs/drag-drop/tsconfig.lib.json",
-        "assets": [
-          "libs/drag-drop/*.md"
-        ]
+        "outputPath": "dist/libs/drag-drop"
       },
       "dependsOn": []
+    },
+    "build/ts": {
+      "executor": "@thalesrc/nx-utils:ts-builder",
+      "options": {
+        "tsConfigPath": "libs/drag-drop/tsconfig.lib.json",
+        "outputPath": "dist/libs/drag-drop"
+      }
     },
     "publish": {
       "executor": "nx:run-commands",
@@ -35,16 +49,24 @@
       "options": {
         "commands": [
           "nx run drag-drop:build",
+          "nx run drag-drop:publish/prepare/copy",
           "nx run drag-drop:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
         ],
         "parallel": false
+      }
+    },
+    "publish/prepare/copy": {
+      "executor": "@thalesrc/nx-utils:copy",
+      "options": {
+        "input": ["libs/drag-drop/README.md", "libs/drag-drop/LICENSE"],
+        "output": "dist/libs/drag-drop"
       }
     },
     "publish/prepare/fill-package-json": {
       "executor": "@thalesrc/nx-utils:fill-package-json",
       "options": {
         "outputPath": "dist/libs/drag-drop",
-        "populateExports": false
+        "populateExports": {}
       }
     },
     "publish/to-npm": {

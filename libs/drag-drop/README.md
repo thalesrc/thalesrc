@@ -39,7 +39,7 @@ pnpm add @thalesrc/drag-drop
 <!DOCTYPE html>
 <html>
 <head>
-  <script type="module" src="node_modules/@thalesrc/drag-drop/index.js"></script>
+  <script type="module" src="node_modules/@thalesrc/drag-drop/bundle.mjs"></script>
 </head>
 <body>
   <!-- Simple draggable element -->
@@ -48,7 +48,7 @@ pnpm add @thalesrc/drag-drop
   </tha-drag>
 
   <!-- Drop zone -->
-  <tha-dropzone accept="my-item">
+  <tha-dropzone>
     <div>Drop here!</div>
   </tha-dropzone>
 </body>
@@ -61,18 +61,70 @@ pnpm add @thalesrc/drag-drop
 import '@thalesrc/drag-drop';
 
 function MyComponent() {
+  const handleDrop = (event: ThaDragEvent) => {
+    event.acceptDrop();
+  };
+
   return (
     <div>
       <tha-drag name="my-item" draggingStrategy="move" replaceClone>
         <div>Draggable Item</div>
       </tha-drag>
       
-      <tha-dropzone accept="my-item">
+      <tha-dropzone accept="my-item" onThaDrop={handleDrop}>
         <div>Drop Zone</div>
       </tha-dropzone>
     </div>
   );
 }
+```
+
+### With Framework (Angular Example)
+
+```typescript
+// app.component.ts
+import { Component } from '@angular/core';
+import '@thalesrc/drag-drop';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <div>
+      <tha-drag 
+        name="my-item" 
+        draggingStrategy="move" 
+        replaceClone>
+        <div>Draggable Item</div>
+      </tha-drag>
+      
+      <tha-dropzone 
+        accept="my-item" 
+        (thadrop)="handleDrop($event)">
+        <div>Drop Zone</div>
+      </tha-dropzone>
+    </div>
+  `
+})
+export class AppComponent {
+  handleDrop(event: any) {
+    event.acceptDrop();
+  }
+}
+```
+
+```typescript
+// app.module.ts (if using NgModule)
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [BrowserModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], // Required for custom elements
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
 ```
 
 ## 🎯 Components
