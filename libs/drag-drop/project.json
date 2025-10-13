@@ -17,7 +17,8 @@
         "assets": [
           "libs/drag-drop/*.md"
         ]
-      }
+      },
+      "dependsOn": []
     },
     "publish": {
       "executor": "nx:run-commands",
