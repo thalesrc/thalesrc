@@ -36,8 +36,7 @@
             "output": "."
           }
         ]
-      },
-      "dependsOn": []
+      }
     },
     "test": {
       "executor": "@nx/jest:jest",

@@ -14,7 +14,7 @@ declare global {
      *
      * const base = new Set(["a", "b", "c", "d"]);
      *
-     * base.intersection(["a", "b"]); // Set(["a", "b"])
+     * base.getIntersection(["a", "b"]); // Set(["a", "b"])
      * ```
      * * * *
      * @param base Base Set
@@ -22,10 +22,10 @@ declare global {
      * @param allEquals By default all the same items encountered in the inclusion will be included, set this argument as false to get real intersection
      * @returns Intersection of base and inclusion
      */
-    intersection(inclusion: Inclusion, allEquals?: boolean): Set<T>;
+    getIntersection(inclusion: Inclusion, allEquals?: boolean): Set<T>;
   }
 }
 
-Set.prototype.intersection = function<T>(this: Set<T>, inclusion: Inclusion, allEquals = true) {
+Set.prototype.getIntersection = function<T>(this: Set<T>, inclusion: Inclusion, allEquals = true) {
   return intersection(this, inclusion, allEquals);
 };

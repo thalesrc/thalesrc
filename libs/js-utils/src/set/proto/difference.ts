@@ -14,7 +14,7 @@ declare global {
      *
      * const base = new Set(["a", "b", "c", "d"]);
      *
-     * base.difference(["a", "b"]); // Set(["c", "d"])
+     * base.getDifference(["a", "b"]); // Set(["c", "d"])
      * ```
      * * * *
      * @param base Base Set
@@ -22,10 +22,10 @@ declare global {
      * @param allDiff By default all the same items encountered in substraction will be removed, set this argument as true to get real difference
      * @returns Difference of base from substraction
      */
-    difference(substraction: Substraction, allDiff?: boolean): Set<T>;
+    getDifference(substraction: Substraction, allDiff?: boolean): Set<T>;
   }
 }
 
-Set.prototype.difference = function<T>(this: Set<T>, substraction: Substraction, allDiff = false) {
+Set.prototype.getDifference = function<T>(this: Set<T>, substraction: Substraction, allDiff = false) {
   return difference(this, substraction, allDiff);
 };
