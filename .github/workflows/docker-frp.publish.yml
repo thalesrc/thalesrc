@@ -90,7 +90,7 @@ jobs:
             -e DASHBOARD_PASSWORD=testpass \
             test/docker-frp:server
 
-          sleep 10
+          sleep 5
 
           # Always get logs and container status
           echo "📋 Server container logs:"
@@ -117,7 +117,7 @@ jobs:
             -e WEB_PORT=3000 \
             test/docker-frp:client
 
-          sleep 10
+          sleep 5
 
           # Always get logs and container status
           echo "📋 Client container logs:"
@@ -147,17 +147,17 @@ jobs:
             type=raw,value=latest
             type=raw,value=${{ env.PACKAGE_VERSION }}
           labels: |
-            org.opencontainers.image.title=Thales Docker FRP
+            org.opencontainers.image.title=Thalesrc Docker FRP
             org.opencontainers.image.description=Fast Reverse Proxy (FRP) Docker container with server and client modes, featuring web GUI for client configuration
-            org.opencontainers.image.vendor=Thales
+            org.opencontainers.image.vendor=Thalesrc
             org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
             org.opencontainers.image.url=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
             org.opencontainers.image.revision=${{ github.sha }}
           annotations: |
-            org.opencontainers.image.title=Thales Docker FRP
+            org.opencontainers.image.title=Thalesrc Docker FRP
             org.opencontainers.image.description=Fast Reverse Proxy (FRP) Docker container with server and client modes, featuring web GUI for client configuration
-            org.opencontainers.image.vendor=Thales
+            org.opencontainers.image.vendor=Thalesrc
             org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
             org.opencontainers.image.url=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
@@ -187,17 +187,17 @@ jobs:
             type=raw,value=server
             type=raw,value=${{ env.PACKAGE_VERSION }}-server
           labels: |
-            org.opencontainers.image.title=Thales Docker FRP Server
+            org.opencontainers.image.title=Thalesrc Docker FRP Server
             org.opencontainers.image.description=Fast Reverse Proxy (FRP) server-only Docker container with web dashboard
-            org.opencontainers.image.vendor=Thales
+            org.opencontainers.image.vendor=Thalesrc
             org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
             org.opencontainers.image.url=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
             org.opencontainers.image.revision=${{ github.sha }}
           annotations: |
-            org.opencontainers.image.title=Thales Docker FRP Server
+            org.opencontainers.image.title=Thalesrc Docker FRP Server
             org.opencontainers.image.description=Fast Reverse Proxy (FRP) server-only Docker container with web dashboard
-            org.opencontainers.image.vendor=Thales
+            org.opencontainers.image.vendor=Thalesrc
             org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
             org.opencontainers.image.url=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
@@ -227,17 +227,17 @@ jobs:
             type=raw,value=client
             type=raw,value=${{ env.PACKAGE_VERSION }}-client
           labels: |
-            org.opencontainers.image.title=Thales Docker FRP Client
+            org.opencontainers.image.title=Thalesrc Docker FRP Client
             org.opencontainers.image.description=Fast Reverse Proxy (FRP) client-only Docker container with modern web GUI for configuration
-            org.opencontainers.image.vendor=Thales
+            org.opencontainers.image.vendor=Thalesrc
             org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
             org.opencontainers.image.url=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
             org.opencontainers.image.revision=${{ github.sha }}
           annotations: |
-            org.opencontainers.image.title=Thales Docker FRP Client
+            org.opencontainers.image.title=Thalesrc Docker FRP Client
             org.opencontainers.image.description=Fast Reverse Proxy (FRP) client-only Docker container with modern web GUI for configuration
-            org.opencontainers.image.vendor=Thales
+            org.opencontainers.image.vendor=Thalesrc
             org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
             org.opencontainers.image.url=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
