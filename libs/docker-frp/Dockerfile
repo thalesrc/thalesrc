@@ -28,9 +28,7 @@ FROM alpine:3.19 as server
 COPY --from=frp-base /app/frps /usr/local/bin/frps
 COPY server/ /app/
 COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/start-server.sh /app/entrypoint.sh && \
-    ls -la /app/ && \
-    file /app/entrypoint.sh
+RUN chmod +x /app/start-server.sh /app/entrypoint.sh
 WORKDIR /app
 EXPOSE 7000 7500
 ENV MODE=server
@@ -45,9 +43,7 @@ COPY --from=web-build /app/package.json /app/web/
 COPY --from=web-build /app/server.js /app/web/
 COPY client/ /app/
 COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/start-client.sh /app/entrypoint.sh && \
-    ls -la /app/ && \
-    file /app/entrypoint.sh
+RUN chmod +x /app/start-client.sh /app/entrypoint.sh
 WORKDIR /app
 EXPOSE 3000
 ENV MODE=client

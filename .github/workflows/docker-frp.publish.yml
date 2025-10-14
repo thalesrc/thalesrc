@@ -80,12 +80,6 @@ jobs:
 
       - name: Test container functionality
         run: |
-          echo "🔍 Debugging server container contents..."
-          docker run --rm test/docker-frp:server ls -la /app/ || echo "Could not list /app/"
-          echo ""
-          docker run --rm test/docker-frp:server find /app -name "*.sh" -exec ls -la {} \; || echo "Could not find shell scripts"
-          echo ""
-
           echo "🧪 Testing server container startup..."
           # Remove --rm flag to keep container for debugging
           docker run -d --name frp-server-test \
