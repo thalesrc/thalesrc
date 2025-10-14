@@ -25,7 +25,7 @@ RUN npm i && npm run build
 
 # Server image
 FROM alpine:3.19 as server
-COPY --from=frp-base /usr/local/bin/frps /usr/local/bin/frps
+COPY --from=frp-base /app/frps /usr/local/bin/frps
 COPY server/ /app/
 WORKDIR /app
 EXPOSE 7000 7500
@@ -34,10 +34,10 @@ CMD ["./start-server.sh"]
 # Client image
 FROM alpine:3.19 as client
 RUN apk add --no-cache nodejs npm
-COPY --from=frp-base /usr/local/bin/frpc /usr/local/bin/frpc
-COPY --from=web-build /app/client-web/dist /app/web
-COPY --from=web-build /app/client-web/package.json /app/web/
-COPY --from=web-build /app/client-web/server.js /app/web/
+COPY --from=frp-base /app/frpc /usr/local/bin/frpc
+COPY --from=web-build /app/dist /app/web
+COPY --from=web-build /app/package.json /app/web/
+COPY --from=web-build /app/server.js /app/web/
 COPY client/ /app/
 WORKDIR /app
 
