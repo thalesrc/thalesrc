@@ -80,6 +80,12 @@ jobs:
 
       - name: Test container functionality
         run: |
+          echo "🔍 Debugging server container contents..."
+          docker run --rm test/docker-frp:server ls -la /app/ || echo "Could not list /app/"
+          echo ""
+          docker run --rm test/docker-frp:server find /app -name "*.sh" -exec ls -la {} \; || echo "Could not find shell scripts"
+          echo ""
+
           echo "🧪 Testing server container startup..."
           # Remove --rm flag to keep container for debugging
           docker run -d --name frp-server-test \
@@ -97,9 +103,7 @@ jobs:
           docker logs frp-server-test 2>&1 || echo "Could not get logs"
 
           echo "🔍 Container status:"
-          docker ps -a -f name=frp-server-test --format "table {{.Names}}\t{{.Status}}\t{{.Command}}" || echo "Could not get status"
-
-          if [ "$(docker ps -q -f name=frp-server-test)" ]; then
+          docker ps -a -f name=frp-server-test --format "table {{.Names}}\t{{.Status}}\t{{.Command}}" || echo "Could not get status"          if [ "$(docker ps -q -f name=frp-server-test)" ]; then
             echo "✅ Server container started successfully"
             docker stop frp-server-test
             docker rm frp-server-test
