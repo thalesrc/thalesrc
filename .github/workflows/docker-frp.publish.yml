@@ -89,13 +89,17 @@ jobs:
 
           sleep 10
 
+          # Get logs regardless of container state
+          echo "📋 Server container logs:"
+          docker logs frp-server-test 2>&1 || echo "Could not get logs"
+
           if [ "$(docker ps -q -f name=frp-server-test)" ]; then
             echo "✅ Server container started successfully"
-            docker logs frp-server-test
             docker stop frp-server-test
           else
             echo "❌ Server container failed to start"
-            docker logs frp-server-test || echo "No logs available"
+            echo "🔍 Checking container exit status..."
+            docker ps -a -f name=frp-server-test --format "table {{.Names}}\t{{.Status}}\t{{.Command}}"
             exit 1
           fi
 

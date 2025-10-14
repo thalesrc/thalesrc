@@ -27,10 +27,12 @@ RUN npm i && npm run build
 FROM alpine:3.19 as server
 COPY --from=frp-base /app/frps /usr/local/bin/frps
 COPY server/ /app/
-RUN chmod +x /app/start-server.sh
+COPY entrypoint.sh /app/
+RUN chmod +x /app/start-server.sh /app/entrypoint.sh
 WORKDIR /app
 EXPOSE 7000 7500
-CMD ["./start-server.sh"]
+ENV MODE=server
+ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Client image
 FROM alpine:3.19 as client
@@ -40,8 +42,12 @@ COPY --from=web-build /app/dist /app/web
 COPY --from=web-build /app/package.json /app/web/
 COPY --from=web-build /app/server.js /app/web/
 COPY client/ /app/
-RUN chmod +x /app/start-client.sh
+COPY entrypoint.sh /app/
+RUN chmod +x /app/start-client.sh /app/entrypoint.sh
 WORKDIR /app
+EXPOSE 3000
+ENV MODE=client
+ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Combined image (default)
 FROM alpine:3.19 as both
