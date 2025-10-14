@@ -78,10 +78,18 @@ case "$MODE" in
         fi
 
         # Set executable permissions for server script
-        chmod +x /app/server/start-server.sh
-
-        # Start server
-        exec /app/server/start-server.sh
+        if [ -f "/app/server/start-server.sh" ]; then
+            # Combined image path
+            chmod +x /app/server/start-server.sh
+            exec /app/server/start-server.sh
+        elif [ -f "/app/start-server.sh" ]; then
+            # Server-only image path
+            chmod +x /app/start-server.sh
+            exec /app/start-server.sh
+        else
+            echo "❌ Error: start-server.sh not found"
+            exit 1
+        fi
         ;;
 
     "client")
@@ -103,10 +111,18 @@ case "$MODE" in
         fi
 
         # Set executable permissions for client script
-        chmod +x /app/client/start-client.sh
-
-        # Start client with web GUI
-        exec /app/client/start-client.sh
+        if [ -f "/app/client/start-client.sh" ]; then
+            # Combined image path
+            chmod +x /app/client/start-client.sh
+            exec /app/client/start-client.sh
+        elif [ -f "/app/start-client.sh" ]; then
+            # Client-only image path
+            chmod +x /app/start-client.sh
+            exec /app/start-client.sh
+        else
+            echo "❌ Error: start-client.sh not found"
+            exit 1
+        fi
         ;;
 
     *)
