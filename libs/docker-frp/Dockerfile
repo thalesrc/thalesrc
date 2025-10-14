@@ -1,5 +1,4 @@
 # Multi-stage Dockerfile for FRP Server and Client
-ARG BUILD_MODE=both
 
 # Base stage with FRP binaries
 FROM alpine:3.19 as frp-base

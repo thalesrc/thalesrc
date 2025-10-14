@@ -50,10 +50,9 @@ jobs:
           push: false
           tags: test/docker-frp:latest
           platforms: linux/amd64
+          target: both
           cache-from: type=gha,scope=combined-test
           cache-to: type=gha,mode=max,scope=combined-test
-          build-args: |
-            BUILD_MODE=both
 
       - name: Test build server image
         uses: docker/build-push-action@v5
@@ -63,10 +62,9 @@ jobs:
           push: false
           tags: test/docker-frp:server
           platforms: linux/amd64
+          target: server
           cache-from: type=gha,scope=server-test
           cache-to: type=gha,mode=max,scope=server-test
-          build-args: |
-            BUILD_MODE=server
 
       - name: Test build client image
         uses: docker/build-push-action@v5
@@ -76,10 +74,9 @@ jobs:
           push: false
           tags: test/docker-frp:client
           platforms: linux/amd64
+          target: client
           cache-from: type=gha,scope=client-test
           cache-to: type=gha,mode=max,scope=client-test
-          build-args: |
-            BUILD_MODE=client
 
       - name: Test container functionality
         run: |
@@ -151,6 +148,7 @@ jobs:
         with:
           context: libs/docker-frp
           file: libs/docker-frp/Dockerfile
+          target: both
           push: true
           tags: ${{ steps.meta-combined.outputs.tags }}
           labels: ${{ steps.meta-combined.outputs.labels }}
@@ -158,8 +156,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           cache-from: type=gha,scope=combined
           cache-to: type=gha,mode=max,scope=combined
-          build-args: |
-            BUILD_MODE=both
 
       # Build and push server-only image
       - name: Extract metadata for server image
@@ -192,6 +188,7 @@ jobs:
         with:
           context: libs/docker-frp
           file: libs/docker-frp/Dockerfile
+          target: server
           push: true
           tags: ${{ steps.meta-server.outputs.tags }}
           labels: ${{ steps.meta-server.outputs.labels }}
@@ -199,8 +196,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           cache-from: type=gha,scope=server
           cache-to: type=gha,mode=max,scope=server
-          build-args: |
-            BUILD_MODE=server
 
       # Build and push client-only image
       - name: Extract metadata for client image
@@ -233,6 +228,7 @@ jobs:
         with:
           context: libs/docker-frp
           file: libs/docker-frp/Dockerfile
+          target: client
           push: true
           tags: ${{ steps.meta-client.outputs.tags }}
           labels: ${{ steps.meta-client.outputs.labels }}
@@ -240,8 +236,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           cache-from: type=gha,scope=client
           cache-to: type=gha,mode=max,scope=client
-          build-args: |
-            BUILD_MODE=client
 
       - name: Create release summary
         run: |
