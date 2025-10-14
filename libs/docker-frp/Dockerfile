@@ -25,6 +25,7 @@ RUN npm i && npm run build
 
 # Server image
 FROM alpine:3.19 as server
+RUN apk add --no-cache bash gettext
 COPY --from=frp-base /app/frps /usr/local/bin/frps
 COPY server/ /app/
 COPY entrypoint.sh /app/entrypoint.sh
@@ -36,7 +37,7 @@ ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Client image
 FROM alpine:3.19 as client
-RUN apk add --no-cache nodejs npm
+RUN apk add --no-cache bash gettext nodejs npm
 COPY --from=frp-base /app/frpc /usr/local/bin/frpc
 COPY --from=web-build /app/dist /app/web
 COPY --from=web-build /app/package.json /app/web/

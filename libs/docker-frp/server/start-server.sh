@@ -28,7 +28,17 @@ echo "  VHost HTTP Port: $VHOST_HTTP_PORT"
 echo "  VHost HTTPS Port: $VHOST_HTTPS_PORT"
 
 # Process template and create final configuration
-envsubst < /app/server/frps.toml.template > /tmp/frps.toml
+# Check for template in both possible locations
+if [ -f "/app/server/frps.toml.template" ]; then
+    # Combined image path
+    envsubst < /app/server/frps.toml.template > /tmp/frps.toml
+elif [ -f "/app/frps.toml.template" ]; then
+    # Server-only image path
+    envsubst < /app/frps.toml.template > /tmp/frps.toml
+else
+    echo "❌ Error: frps.toml.template not found"
+    exit 1
+fi
 
 echo "Generated configuration:"
 cat /tmp/frps.toml

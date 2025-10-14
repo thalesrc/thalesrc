@@ -32,7 +32,17 @@ if [ -n "$CONFIG_FILE" ] && [ -f "$CONFIG_FILE" ]; then
 else
     echo "Using template configuration"
     # Process template and create default configuration
-    envsubst < /app/client/frpc.toml.template > /tmp/frpc.toml
+    # Check for template in both possible locations
+    if [ -f "/app/client/frpc.toml.template" ]; then
+        # Combined image path
+        envsubst < /app/client/frpc.toml.template > /tmp/frpc.toml
+    elif [ -f "/app/frpc.toml.template" ]; then
+        # Client-only image path
+        envsubst < /app/frpc.toml.template > /tmp/frpc.toml
+    else
+        echo "❌ Error: frpc.toml.template not found"
+        exit 1
+    fi
 fi
 
 echo "Final configuration:"
@@ -40,7 +50,14 @@ cat /tmp/frpc.toml
 
 # Start the web server in the background
 echo "Starting web interface on port $WEB_PORT..."
-cd /app/client-web
+if [ -d "/app/web" ]; then
+    cd /app/web
+elif [ -d "/app/client-web" ]; then
+    cd /app/client-web
+else
+    echo "❌ Error: Web directory not found"
+    exit 1
+fi
 node server.js &
 WEB_PID=$!
 
