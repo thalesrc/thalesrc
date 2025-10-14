@@ -27,6 +27,7 @@ RUN npm i && npm run build
 FROM alpine:3.19 as server
 COPY --from=frp-base /app/frps /usr/local/bin/frps
 COPY server/ /app/
+RUN chmod +x /app/start-server.sh
 WORKDIR /app
 EXPOSE 7000 7500
 CMD ["./start-server.sh"]
@@ -39,6 +40,7 @@ COPY --from=web-build /app/dist /app/web
 COPY --from=web-build /app/package.json /app/web/
 COPY --from=web-build /app/server.js /app/web/
 COPY client/ /app/
+RUN chmod +x /app/start-client.sh
 WORKDIR /app
 
 # Combined image (default)
@@ -60,7 +62,7 @@ COPY client/ /app/client/
 COPY entrypoint.sh /app/entrypoint.sh
 
 # Set executable permissions
-RUN chmod +x /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh /app/server/start-server.sh /app/client/start-client.sh
 
 WORKDIR /app
 EXPOSE 7000 7500 3000
