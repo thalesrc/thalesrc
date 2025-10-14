@@ -73,6 +73,3 @@ ENV DASHBOARD_PASSWORD=admin
 ENV WEB_PORT=3000
 
 ENTRYPOINT ["/app/entrypoint.sh"]
-
-# Final stage selection based on BUILD_MODE
-FROM ${BUILD_MODE} as final
