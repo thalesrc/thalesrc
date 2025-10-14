@@ -22,7 +22,7 @@ WORKDIR /app
 COPY client-web/ ./
 
 # Install dependencies and build
-RUN npm ci && npm run build
+RUN npm i && npm run build
 
 # Server image
 FROM alpine:3.19 as server
