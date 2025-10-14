@@ -3,7 +3,7 @@ ARG BUILD_MODE=both
 
 # Base stage with FRP binaries
 FROM alpine:3.19 as frp-base
-RUN apk add --no-cache curl=8.5.0-r0 tar=1.35-r2
+RUN apk add --no-cache curl tar
 
 # Download and extract FRP
 ARG FRP_VERSION=0.65.0
@@ -15,7 +15,7 @@ RUN curl -L https://github.com/fatedier/frp/releases/download/v${FRP_VERSION}/fr
 
 # Node.js build stage for client web app
 FROM alpine:3.19 as web-build
-RUN apk add --no-cache nodejs=20.12.2-r0 npm=10.2.5-r0
+RUN apk add --no-cache nodejs npm
 WORKDIR /app
 
 # Copy web app source
@@ -34,7 +34,7 @@ CMD ["./start-server.sh"]
 
 # Client image
 FROM alpine:3.19 as client
-RUN apk add --no-cache nodejs=20.12.2-r0 npm=10.2.5-r0
+RUN apk add --no-cache nodejs npm
 COPY --from=frp-base /usr/local/bin/frpc /usr/local/bin/frpc
 COPY --from=web-build /app/client-web/dist /app/web
 COPY --from=web-build /app/client-web/package.json /app/web/
@@ -44,14 +44,16 @@ WORKDIR /app
 
 # Combined image (default)
 FROM alpine:3.19 as both
-RUN apk add --no-cache bash=5.2.21-r0 curl=8.5.0-r0 nodejs=20.12.2-r0 npm=10.2.5-r0
+RUN apk add --no-cache bash curl nodejs npm
 
 # Copy FRP binaries
 COPY --from=frp-base /app/frps /usr/local/bin/frps
 COPY --from=frp-base /app/frpc /usr/local/bin/frpc
 
 # Copy web app built files
-COPY --from=web-build /app/dist /app/client-web/
+COPY --from=web-build /app/dist /app/web
+COPY --from=web-build /app/package.json /app/web/
+COPY --from=web-build /app/server.js /app/web/
 
 # Copy all configuration files
 COPY server/ /app/server/
@@ -69,7 +71,7 @@ ENV MODE=server
 ENV BIND_PORT=7000
 ENV DASHBOARD_PORT=7500
 ENV DASHBOARD_USER=admin
-ENV DASHBOARD_PASSWORD=admin
 ENV WEB_PORT=3000
+# Note: DASHBOARD_PASSWORD should be set at runtime for security
 
 ENTRYPOINT ["/app/entrypoint.sh"]
