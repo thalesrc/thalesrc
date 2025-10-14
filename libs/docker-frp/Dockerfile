@@ -39,9 +39,10 @@ ENTRYPOINT ["/app/entrypoint.sh"]
 FROM alpine:3.19 as client
 RUN apk add --no-cache bash gettext nodejs npm
 COPY --from=frp-base /app/frpc /usr/local/bin/frpc
-COPY --from=web-build /app/dist /app/web
+COPY --from=web-build /app/dist /app/web/dist
 COPY --from=web-build /app/package.json /app/web/
 COPY --from=web-build /app/server.js /app/web/
+COPY --from=web-build /app/node_modules /app/web/node_modules
 COPY client/ /app/
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/start-client.sh /app/entrypoint.sh
@@ -59,9 +60,10 @@ COPY --from=frp-base /app/frps /usr/local/bin/frps
 COPY --from=frp-base /app/frpc /usr/local/bin/frpc
 
 # Copy web app built files
-COPY --from=web-build /app/dist /app/web
+COPY --from=web-build /app/dist /app/web/dist
 COPY --from=web-build /app/package.json /app/web/
 COPY --from=web-build /app/server.js /app/web/
+COPY --from=web-build /app/node_modules /app/web/node_modules
 
 # Copy all configuration files
 COPY server/ /app/server/

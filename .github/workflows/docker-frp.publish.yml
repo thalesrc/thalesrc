@@ -90,14 +90,16 @@ jobs:
             -e DASHBOARD_PASSWORD=testpass \
             test/docker-frp:server
 
-          sleep 15
+          sleep 10
 
           # Always get logs and container status
           echo "📋 Server container logs:"
           docker logs frp-server-test 2>&1 || echo "Could not get logs"
 
           echo "🔍 Container status:"
-          docker ps -a -f name=frp-server-test --format "table {{.Names}}\t{{.Status}}\t{{.Command}}" || echo "Could not get status"          if [ "$(docker ps -q -f name=frp-server-test)" ]; then
+          docker ps -a -f name=frp-server-test --format "table {{.Names}}\t{{.Status}}\t{{.Command}}" || echo "Could not get status"
+
+          if [ "$(docker ps -q -f name=frp-server-test)" ]; then
             echo "✅ Server container started successfully"
             docker stop frp-server-test
             docker rm frp-server-test
@@ -115,7 +117,7 @@ jobs:
             -e WEB_PORT=3000 \
             test/docker-frp:client
 
-          sleep 15
+          sleep 10
 
           # Always get logs and container status
           echo "📋 Client container logs:"
