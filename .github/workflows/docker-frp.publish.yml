@@ -1,0 +1,300 @@
+name: Docker FRP / Publish
+
+on:
+  repository_dispatch:
+    types: [publish-docker-frp]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: thalesrc/docker-frp
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Set package version env variable
+        run: |
+          TAG_NAME="${{ github.event.client_payload.tag }}"
+          echo "PACKAGE_VERSION=${TAG_NAME#docker-frp-v}" >> $GITHUB_ENV
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Lint Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: libs/docker-frp/Dockerfile
+          failure-threshold: warning
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Test builds before publishing
+      - name: Test build combined image
+        uses: docker/build-push-action@v5
+        with:
+          context: libs/docker-frp
+          file: libs/docker-frp/Dockerfile
+          push: false
+          tags: test/docker-frp:latest
+          platforms: linux/amd64
+          cache-from: type=gha,scope=combined-test
+          cache-to: type=gha,mode=max,scope=combined-test
+          build-args: |
+            BUILD_MODE=both
+
+      - name: Test build server image
+        uses: docker/build-push-action@v5
+        with:
+          context: libs/docker-frp
+          file: libs/docker-frp/Dockerfile
+          push: false
+          tags: test/docker-frp:server
+          platforms: linux/amd64
+          cache-from: type=gha,scope=server-test
+          cache-to: type=gha,mode=max,scope=server-test
+          build-args: |
+            BUILD_MODE=server
+
+      - name: Test build client image
+        uses: docker/build-push-action@v5
+        with:
+          context: libs/docker-frp
+          file: libs/docker-frp/Dockerfile
+          push: false
+          tags: test/docker-frp:client
+          platforms: linux/amd64
+          cache-from: type=gha,scope=client-test
+          cache-to: type=gha,mode=max,scope=client-test
+          build-args: |
+            BUILD_MODE=client
+
+      - name: Test container functionality
+        run: |
+          echo "🧪 Testing server container startup..."
+          docker run --rm -d --name frp-server-test \
+            -e MODE=server \
+            -e BIND_PORT=7000 \
+            -e DASHBOARD_PORT=7500 \
+            test/docker-frp:server
+
+          sleep 10
+
+          if [ "$(docker ps -q -f name=frp-server-test)" ]; then
+            echo "✅ Server container started successfully"
+            docker logs frp-server-test
+            docker stop frp-server-test
+          else
+            echo "❌ Server container failed to start"
+            docker logs frp-server-test || echo "No logs available"
+            exit 1
+          fi
+
+          echo "🧪 Testing client container startup..."
+          docker run --rm -d --name frp-client-test \
+            -e MODE=client \
+            -e WEB_PORT=3000 \
+            test/docker-frp:client
+
+          sleep 15
+
+          if [ "$(docker ps -q -f name=frp-client-test)" ]; then
+            echo "✅ Client container started successfully"
+            docker logs frp-client-test
+            docker stop frp-client-test
+          else
+            echo "❌ Client container failed to start"
+            docker logs frp-client-test || echo "No logs available"
+            exit 1
+          fi
+
+      # Build and push the combined image (default)
+      - name: Extract metadata for combined image
+        id: meta-combined
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest
+            type=raw,value=${{ env.PACKAGE_VERSION }}
+          labels: |
+            org.opencontainers.image.title=Thales Docker FRP
+            org.opencontainers.image.description=Fast Reverse Proxy (FRP) Docker container with server and client modes, featuring web GUI for client configuration
+            org.opencontainers.image.vendor=Thales
+            org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
+            org.opencontainers.image.url=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
+            org.opencontainers.image.revision=${{ github.sha }}
+          annotations: |
+            org.opencontainers.image.title=Thales Docker FRP
+            org.opencontainers.image.description=Fast Reverse Proxy (FRP) Docker container with server and client modes, featuring web GUI for client configuration
+            org.opencontainers.image.vendor=Thales
+            org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
+            org.opencontainers.image.url=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
+            org.opencontainers.image.revision=${{ github.sha }}
+
+      - name: Build and push combined Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: libs/docker-frp
+          file: libs/docker-frp/Dockerfile
+          push: true
+          tags: ${{ steps.meta-combined.outputs.tags }}
+          labels: ${{ steps.meta-combined.outputs.labels }}
+          annotations: ${{ steps.meta-combined.outputs.annotations }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha,scope=combined
+          cache-to: type=gha,mode=max,scope=combined
+          build-args: |
+            BUILD_MODE=both
+
+      # Build and push server-only image
+      - name: Extract metadata for server image
+        id: meta-server
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=server
+            type=raw,value=${{ env.PACKAGE_VERSION }}-server
+          labels: |
+            org.opencontainers.image.title=Thales Docker FRP Server
+            org.opencontainers.image.description=Fast Reverse Proxy (FRP) server-only Docker container with web dashboard
+            org.opencontainers.image.vendor=Thales
+            org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
+            org.opencontainers.image.url=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
+            org.opencontainers.image.revision=${{ github.sha }}
+          annotations: |
+            org.opencontainers.image.title=Thales Docker FRP Server
+            org.opencontainers.image.description=Fast Reverse Proxy (FRP) server-only Docker container with web dashboard
+            org.opencontainers.image.vendor=Thales
+            org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
+            org.opencontainers.image.url=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
+            org.opencontainers.image.revision=${{ github.sha }}
+
+      - name: Build and push server Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: libs/docker-frp
+          file: libs/docker-frp/Dockerfile
+          push: true
+          tags: ${{ steps.meta-server.outputs.tags }}
+          labels: ${{ steps.meta-server.outputs.labels }}
+          annotations: ${{ steps.meta-server.outputs.annotations }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha,scope=server
+          cache-to: type=gha,mode=max,scope=server
+          build-args: |
+            BUILD_MODE=server
+
+      # Build and push client-only image
+      - name: Extract metadata for client image
+        id: meta-client
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=client
+            type=raw,value=${{ env.PACKAGE_VERSION }}-client
+          labels: |
+            org.opencontainers.image.title=Thales Docker FRP Client
+            org.opencontainers.image.description=Fast Reverse Proxy (FRP) client-only Docker container with modern web GUI for configuration
+            org.opencontainers.image.vendor=Thales
+            org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
+            org.opencontainers.image.url=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
+            org.opencontainers.image.revision=${{ github.sha }}
+          annotations: |
+            org.opencontainers.image.title=Thales Docker FRP Client
+            org.opencontainers.image.description=Fast Reverse Proxy (FRP) client-only Docker container with modern web GUI for configuration
+            org.opencontainers.image.vendor=Thales
+            org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
+            org.opencontainers.image.url=${{ github.server_url }}/${{ github.repository }}/tree/main/libs/docker-frp
+            org.opencontainers.image.revision=${{ github.sha }}
+
+      - name: Build and push client Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: libs/docker-frp
+          file: libs/docker-frp/Dockerfile
+          push: true
+          tags: ${{ steps.meta-client.outputs.tags }}
+          labels: ${{ steps.meta-client.outputs.labels }}
+          annotations: ${{ steps.meta-client.outputs.annotations }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha,scope=client
+          cache-to: type=gha,mode=max,scope=client
+          build-args: |
+            BUILD_MODE=client
+
+      - name: Create release summary
+        run: |
+          echo "## 🐳 Successfully Published Docker FRP Images" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Package:** \`docker-frp\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** \`${PACKAGE_VERSION}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Tag:** \`${TAG_NAME}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Registry:** \`${{ env.REGISTRY }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Platforms:** \`linux/amd64\`, \`linux/arm64\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Available Images:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### Combined Image (Server + Client)" >> $GITHUB_STEP_SUMMARY
+          echo "- \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest\`" >> $GITHUB_STEP_SUMMARY
+          echo "- \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${PACKAGE_VERSION}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### Server Only Image (Smaller)" >> $GITHUB_STEP_SUMMARY
+          echo "- \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:server\`" >> $GITHUB_STEP_SUMMARY
+          echo "- \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${PACKAGE_VERSION}-server\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### Client Only Image (with Web GUI)" >> $GITHUB_STEP_SUMMARY
+          echo "- \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:client\`" >> $GITHUB_STEP_SUMMARY
+          echo "- \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${PACKAGE_VERSION}-client\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🚀 Quick Start:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### Server Mode" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "docker run -p 7000:7000 -p 7500:7500 \\\\" >> $GITHUB_STEP_SUMMARY
+          echo "  -e DASHBOARD_USER=admin \\\\" >> $GITHUB_STEP_SUMMARY
+          echo "  -e DASHBOARD_PASSWORD=secure123 \\\\" >> $GITHUB_STEP_SUMMARY
+          echo "  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:server" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### Client Mode with Web GUI" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "docker run -p 3000:3000 \\\\" >> $GITHUB_STEP_SUMMARY
+          echo "  -e MODE=client \\\\" >> $GITHUB_STEP_SUMMARY
+          echo "  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:client" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### Using Docker Compose" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "curl -O https://raw.githubusercontent.com/thalesrc/thalesrc/main/libs/docker-frp/docker-compose.yml" >> $GITHUB_STEP_SUMMARY
+          echo "docker-compose up -d" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🌐 Access Points:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Server Dashboard:** http://localhost:7500 (admin/admin)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Client Web GUI:** http://localhost:3000" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📚 Documentation:" >> $GITHUB_STEP_SUMMARY
+          echo "Full documentation available at: [libs/docker-frp/README.md](https://github.com/thalesrc/thalesrc/tree/main/libs/docker-frp)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All Docker images have been successfully published to GitHub Container Registry! 🎉" >> $GITHUB_STEP_SUMMARY

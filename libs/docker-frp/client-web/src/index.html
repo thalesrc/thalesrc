@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRP Client Configuration</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔗 FRP Client Configuration</h1>
+            <p>Configure your FRP client connection and proxies through this web interface</p>
+        </header>
+
+        <main>
+            <div class="config-section">
+                <h2>Server Connection</h2>
+                <form id="serverForm">
+                    <div class="form-group">
+                        <label for="serverAddr">Server Address:</label>
+                        <input type="text" id="serverAddr" name="serverAddr" required
+                               placeholder="x.x.x.x or domain.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="serverPort">Server Port:</label>
+                        <input type="number" id="serverPort" name="serverPort" value="7000" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="authToken">Auth Token:</label>
+                        <input type="password" id="authToken" name="authToken"
+                               placeholder="Authentication token">
+                    </div>
+                </form>
+            </div>
+
+            <div class="config-section">
+                <h2>Proxies</h2>
+                <div id="proxiesContainer">
+                    <!-- Proxies will be added here dynamically -->
+                </div>
+                <button id="addProxyBtn" class="btn btn-secondary">+ Add Proxy</button>
+            </div>
+
+            <div class="config-section">
+                <h2>Advanced Settings</h2>
+                <form id="advancedForm">
+                    <div class="form-group">
+                        <label for="adminPort">Admin UI Port:</label>
+                        <input type="number" id="adminPort" name="adminPort" value="7400">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="logLevel">Log Level:</label>
+                        <select id="logLevel" name="logLevel">
+                            <option value="trace">Trace</option>
+                            <option value="debug">Debug</option>
+                            <option value="info" selected>Info</option>
+                            <option value="warn">Warning</option>
+                            <option value="error">Error</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="checkbox" id="enableHeartbeat" name="enableHeartbeat" checked>
+                        <label for="enableHeartbeat">Enable Heartbeat</label>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="checkbox" id="enableTCP" name="enableTCP" checked>
+                        <label for="enableTCP">Enable TCP Multiplexing</label>
+                    </div>
+                </form>
+            </div>
+
+            <div class="actions">
+                <button id="generateConfigBtn" class="btn btn-primary">Generate Configuration</button>
+                <button id="startClientBtn" class="btn btn-success">Start FRP Client</button>
+                <button id="stopClientBtn" class="btn btn-danger" disabled>Stop FRP Client</button>
+            </div>
+
+            <div class="config-output">
+                <h3>Generated Configuration</h3>
+                <pre id="configPreview">Click "Generate Configuration" to see the TOML config...</pre>
+                <div class="config-actions">
+                    <button id="copyConfigBtn" class="btn btn-secondary">Copy to Clipboard</button>
+                    <button id="downloadConfigBtn" class="btn btn-secondary">Download Config</button>
+                </div>
+            </div>
+
+            <div class="status-section">
+                <h3>Client Status</h3>
+                <div id="statusDisplay" class="status-display">
+                    <div class="status-item">
+                        <span class="status-label">Status:</span>
+                        <span id="clientStatus" class="status-value">Stopped</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Active Proxies:</span>
+                        <span id="activeProxies" class="status-value">0</span>
+                    </div>
+                </div>
+                <div id="logOutput" class="log-output">
+                    <h4>Client Logs</h4>
+                    <pre id="logContent">No logs available</pre>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+#!/bin/bash
+
+# Docker FRP Entrypoint Script
+# Handles both server and client modes based on MODE environment variable
+
+set -e
+
+echo "🚀 Starting Docker FRP Container..."
+echo "Mode: ${MODE:-server}"
+echo "Build: $(date)"
+
+# Function to display usage information
+show_usage() {
+    echo ""
+    echo "Docker FRP - Fast Reverse Proxy Container"
+    echo "==========================================="
+    echo ""
+    echo "MODES:"
+    echo "  server  - Run FRP server mode (default)"
+    echo "  client  - Run FRP client mode with web GUI"
+    echo ""
+    echo "SERVER MODE Environment Variables:"
+    echo "  BIND_PORT         - FRP server bind port (default: 7000)"
+    echo "  DASHBOARD_PORT    - Dashboard web port (default: 7500)"
+    echo "  DASHBOARD_USER    - Dashboard username (default: admin)"
+    echo "  DASHBOARD_PASSWORD - Dashboard password (default: admin)"
+    echo "  AUTH_TOKEN        - Authentication token (default: default_token_12345)"
+    echo "  LOG_LEVEL         - Log level (default: info)"
+    echo "  TLS_ENABLE        - Enable TLS (default: false)"
+    echo "  VHOST_HTTP_PORT   - HTTP vhost port (default: 8080)"
+    echo "  VHOST_HTTPS_PORT  - HTTPS vhost port (default: 8443)"
+    echo ""
+    echo "CLIENT MODE Environment Variables:"
+    echo "  SERVER_ADDR       - FRP server address (default: x.x.x.x)"
+    echo "  SERVER_PORT       - FRP server port (default: 7000)"
+    echo "  AUTH_TOKEN        - Authentication token (default: default_token_12345)"
+    echo "  WEB_PORT          - Web GUI port (default: 3000)"
+    echo "  CONFIG_FILE       - Custom config file path (optional)"
+    echo ""
+    echo "EXAMPLES:"
+    echo "  # Server mode"
+    echo "  docker run -p 7000:7000 -p 7500:7500 -e MODE=server thalesrc/docker-frp"
+    echo ""
+    echo "  # Client mode with web GUI"
+    echo "  docker run -p 3000:3000 -e MODE=client thalesrc/docker-frp"
+    echo ""
+    echo "  # Server with custom settings"
+    echo "  docker run -p 7000:7000 -p 7500:7500 \\"
+    echo "    -e MODE=server \\"
+    echo "    -e BIND_PORT=7000 \\"
+    echo "    -e DASHBOARD_USER=myuser \\"
+    echo "    -e DASHBOARD_PASSWORD=mypass \\"
+    echo "    thalesrc/docker-frp"
+    echo ""
+}
+
+# Check if help is requested
+if [ "$1" = "--help" ] || [ "$1" = "-h" ] || [ "$1" = "help" ]; then
+    show_usage
+    exit 0
+fi
+
+# Determine mode
+MODE=${MODE:-server}
+
+case "$MODE" in
+    "server")
+        echo "🖥️  Starting in SERVER mode..."
+        echo "   📡 Bind Port: ${BIND_PORT:-7000}"
+        echo "   🌐 Dashboard: http://localhost:${DASHBOARD_PORT:-7500}"
+        echo "   👤 Dashboard User: ${DASHBOARD_USER:-admin}"
+        echo ""
+
+        # Check if frps binary exists
+        if ! command -v frps &> /dev/null; then
+            echo "❌ Error: frps binary not found"
+            exit 1
+        fi
+
+        # Set executable permissions for server script
+        chmod +x /app/server/start-server.sh
+
+        # Start server
+        exec /app/server/start-server.sh
+        ;;
+
+    "client")
+        echo "💻 Starting in CLIENT mode..."
+        echo "   🌐 Web GUI: http://localhost:${WEB_PORT:-3000}"
+        echo "   🔧 Server: ${SERVER_ADDR:-x.x.x.x}:${SERVER_PORT:-7000}"
+        echo ""
+
+        # Check if frpc binary exists
+        if ! command -v frpc &> /dev/null; then
+            echo "❌ Error: frpc binary not found"
+            exit 1
+        fi
+
+        # Check if Node.js is available for web GUI
+        if ! command -v node &> /dev/null; then
+            echo "❌ Error: Node.js not found (required for web GUI)"
+            exit 1
+        fi
+
+        # Set executable permissions for client script
+        chmod +x /app/client/start-client.sh
+
+        # Start client with web GUI
+        exec /app/client/start-client.sh
+        ;;
+
+    *)
+        echo "❌ Error: Invalid MODE '$MODE'"
+        echo "   Valid modes: server, client"
+        echo ""
+        show_usage
+        exit 1
+        ;;
+esac

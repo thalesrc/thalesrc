@@ -1,0 +1,95 @@
+# Example FRP Client Configuration
+# This file shows various proxy configurations you can use
+
+serverAddr = "your-server.example.com"
+serverPort = 7000
+
+[auth]
+method = "token"
+token = "your_secure_token_here"
+
+[log]
+to = "./frpc.log"
+level = "info"
+maxDays = 3
+
+[webServer]
+addr = "0.0.0.0"
+port = 7400
+
+[transport]
+tcpMux = true
+heartbeatInterval = 30
+heartbeatTimeout = 90
+
+# SSH Access
+[[proxies]]
+name = "ssh"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 22
+remotePort = 6000
+
+# Web Application
+[[proxies]]
+name = "web"
+type = "http"
+localPort = 8080
+customDomains = ["web.example.com"]
+# Optional HTTP authentication
+# httpUser = "user"
+# httpPassword = "pass"
+
+# HTTPS Web Application
+[[proxies]]
+name = "web-ssl"
+type = "https"
+localPort = 8443
+customDomains = ["secure.example.com"]
+
+# Database Access (MySQL)
+[[proxies]]
+name = "mysql"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 3306
+remotePort = 6001
+
+# Remote Desktop (RDP)
+[[proxies]]
+name = "rdp"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 3389
+remotePort = 6002
+
+# File Server with subdomain
+[[proxies]]
+name = "files"
+type = "http"
+localPort = 8000
+subdomain = "files"
+
+# API with path routing
+[[proxies]]
+name = "api"
+type = "http"
+localPort = 3000
+customDomains = ["api.example.com"]
+locations = ["/api", "/webhook"]
+
+# UDP Service (DNS)
+[[proxies]]
+name = "dns"
+type = "udp"
+localIP = "127.0.0.1"
+localPort = 53
+remotePort = 6053
+
+# Secret TCP (requires shared key)
+[[proxies]]
+name = "secret-service"
+type = "stcp"
+secretKey = "your_secret_key"
+localIP = "127.0.0.1"
+localPort = 5432

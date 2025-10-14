@@ -1,0 +1,59 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "docker-frp",
+  "projectType": "library",
+  "tags": [
+    "docker",
+    "frp",
+    "reverse-proxy",
+    "tunnel",
+    "nat",
+    "firewall",
+    "server",
+    "client",
+    "web-gui"
+  ],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker build -t thalesrc/docker-frp:latest .",
+        "cwd": "libs/docker-frp"
+      },
+      "configurations": {
+        "server": {
+          "command": "docker build --build-arg BUILD_MODE=server -t thalesrc/docker-frp:server .",
+          "cwd": "libs/docker-frp"
+        },
+        "client": {
+          "command": "docker build --build-arg BUILD_MODE=client -t thalesrc/docker-frp:client .",
+          "cwd": "libs/docker-frp"
+        }
+      }
+    },
+    "build-all": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run docker-frp:build:server",
+          "nx run docker-frp:build:client"
+        ],
+        "parallel": false
+      }
+    },
+    "run-server": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker run -p 7000:7000 -p 7500:7500 -e MODE=server thalesrc/docker-frp:server",
+        "cwd": "libs/docker-frp"
+      }
+    },
+    "run-client": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker run -p 3000:3000 -e MODE=client thalesrc/docker-frp:client",
+        "cwd": "libs/docker-frp"
+      }
+    }
+  }
+}

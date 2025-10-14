@@ -1,0 +1,35 @@
+# FRP Client Configuration Template
+# This configuration will be processed by the entrypoint script
+
+serverAddr = "{{ .Envs.SERVER_ADDR }}"
+serverPort = {{ .Envs.SERVER_PORT }}
+
+# Authentication
+[auth]
+method = "token"
+token = "{{ .Envs.AUTH_TOKEN }}"
+
+# Logging configuration
+[log]
+to = "./frpc.log"
+level = "{{ .Envs.LOG_LEVEL }}"
+maxDays = 3
+
+# Admin web server (for client management)
+[webServer]
+addr = "0.0.0.0"
+port = {{ .Envs.ADMIN_PORT }}
+
+# Transport configuration
+[transport]
+tcpMux = {{ .Envs.TCP_MUX }}
+heartbeatInterval = {{ .Envs.HEARTBEAT_INTERVAL }}
+heartbeatTimeout = {{ .Envs.HEARTBEAT_TIMEOUT }}
+
+# Example proxy configurations (these will be replaced by web GUI)
+[[proxies]]
+name = "ssh"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 22
+remotePort = 6000

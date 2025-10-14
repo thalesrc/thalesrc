@@ -1,0 +1,50 @@
+# FRP Server Configuration Template
+# This configuration will be processed by the entrypoint script
+
+# Basic server configuration
+bindPort = {{ .Envs.BIND_PORT }}
+
+# Dashboard configuration
+[webServer]
+addr = "0.0.0.0"
+port = {{ .Envs.DASHBOARD_PORT }}
+user = "{{ .Envs.DASHBOARD_USER }}"
+password = "{{ .Envs.DASHBOARD_PASSWORD }}"
+
+# Authentication method
+[auth]
+method = "token"
+token = "{{ .Envs.AUTH_TOKEN }}"
+
+# Logging configuration
+[log]
+to = "./frps.log"
+level = "{{ .Envs.LOG_LEVEL }}"
+maxDays = 3
+
+# Advanced server settings
+allowPorts = [
+  { start = 2000, end = 3000 },
+  { start = 5000, end = 6000 },
+  { start = 8000, end = 9000 }
+]
+
+# Transport configuration
+[transport]
+maxPoolCount = 5
+tcpMux = true
+protocol = "tcp"
+
+# TLS configuration (if enabled)
+[transport.tls]
+enable = {{ .Envs.TLS_ENABLE }}
+certFile = "{{ .Envs.TLS_CERT_FILE }}"
+keyFile = "{{ .Envs.TLS_KEY_FILE }}"
+
+# Optional: HTTP/HTTPS vhost configuration
+vhostHTTPPort = {{ .Envs.VHOST_HTTP_PORT }}
+vhostHTTPSPort = {{ .Envs.VHOST_HTTPS_PORT }}
+
+# Health check settings
+[httpPlugins]
+enable = false
