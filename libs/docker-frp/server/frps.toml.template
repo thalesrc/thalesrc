@@ -11,7 +11,4 @@ port = ${DASHBOARD_PORT}
 user = "${DASHBOARD_USER}"
 password = "${DASHBOARD_PASSWORD}"
 
-# Authentication method
-[auth]
-method = "token"
-token = "${AUTH_TOKEN}"
+${AUTH_SECTION}

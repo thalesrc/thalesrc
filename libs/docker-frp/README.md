@@ -34,7 +34,14 @@ A comprehensive Docker container for [FRP (Fast Reverse Proxy)](https://github.c
 
 ### Server Mode (Default)
 ```bash
-# Basic server setup
+# Basic server setup with authentication
+docker run -p 7000:7000 -p 7500:7500 \
+  -e DASHBOARD_USER=admin \
+  -e DASHBOARD_PASSWORD=secure123 \
+  -e AUTH_TOKEN=my_secure_token \
+  thalesrc/docker-frp:latest
+
+# Server without client authentication (open access)
 docker run -p 7000:7000 -p 7500:7500 \
   -e DASHBOARD_USER=admin \
   -e DASHBOARD_PASSWORD=secure123 \
@@ -45,9 +52,17 @@ docker run -p 7000:7000 -p 7500:7500 \
 
 ### Client Mode with Web GUI
 ```bash
-# Start client with web interface
+# Start client with authentication
 docker run -p 3000:3000 \
   -e MODE=client \
+  -e SERVER_ADDR=your.server.com \
+  -e AUTH_TOKEN=my_secure_token \
+  thalesrc/docker-frp:latest
+
+# Start client without authentication (if server doesn't require auth)
+docker run -p 3000:3000 \
+  -e MODE=client \
+  -e SERVER_ADDR=your.server.com \
   thalesrc/docker-frp:latest
 
 # Access web GUI at: http://localhost:3000
@@ -92,7 +107,7 @@ nx run docker-frp:build:client
 | `DASHBOARD_PORT` | `7500` | Web dashboard port |
 | `DASHBOARD_USER` | `admin` | Dashboard username |
 | `DASHBOARD_PASSWORD` | `admin` | Dashboard password |
-| `AUTH_TOKEN` | `default_token_12345` | Client authentication token |
+| `AUTH_TOKEN` | *(optional)* | Client authentication token (if not set, no auth required) |
 | `LOG_LEVEL` | `info` | Log level (trace/debug/info/warn/error) |
 | `TLS_ENABLE` | `false` | Enable TLS encryption |
 | `TLS_CERT_FILE` | `` | TLS certificate file path |
@@ -107,7 +122,7 @@ nx run docker-frp:build:client
 | `MODE` | `server` | Set to `client` for client mode |
 | `SERVER_ADDR` | `x.x.x.x` | FRP server address |
 | `SERVER_PORT` | `7000` | FRP server port |
-| `AUTH_TOKEN` | `default_token_12345` | Authentication token |
+| `AUTH_TOKEN` | *(optional)* | Authentication token (must match server if server has auth) |
 | `WEB_PORT` | `3000` | Web GUI port |
 | `ADMIN_PORT` | `7400` | FRP client admin port |
 | `LOG_LEVEL` | `info` | Log level |
@@ -445,19 +460,20 @@ The container supports various monitoring solutions:
 
 ### Best Practices
 - **Change Default Passwords**: Always set custom dashboard credentials
-- **Use Strong Tokens**: Generate cryptographically secure auth tokens
+- **Use Strong Tokens**: Generate cryptographically secure auth tokens (optional but recommended)
 - **Enable TLS**: Use encrypted connections in production
 - **Network Isolation**: Run in isolated Docker networks
 - **Regular Updates**: Keep container images updated
 - **Monitor Access**: Review dashboard and proxy access logs
 
 ### Security Features
-- Token-based authentication
+- Token-based authentication (optional)
 - TLS encryption support
 - Dashboard access control
 - Request rate limiting
 - IP whitelisting support
 - Audit logging
+- No-auth mode for development/trusted environments
 
 ## 📄 License
 

@@ -10,13 +10,24 @@ export BIND_PORT=${BIND_PORT:-7000}
 export DASHBOARD_PORT=${DASHBOARD_PORT:-7500}
 export DASHBOARD_USER=${DASHBOARD_USER:-admin}
 export DASHBOARD_PASSWORD=${DASHBOARD_PASSWORD:-admin}
-export AUTH_TOKEN=${AUTH_TOKEN:-default_token_12345}
 export LOG_LEVEL=${LOG_LEVEL:-info}
 export TLS_ENABLE=${TLS_ENABLE:-false}
 export TLS_CERT_FILE=${TLS_CERT_FILE:-""}
 export TLS_KEY_FILE=${TLS_KEY_FILE:-""}
 export VHOST_HTTP_PORT=${VHOST_HTTP_PORT:-8080}
 export VHOST_HTTPS_PORT=${VHOST_HTTPS_PORT:-8443}
+
+# Configure authentication section
+if [ -n "$AUTH_TOKEN" ] && [ "$AUTH_TOKEN" != "" ]; then
+    export AUTH_SECTION="# Authentication method
+[auth]
+method = \"token\"
+token = \"$AUTH_TOKEN\""
+    echo "  Auth Token: [CONFIGURED]"
+else
+    export AUTH_SECTION="# No authentication configured"
+    echo "  Auth Token: [DISABLED]"
+fi
 
 echo "Configuration:"
 echo "  Bind Port: $BIND_PORT"

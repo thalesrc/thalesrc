@@ -4,7 +4,4 @@
 serverAddr = "${SERVER_ADDR}"
 serverPort = ${SERVER_PORT}
 
-# Authentication
-[auth]
-method = "token"
-token = "${AUTH_TOKEN}"
+${AUTH_SECTION}

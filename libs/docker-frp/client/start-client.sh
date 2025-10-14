@@ -8,16 +8,26 @@ echo "Starting FRP Client with Web GUI..."
 # Set default values if not provided
 export SERVER_ADDR=${SERVER_ADDR:-"x.x.x.x"}
 export SERVER_PORT=${SERVER_PORT:-7000}
-export AUTH_TOKEN=${AUTH_TOKEN:-"default_token_12345"}
 export LOG_LEVEL=${LOG_LEVEL:-"info"}
 export ADMIN_PORT=${ADMIN_PORT:-7400}
 export TCP_MUX=${TCP_MUX:-true}
 export HEARTBEAT_INTERVAL=${HEARTBEAT_INTERVAL:-30}
 export HEARTBEAT_TIMEOUT=${HEARTBEAT_TIMEOUT:-90}
 
+# Configure authentication section
+if [ -n "$AUTH_TOKEN" ] && [ "$AUTH_TOKEN" != "" ]; then
+    export AUTH_SECTION="# Authentication
+[auth]
+method = \"token\"
+token = \"$AUTH_TOKEN\""
+    echo "  Auth Token: [CONFIGURED]"
+else
+    export AUTH_SECTION="# No authentication configured"
+    echo "  Auth Token: [DISABLED]"
+fi
+
 echo "Configuration:"
 echo "  Server: $SERVER_ADDR:$SERVER_PORT"
-echo "  Auth Token: [REDACTED]"
 echo "  Log Level: $LOG_LEVEL"
 echo "  Admin Port: $ADMIN_PORT"
 echo "  TCP Mux: $TCP_MUX"
