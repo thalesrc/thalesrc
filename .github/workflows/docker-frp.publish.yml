@@ -81,43 +81,59 @@ jobs:
       - name: Test container functionality
         run: |
           echo "🧪 Testing server container startup..."
-          docker run --rm -d --name frp-server-test \
+          # Remove --rm flag to keep container for debugging
+          docker run -d --name frp-server-test \
             -e MODE=server \
             -e BIND_PORT=7000 \
             -e DASHBOARD_PORT=7500 \
+            -e DASHBOARD_USER=admin \
+            -e DASHBOARD_PASSWORD=testpass \
             test/docker-frp:server
 
-          sleep 10
+          sleep 15
 
-          # Get logs regardless of container state
+          # Always get logs and container status
           echo "📋 Server container logs:"
           docker logs frp-server-test 2>&1 || echo "Could not get logs"
+
+          echo "🔍 Container status:"
+          docker ps -a -f name=frp-server-test --format "table {{.Names}}\t{{.Status}}\t{{.Command}}" || echo "Could not get status"
 
           if [ "$(docker ps -q -f name=frp-server-test)" ]; then
             echo "✅ Server container started successfully"
             docker stop frp-server-test
+            docker rm frp-server-test
           else
             echo "❌ Server container failed to start"
-            echo "🔍 Checking container exit status..."
-            docker ps -a -f name=frp-server-test --format "table {{.Names}}\t{{.Status}}\t{{.Command}}"
+            # Clean up failed container
+            docker rm frp-server-test 2>/dev/null || true
             exit 1
           fi
 
           echo "🧪 Testing client container startup..."
-          docker run --rm -d --name frp-client-test \
+          # Remove --rm flag to keep container for debugging
+          docker run -d --name frp-client-test \
             -e MODE=client \
             -e WEB_PORT=3000 \
             test/docker-frp:client
 
           sleep 15
 
+          # Always get logs and container status
+          echo "📋 Client container logs:"
+          docker logs frp-client-test 2>&1 || echo "Could not get logs"
+
+          echo "🔍 Container status:"
+          docker ps -a -f name=frp-client-test --format "table {{.Names}}\t{{.Status}}\t{{.Command}}" || echo "Could not get status"
+
           if [ "$(docker ps -q -f name=frp-client-test)" ]; then
             echo "✅ Client container started successfully"
-            docker logs frp-client-test
             docker stop frp-client-test
+            docker rm frp-client-test
           else
             echo "❌ Client container failed to start"
-            docker logs frp-client-test || echo "No logs available"
+            # Clean up failed container
+            docker rm frp-client-test 2>/dev/null || true
             exit 1
           fi
 
