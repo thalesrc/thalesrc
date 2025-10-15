@@ -114,7 +114,9 @@ jobs:
           # Remove --rm flag to keep container for debugging
           docker run -d --name frp-client-test \
             -e MODE=client \
-            -e WEB_PORT=3000 \
+            -e ADMIN_PORT=7400 \
+            -e ADMIN_USER=admin \
+            -e ADMIN_PASSWORD=testpass \
             test/docker-frp:client
 
           sleep 5
@@ -277,7 +279,7 @@ jobs:
           echo "- \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:server\`" >> $GITHUB_STEP_SUMMARY
           echo "- \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${PACKAGE_VERSION}-server\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "#### Client Only Image (with Web GUI)" >> $GITHUB_STEP_SUMMARY
+          echo "#### Client Only Image (with Admin UI)" >> $GITHUB_STEP_SUMMARY
           echo "- \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:client\`" >> $GITHUB_STEP_SUMMARY
           echo "- \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${PACKAGE_VERSION}-client\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -291,10 +293,12 @@ jobs:
           echo "  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:server" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "#### Client Mode with Web GUI" >> $GITHUB_STEP_SUMMARY
+          echo "#### Client Mode with Admin UI" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "docker run -p 3000:3000 \\\\" >> $GITHUB_STEP_SUMMARY
+          echo "docker run -p 7400:7400 \\\\" >> $GITHUB_STEP_SUMMARY
           echo "  -e MODE=client \\\\" >> $GITHUB_STEP_SUMMARY
+          echo "  -e ADMIN_USER=admin \\\\" >> $GITHUB_STEP_SUMMARY
+          echo "  -e ADMIN_PASSWORD=secure123 \\\\" >> $GITHUB_STEP_SUMMARY
           echo "  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:client" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -306,7 +310,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 🌐 Access Points:" >> $GITHUB_STEP_SUMMARY
           echo "- **Server Dashboard:** http://localhost:7500 (admin/admin)" >> $GITHUB_STEP_SUMMARY
-          echo "- **Client Web GUI:** http://localhost:3000" >> $GITHUB_STEP_SUMMARY
+          echo "- **Client Admin UI:** http://localhost:7400 (admin/admin)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📚 Documentation:" >> $GITHUB_STEP_SUMMARY
           echo "Full documentation available at: [libs/docker-frp/README.md](https://github.com/thalesrc/thalesrc/tree/main/libs/docker-frp)" >> $GITHUB_STEP_SUMMARY

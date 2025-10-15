@@ -3,13 +3,15 @@
 # FRP Client startup script
 set -e
 
-echo "Starting FRP Client with Web GUI..."
+echo "Starting FRP Client..."
 
 # Set default values if not provided
 export SERVER_ADDR=${SERVER_ADDR:-"x.x.x.x"}
 export SERVER_PORT=${SERVER_PORT:-7000}
 export LOG_LEVEL=${LOG_LEVEL:-"info"}
 export ADMIN_PORT=${ADMIN_PORT:-7400}
+export ADMIN_USER=${ADMIN_USER:-"admin"}
+export ADMIN_PASSWORD=${ADMIN_PASSWORD:-"admin"}
 export TCP_MUX=${TCP_MUX:-true}
 export HEARTBEAT_INTERVAL=${HEARTBEAT_INTERVAL:-30}
 export HEARTBEAT_TIMEOUT=${HEARTBEAT_TIMEOUT:-90}
@@ -29,7 +31,8 @@ fi
 echo "Configuration:"
 echo "  Server: $SERVER_ADDR:$SERVER_PORT"
 echo "  Log Level: $LOG_LEVEL"
-echo "  Admin Port: $ADMIN_PORT"
+echo "  Admin UI: http://localhost:$ADMIN_PORT"
+echo "  Admin User: $ADMIN_USER"
 echo "  TCP Mux: $TCP_MUX"
 
 # Create configs directory
@@ -58,30 +61,6 @@ fi
 echo "Final configuration:"
 cat /tmp/frpc.toml
 
-# Start the web server in the background
-echo "Starting web interface on port $WEB_PORT..."
-if [ -d "/app/web" ]; then
-    cd /app/web
-elif [ -d "/app/client-web" ]; then
-    cd /app/client-web
-else
-    echo "❌ Error: Web directory not found"
-    exit 1
-fi
-node server.js &
-WEB_PID=$!
-
-# Wait a moment for the web server to start
-sleep 2
-
-echo ""
-echo "🎉 FRP Client is ready!"
-echo ""
-echo "📱 Web Interface: http://localhost:${WEB_PORT:-3000}"
-echo "🔧 Admin UI: http://localhost:$ADMIN_PORT (when client is running)"
-echo ""
-echo "ℹ️  Use the web interface to configure and start your FRP client"
-echo ""
-
-# Keep the container running
-wait $WEB_PID
+# Start FRP client
+echo "Starting FRP client..."
+exec frpc -c /tmp/frpc.toml

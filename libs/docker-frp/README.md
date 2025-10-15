@@ -17,11 +17,10 @@ A comprehensive Docker container for [FRP (Fast Reverse Proxy)](https://github.c
 - **Health Monitoring**: Built-in health checks and logging
 
 ### 💻 Client Mode
-- **Web GUI**: Modern, responsive web interface for configuration
-- **Real-time Management**: Start/stop client through web interface
-- **Configuration Editor**: Visual proxy configuration builder
-- **Live Logs**: Real-time log monitoring
-- **Export/Import**: Save and load configurations
+- **Admin UI**: Built-in FRP admin interface for configuration
+- **Real-time Management**: Monitor and manage client connections
+- **Configuration**: Environment variable and file-based configuration
+- **Live Monitoring**: Real-time status and connection monitoring
 - **Multiple Proxy Types**: Support for TCP, UDP, HTTP, HTTPS, STCP, XTCP
 
 ### 🏗️ Architecture
@@ -47,25 +46,31 @@ docker run -p 7000:7000 -p 7500:7500 \
   -e DASHBOARD_PASSWORD=secure123 \
   thalesrc/docker-frp:latest
 
-# Access dashboard at: http://localhost:7500
+### 🌐 Access Points:**
+- **Server Dashboard:** http://localhost:7500 (admin/admin)
+- **Client Admin UI:** http://localhost:7400 (admin/admin)
 ```
 
-### Client Mode with Web GUI
+### Client Mode with Admin UI
 ```bash
 # Start client with authentication
-docker run -p 3000:3000 \
+docker run -p 7400:7400 \
   -e MODE=client \
   -e SERVER_ADDR=your.server.com \
   -e AUTH_TOKEN=my_secure_token \
+  -e ADMIN_USER=admin \
+  -e ADMIN_PASSWORD=secure123 \
   thalesrc/docker-frp:latest
 
 # Start client without authentication (if server doesn't require auth)
-docker run -p 3000:3000 \
+docker run -p 7400:7400 \
   -e MODE=client \
   -e SERVER_ADDR=your.server.com \
+  -e ADMIN_USER=admin \
+  -e ADMIN_PASSWORD=secure123 \
   thalesrc/docker-frp:latest
 
-# Access web GUI at: http://localhost:3000
+# Access admin UI at: http://localhost:7400
 ```
 
 ## 📦 Installation
@@ -78,7 +83,7 @@ docker pull thalesrc/docker-frp:latest
 # Server-only image (smaller)
 docker pull thalesrc/docker-frp:server
 
-# Client-only image (with web GUI)
+# Client-only image (with admin UI)
 docker pull thalesrc/docker-frp:client
 ```
 
@@ -123,8 +128,9 @@ nx run docker-frp:build:client
 | `SERVER_ADDR` | `x.x.x.x` | FRP server address |
 | `SERVER_PORT` | `7000` | FRP server port |
 | `AUTH_TOKEN` | *(optional)* | Authentication token (must match server if server has auth) |
-| `WEB_PORT` | `3000` | Web GUI port |
-| `ADMIN_PORT` | `7400` | FRP client admin port |
+| `ADMIN_PORT` | `7400` | FRP client admin UI port |
+| `ADMIN_USER` | `admin` | Admin UI username |
+| `ADMIN_PASSWORD` | `admin` | Admin UI password |
 | `LOG_LEVEL` | `info` | Log level |
 | `CONFIG_FILE` | `` | Custom configuration file path |
 
@@ -151,15 +157,17 @@ services:
       - AUTH_TOKEN=your_secret_token
     restart: unless-stopped
 
-  frp-client-gui:
+  frp-client:
     image: thalesrc/docker-frp:client
     ports:
-      - "3000:3000"  # Web GUI
+      - "7400:7400"  # Admin UI
     environment:
       - MODE=client
       - SERVER_ADDR=frp-server
       - SERVER_PORT=7000
       - AUTH_TOKEN=your_secret_token
+      - ADMIN_USER=admin
+      - ADMIN_PASSWORD=secure123
     depends_on:
       - frp-server
     restart: unless-stopped
@@ -302,29 +310,28 @@ docker run -d \
   thalesrc/docker-frp:client
 ```
 
-## 🌐 Web GUI Usage
+## 🌐 Admin UI Usage
 
-### Client Configuration Interface
+### Client Admin Interface
 
-1. **Access the Web GUI**
+1. **Access the Admin UI**
    ```
-   http://localhost:3000
+   http://localhost:7400
    ```
 
-2. **Configure Server Connection**
-   - Enter your FRP server address and port
-   - Set authentication token
-   - Configure advanced settings
+2. **Login**
+   - Use the configured admin username and password
+   - Default: admin/admin (change in production)
 
-3. **Add Proxies**
-   - Click "Add Proxy" to create new proxy rules
-   - Support for TCP, UDP, HTTP, HTTPS, STCP, XTCP
-   - Configure ports, domains, and authentication
+3. **Monitor Client**
+   - View real-time connection status
+   - Monitor active proxies and tunnels
+   - Check client statistics and logs
 
-4. **Manage Client**
-   - Generate configuration from GUI settings
-   - Start/Stop FRP client
-   - Monitor real-time logs and status
+4. **Manage Proxies**
+   - View configured proxy rules
+   - Monitor proxy status and traffic
+   - Access detailed connection information
 
 ### Proxy Types Supported
 
@@ -351,14 +358,7 @@ libs/docker-frp/
 ├── client/                 # Client mode files
 │   ├── frpc.toml.template  # Client config template
 │   └── start-client.sh     # Client startup script
-├── client-web/             # Web GUI application
-│   ├── package.json        # Node.js dependencies
-│   ├── server.js           # Express server
-│   ├── vite.config.js      # Build configuration
-│   └── src/                # Frontend source code
-│       ├── index.html      # Main HTML file
-│       ├── app.js          # JavaScript application
-│       └── styles.css      # CSS styles
+
 └── README.md               # This file
 ```
 
@@ -409,10 +409,10 @@ curl http://your-server-ip:7500
 docker logs container_name
 
 # Access web interface
-curl http://localhost:3000
+curl http://localhost:7400
 
-# Check FRP client logs in GUI
-# Go to http://localhost:3000 → Status Section → Client Logs
+# Check FRP client logs in admin UI
+# Go to http://localhost:7400 and log in with admin credentials
 ```
 
 #### Connection Issues
@@ -441,11 +441,11 @@ cat /tmp/frpc.toml  # Client config
 # Server health check
 curl http://localhost:7500/api/serverinfo
 
-# Client status via API
-curl http://localhost:3000/api/status
+# Client admin UI health check
+curl -u admin:password http://localhost:7400/api/status
 
-# Check logs
-curl http://localhost:3000/api/logs
+# Check client status
+curl -u admin:password http://localhost:7400/api/config
 ```
 
 ### Metrics Integration
@@ -483,8 +483,7 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 
 - [FRP Project](https://github.com/fatedier/frp) - The excellent reverse proxy tool
 - [Alpine Linux](https://alpinelinux.org/) - Secure, lightweight base image
-- [Express.js](https://expressjs.com/) - Web framework for client GUI
-- [Vite](https://vitejs.dev/) - Fast build tool for web interface
+
 
 ## 📞 Support
 

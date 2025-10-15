@@ -4,4 +4,11 @@
 serverAddr = "${SERVER_ADDR}"
 serverPort = ${SERVER_PORT}
 
+# Admin UI configuration
+[webServer]
+addr = "0.0.0.0"
+port = ${ADMIN_PORT}
+user = "${ADMIN_USER}"
+password = "${ADMIN_PASSWORD}"
+
 ${AUTH_SECTION}

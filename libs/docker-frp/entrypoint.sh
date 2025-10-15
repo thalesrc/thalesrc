@@ -17,7 +17,7 @@ show_usage() {
     echo ""
     echo "MODES:"
     echo "  server  - Run FRP server mode (default)"
-    echo "  client  - Run FRP client mode with web GUI"
+    echo "  client  - Run FRP client mode with admin UI"
     echo ""
     echo "SERVER MODE Environment Variables:"
     echo "  BIND_PORT         - FRP server bind port (default: 7000)"
@@ -33,16 +33,18 @@ show_usage() {
     echo "CLIENT MODE Environment Variables:"
     echo "  SERVER_ADDR       - FRP server address (default: x.x.x.x)"
     echo "  SERVER_PORT       - FRP server port (default: 7000)"
-    echo "  AUTH_TOKEN        - Authentication token (default: default_token_12345)"
-    echo "  WEB_PORT          - Web GUI port (default: 3000)"
+    echo "  AUTH_TOKEN        - Authentication token (optional)"
+    echo "  ADMIN_PORT        - Admin UI port (default: 7400)"
+    echo "  ADMIN_USER        - Admin UI username (default: admin)"
+    echo "  ADMIN_PASSWORD    - Admin UI password (default: admin)"
     echo "  CONFIG_FILE       - Custom config file path (optional)"
     echo ""
     echo "EXAMPLES:"
     echo "  # Server mode"
     echo "  docker run -p 7000:7000 -p 7500:7500 -e MODE=server thalesrc/docker-frp"
     echo ""
-    echo "  # Client mode with web GUI"
-    echo "  docker run -p 3000:3000 -e MODE=client thalesrc/docker-frp"
+    echo "  # Client mode with admin UI"
+    echo "  docker run -p 7400:7400 -e MODE=client thalesrc/docker-frp"
     echo ""
     echo "  # Server with custom settings"
     echo "  docker run -p 7000:7000 -p 7500:7500 \\"
@@ -94,19 +96,13 @@ case "$MODE" in
 
     "client")
         echo "💻 Starting in CLIENT mode..."
-        echo "   🌐 Web GUI: http://localhost:${WEB_PORT:-3000}"
         echo "   🔧 Server: ${SERVER_ADDR:-x.x.x.x}:${SERVER_PORT:-7000}"
+        echo "   🌐 Admin UI: http://localhost:${ADMIN_PORT:-7400}"
         echo ""
 
         # Check if frpc binary exists
         if ! command -v frpc &> /dev/null; then
             echo "❌ Error: frpc binary not found"
-            exit 1
-        fi
-
-        # Check if Node.js is available for web GUI
-        if ! command -v node &> /dev/null; then
-            echo "❌ Error: Node.js not found (required for web GUI)"
             exit 1
         fi
 

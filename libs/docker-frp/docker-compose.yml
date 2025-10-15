@@ -2,57 +2,55 @@ version: '3.8'
 
 services:
   # FRP Server
-  frp-server:
-    image: thalesrc/docker-frp:server
-    container_name: frp-server
-    ports:
-      - "7000:7000"    # FRP server port
-      - "7500:7500"    # Dashboard
-      - "8080:8080"    # HTTP vhost
-      - "8443:8443"    # HTTPS vhost
-      - "6000-6010:6000-6010"  # Proxy ports range
-    environment:
-      - MODE=server
-      - BIND_PORT=7000
-      - DASHBOARD_PORT=7500
-      - DASHBOARD_USER=admin
-      - DASHBOARD_PASSWORD=change_me_please
-      - AUTH_TOKEN=your_secure_token_here
-      - LOG_LEVEL=info
-      - VHOST_HTTP_PORT=8080
-      - VHOST_HTTPS_PORT=8443
-    volumes:
-      - frp_server_logs:/app/logs
-      - frp_server_configs:/app/configs
-    networks:
-      - frp-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:7500"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+  # frp-server:
+  #   image: thalesrc/docker-frp:server
+  #   container_name: frp-server
+  #   ports:
+  #     - "7000:7000"    # FRP server port
+  #     - "7500:7500"    # Dashboard
+  #     - "8080:8080"    # HTTP vhost
+  #     - "8443:8443"    # HTTPS vhost
+  #     - "6000-6010:6000-6010"  # Proxy ports range
+  #   environment:
+  #     - MODE=server
+  #     - BIND_PORT=7000
+  #     - DASHBOARD_PORT=7500
+  #     - DASHBOARD_USER=admin
+  #     - DASHBOARD_PASSWORD=change_me_please
+  #     - AUTH_TOKEN=your_secure_token_here
+  #     - LOG_LEVEL=info
+  #     - VHOST_HTTP_PORT=8080
+  #     - VHOST_HTTPS_PORT=8443
+  #   volumes:
+  #     - frp_server_logs:/app/logs
+  #     - frp_server_configs:/app/configs
+  #   networks:
+  #     - frp-network
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:7500"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
 
-  # FRP Client with Web GUI
-  frp-client-gui:
-    image: thalesrc/docker-frp:client
-    container_name: frp-client-gui
+  # FRP Client with Admin UI
+  frp-client:
+    image: ghcr.io/thalesrc/docker-frp:client
+    container_name: frp-client
     ports:
-      - "3000:3000"    # Web GUI
+      - "7400:7400"    # FRP client admin UI
     environment:
       - MODE=client
-      - SERVER_ADDR=frp-server
-      - SERVER_PORT=7000
-      - AUTH_TOKEN=your_secure_token_here
-      - WEB_PORT=3000
-      - LOG_LEVEL=info
+      - SERVER_ADDR=gateway.alisah.in
+      - ADMIN_USER=admin
+      - ADMIN_PASSWORD=change_me_please
     volumes:
       - frp_client_configs:/app/configs
       - frp_client_logs:/app/logs
-    networks:
-      - frp-network
-    depends_on:
-      - frp-server
+    # networks:
+    #   - frp-network
+    # depends_on:
+    #   - frp-server
     restart: unless-stopped
 
 volumes:

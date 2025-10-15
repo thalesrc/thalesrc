@@ -12,17 +12,6 @@ RUN curl -L https://github.com/fatedier/frp/releases/download/v${FRP_VERSION}/fr
     rm frp.tar.gz && \
     chmod +x frps frpc
 
-# Node.js build stage for client web app
-FROM alpine:3.19 as web-build
-RUN apk add --no-cache nodejs npm
-WORKDIR /app
-
-# Copy web app source
-COPY client-web/ ./
-
-# Install dependencies and build
-RUN npm i && npm run build
-
 # Server image
 FROM alpine:3.19 as server
 RUN apk add --no-cache bash gettext
@@ -37,33 +26,23 @@ ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Client image
 FROM alpine:3.19 as client
-RUN apk add --no-cache bash gettext nodejs npm
+RUN apk add --no-cache bash gettext
 COPY --from=frp-base /app/frpc /usr/local/bin/frpc
-COPY --from=web-build /app/dist /app/web/dist
-COPY --from=web-build /app/package.json /app/web/
-COPY --from=web-build /app/server.js /app/web/
-COPY --from=web-build /app/node_modules /app/web/node_modules
 COPY client/ /app/
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/start-client.sh /app/entrypoint.sh
 WORKDIR /app
-EXPOSE 3000
+EXPOSE 7400
 ENV MODE=client
 ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Combined image (default)
-FROM alpine:3.19 as both
-RUN apk add --no-cache bash curl nodejs npm
+FROM alpine:3.19 AS both
+RUN apk add --no-cache bash curl
 
 # Copy FRP binaries
 COPY --from=frp-base /app/frps /usr/local/bin/frps
 COPY --from=frp-base /app/frpc /usr/local/bin/frpc
-
-# Copy web app built files
-COPY --from=web-build /app/dist /app/web/dist
-COPY --from=web-build /app/package.json /app/web/
-COPY --from=web-build /app/server.js /app/web/
-COPY --from=web-build /app/node_modules /app/web/node_modules
 
 # Copy all configuration files
 COPY server/ /app/server/
@@ -74,14 +53,14 @@ COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh /app/server/start-server.sh /app/client/start-client.sh
 
 WORKDIR /app
-EXPOSE 7000 7500 3000
+EXPOSE 7000 7500 7400
 
 # Default environment variables
 ENV MODE=server
 ENV BIND_PORT=7000
 ENV DASHBOARD_PORT=7500
 ENV DASHBOARD_USER=admin
-ENV WEB_PORT=3000
+ENV ADMIN_PORT=7400
 # Note: DASHBOARD_PASSWORD should be set at runtime for security
 
 ENTRYPOINT ["/app/entrypoint.sh"]
