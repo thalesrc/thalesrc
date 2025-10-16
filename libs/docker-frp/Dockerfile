@@ -33,7 +33,7 @@ COPY server/ /app/
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/start-server.sh /app/entrypoint.sh
 WORKDIR /app
-EXPOSE 7000 7500
+EXPOSE 7000 7500 8080 8443
 ENV MODE=server
 ENTRYPOINT ["/app/entrypoint.sh"]
 
@@ -66,7 +66,7 @@ COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh /app/server/start-server.sh /app/client/start-client.sh
 
 WORKDIR /app
-EXPOSE 7000 7500 7400
+EXPOSE 7000 7500 7400 8080 8443
 
 # Default environment variables
 ENV MODE=server
@@ -74,6 +74,8 @@ ENV BIND_PORT=7000
 ENV DASHBOARD_PORT=7500
 ENV DASHBOARD_USER=admin
 ENV ADMIN_PORT=7400
+ENV VHOST_HTTP_PORT=8080
+ENV VHOST_HTTPS_PORT=8443
 # Note: DASHBOARD_PASSWORD should be set at runtime for security
 
 ENTRYPOINT ["/app/entrypoint.sh"]

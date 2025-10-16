@@ -4,6 +4,10 @@
 # Basic server configuration
 bindPort = ${BIND_PORT}
 
+# Virtual host ports for HTTP/HTTPS proxies
+vhostHTTPPort = ${VHOST_HTTP_PORT}
+vhostHTTPSPort = ${VHOST_HTTPS_PORT}
+
 # Dashboard configuration
 [webServer]
 addr = "0.0.0.0"

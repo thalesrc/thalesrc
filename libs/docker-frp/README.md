@@ -35,21 +35,31 @@ A comprehensive Docker container for [FRP (Fast Reverse Proxy)](https://github.c
 ### Server Mode (Default)
 ```bash
 # Basic server setup with authentication
-docker run -p 7000:7000 -p 7500:7500 \
+docker run -p 7000:7000 -p 7500:7500 -p 8080:8080 -p 8443:8443 \
   -e DASHBOARD_USER=admin \
   -e DASHBOARD_PASSWORD=secure123 \
   -e AUTH_TOKEN=my_secure_token \
   thalesrc/docker-frp:latest
 
 # Server without client authentication (open access)
-docker run -p 7000:7000 -p 7500:7500 \
+docker run -p 7000:7000 -p 7500:7500 -p 8080:8080 -p 8443:8443 \
   -e DASHBOARD_USER=admin \
   -e DASHBOARD_PASSWORD=secure123 \
+  thalesrc/docker-frp:latest
+
+# Server with custom vhost ports
+docker run -p 7000:7000 -p 7500:7500 -p 80:8080 -p 443:8443 \
+  -e DASHBOARD_USER=admin \
+  -e DASHBOARD_PASSWORD=secure123 \
+  -e VHOST_HTTP_PORT=8080 \
+  -e VHOST_HTTPS_PORT=8443 \
   thalesrc/docker-frp:latest
 
 ### 🌐 Access Points:**
 - **Server Dashboard:** http://localhost:7500 (admin/admin)
 - **Client Admin UI:** http://localhost:7400 (admin/admin)
+- **HTTP Proxies:** http://localhost:8080 (via vhostHTTPPort)
+- **HTTPS Proxies:** https://localhost:8443 (via vhostHTTPSPort)
 ```
 
 ### Client Mode with Admin UI
@@ -150,6 +160,7 @@ services:
       - "7000:7000"  # FRP server port
       - "7500:7500"  # Dashboard
       - "8080:8080"  # HTTP vhost
+      - "8443:8443"  # HTTPS vhost
       - "6000-6010:6000-6010"  # Proxy ports
     environment:
       - MODE=server
@@ -184,6 +195,8 @@ services:
     ports:
       - "7000:7000"
       - "7500:7500"
+      - "8080:8080"  # HTTP vhost
+      - "8443:8443"  # HTTPS vhost
       - "6000-6100:6000-6100"  # Proxy port range
     environment:
       - MODE=server
