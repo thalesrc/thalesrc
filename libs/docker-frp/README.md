@@ -26,7 +26,8 @@ A comprehensive Docker container for [FRP (Fast Reverse Proxy)](https://github.c
 ### 🏗️ Architecture
 - **Multi-stage Build**: Optimized image sizes for different modes
 - **Alpine Linux**: Minimal, secure base image
-- **Latest FRP**: Always includes the latest stable FRP release
+- **Latest FRP**: Always includes the latest stable FRP release (v0.65.0)
+- **Multi-Platform**: Supports AMD64, ARM64, ARM v7, ARM v6, and 386 architectures
 - **Cloud Native**: Kubernetes and Docker Compose ready
 
 ## 🚀 Quick Start
@@ -390,6 +391,27 @@ nx run docker-frp:run-client
 ## 🐛 Troubleshooting
 
 ### Common Issues
+
+#### Architecture Compatibility
+If you see the error `cannot execute binary file: Exec format error`, this means you're running the container on a different CPU architecture than expected.
+
+**Solution:**
+- **For Docker Hub/GHCR users**: Use the latest multi-platform image tags (v1.0.0+) which automatically select the correct architecture
+- **For manual builds**: Ensure Docker BuildKit is enabled and use `--platform` flag:
+```bash
+# Build for your current platform
+docker build --target client -t frp-client .
+
+# Build for specific platform
+docker build --platform linux/arm64 --target client -t frp-client .
+```
+
+**Supported Architectures:**
+- `linux/amd64` (Intel/AMD 64-bit)
+- `linux/arm64` (ARM 64-bit, Apple Silicon, Raspberry Pi 4+)
+- `linux/arm/v7` (ARM 32-bit v7, Raspberry Pi 3+)
+- `linux/arm/v6` (ARM 32-bit v6, Raspberry Pi Zero/1/2)
+- `linux/386` (Intel/AMD 32-bit)
 
 #### Server Mode
 ```bash

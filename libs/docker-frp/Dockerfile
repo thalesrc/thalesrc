@@ -4,10 +4,23 @@
 FROM alpine:3.19 as frp-base
 RUN apk add --no-cache curl tar
 
-# Download and extract FRP
+# Download and extract FRP with automatic architecture detection
 ARG FRP_VERSION=0.65.0
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
 WORKDIR /app
-RUN curl -L https://github.com/fatedier/frp/releases/download/v${FRP_VERSION}/frp_${FRP_VERSION}_linux_amd64.tar.gz -o frp.tar.gz && \
+
+# Convert Docker platform to FRP architecture naming
+RUN case "${TARGETPLATFORM}" in \
+        "linux/amd64") FRP_ARCH="amd64" ;; \
+        "linux/arm64") FRP_ARCH="arm64" ;; \
+        "linux/arm/v7") FRP_ARCH="arm" ;; \
+        "linux/arm/v6") FRP_ARCH="arm" ;; \
+        "linux/386") FRP_ARCH="386" ;; \
+        *) echo "Unsupported platform: ${TARGETPLATFORM}" && exit 1 ;; \
+    esac && \
+    echo "Building for platform: ${TARGETPLATFORM}, using FRP arch: ${FRP_ARCH}" && \
+    curl -L https://github.com/fatedier/frp/releases/download/v${FRP_VERSION}/frp_${FRP_VERSION}_linux_${FRP_ARCH}.tar.gz -o frp.tar.gz && \
     tar -xzf frp.tar.gz --strip-components=1 && \
     rm frp.tar.gz && \
     chmod +x frps frpc
