@@ -37,7 +37,14 @@ show_usage() {
     echo "  ADMIN_PORT        - Admin UI port (default: 7400)"
     echo "  ADMIN_USER        - Admin UI username (default: admin)"
     echo "  ADMIN_PASSWORD    - Admin UI password (default: admin)"
-    echo "  CONFIG_FILE       - Custom config file path (optional)"
+    echo ""
+    echo "PERSISTENT CONFIGURATION:"
+    echo "  Mount /app/configs as a volume to persist configurations:"
+    echo "  docker run -v ./configs:/app/configs thalesrc/docker-frp"
+    echo "  • First run: Generates config from template and saves to volume"
+    echo "  • Subsequent runs: Uses existing config from volume"
+    echo "  • Custom configs: Place frps.toml or frpc.toml in mounted volume"
+    echo "  • Manual editing: Edit files in mounted volume and restart"
     echo ""
     echo "EXAMPLES:"
     echo "  # Server mode"
@@ -62,6 +69,36 @@ if [ "$1" = "--help" ] || [ "$1" = "-h" ] || [ "$1" = "help" ]; then
     exit 0
 fi
 
+# Function to handle configuration
+setup_config() {
+    local mode=$1
+    local config_file="/app/configs/frp${mode}.toml"
+    local template_file="/app/frp${mode}.toml.template"
+
+    # Create configs directory
+    mkdir -p /app/configs
+
+    # Configuration priority:
+    # 1. If config exists in /app/configs/, use it directly
+    # 2. Generate from template and save to /app/configs/
+
+    if [ -f "$config_file" ]; then
+        echo "📁 Using existing configuration from $config_file"
+        return 0
+    else
+        echo "🔧 Generating configuration from template"
+        if [ -f "$template_file" ]; then
+            envsubst < "$template_file" > "$config_file"
+            echo "💾 Saved generated configuration to $config_file"
+            echo "ℹ️  You can now edit $config_file and restart to use custom configuration"
+            return 0
+        else
+            echo "❌ Error: Template $template_file not found"
+            exit 1
+        fi
+    fi
+}
+
 # Determine mode
 MODE=${MODE:-server}
 
@@ -79,19 +116,41 @@ case "$MODE" in
             exit 1
         fi
 
-        # Set executable permissions for server script
-        if [ -f "/app/server/start-server.sh" ]; then
-            # Combined image path
-            chmod +x /app/server/start-server.sh
-            exec /app/server/start-server.sh
-        elif [ -f "/app/start-server.sh" ]; then
-            # Server-only image path
-            chmod +x /app/start-server.sh
-            exec /app/start-server.sh
+        # Set default values for template processing
+        export BIND_PORT=${BIND_PORT:-7000}
+        export DASHBOARD_PORT=${DASHBOARD_PORT:-7500}
+        export DASHBOARD_USER=${DASHBOARD_USER:-admin}
+        export DASHBOARD_PASSWORD=${DASHBOARD_PASSWORD:-admin}
+        export VHOST_HTTP_PORT=${VHOST_HTTP_PORT:-8080}
+        export VHOST_HTTPS_PORT=${VHOST_HTTPS_PORT:-8443}
+
+        # Configure authentication section
+        if [ -n "$AUTH_TOKEN" ] && [ "$AUTH_TOKEN" != "" ]; then
+            export AUTH_SECTION="# Authentication method
+[auth]
+method = \"token\"
+token = \"$AUTH_TOKEN\""
+            echo "  Auth Token: [CONFIGURED]"
         else
-            echo "❌ Error: start-server.sh not found"
-            exit 1
+            export AUTH_SECTION="# No authentication configured"
+            echo "  Auth Token: [DISABLED]"
         fi
+
+        echo "Configuration:"
+        echo "  Bind Port: $BIND_PORT"
+        echo "  Dashboard Port: $DASHBOARD_PORT"
+        echo "  Dashboard User: $DASHBOARD_USER"
+        echo "  VHost HTTP Port: $VHOST_HTTP_PORT"
+        echo "  VHost HTTPS Port: $VHOST_HTTPS_PORT"
+
+        # Setup configuration
+        setup_config "s"
+
+        echo "Final configuration:"
+        cat /app/configs/frps.toml
+
+        # Start FRP server directly from configs
+        exec frps -c /app/configs/frps.toml
         ;;
 
     "client")
@@ -106,19 +165,39 @@ case "$MODE" in
             exit 1
         fi
 
-        # Set executable permissions for client script
-        if [ -f "/app/client/start-client.sh" ]; then
-            # Combined image path
-            chmod +x /app/client/start-client.sh
-            exec /app/client/start-client.sh
-        elif [ -f "/app/start-client.sh" ]; then
-            # Client-only image path
-            chmod +x /app/start-client.sh
-            exec /app/start-client.sh
+        # Set default values for template processing
+        export SERVER_ADDR=${SERVER_ADDR:-"x.x.x.x"}
+        export SERVER_PORT=${SERVER_PORT:-7000}
+        export ADMIN_PORT=${ADMIN_PORT:-7400}
+        export ADMIN_USER=${ADMIN_USER:-"admin"}
+        export ADMIN_PASSWORD=${ADMIN_PASSWORD:-"admin"}
+
+        # Configure authentication section
+        if [ -n "$AUTH_TOKEN" ] && [ "$AUTH_TOKEN" != "" ]; then
+            export AUTH_SECTION="# Authentication
+[auth]
+method = \"token\"
+token = \"$AUTH_TOKEN\""
+            echo "  Auth Token: [CONFIGURED]"
         else
-            echo "❌ Error: start-client.sh not found"
-            exit 1
+            export AUTH_SECTION="# No authentication configured"
+            echo "  Auth Token: [DISABLED]"
         fi
+
+        echo "Configuration:"
+        echo "  Server: $SERVER_ADDR:$SERVER_PORT"
+        echo "  Admin UI: http://localhost:$ADMIN_PORT"
+        echo "  Admin User: $ADMIN_USER"
+
+        # Setup configuration
+        setup_config "c"
+
+        echo "Final configuration:"
+        cat /app/configs/frpc.toml
+
+        # Start FRP client directly from configs
+        echo "Starting FRP client..."
+        exec frpc -c /app/configs/frpc.toml
         ;;
 
     *)

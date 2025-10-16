@@ -114,6 +114,43 @@ nx run docker-frp:build:client
 
 ## 🛠️ Configuration
 
+### 📁 Persistent Configuration
+
+Docker FRP supports persistent configuration storage through volume mounting. This allows you to:
+- **Backup configurations**: Keep your settings safe across container updates
+- **Easy editing**: Modify configuration files directly on the host
+- **Configuration management**: Version control your FRP configurations
+
+#### How it works:
+1. **Simple priority**: Uses existing config from volume → generates from template if none exists
+2. **Direct execution**: FRP runs directly from `/app/configs/` directory (no temporary files)
+3. **Volume-first**: Mount your own `frps.toml` or `frpc.toml` files for custom configurations
+4. **Persistent storage**: All configurations automatically saved to mounted volume for reuse
+
+#### Usage:
+```bash
+# Create a configs directory on your host
+mkdir -p ./frp-configs
+
+# Server with persistent config
+docker run -p 7000:7000 -p 7500:7500 -p 8080:8080 -p 8443:8443 \
+  -v ./frp-configs:/app/configs \
+  -e DASHBOARD_PASSWORD=secure123 \
+  thalesrc/docker-frp:server
+
+# Client with persistent config  
+docker run -p 7400:7400 \
+  -v ./frp-configs:/app/configs \
+  -e MODE=client \
+  -e SERVER_ADDR=your.server.com \
+  -e ADMIN_PASSWORD=secure123 \
+  thalesrc/docker-frp:client
+```
+
+#### Configuration Files:
+- **Server**: `/app/configs/frps.toml`
+- **Client**: `/app/configs/frpc.toml`
+
 ### Server Mode Environment Variables
 
 | Variable | Default | Description |
@@ -149,7 +186,7 @@ nx run docker-frp:build:client
 
 ### Docker Compose
 
-#### Complete Setup (Server + Client)
+#### Complete Setup (Server + Client) with Persistent Configs
 ```yaml
 version: '3.8'
 
@@ -167,6 +204,8 @@ services:
       - DASHBOARD_USER=admin
       - DASHBOARD_PASSWORD=your_secure_password
       - AUTH_TOKEN=your_secret_token
+    volumes:
+      - ./frp-server-configs:/app/configs  # Persistent server configuration
     restart: unless-stopped
 
   frp-client:
@@ -179,11 +218,21 @@ services:
       - SERVER_PORT=7000
       - AUTH_TOKEN=your_secret_token
       - ADMIN_USER=admin
-      - ADMIN_PASSWORD=secure123
+      - ADMIN_PASSWORD=your_secure_password
+    volumes:
+      - ./frp-client-configs:/app/configs  # Persistent client configuration
     depends_on:
       - frp-server
     restart: unless-stopped
+
+volumes:
+  frp-server-configs:
+  frp-client-configs:
 ```
+
+**First run creates**: 
+- `./frp-server-configs/frps.toml` - Server configuration
+- `./frp-client-configs/frpc.toml` - Client configuration
 
 #### Server Only
 ```yaml
@@ -363,16 +412,11 @@ docker run -d \
 ### Project Structure
 ```
 libs/docker-frp/
-├── Dockerfile              # Multi-stage Docker build
-├── entrypoint.sh           # Main container entrypoint
+├── Dockerfile              # Multi-stage Docker build with simplified architecture
+├── entrypoint.sh           # Unified container entrypoint with integrated configuration
 ├── project.json            # Nx project configuration
-├── server/                 # Server mode files
-│   ├── frps.toml.template  # Server config template
-│   └── start-server.sh     # Server startup script
-├── client/                 # Client mode files
-│   ├── frpc.toml.template  # Client config template
-│   └── start-client.sh     # Client startup script
-
+├── frps.toml.template      # Server configuration template
+├── frpc.toml.template      # Client configuration template
 └── README.md               # This file
 ```
 
@@ -390,6 +434,29 @@ nx run docker-frp:build:client
 nx run docker-frp:run-server
 nx run docker-frp:run-client
 ```
+
+### Testing the Project
+
+Comprehensive test suites are available:
+
+```bash
+# Linux/Mac - Run test suite
+./test.sh
+
+# With verbose output
+VERBOSE=true ./test.sh        # Linux/Mac
+
+# Custom test configuration
+TEST_TAG=my-test CLEANUP_ON_SUCCESS=false ./test.sh
+```
+
+**Test Coverage:**
+- ✅ Docker multi-stage builds (server, client, combined)
+- ✅ Container startup and FRP functionality
+- ✅ Server dashboard and VHost ports
+- ✅ Client admin UI and server connection
+- ✅ Volume persistence and configuration priority
+- ✅ Help functionality and environment variables
 
 ### Contributing
 

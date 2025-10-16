@@ -27,11 +27,14 @@ RUN case "${TARGETPLATFORM}" in \
 
 # Server image
 FROM alpine:3.19 as server
-RUN apk add --no-cache bash gettext
+RUN apk add --no-cache bash gettext dos2unix
 COPY --from=frp-base /app/frps /usr/local/bin/frps
-COPY server/ /app/
+# Copy only server template and entrypoint
+COPY frps.toml.template /app/frps.toml.template
 COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/start-server.sh /app/entrypoint.sh
+RUN dos2unix /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+RUN mkdir -p /app/configs
+VOLUME ["/app/configs"]
 WORKDIR /app
 EXPOSE 7000 7500 8080 8443
 ENV MODE=server
@@ -39,11 +42,14 @@ ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Client image
 FROM alpine:3.19 as client
-RUN apk add --no-cache bash gettext
+RUN apk add --no-cache bash gettext dos2unix
 COPY --from=frp-base /app/frpc /usr/local/bin/frpc
-COPY client/ /app/
+# Copy only client template and entrypoint
+COPY frpc.toml.template /app/frpc.toml.template
 COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/start-client.sh /app/entrypoint.sh
+RUN dos2unix /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+RUN mkdir -p /app/configs
+VOLUME ["/app/configs"]
 WORKDIR /app
 EXPOSE 7400
 ENV MODE=client
@@ -51,19 +57,23 @@ ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Combined image (default)
 FROM alpine:3.19 AS both
-RUN apk add --no-cache bash curl
+RUN apk add --no-cache bash gettext dos2unix
 
 # Copy FRP binaries
 COPY --from=frp-base /app/frps /usr/local/bin/frps
 COPY --from=frp-base /app/frpc /usr/local/bin/frpc
 
-# Copy all configuration files
-COPY server/ /app/server/
-COPY client/ /app/client/
+# Copy configuration templates and entrypoint
+COPY frps.toml.template /app/frps.toml.template
+COPY frpc.toml.template /app/frpc.toml.template
 COPY entrypoint.sh /app/entrypoint.sh
 
-# Set executable permissions
-RUN chmod +x /app/entrypoint.sh /app/server/start-server.sh /app/client/start-client.sh
+# Set permissions and fix line endings
+RUN dos2unix /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+
+# Create configs directory for persistent configuration storage
+RUN mkdir -p /app/configs
+VOLUME ["/app/configs"]
 
 WORKDIR /app
 EXPOSE 7000 7500 7400 8080 8443
