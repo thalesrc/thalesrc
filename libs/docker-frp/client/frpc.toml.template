@@ -4,6 +4,9 @@
 serverAddr = "${SERVER_ADDR}"
 serverPort = ${SERVER_PORT}
 
+# Connection settings
+loginFailExit = false
+
 # Admin UI configuration
 [webServer]
 addr = "0.0.0.0"
