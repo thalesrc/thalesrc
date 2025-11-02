@@ -102,6 +102,7 @@ _init
 
 # Set defaults
 export HOST_MAPPING="${HOST_MAPPING:-}"
+export STATIC_PROXIES="${STATIC_PROXIES:-}"
 export TARGET_HOST="${TARGET_HOST:-host.docker.internal}"
 export HTTP_PORT="${HTTP_PORT:-80}"
 export HTTPS_PORT="${HTTPS_PORT:-443}"
@@ -112,6 +113,7 @@ export SSL_POLICY="${SSL_POLICY:-Mozilla-Intermediate}"
 
 echo "Starting Thales Auto Proxy..."
 echo "HOST_MAPPING: ${HOST_MAPPING}"
+echo "STATIC_PROXIES: ${STATIC_PROXIES}"
 echo "TARGET_HOST: ${TARGET_HOST}"
 echo "HTTP_PORT: ${HTTP_PORT}"
 echo "HTTPS_PORT: ${HTTPS_PORT}"

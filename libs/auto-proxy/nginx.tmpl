@@ -23,6 +23,43 @@ map $http_upgrade $connection_upgrade {
     '' close;
 }
 
+# Static Proxy Upstreams (from STATIC_PROXIES env var)
+{{ $static_proxies := coalesce $.Env.STATIC_PROXIES "" }}
+{{ if $static_proxies }}
+{{ $static_mappings := split $static_proxies "," }}
+{{ range $static_mapping := $static_mappings }}
+{{ $arrow_parts := split $static_mapping "=>" }}
+{{ if eq (len $arrow_parts) 2 }}
+{{ $proxy_part := index $arrow_parts 0 }}
+{{ $target_part := index $arrow_parts 1 }}
+{{ $proxy_parts := split $proxy_part ":::" }}
+{{ $target_parts := split $target_part ":::" }}
+{{ if and (eq (len $proxy_parts) 3) (eq (len $target_parts) 2) }}
+{{ $protocol := index $proxy_parts 0 }}
+{{ $hostname := index $proxy_parts 1 }}
+{{ $proxy_port := index $proxy_parts 2 }}
+{{ $target_host := index $target_parts 0 }}
+{{ $target_port := index $target_parts 1 }}
+
+{{ if eq $protocol "HTTP" }}
+# Static HTTP upstream: {{ $hostname }}:{{ $proxy_port }} -> {{ $target_host }}:{{ $target_port }}
+upstream {{ $hostname }}-static {
+    server {{ $target_host }}:{{ $target_port }};
+}
+{{ end }}
+
+{{ if eq $protocol "GRPC" }}
+# Static gRPC upstream: {{ $hostname }}:{{ $proxy_port }} -> {{ $target_host }}:{{ $target_port }}
+upstream {{ $hostname }}-static-grpc {
+    server {{ $target_host }}:{{ $target_port }};
+}
+{{ end }}
+
+{{ end }}
+{{ end }}
+{{ end }}
+{{ end }}
+
 # Discover containers with HOST_MAPPING environment variables
 {{ range $host_mapping, $containers := groupByMulti $ "Env.HOST_MAPPING" "," }}
 {{ if $host_mapping }}
@@ -72,6 +109,99 @@ upstream {{ $hostname }}-grpc {
 {{ $protocol := index $parts 0 }}
 {{ $hostname := index $parts 1 }}
 {{ $port := index $parts 2 }}
+
+{{ end }}
+{{ end }}
+{{ end }}
+{{ end }}
+
+# Static Proxy HTTP Servers (from STATIC_PROXIES env var)
+{{ $static_proxies := coalesce $.Env.STATIC_PROXIES "" }}
+{{ if $static_proxies }}
+{{ $static_mappings := split $static_proxies "," }}
+{{ range $static_mapping := $static_mappings }}
+{{ $arrow_parts := split $static_mapping "=>" }}
+{{ if eq (len $arrow_parts) 2 }}
+{{ $proxy_part := index $arrow_parts 0 }}
+{{ $target_part := index $arrow_parts 1 }}
+{{ $proxy_parts := split $proxy_part ":::" }}
+{{ $target_parts := split $target_part ":::" }}
+{{ if and (eq (len $proxy_parts) 3) (eq (len $target_parts) 2) }}
+{{ $protocol := index $proxy_parts 0 }}
+{{ $hostname := index $proxy_parts 1 }}
+{{ $proxy_port := index $proxy_parts 2 }}
+{{ $target_host := index $target_parts 0 }}
+{{ $target_port := index $target_parts 1 }}
+
+{{ if eq $protocol "HTTP" }}
+# Static HTTP Server: {{ $hostname }}:{{ $proxy_port }} -> {{ $target_host }}:{{ $target_port }}
+server {
+    server_name {{ $hostname }};
+    server_tokens off;
+    {{ range $http_port := $http_ports }}
+    listen {{ $http_port }};
+    {{ if $enable_ipv6 }}
+    listen [::]:{{ $http_port }};
+    {{ end }}
+    {{ end }}
+
+    # SSL Configuration
+    {{ $cert_file := printf "/etc/nginx/certs/%s.crt" $hostname }}
+    {{ $key_file := printf "/etc/nginx/certs/%s.key" $hostname }}
+    {{ range $https_port := $https_ports }}
+    listen {{ $https_port }} ssl;
+    {{ if $enable_ipv6 }}
+    listen [::]:{{ $https_port }} ssl;
+    {{ end }}
+    {{ end }}
+
+    # Enable HTTP/2
+    http2 on;
+
+    # SSL Certificate files
+    ssl_certificate {{ $cert_file }};
+    ssl_certificate_key {{ $key_file }};
+
+    # SSL Security configuration
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384;
+    ssl_prefer_server_ciphers off;
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:SSL:50m;
+    ssl_stapling off;
+
+    # Security headers
+    add_header Strict-Transport-Security "max-age=63072000" always;
+    add_header X-Frame-Options DENY always;
+    add_header X-Content-Type-Options nosniff always;
+
+    location / {
+        proxy_pass http://{{ $hostname }}-static;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Port $server_port;
+        proxy_set_header X-Original-URI $request_uri;
+
+        # WebSocket and SSE support
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_http_version 1.1;
+
+        # Timeouts for WebSocket/SSE connections
+        proxy_connect_timeout       60s;
+        proxy_send_timeout          60s;
+        proxy_read_timeout          3600s;  # 1 hour for long-lived connections
+        proxy_redirect              off;
+        proxy_set_header Proxy "";
+
+        # Buffering settings for SSE
+        proxy_buffering off;
+        proxy_cache off;
+    }
+}
+{{ end }}
 
 {{ end }}
 {{ end }}
@@ -155,6 +285,66 @@ server {
         # Buffering settings for SSE
         proxy_buffering off;
         proxy_cache off;
+    }
+}
+{{ end }}
+
+{{ end }}
+{{ end }}
+{{ end }}
+{{ end }}
+
+# Static Proxy gRPC Servers (from STATIC_PROXIES env var)
+{{ $static_proxies := coalesce $.Env.STATIC_PROXIES "" }}
+{{ if $static_proxies }}
+{{ $static_mappings := split $static_proxies "," }}
+{{ range $static_mapping := $static_mappings }}
+{{ $arrow_parts := split $static_mapping "=>" }}
+{{ if eq (len $arrow_parts) 2 }}
+{{ $proxy_part := index $arrow_parts 0 }}
+{{ $target_part := index $arrow_parts 1 }}
+{{ $proxy_parts := split $proxy_part ":::" }}
+{{ $target_parts := split $target_part ":::" }}
+{{ if and (eq (len $proxy_parts) 3) (eq (len $target_parts) 2) }}
+{{ $protocol := index $proxy_parts 0 }}
+{{ $hostname := index $proxy_parts 1 }}
+{{ $proxy_port := index $proxy_parts 2 }}
+{{ $target_host := index $target_parts 0 }}
+{{ $target_port := index $target_parts 1 }}
+
+{{ if eq $protocol "GRPC" }}
+# Static gRPC Server: {{ $hostname }}:{{ $proxy_port }} -> {{ $target_host }}:{{ $target_port }}
+server {
+    server_name {{ $hostname }};
+    server_tokens off;
+    {{ range $grpc_port := $grpc_ports }}
+    listen {{ $grpc_port }};
+    {{ if $enable_ipv6 }}
+    listen [::]:{{ $grpc_port }};
+    {{ end }}
+    {{ end }}
+
+    # gRPC Configuration
+    http2 on;
+
+    location / {
+        grpc_pass grpc://{{ $hostname }}-static-grpc;
+        grpc_set_header Host $http_host;
+        grpc_set_header X-Real-IP $remote_addr;
+        grpc_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        grpc_set_header X-Forwarded-Proto $scheme;
+        grpc_connect_timeout 30;
+        grpc_send_timeout 30;
+        grpc_read_timeout 30;
+        error_page 502 = /grpc_internal_error;
+    }
+
+    location = /grpc_internal_error {
+        internal;
+        default_type application/grpc;
+        add_header grpc-status 14;
+        add_header grpc-message "Service unavailable";
+        return 204;
     }
 }
 {{ end }}

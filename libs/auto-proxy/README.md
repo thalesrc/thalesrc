@@ -1,8 +1,4 @@
-# @thalesrc/- 🔌 **gRPC Support**: Native HTTP/2 gRPC proxying with proper protocol handling
-- 🗄️ **Database Support**: Unified DATABASE protocol for PostgreSQL, MySQL, Redis, MongoDB and other TCP databases
-- 🌐 **WebSocket & SSE Support**: Real-time bidirectional and server-sent events
-- 📹 **WebRTC Compatible**: ICE/STUN/TURN traffic passthrough support
-- 📝 **HOST_MAPPING**: Custom environment variable format for easy configurationo-proxy
+# @thalesrc/auto-proxy
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Docker Pulls](https://img.shields.io/docker/pulls/thalesrc/auto-proxy)](https://hub.docker.com/r/thalesrc/auto-proxy)
@@ -15,8 +11,9 @@ Docker-aware nginx reverse proxy with automatic SSL and service discovery. Perfe
 - 🚀 **nginx + docker-gen Architecture**: Based on proven nginx-proxy design
 - 🌐 **Automatic HTTPS**: Self-signed SSL certificates generated on-demand  
 - 🔌 **gRPC Support**: Native HTTP/2 gRPC proxying with proper protocol handling
-- �️ **Database Support**: PostgreSQL, MySQL, Redis, and MongoDB TCP proxying
-- �📝 **HOST_MAPPING**: Custom environment variable format for easy configuration
+- 🗄️ **Database Support**: PostgreSQL, MySQL, Redis, and MongoDB TCP proxying
+- 📝 **HOST_MAPPING**: Custom environment variable format for easy configuration
+- 🎯 **STATIC_PROXIES**: Configure static proxies directly on auto-proxy container
 - 🐳 **Docker Ready**: Lightweight reverse proxy for development environments
 - 🎯 **Local Development**: Optimized for development workflows and local domains
 - ⚡ **High Performance**: nginx-powered with zero-downtime container discovery
@@ -241,6 +238,7 @@ docker run -d --env HOST_MAPPING="HTTP:::admin.myapp.local:::4000,GRPC:::admin.m
 #### For Auto-Proxy Container:
 | Variable | Default | Description |
 |----------|---------|-------------|
+| `STATIC_PROXIES` | `""` | Static proxy mappings (see below) |
 | `TARGET_HOST` | `host.docker.internal` | Default target host for HOST_MAPPING services |
 | `HTTP_PORTS` | `80,8080` | Comma-separated list of HTTP proxy ports |
 | `HTTPS_PORTS` | `443` | Comma-separated list of HTTPS proxy ports |
@@ -254,6 +252,70 @@ docker run -d --env HOST_MAPPING="HTTP:::admin.myapp.local:::4000,GRPC:::admin.m
 | `CERT_DIR` | `/etc/nginx/certs` | Directory to store SSL certificates |
 | `CERT_VALIDITY_DAYS` | `365` | SSL certificate validity period in days |
 | `SSL_KEY_SIZE` | `2048` | RSA key size for generated certificates |
+
+### STATIC_PROXIES Configuration
+
+The `STATIC_PROXIES` environment variable allows you to configure static proxy mappings directly on the auto-proxy container. This is useful when you want to proxy to external services or when you don't want to modify the service containers.
+
+**Format:**
+```
+STATIC_PROXIES=PROTOCOL:::HOSTNAME:::PROXY_PORT=>TARGET_HOST:::TARGET_PORT,PROTOCOL:::HOSTNAME:::PROXY_PORT=>TARGET_HOST:::TARGET_PORT,...
+```
+
+**Supported Protocols:**
+- `HTTP` - HTTP/HTTPS web services
+- `GRPC` - gRPC services
+- `DATABASE` - Database services (PostgreSQL, MySQL, Redis, MongoDB, etc.)
+
+**Examples:**
+
+```bash
+# Single static HTTP proxy
+STATIC_PROXIES="HTTP:::api.external.local:::443=>api.example.com:::3000"
+
+# Multiple static proxies
+STATIC_PROXIES="HTTP:::api.external.local:::443=>api.example.com:::3000,DATABASE:::db.external.local:::6379=>redis.example.com:::6379"
+
+# Mix of HTTP, gRPC, and Database proxies
+STATIC_PROXIES="HTTP:::web.external.local:::443=>192.168.1.100:::8080,GRPC:::grpc.external.local:::50051=>grpc.example.com:::50051,DATABASE:::cache.external.local:::6379=>redis.example.com:::6379"
+```
+
+**Docker Compose Example:**
+
+```yaml
+version: '3.8'
+
+services:
+  auto-proxy:
+    image: thalesrc/auto-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "50051:50051"
+      - "6379:6379"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - auto_proxy_certs:/etc/nginx/certs
+    environment:
+      # Static proxies to external services
+      - STATIC_PROXIES=HTTP:::api.external.local:::443=>api.example.com:::3000,DATABASE:::cache.external.local:::6379=>redis.example.com:::6379
+    networks:
+      - app-network
+
+volumes:
+  auto_proxy_certs:
+
+networks:
+  app-network:
+    driver: bridge
+```
+
+**Notes:**
+- The arrow (`=>`) separates the proxy configuration from the target configuration
+- SSL certificates are automatically generated for HTTP and gRPC static proxies
+- Database proxies use TCP passthrough at Layer 4
+- Static proxies work alongside dynamic container discovery via `HOST_MAPPING`
+- You can proxy to any reachable host: localhost, host.docker.internal, external IPs, or domain names
 
 ### Port Configuration
 
@@ -361,7 +423,52 @@ docker run -d --env HOST_MAPPING="HTTP:::orders.api.local:::3002" orders-api
 docker run -d --env HOST_MAPPING="HTTP:::payments.api.local:::3003" payments-api
 ```
 
-### 5. Real-time Applications
+### 5. Static Proxies to External Services
+
+Proxy to services outside of Docker or on remote servers using `STATIC_PROXIES`:
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  auto-proxy:
+    image: thalesrc/auto-proxy
+    ports: ["80:80", "443:443", "6379:6379"]
+    volumes: ["/var/run/docker.sock:/tmp/docker.sock:ro"]
+    environment:
+      # Proxy to external API
+      - STATIC_PROXIES=HTTP:::api.external.local:::443=>api.example.com:::3000,DATABASE:::cache.external.local:::6379=>redis.company.com:::6379
+    networks:
+      - app-network
+
+  # Local service that needs to access external API
+  backend:
+    image: my-backend-service
+    environment:
+      - API_URL=https://api.external.local  # Proxied through auto-proxy
+      - REDIS_URL=redis://cache.external.local:6379  # Proxied through auto-proxy
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+```
+
+**Access the services:**
+```bash
+# From your host machine
+curl https://api.external.local  # Routes to api.example.com:3000
+redis-cli -h cache.external.local -p 6379  # Routes to redis.company.com:6379
+```
+
+**Benefits:**
+- Consistent access patterns for both local and external services
+- SSL termination for external HTTP services
+- Single point of configuration
+- Easy to switch between local and remote services
+
+### 6. Real-time Applications
 
 WebSocket, SSE, and WebRTC applications:
 
@@ -399,7 +506,7 @@ services:
       - HOST_MAPPING=HTTP:::dashboard.app.local:::8080
 ```
 
-### 6. Database Development Environment
+### 7. Database Development Environment
 
 Unified database access through the proxy:
 

@@ -103,57 +103,85 @@ extract_hostnames_from_docker() {
     # Check if docker is available
     if ! command -v docker >/dev/null 2>&1; then
         log_warning "Docker command not available, skipping container discovery"
-        return 0
-    fi
+    else
+        # Get containers with HOST_MAPPING environment variable
+        log_info "Discovering containers with HOST_MAPPING..."
 
-    # Get containers with HOST_MAPPING environment variable
-    log_info "Discovering containers with HOST_MAPPING..."
+        # Wait a moment for containers to be fully ready
+        sleep 2
 
-    # Wait a moment for containers to be fully ready
-    sleep 2
+        local containers
+        # Get all running containers (not just compose services)
+        containers=$(docker ps --format "{{.Names}}")
+        if [[ -z "$containers" ]]; then
+            log_warning "No Docker containers found"
+        else
+            while IFS= read -r container_name; do
+                if [[ -z "$container_name" ]]; then
+                    continue
+                fi
 
-    local containers
-    # Get all running containers (not just compose services)
-    containers=$(docker ps --format "{{.Names}}")
-    if [[ -z "$containers" ]]; then
-        log_warning "No Docker containers found, skipping certificate generation"
-        return 0
-    fi
+                # Get HOST_MAPPING environment variable from container
+                local host_mapping
+                # Get HOST_MAPPING environment variable from container
+                host_mapping=$(docker inspect "$container_name" --format '{{range .Config.Env}}{{if (index (split . "=") 0 | eq "HOST_MAPPING")}}{{index (split . "=") 1}}{{end}}{{end}}')
 
-    while IFS= read -r container_name; do
-        if [[ -z "$container_name" ]]; then
-            continue
-        fi
+                if [[ -n "$host_mapping" ]]; then
+                    log_info "Found HOST_MAPPING in container $container_name: $host_mapping"
 
-        # Get HOST_MAPPING environment variable from container
-        local host_mapping
-        # Get HOST_MAPPING environment variable from container
-        host_mapping=$(docker inspect "$container_name" --format '{{range .Config.Env}}{{if (index (split . "=") 0 | eq "HOST_MAPPING")}}{{index (split . "=") 1}}{{end}}{{end}}')
+                    # Parse HOST_MAPPING: PROTOCOL:::HOSTNAME:::PORT,PROTOCOL:::HOSTNAME:::PORT,...
+                    IFS=',' read -ra mappings <<< "$host_mapping"
+                    for mapping in "${mappings[@]}"; do
+                        IFS=':::' read -ra parts <<< "$mapping"
+                        if [[ ${#parts[@]} -eq 3 ]]; then
+                            local protocol="${parts[0]}"
+                            local hostname="${parts[1]}"
+                            local port="${parts[2]}"
 
-        if [[ -n "$host_mapping" ]]; then
-            log_info "Found HOST_MAPPING in container $container_name: $host_mapping"
-
-            # Parse HOST_MAPPING: PROTOCOL:::HOSTNAME:::PORT,PROTOCOL:::HOSTNAME:::PORT,...
-            IFS=',' read -ra mappings <<< "$host_mapping"
-            for mapping in "${mappings[@]}"; do
-                IFS=':::' read -ra parts <<< "$mapping"
-                if [[ ${#parts[@]} -eq 3 ]]; then
-                    local protocol="${parts[0]}"
-                    local hostname="${parts[1]}"
-                    local port="${parts[2]}"
-
-                    # Only generate certificates for HTTP and GRPC protocols with valid hostnames
-                    if [[ "$protocol" == "HTTP" || "$protocol" == "GRPC" ]] && [[ "$hostname" =~ ^[a-zA-Z0-9.-]+$ ]]; then
-                        # Avoid duplicates
-                        if [[ ! " ${hostnames[*]} " =~ " ${hostname} " ]]; then
-                            hostnames+=("$hostname")
-                            log_info "Added hostname for certificate generation: $hostname"
+                            # Only generate certificates for HTTP and GRPC protocols with valid hostnames
+                            if [[ "$protocol" == "HTTP" || "$protocol" == "GRPC" ]] && [[ "$hostname" =~ ^[a-zA-Z0-9.-]+$ ]]; then
+                                # Avoid duplicates
+                                if [[ ! " ${hostnames[*]} " =~ " ${hostname} " ]]; then
+                                    hostnames+=("$hostname")
+                                    log_info "Added hostname for certificate generation: $hostname"
+                                fi
+                            fi
                         fi
+                    done
+                fi
+            done <<< "$containers"
+        fi
+    fi
+
+    # Extract hostnames from STATIC_PROXIES environment variable
+    local static_proxies="${STATIC_PROXIES:-}"
+    if [[ -n "$static_proxies" ]]; then
+        log_info "Discovering static proxies from STATIC_PROXIES: $static_proxies"
+
+        # Parse STATIC_PROXIES: PROTOCOL:::HOSTNAME:::PORT=>TARGET_HOST:::TARGET_PORT,PROTOCOL:::...
+        IFS=',' read -ra mappings <<< "$static_proxies"
+        for mapping in "${mappings[@]}"; do
+            # Split by => to get proxy config part
+            local proxy_part="${mapping%%=>*}"
+
+            # Split proxy part by ::: delimiter
+            IFS=':::' read -ra parts <<< "$proxy_part"
+            if [[ ${#parts[@]} -eq 3 ]]; then
+                local protocol="${parts[0]}"
+                local hostname="${parts[1]}"
+                local port="${parts[2]}"
+
+                # Only generate certificates for HTTP and GRPC protocols with valid hostnames
+                if [[ "$protocol" == "HTTP" || "$protocol" == "GRPC" ]] && [[ "$hostname" =~ ^[a-zA-Z0-9.-]+$ ]]; then
+                    # Avoid duplicates
+                    if [[ ! " ${hostnames[*]} " =~ " ${hostname} " ]]; then
+                        hostnames+=("$hostname")
+                        log_info "Added static hostname for certificate generation: $hostname"
                     fi
                 fi
-            done
-        fi
-    done <<< "$containers"
+            fi
+        done
+    fi
 
     # Generate certificates for all discovered hostnames
     for hostname in "${hostnames[@]}"; do

@@ -8,6 +8,36 @@
 # Database Protocol Configuration Variables
 {{ $database_ports := split (coalesce $.Env.DATABASE_PORTS "5432,3306,6379,27017") "," }}
 
+# Static Proxy Database Upstreams (from STATIC_PROXIES env var)
+{{ $static_proxies := coalesce $.Env.STATIC_PROXIES "" }}
+{{ if $static_proxies }}
+{{ $static_mappings := split $static_proxies "," }}
+{{ range $static_mapping := $static_mappings }}
+{{ $arrow_parts := split $static_mapping "=>" }}
+{{ if eq (len $arrow_parts) 2 }}
+{{ $proxy_part := index $arrow_parts 0 }}
+{{ $target_part := index $arrow_parts 1 }}
+{{ $proxy_parts := split $proxy_part ":::" }}
+{{ $target_parts := split $target_part ":::" }}
+{{ if and (eq (len $proxy_parts) 3) (eq (len $target_parts) 2) }}
+{{ $protocol := index $proxy_parts 0 }}
+{{ $hostname := index $proxy_parts 1 }}
+{{ $proxy_port := index $proxy_parts 2 }}
+{{ $target_host := index $target_parts 0 }}
+{{ $target_port := index $target_parts 1 }}
+
+{{ if eq $protocol "DATABASE" }}
+# Static Database upstream: {{ $hostname }}:{{ $proxy_port }} -> {{ $target_host }}:{{ $target_port }}
+upstream {{ $hostname }}-static-database {
+    server {{ $target_host }}:{{ $target_port }};
+}
+{{ end }}
+
+{{ end }}
+{{ end }}
+{{ end }}
+{{ end }}
+
 # Database upstream definitions
 {{ range $host_mapping, $containers := groupByMulti $ "Env.HOST_MAPPING" "," }}
 {{ if $host_mapping }}
@@ -28,6 +58,43 @@ upstream {{ $hostname }}-database {
     server {{ $network.IP }}:{{ $port }};
 {{ end }}
 }
+{{ end }}
+
+{{ end }}
+{{ end }}
+{{ end }}
+{{ end }}
+
+# Static Proxy Database Servers (from STATIC_PROXIES env var)
+{{ $static_proxies := coalesce $.Env.STATIC_PROXIES "" }}
+{{ if $static_proxies }}
+{{ $static_mappings := split $static_proxies "," }}
+{{ range $static_mapping := $static_mappings }}
+{{ $arrow_parts := split $static_mapping "=>" }}
+{{ if eq (len $arrow_parts) 2 }}
+{{ $proxy_part := index $arrow_parts 0 }}
+{{ $target_part := index $arrow_parts 1 }}
+{{ $proxy_parts := split $proxy_part ":::" }}
+{{ $target_parts := split $target_part ":::" }}
+{{ if and (eq (len $proxy_parts) 3) (eq (len $target_parts) 2) }}
+{{ $protocol := index $proxy_parts 0 }}
+{{ $hostname := index $proxy_parts 1 }}
+{{ $proxy_port := index $proxy_parts 2 }}
+{{ $target_host := index $target_parts 0 }}
+{{ $target_port := index $target_parts 1 }}
+
+{{ if eq $protocol "DATABASE" }}
+# Static Database Server: {{ $hostname }}:{{ $proxy_port }} -> {{ $target_host }}:{{ $target_port }} (TCP Passthrough)
+{{ range $database_port := $database_ports }}
+server {
+    listen {{ $database_port }};
+    proxy_pass {{ $hostname }}-static-database;
+    proxy_timeout 60s;
+    proxy_connect_timeout 10s;
+    proxy_responses 1;
+    # SSL/TLS negotiation handled by database server
+}
+{{ end }}
 {{ end }}
 
 {{ end }}

@@ -97,6 +97,45 @@ start_nginx() {
     log_success "Nginx started (PID: $NGINX_PID)"
 }
 
+# Discover static proxies from STATIC_PROXIES env var
+discover_static_hostnames() {
+    local hostnames=()
+    local static_proxies="${STATIC_PROXIES:-}"
+
+    if [[ -z "$static_proxies" ]]; then
+        echo ""
+        return
+    fi
+
+    log_info "Discovering static proxies from STATIC_PROXIES..." >&2
+
+    # Parse STATIC_PROXIES: PROTOCOL:::HOSTNAME:::PROXY_PORT=>TARGET_HOST:::TARGET_PORT,PROTOCOL:::...
+    IFS=',' read -ra mappings <<< "$static_proxies"
+    for mapping in "${mappings[@]}"; do
+        # Split by => to get left (proxy config) and right (target config)
+        local proxy_part="${mapping%%=>*}"
+        local target_part="${mapping#*=>}"
+
+        # Split proxy part by ::: delimiter
+        local protocol="${proxy_part%%:::*}"
+        local remainder="${proxy_part#*:::}"
+        local hostname="${remainder%%:::*}"
+        local proxy_port="${remainder#*:::}"
+
+        # Include HTTP, GRPC, and database protocols with valid hostnames
+        if [[ -n "$protocol" && -n "$hostname" && -n "$proxy_port" ]] && [[ "$protocol" == "HTTP" || "$protocol" == "GRPC" || "$protocol" == "DATABASE" ]] && [[ "$hostname" =~ ^[a-zA-Z0-9.-]+$ ]]; then
+            # Avoid duplicates
+            if [[ ! " ${hostnames[*]} " =~ " ${hostname} " ]]; then
+                hostnames+=("$hostname")
+                log_success "Discovered static hostname: $hostname" >&2
+            fi
+        fi
+    done
+
+    # Return hostnames as space-separated string
+    echo "${hostnames[*]}"
+}
+
 # Discover containers with HOST_MAPPING
 discover_hostnames() {
     local hostnames=()
@@ -109,42 +148,52 @@ discover_hostnames() {
 
     if [[ -z "$containers" ]]; then
         log_warning "No containers found" >&2
-        echo ""
-        return
+    else
+        while IFS= read -r container_name; do
+            if [[ -z "$container_name" ]] || [[ "$container_name" == "thales-auto-proxy" ]]; then
+                continue
+            fi
+
+            # Get HOST_MAPPING environment variable
+            local host_mapping
+            host_mapping=$(docker inspect "$container_name" --format '{{range .Config.Env}}{{if (index (split . "=") 0 | eq "HOST_MAPPING")}}{{index (split . "=") 1}}{{end}}{{end}}' 2>/dev/null || echo "")
+
+            if [[ -n "$host_mapping" ]]; then
+                log_info "Found HOST_MAPPING in $container_name: $host_mapping" >&2
+
+                # Parse HOST_MAPPING: PROTOCOL:::HOSTNAME:::PORT,PROTOCOL:::HOSTNAME:::PORT,...
+                IFS=',' read -ra mappings <<< "$host_mapping"
+                for mapping in "${mappings[@]}"; do
+                    # Split by ::: delimiter using string replacement
+                    local protocol="${mapping%%:::*}"
+                    local remainder="${mapping#*:::}"
+                    local hostname="${remainder%%:::*}"
+                    local port="${remainder#*:::}"
+
+                    # Include HTTP, GRPC, and database protocols with valid hostnames
+                    if [[ -n "$protocol" && -n "$hostname" && -n "$port" ]] && [[ "$protocol" == "HTTP" || "$protocol" == "GRPC" || "$protocol" == "DATABASE" ]] && [[ "$hostname" =~ ^[a-zA-Z0-9.-]+$ ]]; then
+                        # Avoid duplicates
+                        if [[ ! " ${hostnames[*]} " =~ " ${hostname} " ]]; then
+                            hostnames+=("$hostname")
+                            log_success "Discovered hostname: $hostname" >&2
+                        fi
+                    fi
+                done
+            fi
+        done <<< "$containers"
     fi
 
-    while IFS= read -r container_name; do
-        if [[ -z "$container_name" ]] || [[ "$container_name" == "thales-auto-proxy" ]]; then
-            continue
-        fi
-
-        # Get HOST_MAPPING environment variable
-        local host_mapping
-        host_mapping=$(docker inspect "$container_name" --format '{{range .Config.Env}}{{if (index (split . "=") 0 | eq "HOST_MAPPING")}}{{index (split . "=") 1}}{{end}}{{end}}' 2>/dev/null || echo "")
-
-        if [[ -n "$host_mapping" ]]; then
-            log_info "Found HOST_MAPPING in $container_name: $host_mapping" >&2
-
-            # Parse HOST_MAPPING: PROTOCOL:::HOSTNAME:::PORT,PROTOCOL:::HOSTNAME:::PORT,...
-            IFS=',' read -ra mappings <<< "$host_mapping"
-            for mapping in "${mappings[@]}"; do
-                # Split by ::: delimiter using string replacement
-                local protocol="${mapping%%:::*}"
-                local remainder="${mapping#*:::}"
-                local hostname="${remainder%%:::*}"
-                local port="${remainder#*:::}"
-
-                # Include HTTP, GRPC, and database protocols with valid hostnames
-                if [[ -n "$protocol" && -n "$hostname" && -n "$port" ]] && [[ "$protocol" == "HTTP" || "$protocol" == "GRPC" || "$protocol" == "DATABASE" ]] && [[ "$hostname" =~ ^[a-zA-Z0-9.-]+$ ]]; then
-                    # Avoid duplicates
-                    if [[ ! " ${hostnames[*]} " =~ " ${hostname} " ]]; then
-                        hostnames+=("$hostname")
-                        log_success "Discovered hostname: $hostname" >&2
-                    fi
-                fi
-            done
-        fi
-    done <<< "$containers"
+    # Add static hostnames
+    local static_hostnames
+    static_hostnames=$(discover_static_hostnames)
+    if [[ -n "$static_hostnames" ]]; then
+        for hostname in $static_hostnames; do
+            # Avoid duplicates
+            if [[ ! " ${hostnames[*]} " =~ " ${hostname} " ]]; then
+                hostnames+=("$hostname")
+            fi
+        done
+    fi
 
     # Return hostnames as space-separated string
     echo "${hostnames[*]}"
