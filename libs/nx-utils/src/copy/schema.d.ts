@@ -11,12 +11,21 @@ export interface Input {
 
 	/**
 	 * Replace strings in file content
+   * Use #{ENV_VAR} to replace with environment variable
+   *
+   * Exp:
+   * ```
+   * replace: {
+   *   "VERSION": "1.0.0",
+   *   "BUILD_DATE": "#{BUILD_DATE_ENV}"
+   * }
+   * ```
 	 */
 	replace?: Record<string, string>;
 
 	/**
 	 * Resize an image
-	 * 
+	 *
 	 * Exp:
 	 * ```
 	 * resize: 40 // width 40px height 40px

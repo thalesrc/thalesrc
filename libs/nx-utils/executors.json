@@ -3,37 +3,37 @@
     "copy": {
       "implementation": "./src/copy/executor",
       "schema": "./src/copy/schema.json",
-      "description": "copy executor"
+      "description": "Copy files with advanced features like content replacement, image resizing, and glob pattern support"
     },
     "fill-package-json": {
       "implementation": "./src/fill-package-json/executor",
       "schema": "./src/fill-package-json/schema.json",
-      "description": "fill-package-json executor"
+      "description": "Generate and populate package.json files with automatic exports configuration"
     },
     "run-parallel": {
       "implementation": "./src/run-parallel/executor",
       "schema": "./src/run-parallel/schema.json",
-      "description": "run-parallel executor"
+      "description": "Execute multiple commands in parallel with sequential readiness control"
     },
     "ts-builder": {
       "implementation": "./src/ts-builder/executor",
       "schema": "./src/ts-builder/schema.json",
-      "description": "Builds typescript files"
+      "description": "Build TypeScript files with custom configurations and output paths"
     },
     "watch": {
       "implementation": "./src/watch/executor",
       "schema": "./src/watch/schema.json",
-      "description": "watch executor"
+      "description": "Watch files and execute commands on changes with path placeholder support"
     },
     "platform-runner": {
       "implementation": "./src/platform-runner/executor",
       "schema": "./src/platform-runner/schema.json",
-      "description": "Allows you modify scripts by platforms it is running on"
+      "description": "Execute scripts with platform-specific variable substitution"
     },
     "run-for-each": {
       "implementation": "./src/run-for-each/executor",
       "schema": "./src/run-for-each/schema.json",
-      "description": "Run script for each item provided"
+      "description": "Execute a command for each item in a list or glob pattern"
     }
   }
 }

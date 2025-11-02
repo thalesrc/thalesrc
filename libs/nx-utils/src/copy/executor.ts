@@ -34,7 +34,7 @@ async function readReplaceWrite({ file, output, replace }: Input) {
   let fileContent = await readFile(file, 'utf-8');
 
   for (const [find, replaceStr] of replace) {
-    fileContent = fileContent.replace(find, replaceStr);
+    fileContent = fileContent.replace(find, replaceStr.replace(/(#{\w+})/gm, match => process.env[match.replace(/#{(\w+)}/g, '$1')]));
   }
 
   await writeFile(`${output}/${getFileName(file)}`, fileContent, 'utf-8');
