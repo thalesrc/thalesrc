@@ -25,6 +25,8 @@
       "@thalesrc/js-utils/*": ["libs/js-utils/src/*"],
       "@thalesrc/node-utils": ["libs/node-utils/src/index.ts"],
       "@thalesrc/nx-utils": ["libs/nx-utils/src/index.ts"],
+      "@thalesrc/paintlet": ["libs/paintlet/src/index.ts"],
+      "@thalesrc/paintlet/*": ["libs/paintlet/src/*"],
       "@thalesrc/react-utils": ["libs/react-utils/src/index.ts"],
       "@thalesrc/react-utils/*": ["libs/react-utils/src/*"],
       "@thalesrc/reactive-storage": ["libs/reactive-storage/src/index.ts"],
