@@ -50,7 +50,7 @@ Apply the ripple effect using CSS Paint API:
 .ripple-effect {
   width: 300px;
   height: 300px;
-  background-image: paint(ripple);
+  background-image: paint(tha-ripple);
   
   /* Customize with CSS custom properties */
   --tha-ripple-color: #3498db;
@@ -98,16 +98,14 @@ Creates an animated rain effect with customizable raindrops.
 
 **Animated Example:**
 
-The rain paintlet automatically registers a `tha-rain-animation` keyframe animation:
-
 ```css
 .rain-effect {
-  background-image: paint(rain);
+  background-image: paint(tha-rain);
+  animation: --tha-rain-animation(1s);
   --tha-rain-color: #4a90e2;
   --tha-rain-density: 50;
   --tha-rain-speed: 5;
   --tha-rain-angle: 75;
-  animation: tha-rain-animation 2s linear infinite;
 }
 ```
 

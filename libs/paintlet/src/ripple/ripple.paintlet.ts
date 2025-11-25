@@ -100,7 +100,7 @@ export class RipplePaintlet {
 }
 
 // Auto-register the paintlet when module loads
-registerPaintlet('ripple', RipplePaintlet, [
+registerPaintlet('tha-ripple', RipplePaintlet, [
   {
     name: '--tha-ripple-color',
     syntax: '<color>',
