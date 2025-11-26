@@ -95,7 +95,7 @@ const renderRipple = (args: RippleStoryArgs) => html`
     style="
       width: ${args.width || 300}px;
       height: ${args.height || 300}px;
-      background-image: paint(ripple);
+      background-image: --tha-ripple();
       --tha-ripple-color: ${args.color};
       --tha-ripple-density: ${args.density};
       --tha-ripple-wave-width: ${args.waveWidth};

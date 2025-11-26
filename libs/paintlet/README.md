@@ -44,13 +44,13 @@ import '@thalesrc/paintlet';
 
 ### Using in CSS
 
-Apply the ripple effect using CSS Paint API:
+Apply the ripple effect using the custom CSS function:
 
 ```css
 .ripple-effect {
   width: 300px;
   height: 300px;
-  background-image: paint(tha-ripple);
+  background-image: --tha-ripple();
   
   /* Customize with CSS custom properties */
   --tha-ripple-color: #3498db;
@@ -74,7 +74,7 @@ Creates concentric circular waves radiating from the center.
 
 ```css
 .element {
-  background-image: paint(ripple);
+  background-image: --tha-ripple();
   --tha-ripple-color: #e74c3c;
   --tha-ripple-density: 10;
   --tha-ripple-wave-width: 3;
@@ -88,7 +88,6 @@ Creates an animated rain effect with customizable raindrops.
 **Custom Properties:**
 - `--tha-rain-color`: Color of the raindrops (default: `#4a90e2`)
 - `--tha-rain-density`: Number of raindrops (default: `50`)
-- `--tha-rain-speed`: Speed multiplier for rain animation (default: `5`)
 - `--tha-rain-angle`: Angle of rain in degrees, 90 is vertical (default: `75`)
 - `--tha-rain-min-length`: Minimum length of raindrops in pixels (default: `10`)
 - `--tha-rain-max-length`: Maximum length of raindrops in pixels (default: `30`)
@@ -100,11 +99,10 @@ Creates an animated rain effect with customizable raindrops.
 
 ```css
 .rain-effect {
-  background-image: paint(tha-rain);
+  background-image: --tha-rain();
   animation: --tha-rain-animation(1s);
   --tha-rain-color: #4a90e2;
   --tha-rain-density: 50;
-  --tha-rain-speed: 5;
   --tha-rain-angle: 75;
 }
 ```

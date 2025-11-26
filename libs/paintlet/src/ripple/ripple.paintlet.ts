@@ -11,15 +11,6 @@ interface RippleConfig {
 }
 
 /**
- * Default configuration values
- */
-const RIPPLE_DEFAULTS: RippleConfig = {
-  color: '#3498db',
-  density: 5,
-  waveWidth: 2,
-};
-
-/**
  * Ripple Paintlet
  * Creates concentric circular waves radiating from the center
  *
@@ -39,29 +30,55 @@ const RIPPLE_DEFAULTS: RippleConfig = {
  * ```
  */
 export class RipplePaintlet {
+  static PROPERTIES = [
+    {
+      name: '--tha-ripple-color',
+      syntax: '<color>',
+      inherits: true,
+      initialValue: '#3498db',
+    },
+    {
+      name: '--tha-ripple-density',
+      syntax: '<number>',
+      inherits: true,
+      initialValue: 5,
+    },
+    {
+      name: '--tha-ripple-wave-width',
+      syntax: '<number>',
+      inherits: true,
+      initialValue: 2,
+    },
+  ];
+
+  /**
+   * Default configuration values
+   */
+  static RIPPLE_DEFAULTS: RippleConfig = {
+    color: '#3498db',
+    density: 5,
+    waveWidth: 2,
+  };
+
   static get inputProperties(): string[] {
-    return [
-      '--tha-ripple-color',
-      '--tha-ripple-density',
-      '--tha-ripple-wave-width',
-    ];
+    return this.PROPERTIES.map((prop) => prop.name);
   }
 
   /**
    * Extract configuration from CSS custom properties
    */
-  private getConfig(properties: StylePropertyMapReadOnly): RippleConfig {
+  #getConfig(properties: StylePropertyMapReadOnly): RippleConfig {
     return {
-      color: properties.get('--tha-ripple-color')?.toString() || RIPPLE_DEFAULTS.color,
-      density: parseFloat(properties.get('--tha-ripple-density')?.toString() || String(RIPPLE_DEFAULTS.density)),
-      waveWidth: parseFloat(properties.get('--tha-ripple-wave-width')?.toString() || String(RIPPLE_DEFAULTS.waveWidth)),
+      color: properties.get('--tha-ripple-color')?.toString() || RipplePaintlet.RIPPLE_DEFAULTS.color,
+      density: parseFloat(properties.get('--tha-ripple-density')?.toString() || String(RipplePaintlet.RIPPLE_DEFAULTS.density)),
+      waveWidth: parseFloat(properties.get('--tha-ripple-wave-width')?.toString() || String(RipplePaintlet.RIPPLE_DEFAULTS.waveWidth)),
     };
   }
 
   /**
    * Draw a single ripple circle
    */
-  private drawRipple(
+  #drawRipple(
     ctx: PaintRenderingContext2D,
     centerX: number,
     centerY: number,
@@ -77,46 +94,26 @@ export class RipplePaintlet {
    */
   paint(
     ctx: PaintRenderingContext2D,
-    geom: PaintSize,
+    {width, height}: PaintSize,
     properties: StylePropertyMapReadOnly
   ): void {
-    const config = this.getConfig(properties);
+    const {color, density, waveWidth} = this.#getConfig(properties);
 
-    const centerX = geom.width / 2;
-    const centerY = geom.height / 2;
-    const maxRadius = Math.max(geom.width, geom.height);
-    const radiusStep = maxRadius / config.density;
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const maxRadius = Math.max(width, height);
+    const radiusStep = maxRadius / density;
 
     // Set up drawing style
-    ctx.strokeStyle = config.color;
-    ctx.lineWidth = config.waveWidth;
-
+    ctx.strokeStyle = color;
+    ctx.lineWidth = waveWidth;
     // Draw ripples from center outward
-    for (let i = 1; i <= config.density; i++) {
+    for (let i = 1; i <= density; i++) {
       const radius = radiusStep * i;
-      this.drawRipple(ctx, centerX, centerY, radius);
+      this.#drawRipple(ctx, centerX, centerY, radius);
     }
   }
 }
 
 // Auto-register the paintlet when module loads
-registerPaintlet('tha-ripple', RipplePaintlet, [
-  {
-    name: '--tha-ripple-color',
-    syntax: '<color>',
-    inherits: true,
-    initialValue: '#3498db',
-  },
-  {
-    name: '--tha-ripple-density',
-    syntax: '<number>',
-    inherits: true,
-    initialValue: 5,
-  },
-  {
-    name: '--tha-ripple-wave-width',
-    syntax: '<number>',
-    inherits: true,
-    initialValue: 2,
-  },
-]);
+registerPaintlet('tha-ripple', RipplePaintlet, RipplePaintlet.PROPERTIES);

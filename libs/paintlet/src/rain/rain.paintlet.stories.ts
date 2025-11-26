@@ -156,7 +156,7 @@ const renderRain = (args: RainStoryArgs) => html`
     .rain-container {
       width: ${args.width || 400}px;
       height: ${args.height || 400}px;
-      background-image: paint(tha-rain);
+      background-image: --tha-rain();
       --tha-rain-color: ${args.color};
       --tha-rain-density: ${args.density};
       --tha-rain-angle: ${args.angle};

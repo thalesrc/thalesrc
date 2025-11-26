@@ -4,6 +4,7 @@ import { CSSPropertyDefinition } from "./paint.type";
  * Register CSS custom properties to make them animatable
  */
 function registerCSSProperties(
+  name: string,
   properties: CSSPropertyDefinition[],
   keyframes?: Record<string, string>
 ): void {
@@ -44,8 +45,13 @@ function registerCSSProperties(
         )
         .join('')
     : '';
+  const paintFunctionCSS = `
+@function --${name}() {
+  result: paint(${name});
+}
+  `
 
-  styleElement.textContent = propertiesCSS + keyframesCSS;
+  styleElement.textContent = propertiesCSS + keyframesCSS + paintFunctionCSS;
   document.head.appendChild(styleElement);
 }
 
@@ -75,6 +81,6 @@ export function registerPaintlet(
 
   // Register CSS custom properties and keyframes for animation support
   if (cssProperties && cssProperties.length > 0) {
-    registerCSSProperties(cssProperties, keyframes);
+    registerCSSProperties(name, cssProperties, keyframes);
   }
 }

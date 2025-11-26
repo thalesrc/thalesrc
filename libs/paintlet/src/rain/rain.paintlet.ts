@@ -27,20 +27,6 @@ interface RainConfig {
 }
 
 /**
- * Default configuration values
- */
-const RAIN_DEFAULTS: RainConfig = {
-  color: '#4a90e2',
-  density: 50,
-  angle: 75,
-  minLength: 10,
-  maxLength: 30,
-  minThickness: 1,
-  maxThickness: 2,
-  frame: 0,
-};
-
-/**
  * Rain Paintlet
  * Creates animated rain effect with customizable properties
  *
@@ -118,6 +104,20 @@ export class RainPaintlet {
     },
   ];
 
+  /**
+   * Default configuration values
+   */
+  static RAIN_DEFAULTS: RainConfig = {
+    color: '#4a90e2',
+    density: 50,
+    angle: 75,
+    minLength: 10,
+    maxLength: 30,
+    minThickness: 1,
+    maxThickness: 2,
+    frame: 0,
+  };
+
   static get inputProperties(): string[] {
     return RainPaintlet.PROPERTIES.map(prop => prop.name);
   }
@@ -125,23 +125,23 @@ export class RainPaintlet {
   /**
    * Extract configuration from CSS custom properties
    */
-  private getConfig(properties: StylePropertyMapReadOnly): RainConfig {
+  #getConfig(properties: StylePropertyMapReadOnly): RainConfig {
     return {
-      color: properties.get('--tha-rain-color')?.toString() || RAIN_DEFAULTS.color,
-      density: parseFloat(properties.get('--tha-rain-density')?.toString() || String(RAIN_DEFAULTS.density)),
-      angle: parseFloat(properties.get('--tha-rain-angle')?.toString() || String(RAIN_DEFAULTS.angle)),
-      minLength: parseFloat(properties.get('--tha-rain-min-length')?.toString() || String(RAIN_DEFAULTS.minLength)),
-      maxLength: parseFloat(properties.get('--tha-rain-max-length')?.toString() || String(RAIN_DEFAULTS.maxLength)),
-      minThickness: parseFloat(properties.get('--tha-rain-min-thickness')?.toString() || String(RAIN_DEFAULTS.minThickness)),
-      maxThickness: parseFloat(properties.get('--tha-rain-max-thickness')?.toString() || String(RAIN_DEFAULTS.maxThickness)),
-      frame: parseFloat(properties.get('--tha-rain-frame')?.toString() || String(RAIN_DEFAULTS.frame)),
+      color: properties.get('--tha-rain-color')?.toString() || RainPaintlet.RAIN_DEFAULTS.color,
+      density: parseFloat(properties.get('--tha-rain-density')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.density)),
+      angle: parseFloat(properties.get('--tha-rain-angle')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.angle)),
+      minLength: parseFloat(properties.get('--tha-rain-min-length')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.minLength)),
+      maxLength: parseFloat(properties.get('--tha-rain-max-length')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.maxLength)),
+      minThickness: parseFloat(properties.get('--tha-rain-min-thickness')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.minThickness)),
+      maxThickness: parseFloat(properties.get('--tha-rain-max-thickness')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.maxThickness)),
+      frame: parseFloat(properties.get('--tha-rain-frame')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.frame)),
     };
   }
 
   /**
    * Seeded random number generator for consistent raindrop positions
    */
-  private seededRandom(seed: number): number {
+  #seededRandom(seed: number): number {
     const x = Math.sin(seed) * 10000;
     return x - Math.floor(x);
   }
@@ -149,7 +149,7 @@ export class RainPaintlet {
   /**
    * Generate raindrops based on configuration and frame
    */
-  private generateRaindrops(config: RainConfig, geom: PaintSize): Raindrop[] {
+  #generateRaindrops(config: RainConfig, geom: PaintSize): Raindrop[] {
     const raindrops: Raindrop[] = [];
     const maxDimension = Math.max(geom.width, geom.height);
 
@@ -165,8 +165,8 @@ export class RainPaintlet {
       const seed = i * 12345;
 
       // Use seeded random for consistent positions with buffer zones
-      const baseX = this.seededRandom(seed) * (geom.width + bufferX * 2) - bufferX;
-      const baseY = this.seededRandom(seed + 1) * (geom.height + bufferY * 2) - bufferY;
+      const baseX = this.#seededRandom(seed) * (geom.width + bufferX * 2) - bufferX;
+      const baseY = this.#seededRandom(seed + 1) * (geom.height + bufferY * 2) - bufferY;
 
       // Calculate total movement distance for one full cycle
       const wrapWidth = geom.width + bufferX * 2;
@@ -186,9 +186,9 @@ export class RainPaintlet {
       if (x < -bufferX) x += wrapWidth;
       if (y < -bufferY) y += wrapHeight;
 
-      const length = config.minLength + this.seededRandom(seed + 2) * (config.maxLength - config.minLength);
-      const thickness = config.minThickness + this.seededRandom(seed + 3) * (config.maxThickness - config.minThickness);
-      const opacity = 0.3 + this.seededRandom(seed + 4) * 0.7;
+      const length = config.minLength + this.#seededRandom(seed + 2) * (config.maxLength - config.minLength);
+      const thickness = config.minThickness + this.#seededRandom(seed + 3) * (config.maxThickness - config.minThickness);
+      const opacity = 0.3 + this.#seededRandom(seed + 4) * 0.7;
 
       raindrops.push({
         x,
@@ -205,7 +205,7 @@ export class RainPaintlet {
   /**
    * Draw a single raindrop
    */
-  private drawRaindrop(
+  #drawRaindrop(
     ctx: PaintRenderingContext2D,
     drop: Raindrop,
     angle: number,
@@ -215,18 +215,7 @@ export class RainPaintlet {
     const endX = drop.x + Math.cos(angleRad - Math.PI / 2) * drop.length;
     const endY = drop.y + Math.sin(angleRad - Math.PI / 2) * drop.length;
 
-    // Parse color and add opacity
-    let fillStyle = color;
-    if (color.startsWith('#')) {
-      const r = parseInt(color.slice(1, 3), 16);
-      const g = parseInt(color.slice(3, 5), 16);
-      const b = parseInt(color.slice(5, 7), 16);
-      fillStyle = `rgba(${r}, ${g}, ${b}, ${drop.opacity})`;
-    } else if (color.startsWith('rgb')) {
-      fillStyle = color.replace('rgb', 'rgba').replace(')', `, ${drop.opacity})`);
-    }
-
-    ctx.strokeStyle = fillStyle;
+    ctx.strokeStyle = `rgb(from ${color} r g b / ${drop.opacity})`;
     ctx.lineWidth = drop.thickness;
     ctx.lineCap = 'round';
 
@@ -244,12 +233,12 @@ export class RainPaintlet {
     geom: PaintSize,
     properties: StylePropertyMapReadOnly
   ): void {
-    const config = this.getConfig(properties);
-    const raindrops = this.generateRaindrops(config, geom);
+    const config = this.#getConfig(properties);
+    const raindrops = this.#generateRaindrops(config, geom);
 
     // Draw all raindrops
     raindrops.forEach(drop => {
-      this.drawRaindrop(ctx, drop, config.angle, config.color);
+      this.#drawRaindrop(ctx, drop, config.angle, config.color);
     });
   }
 }
