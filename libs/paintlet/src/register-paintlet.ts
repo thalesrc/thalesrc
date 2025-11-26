@@ -1,11 +1,18 @@
 import { CSSPropertyDefinition } from "./paint.type";
 
+interface ArgDefinition {
+  name: string;
+  syntax: string;
+  default: string;
+}
+
 /**
  * Register CSS custom properties to make them animatable
  */
 function registerCSSProperties(
   name: string,
   properties: CSSPropertyDefinition[],
+  args: ArgDefinition[],
   keyframes?: Record<string, string>
 ): void {
   if (typeof document === 'undefined') return;
@@ -35,7 +42,7 @@ function registerCSSProperties(
     ${propertyName}: 0;
   }
   to {
-    ${propertyName}: 1000;
+    ${propertyName}: 100;
   }
 }
 @function --${animationName}(--seconds <time>) {
@@ -46,12 +53,15 @@ function registerCSSProperties(
         .join('')
     : '';
   const paintFunctionCSS = `
-@function --${name}() {
-  result: paint(${name});
+@function --${name}(${args.map(arg => `--${arg.name} type(${arg.syntax}): ${arg.default}`).join(', ')}) returns <image> {
+  result: paint(${name}${args.length > 0 ? `, ${args.map(arg => `var(--${arg.name}, ${arg.default})`).join(', ')}` : ''});
 }
   `
 
-  styleElement.textContent = propertiesCSS + keyframesCSS + paintFunctionCSS;
+  const allContent = propertiesCSS + keyframesCSS + paintFunctionCSS;
+  if (!allContent.trim()) return;
+
+  styleElement.textContent = allContent;
   document.head.appendChild(styleElement);
 }
 
@@ -61,8 +71,9 @@ function registerCSSProperties(
 export function registerPaintlet(
   name: string,
   paintletClass: any,
-  cssProperties?: CSSPropertyDefinition[],
-  keyframes?: Record<string, string>
+  cssProperties: CSSPropertyDefinition[],
+  args: ArgDefinition[] = [],
+  keyframes: Record<string, string> = {}
 ): void {
   if (typeof CSS === 'undefined' || !(CSS as any).paintWorklet) {
     console.warn(`CSS Paint API is not supported in this browser. Paintlet "${name}" will not be registered.`);
@@ -80,7 +91,5 @@ export function registerPaintlet(
   (CSS as any).paintWorklet.addModule(url);
 
   // Register CSS custom properties and keyframes for animation support
-  if (cssProperties && cssProperties.length > 0) {
-    registerCSSProperties(name, cssProperties, keyframes);
-  }
+  registerCSSProperties(name, cssProperties, args, keyframes);
 }

@@ -159,7 +159,7 @@ export class RainPaintlet {
     const bufferY = Math.abs(Math.sin(angleRad - Math.PI / 2)) * maxDimension;
 
     // Normalize frame from 0-1000 to 0-100 for movement calculations
-    const normalizedFrame = config.frame / 10;
+    const normalizedFrame = config.frame / 1;
 
     for (let i = 0; i < config.density; i++) {
       const seed = i * 12345;
@@ -244,6 +244,6 @@ export class RainPaintlet {
 }
 
 // Auto-register the paintlet when module loads
-registerPaintlet('tha-rain', RainPaintlet, RainPaintlet.PROPERTIES, {
+registerPaintlet('tha-rain', RainPaintlet, RainPaintlet.PROPERTIES, [], {
   'tha-rain-animation': '--tha-rain-frame',
 });

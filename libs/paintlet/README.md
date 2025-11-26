@@ -107,6 +107,120 @@ Creates an animated rain effect with customizable raindrops.
 }
 ```
 
+#### Mesh Gradient
+
+Creates organic, flowing gradient meshes with multiple colors using a three-layer rendering approach: a conic gradient base, radial gradients at animated mesh points, and linear gradients connecting them.
+
+**Custom Properties:**
+- `--tha-mesh-gradient-complexity`: Number of mesh points (default: `5`, affects circle sizes inversely)
+- `--tha-mesh-gradient-seed`: Random seed for mesh generation (default: `0`)
+- `--tha-mesh-gradient-composite-points`: Blend mode for mesh points (default: `screen`)
+- `--tha-mesh-gradient-composite-lines`: Blend mode for connecting lines (default: `lighter`)
+- `--tha-mesh-gradient-frame`: Animation frame from 0 to 100 for circular motion (default: `0`)
+- `--tha-mesh-gradient-color-1` through `--tha-mesh-gradient-color-10`: Individual color variables (default: `none`)
+
+**Usage with Function Arguments:**
+
+Pass colors as function arguments (up to 10 colors supported):
+
+```css
+.mesh-gradient {
+  background-image: --tha-mesh-gradient(#667eea, #764ba2, #f093fb, #4facfe);
+  --tha-mesh-gradient-complexity: 7;
+  --tha-mesh-gradient-seed: 42;
+}
+```
+
+**Usage with CSS Variables:**
+
+Alternatively, use CSS custom properties for more flexibility:
+
+```css
+.mesh-gradient-vars {
+  background-image: --tha-mesh-gradient();
+  --tha-mesh-gradient-color-1: #667eea;
+  --tha-mesh-gradient-color-2: #764ba2;
+  --tha-mesh-gradient-color-3: #f093fb;
+  --tha-mesh-gradient-color-4: #4facfe;
+  --tha-mesh-gradient-complexity: 7;
+  --tha-mesh-gradient-seed: 42;
+}
+```
+
+**Animated Example:**
+
+```css
+.animated-mesh {
+  background-image: --tha-mesh-gradient(#ff006e, #8338ec, #3a86ff, #06ffa5);
+  animation: --tha-mesh-gradient-animation(10s);
+  --tha-mesh-gradient-complexity: 8;
+  --tha-mesh-gradient-seed: 15;
+  --tha-mesh-gradient-composite-points: screen;
+  --tha-mesh-gradient-composite-lines: lighter;
+}
+```
+
+**Advanced Blend Modes:**
+
+Experiment with different composite operations for unique effects:
+
+```css
+.custom-blend {
+  background-image: --tha-mesh-gradient(#ffd3e1, #c8b6ff, #b8e0ff);
+  --tha-mesh-gradient-composite-points: lighten;
+  --tha-mesh-gradient-composite-lines: color-dodge;
+}
+```
+
+**Animating Colors:**
+
+Create dynamic color transitions by animating the color variables:
+
+```css
+.color-morphing {
+  background-image: --tha-mesh-gradient();
+  animation: color-shift 5s infinite alternate;
+}
+
+@keyframes color-shift {
+  0% {
+    --tha-mesh-gradient-color-1: #667eea;
+    --tha-mesh-gradient-color-2: #764ba2;
+    --tha-mesh-gradient-color-3: #f093fb;
+  }
+  100% {
+    --tha-mesh-gradient-color-1: #ff006e;
+    --tha-mesh-gradient-color-2: #8338ec;
+    --tha-mesh-gradient-color-3: #3a86ff;
+  }
+}
+```
+
+**Combining Animations:**
+
+Combine mesh point movement with color transitions for mesmerizing effects:
+
+```css
+.full-animation {
+  background-image: --tha-mesh-gradient();
+  animation: 
+    --tha-mesh-gradient-animation(10s),
+    color-pulse 8s infinite alternate;
+  --tha-mesh-gradient-complexity: 8;
+}
+
+@keyframes color-pulse {
+  0%, 100% {
+    --tha-mesh-gradient-color-1: #667eea;
+    --tha-mesh-gradient-color-2: #764ba2;
+  }
+  50% {
+    --tha-mesh-gradient-color-1: #ff6b9d;
+    --tha-mesh-gradient-color-2: #c44569;
+  }
+}
+```
+
 ## Browser Support
 
 CSS Paint API is supported in:
