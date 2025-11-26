@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
 import { css, html } from 'lit';
-import './mesh-gradient.paintlet';
+import './pal-gradient.paintlet';
 
 /**
  * Story arguments interface for type safety
  */
-interface MeshGradientStoryArgs {
+interface PalGradientStoryArgs {
   colors: string;
   animationDuration?: number;
   complexity: number;
@@ -25,8 +25,8 @@ const blendingModes: GlobalCompositeOperation[] = [
   'color', 'luminosity'
 ];
 
-const meta: Meta<MeshGradientStoryArgs> = {
-  title: 'Paintlets/Mesh Gradient',
+const meta: Meta<PalGradientStoryArgs> = {
+  title: 'Paintlets/PAL Gradient',
   tags: ['autodocs'],
   argTypes: {
     colors: {
@@ -47,7 +47,7 @@ const meta: Meta<MeshGradientStoryArgs> = {
     },
     complexity: {
       control: { type: 'range', min: 3, max: 15, step: 1 },
-      description: 'Number of mesh points that create the gradient',
+      description: 'Number of points that create the gradient',
       table: {
         type: { summary: 'number' },
         defaultValue: { summary: '5' },
@@ -55,7 +55,7 @@ const meta: Meta<MeshGradientStoryArgs> = {
     },
     seed: {
       control: { type: 'range', min: 0, max: 100, step: 1 },
-      description: 'Random seed for mesh generation (change to get different patterns)',
+      description: 'Random seed for generation (change to get different patterns)',
       table: {
         type: { summary: 'number' },
         defaultValue: { summary: '50' },
@@ -64,7 +64,7 @@ const meta: Meta<MeshGradientStoryArgs> = {
     compositePoints: {
       control: 'select',
       options: blendingModes,
-      description: 'Global composite operation mode for mesh points',
+      description: 'Global composite operation mode for points',
       table: {
         type: { summary: 'GlobalCompositeOperation' },
         defaultValue: { summary: 'lighter' },
@@ -104,22 +104,22 @@ const meta: Meta<MeshGradientStoryArgs> = {
 };
 
 export default meta;
-type Story = StoryObj<MeshGradientStoryArgs>;
+type Story = StoryObj<PalGradientStoryArgs>;
 
 /**
  * Render helper function to reduce code duplication
  */
-const renderMeshGradient = (args: MeshGradientStoryArgs) => html`
+const renderPalGradient = (args: PalGradientStoryArgs) => html`
   <div
     style="
       width: ${args.width || 400}px;
       height: ${args.height || 400}px;
-      background-image: --tha-mesh-gradient(${args.colors});
-      animation: --tha-mesh-gradient-animation(${args.animationDuration || 5}s);
-      --tha-mesh-gradient-complexity: ${args.complexity};
-      --tha-mesh-gradient-seed: ${args.seed};
-      --tha-mesh-gradient-composite-points: ${args.compositePoints || 'lighter'};
-      --tha-mesh-gradient-composite-lines: ${args.compositeLines || 'color-dodge'};
+      background-image: --tha-pal-gradient(${args.colors});
+      animation: --tha-pal-gradient-animation(${args.animationDuration || 5}s);
+      --tha-pal-gradient-complexity: ${args.complexity};
+      --tha-pal-gradient-seed: ${args.seed};
+      --tha-pal-gradient-composite-points: ${args.compositePoints || 'lighter'};
+      --tha-pal-gradient-composite-lines: ${args.compositeLines || 'color-dodge'};
       border: 1px solid #e0e0e0;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -138,11 +138,11 @@ export const Default: Story = {
     width: 800,
     height: 800,
   },
-  render: renderMeshGradient,
+  render: renderPalGradient,
   parameters: {
     docs: {
       description: {
-        story: 'Default mesh gradient with vibrant purple, blue, and pink colors. Mesh points move in smooth circular paths.',
+        story: 'Default PAL gradient with vibrant purple, blue, and pink colors. Points move in smooth circular paths.',
       },
     },
   },
@@ -159,7 +159,7 @@ export const ColorfullCircles: Story = {
     width: 800,
     height: 800,
   },
-  render: renderMeshGradient,
+  render: renderPalGradient,
   parameters: {
     docs: {
       description: {
@@ -181,23 +181,23 @@ export const ColorfullCirclesWithColorAnimation: Story = {
     height: 800,
   },
   decorators: (story) => {
-    if (document.getElementById('mesh-gradient-color-shift')) {
+    if (document.getElementById('pal-gradient-color-shift')) {
       return story();
     }
 
     const style = document.createElement('style');
-    style.id = 'mesh-gradient-color-shift';
+    style.id = 'pal-gradient-color-shift';
     style.textContent = css`
       @keyframes color-shift {
         from {
-          --tha-mesh-gradient-color-1: #ffff00;
-          --tha-mesh-gradient-color-2: #ff00ff;
-          --tha-mesh-gradient-color-3: #00ffff;
+          --tha-pal-gradient-color-1: #ffff00;
+          --tha-pal-gradient-color-2: #ff00ff;
+          --tha-pal-gradient-color-3: #00ffff;
         }
         to {
-          --tha-mesh-gradient-color-1: #ff0000;
-          --tha-mesh-gradient-color-2: #00ff00;
-          --tha-mesh-gradient-color-3: #0000ff;
+          --tha-pal-gradient-color-1: #ff0000;
+          --tha-pal-gradient-color-2: #00ff00;
+          --tha-pal-gradient-color-3: #0000ff;
         }
       }
     `.cssText;
@@ -209,12 +209,12 @@ export const ColorfullCirclesWithColorAnimation: Story = {
     <div style="
         width: ${args.width || 400}px;
         height: ${args.height || 400}px;
-        background-image: --tha-mesh-gradient();
-        animation: --tha-mesh-gradient-animation(${args.animationDuration || 5}s), color-shift ${args.animationDuration || 5}s infinite alternate;
-        --tha-mesh-gradient-complexity: ${args.complexity};
-        --tha-mesh-gradient-seed: ${args.seed};
-        --tha-mesh-gradient-composite-points: ${args.compositePoints as any || 'lighter'};
-        --tha-mesh-gradient-composite-lines: ${args.compositeLines as any || 'color-dodge'};
+        background-image: --tha-pal-gradient();
+        animation: --tha-pal-gradient-animation(${args.animationDuration || 5}s), color-shift ${args.animationDuration || 5}s infinite alternate;
+        --tha-pal-gradient-complexity: ${args.complexity};
+        --tha-pal-gradient-seed: ${args.seed};
+        --tha-pal-gradient-composite-points: ${args.compositePoints as any || 'lighter'};
+        --tha-pal-gradient-composite-lines: ${args.compositeLines as any || 'color-dodge'};
         border: 1px solid #e0e0e0;
         border-radius: 12px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -224,27 +224,6 @@ export const ColorfullCirclesWithColorAnimation: Story = {
     docs: {
       description: {
         story: 'Colorful circles with yellow, magenta, and cyan. Perfect for vibrant and playful designs.',
-      },
-    },
-  },
-};
-
-export const Playground: Story = {
-  args: {
-    colors: '#667eea, #764ba2, #f093fb, #4facfe',
-    complexity: 7,
-    seed: 50,
-    animationDuration: 10,
-    compositePoints: 'screen',
-    compositeLines: 'lighter',
-    width: 500,
-    height: 500,
-  },
-  render: renderMeshGradient,
-  parameters: {
-    docs: {
-      description: {
-        story: 'Interactive playground to experiment with all parameters. Try different blend modes, complexities, seeds, and color combinations to create unique effects.',
       },
     },
   },
@@ -262,12 +241,12 @@ export const Sunburn: Story = {
     height: 800
   },
 
-  render: renderMeshGradient,
+  render: renderPalGradient,
 
   parameters: {
     docs: {
       description: {
-        story: "Default mesh gradient with vibrant purple, blue, and pink colors. Mesh points move in smooth circular paths."
+        story: "PAL gradient with red and green creating interesting color interactions through blend modes."
       }
     }
   }
@@ -285,13 +264,34 @@ export const Mekashine: Story = {
     height: 800
   },
 
-  render: renderMeshGradient,
+  render: renderPalGradient,
 
   parameters: {
     docs: {
       description: {
-        story: "Default mesh gradient with vibrant purple, blue, and pink colors. Mesh points move in smooth circular paths."
+        story: "Metallic effect using silver, white, and semi-transparent colors with special blend modes."
       }
     }
   }
+};
+
+export const Playground: Story = {
+  args: {
+    colors: '#667eea, #764ba2, #f093fb, #4facfe',
+    complexity: 7,
+    seed: 50,
+    animationDuration: 10,
+    compositePoints: 'screen',
+    compositeLines: 'lighter',
+    width: 500,
+    height: 500,
+  },
+  render: renderPalGradient,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Interactive playground to experiment with all parameters. Try different blend modes, complexities, seeds, and color combinations to create unique effects.',
+      },
+    },
+  },
 };

@@ -107,27 +107,27 @@ Creates an animated rain effect with customizable raindrops.
 }
 ```
 
-#### Mesh Gradient
+#### PAL Gradient (Points And Lines)
 
-Creates organic, flowing gradient meshes with multiple colors using a three-layer rendering approach: a conic gradient base, radial gradients at animated mesh points, and linear gradients connecting them.
+Creates organic, flowing gradients with multiple colors using a three-layer rendering approach: a conic gradient base, radial gradients at animated points, and linear gradients connecting them.
 
 **Custom Properties:**
-- `--tha-mesh-gradient-complexity`: Number of mesh points (default: `5`, affects circle sizes inversely)
-- `--tha-mesh-gradient-seed`: Random seed for mesh generation (default: `0`)
-- `--tha-mesh-gradient-composite-points`: Blend mode for mesh points (default: `screen`)
-- `--tha-mesh-gradient-composite-lines`: Blend mode for connecting lines (default: `lighter`)
-- `--tha-mesh-gradient-frame`: Animation frame from 0 to 100 for circular motion (default: `0`)
-- `--tha-mesh-gradient-color-1` through `--tha-mesh-gradient-color-10`: Individual color variables (default: `none`)
+- `--tha-pal-gradient-complexity`: Number of points (default: `5`, affects circle sizes inversely)
+- `--tha-pal-gradient-seed`: Random seed for generation (default: `0`)
+- `--tha-pal-gradient-composite-points`: Blend mode for points (default: `screen`)
+- `--tha-pal-gradient-composite-lines`: Blend mode for connecting lines (default: `lighter`)
+- `--tha-pal-gradient-frame`: Animation frame from 0 to 100 for circular motion (default: `0`)
+- `--tha-pal-gradient-color-1` through `--tha-pal-gradient-color-10`: Individual color variables (default: `none`)
 
 **Usage with Function Arguments:**
 
 Pass colors as function arguments (up to 10 colors supported):
 
 ```css
-.mesh-gradient {
-  background-image: --tha-mesh-gradient(#667eea, #764ba2, #f093fb, #4facfe);
-  --tha-mesh-gradient-complexity: 7;
-  --tha-mesh-gradient-seed: 42;
+.pal-gradient {
+  background-image: --tha-pal-gradient(#667eea, #764ba2, #f093fb, #4facfe);
+  --tha-pal-gradient-complexity: 7;
+  --tha-pal-gradient-seed: 42;
 }
 ```
 
@@ -136,27 +136,27 @@ Pass colors as function arguments (up to 10 colors supported):
 Alternatively, use CSS custom properties for more flexibility:
 
 ```css
-.mesh-gradient-vars {
-  background-image: --tha-mesh-gradient();
-  --tha-mesh-gradient-color-1: #667eea;
-  --tha-mesh-gradient-color-2: #764ba2;
-  --tha-mesh-gradient-color-3: #f093fb;
-  --tha-mesh-gradient-color-4: #4facfe;
-  --tha-mesh-gradient-complexity: 7;
-  --tha-mesh-gradient-seed: 42;
+.pal-gradient-vars {
+  background-image: --tha-pal-gradient();
+  --tha-pal-gradient-color-1: #667eea;
+  --tha-pal-gradient-color-2: #764ba2;
+  --tha-pal-gradient-color-3: #f093fb;
+  --tha-pal-gradient-color-4: #4facfe;
+  --tha-pal-gradient-complexity: 7;
+  --tha-pal-gradient-seed: 42;
 }
 ```
 
 **Animated Example:**
 
 ```css
-.animated-mesh {
-  background-image: --tha-mesh-gradient(#ff006e, #8338ec, #3a86ff, #06ffa5);
-  animation: --tha-mesh-gradient-animation(10s);
-  --tha-mesh-gradient-complexity: 8;
-  --tha-mesh-gradient-seed: 15;
-  --tha-mesh-gradient-composite-points: screen;
-  --tha-mesh-gradient-composite-lines: lighter;
+.animated-pal {
+  background-image: --tha-pal-gradient(#ff006e, #8338ec, #3a86ff, #06ffa5);
+  animation: --tha-pal-gradient-animation(10s);
+  --tha-pal-gradient-complexity: 8;
+  --tha-pal-gradient-seed: 15;
+  --tha-pal-gradient-composite-points: screen;
+  --tha-pal-gradient-composite-lines: lighter;
 }
 ```
 
@@ -166,9 +166,9 @@ Experiment with different composite operations for unique effects:
 
 ```css
 .custom-blend {
-  background-image: --tha-mesh-gradient(#ffd3e1, #c8b6ff, #b8e0ff);
-  --tha-mesh-gradient-composite-points: lighten;
-  --tha-mesh-gradient-composite-lines: color-dodge;
+  background-image: --tha-pal-gradient(#ffd3e1, #c8b6ff, #b8e0ff);
+  --tha-pal-gradient-composite-points: lighten;
+  --tha-pal-gradient-composite-lines: color-dodge;
 }
 ```
 
@@ -178,45 +178,45 @@ Create dynamic color transitions by animating the color variables:
 
 ```css
 .color-morphing {
-  background-image: --tha-mesh-gradient();
+  background-image: --tha-pal-gradient();
   animation: color-shift 5s infinite alternate;
 }
 
 @keyframes color-shift {
   0% {
-    --tha-mesh-gradient-color-1: #667eea;
-    --tha-mesh-gradient-color-2: #764ba2;
-    --tha-mesh-gradient-color-3: #f093fb;
+    --tha-pal-gradient-color-1: #667eea;
+    --tha-pal-gradient-color-2: #764ba2;
+    --tha-pal-gradient-color-3: #f093fb;
   }
   100% {
-    --tha-mesh-gradient-color-1: #ff006e;
-    --tha-mesh-gradient-color-2: #8338ec;
-    --tha-mesh-gradient-color-3: #3a86ff;
+    --tha-pal-gradient-color-1: #ff006e;
+    --tha-pal-gradient-color-2: #8338ec;
+    --tha-pal-gradient-color-3: #3a86ff;
   }
 }
 ```
 
 **Combining Animations:**
 
-Combine mesh point movement with color transitions for mesmerizing effects:
+Combine point movement with color transitions for mesmerizing effects:
 
 ```css
 .full-animation {
-  background-image: --tha-mesh-gradient();
+  background-image: --tha-pal-gradient();
   animation: 
-    --tha-mesh-gradient-animation(10s),
+    --tha-pal-gradient-animation(10s),
     color-pulse 8s infinite alternate;
-  --tha-mesh-gradient-complexity: 8;
+  --tha-pal-gradient-complexity: 8;
 }
 
 @keyframes color-pulse {
   0%, 100% {
-    --tha-mesh-gradient-color-1: #667eea;
-    --tha-mesh-gradient-color-2: #764ba2;
+    --tha-pal-gradient-color-1: #667eea;
+    --tha-pal-gradient-color-2: #764ba2;
   }
   50% {
-    --tha-mesh-gradient-color-1: #ff6b9d;
-    --tha-mesh-gradient-color-2: #c44569;
+    --tha-pal-gradient-color-1: #ff6b9d;
+    --tha-pal-gradient-color-2: #c44569;
   }
 }
 ```

@@ -2,18 +2,18 @@ import { CSSPropertyDefinition, PaintRenderingContext2D, PaintSize } from '../pa
 import { registerPaintlet } from '../register-paintlet';
 
 /**
- * Represents a mesh point with color and position
+ * Represents a point with color and position
  */
-interface MeshPoint {
+interface PalPoint {
   x: number;
   y: number;
   color: string;
 }
 
 /**
- * Configuration for the Mesh Gradient Paintlet
+ * Configuration for the PAL Gradient Paintlet
  */
-interface MeshGradientConfig {
+interface PalGradientConfig {
   colors: string[];
   complexity: number;
   seed: number;
@@ -23,35 +23,34 @@ interface MeshGradientConfig {
 }
 
 /**
- * Mesh Gradient Paintlet
+ * PAL Gradient Paintlet (Points And Lines Gradient)
  * Creates organic, flowing gradient meshes with multiple colors using a three-layer approach:
  * 1. Conic gradient base with all colors distributed evenly
- * 2. Radial gradients at animated mesh points with sizes based on complexity
- * 3. Linear gradients connecting adjacent mesh points
+ * 2. Radial gradients at animated points with sizes based on complexity
+ * 3. Linear gradients connecting adjacent points
  *
  * Custom Properties:
- * - --tha-mesh-gradient-complexity: Number of mesh points (default: 5, affects circle sizes inversely)
- * - --tha-mesh-gradient-seed: Random seed for mesh generation (default: 0)
- * - --tha-mesh-gradient-composite-base: Blend mode for base layer (default: difference)
- * - --tha-mesh-gradient-composite-points: Blend mode for mesh points (default: screen)
- * - --tha-mesh-gradient-composite-lines: Blend mode for connecting lines (default: lighter)
- * - --tha-mesh-gradient-frame: Animation frame from 0 to 100 for circular motion (default: 0)
+ * - --tha-pal-gradient-complexity: Number of points (default: 5, affects circle sizes inversely)
+ * - --tha-pal-gradient-seed: Random seed for generation (default: 0)
+ * - --tha-pal-gradient-composite-points: Blend mode for points (default: screen)
+ * - --tha-pal-gradient-composite-lines: Blend mode for connecting lines (default: lighter)
+ * - --tha-pal-gradient-frame: Animation frame from 0 to 100 for circular motion (default: 0)
  *
  * @example
  * ```css
  * .element {
- *   --tha-mesh-gradient-complexity: 7;
- *   --tha-mesh-gradient-seed: 42;
- *   --tha-mesh-gradient-composite-lines: difference;
- *   background-image: --tha-mesh-gradient(#667eea, #764ba2, #f093fb, #4facfe);
- *   animation: --tha-mesh-gradient-animation(10s);
+ *   --tha-pal-gradient-complexity: 7;
+ *   --tha-pal-gradient-seed: 42;
+ *   --tha-pal-gradient-composite-lines: difference;
+ *   background-image: --tha-pal-gradient(#667eea, #764ba2, #f093fb, #4facfe);
+ *   animation: --tha-pal-gradient-animation(10s);
  * }
  * ```
  */
-export class MeshGradientPaintlet {
+export class PalGradientPaintlet {
   static readonly SUPPORTED_COLOR_COUNT = 10;
 
-  static readonly MESH_GRADIENT_DEFAULTS: MeshGradientConfig = {
+  static readonly PAL_GRADIENT_DEFAULTS: PalGradientConfig = {
     colors: ['#667eea', '#764ba2', '#f093fb', '#4facfe'],
     complexity: 5,
     seed: 0,
@@ -62,40 +61,40 @@ export class MeshGradientPaintlet {
 
   static readonly PROPERTIES: CSSPropertyDefinition[] = [
     {
-      name: '--tha-mesh-gradient-complexity',
+      name: '--tha-pal-gradient-complexity',
       syntax: '<number>',
       inherits: true,
-      initialValue: MeshGradientPaintlet.MESH_GRADIENT_DEFAULTS.complexity,
+      initialValue: PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.complexity,
     },
     {
-      name: '--tha-mesh-gradient-seed',
+      name: '--tha-pal-gradient-seed',
       syntax: '<number>',
       inherits: true,
-      initialValue: MeshGradientPaintlet.MESH_GRADIENT_DEFAULTS.seed,
+      initialValue: PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.seed,
     },
     {
-      name: '--tha-mesh-gradient-composite-points',
+      name: '--tha-pal-gradient-composite-points',
       syntax: '<mix-blend-mode>',
       inherits: true,
-      initialValue: MeshGradientPaintlet.MESH_GRADIENT_DEFAULTS.compositePoints,
+      initialValue: PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.compositePoints,
     },
     {
-      name: '--tha-mesh-gradient-composite-lines',
+      name: '--tha-pal-gradient-composite-lines',
       syntax: '<mix-blend-mode>',
       inherits: true,
-      initialValue: MeshGradientPaintlet.MESH_GRADIENT_DEFAULTS.compositeLines,
+      initialValue: PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.compositeLines,
     },
-    ...Array.from({ length: MeshGradientPaintlet.SUPPORTED_COLOR_COUNT }, (_, i) => ({
-      name: `--tha-mesh-gradient-color-${i + 1}`,
+    ...Array.from({ length: PalGradientPaintlet.SUPPORTED_COLOR_COUNT }, (_, i) => ({
+      name: `--tha-pal-gradient-color-${i + 1}`,
       syntax: 'none | <color>',
       inherits: true,
       initialValue: 'none',
     })),
     {
-      name: '--tha-mesh-gradient-frame',
+      name: '--tha-pal-gradient-frame',
       syntax: '<number>',
       inherits: true,
-      initialValue: MeshGradientPaintlet.MESH_GRADIENT_DEFAULTS.frame,
+      initialValue: PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.frame,
     },
   ];
 
@@ -104,7 +103,7 @@ export class MeshGradientPaintlet {
   }
 
   static get inputArguments(): string[] {
-    return Array.from({ length: MeshGradientPaintlet.SUPPORTED_COLOR_COUNT }, () => 'none | <color>');
+    return Array.from({ length: PalGradientPaintlet.SUPPORTED_COLOR_COUNT }, () => 'none | <color>');
   }
 
   static get contextOptions() { return {alpha: true}; }
@@ -112,9 +111,9 @@ export class MeshGradientPaintlet {
   /**
    * Extract configuration from CSS custom properties
    */
-  #getConfig(properties: StylePropertyMapReadOnly, args: CSSStyleValue[]): MeshGradientConfig {
-    const propColors = Array.from({ length: MeshGradientPaintlet.SUPPORTED_COLOR_COUNT }, (_, i) =>
-      properties.get(`--tha-mesh-gradient-color-${i + 1}`)?.toString() || 'none'
+  #getConfig(properties: StylePropertyMapReadOnly, args: CSSStyleValue[]): PalGradientConfig {
+    const propColors = Array.from({ length: PalGradientPaintlet.SUPPORTED_COLOR_COUNT }, (_, i) =>
+      properties.get(`--tha-pal-gradient-color-${i + 1}`)?.toString() || 'none'
     );
 
     const colors = propColors.map((color, index) =>
@@ -122,20 +121,20 @@ export class MeshGradientPaintlet {
     ).filter(color => color !== 'none');
 
     return {
-      colors: colors.length > 0 ? colors : MeshGradientPaintlet.MESH_GRADIENT_DEFAULTS.colors,
+      colors: colors.length > 0 ? colors : PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.colors,
       complexity: parseFloat(
-        properties.get('--tha-mesh-gradient-complexity')?.toString() ||
-        String(MeshGradientPaintlet.MESH_GRADIENT_DEFAULTS.complexity)
+        properties.get('--tha-pal-gradient-complexity')?.toString() ||
+        String(PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.complexity)
       ),
       seed: parseFloat(
-        properties.get('--tha-mesh-gradient-seed')?.toString() ||
-        String(MeshGradientPaintlet.MESH_GRADIENT_DEFAULTS.seed)
+        properties.get('--tha-pal-gradient-seed')?.toString() ||
+        String(PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.seed)
       ),
-      compositePoints: properties.get('--tha-mesh-gradient-composite-points')?.toString() as GlobalCompositeOperation ?? MeshGradientPaintlet.MESH_GRADIENT_DEFAULTS.compositePoints,
-      compositeLines: properties.get('--tha-mesh-gradient-composite-lines')?.toString() as GlobalCompositeOperation ?? MeshGradientPaintlet.MESH_GRADIENT_DEFAULTS.compositeLines,
+      compositePoints: properties.get('--tha-pal-gradient-composite-points')?.toString() as GlobalCompositeOperation ?? PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.compositePoints,
+      compositeLines: properties.get('--tha-pal-gradient-composite-lines')?.toString() as GlobalCompositeOperation ?? PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.compositeLines,
       frame: parseFloat(
-        properties.get('--tha-mesh-gradient-frame')?.toString() ||
-        String(MeshGradientPaintlet.MESH_GRADIENT_DEFAULTS.frame)
+        properties.get('--tha-pal-gradient-frame')?.toString() ||
+        String(PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.frame)
       ),
     };
   }
@@ -149,11 +148,11 @@ export class MeshGradientPaintlet {
   }
 
   /**
-   * Generate mesh points with colors ensuring all colors are used
+   * Generate points with colors ensuring all colors are used
    * Each point moves in a circular path for smooth looping animation
    */
-  #generateMeshPoints(config: MeshGradientConfig, geom: PaintSize): MeshPoint[] {
-    const points: MeshPoint[] = [];
+  #generatePoints(config: PalGradientConfig, geom: PaintSize): PalPoint[] {
+    const points: PalPoint[] = [];
     const { colors, complexity, seed, frame } = config;
 
     // Normalize frame from 0-100 to 0-1 for smooth circular motion
@@ -197,9 +196,9 @@ export class MeshGradientPaintlet {
     args: CSSStyleValue[]
   ): void {
     const config = this.#getConfig(properties, args);
-    const meshPoints = this.#generateMeshPoints(config, geom);
+    const points = this.#generatePoints(config, geom);
 
-    if (meshPoints.length === 0) return;
+    if (points.length === 0) return;
 
     // Layer 1: Create conic gradient base with all colors distributed evenly
     // This provides a colorful background that all colors blend from
@@ -215,7 +214,6 @@ export class MeshGradientPaintlet {
     conicGradient.addColorStop(1 / 4, `color-mix(in oklab, white 50%, rgb(from ${config.colors[0]} r g b / .5))`);
 
     ctx.fillStyle = conicGradient;
-    // ctx.imageSmoothingEnabled = true;
     ctx.fillRect(0, 0, geom.width, geom.height);
 
     // Apply radial glow from corner using difference blend mode for depth
@@ -228,7 +226,7 @@ export class MeshGradientPaintlet {
     ctx.arc(geom.width, geom.height, maxDim, 0, Math.PI * 2);
     ctx.fill();
 
-    // Layer 2: Draw radial gradients at mesh points (sorted by size, biggest first)
+    // Layer 2: Draw radial gradients at points (sorted by size, biggest first)
     ctx.globalCompositeOperation = config.compositePoints;
 
     // Calculate complexity factor: higher complexity = smaller circles (reduces by 10% per point above 3)
@@ -237,7 +235,7 @@ export class MeshGradientPaintlet {
     const minRadius = Math.min(geom.width, geom.height) * 0.1 * complexityFactor;
 
     // Create array of circles with randomized sizes for organic appearance
-    const circles = meshPoints.map((point, i) => {
+    const circles = points.map((point, i) => {
       const randomFactor = this.#seededRandom(config.seed + i * 456);
       const circleRadius = minRadius + (maxRadius - minRadius) * randomFactor * 16;
       return { point, radius: circleRadius };
@@ -268,14 +266,14 @@ export class MeshGradientPaintlet {
 
     }
 
-    // Layer 3: Draw linear gradients connecting adjacent mesh points
-    // Creates smooth color transitions and ties the mesh together
+    // Layer 3: Draw linear gradients connecting adjacent points
+    // Creates smooth color transitions and ties the points together
     ctx.globalCompositeOperation = config.compositeLines;
 
     // Connect each point to the next, wrapping back to the first
-    for (let i = 0; i < meshPoints.length; i++) {
-      const point1 = meshPoints[i];
-      const point2 = meshPoints[(i + 1) % meshPoints.length];
+    for (let i = 0; i < points.length; i++) {
+      const point1 = points[i];
+      const point2 = points[(i + 1) % points.length];
 
       const gradient = ctx.createLinearGradient(
         point1.x,
@@ -295,15 +293,15 @@ export class MeshGradientPaintlet {
 
 // Auto-register the paintlet when module loads
 registerPaintlet(
-  'tha-mesh-gradient',
-  MeshGradientPaintlet,
-  MeshGradientPaintlet.PROPERTIES,
-  Array.from({ length: MeshGradientPaintlet.SUPPORTED_COLOR_COUNT }, (_, i) => ({
+  'tha-pal-gradient',
+  PalGradientPaintlet,
+  PalGradientPaintlet.PROPERTIES,
+  Array.from({ length: PalGradientPaintlet.SUPPORTED_COLOR_COUNT }, (_, i) => ({
     name: `color-${i + 1}`,
     syntax: 'none | <color>',
-    default: 'var(--tha-mesh-gradient-color-' + (i + 1) + ', none)',
+    default: 'var(--tha-pal-gradient-color-' + (i + 1) + ', none)',
   })),
   {
-    'tha-mesh-gradient-animation': '--tha-mesh-gradient-frame',
+    'tha-pal-gradient-animation': '--tha-pal-gradient-frame',
   }
 );
