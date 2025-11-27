@@ -1,77 +1,309 @@
 # Thalesrc
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub](https://img.shields.io/github/stars/thalesrc/thalesrc?style=social)](https://github.com/thalesrc/thalesrc)
+[![Twitter Follow](https://img.shields.io/twitter/follow/thalesrc?style=social)](https://twitter.com/thalesrc)
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+**A collection of high-quality, framework-independent utilities and tools for modern web development.**
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+[Website](https://thalesrc.com) • [Documentation](https://open-source.thalesrc.com) • [npm](https://www.npmjs.com/org/thalesrc) • [GitHub](https://github.com/thalesrc/thalesrc)
 
-## Finish your CI setup
+</div>
 
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/BXO7T18Tep)
+---
 
+## 📦 Overview
 
-## Run tasks
+Thalesrc is a comprehensive monorepo containing battle-tested libraries, utilities, and tools designed to simplify modern web development. From JavaScript utilities to Docker-based infrastructure tools, each package is crafted with performance, type safety, and developer experience in mind.
 
-To run tasks with Nx use:
+## 🎯 Key Features
 
-```sh
-npx nx <target> <project-name>
+- 🚀 **High Performance**: Optimized for speed and efficiency
+- 📘 **TypeScript First**: Full TypeScript support with comprehensive type definitions
+- 🌲 **Tree-shakeable**: Import only what you need
+- 🔧 **Zero Dependencies**: Most packages have no external dependencies
+- 🧪 **Well Tested**: High test coverage across all packages
+- 📚 **Extensively Documented**: Comprehensive documentation and examples
+- 🎨 **Framework Agnostic**: Works with any framework or vanilla JavaScript
+
+## 📚 Libraries
+
+### JavaScript & TypeScript Utilities
+
+#### [@thalesrc/js-utils](https://www.npmjs.com/package/@thalesrc/js-utils)
+[![npm](https://img.shields.io/npm/v/@thalesrc/js-utils.svg)](https://www.npmjs.com/package/@thalesrc/js-utils)
+[![npm](https://img.shields.io/npm/dw/@thalesrc/js-utils.svg)](https://www.npmjs.com/package/@thalesrc/js-utils)
+
+The swiss army knife of JavaScript utilities. A comprehensive collection of 50+ utility functions for arrays, objects, promises, strings, and more. Features include array manipulation, deep cloning, promise chains, debouncing, and smart type guards.
+
+**Highlights**: Array utilities, Promise helpers, Object manipulation, String operations, Function utilities
+
+#### [@thalesrc/extra-ts-types](https://www.npmjs.com/package/@thalesrc/extra-ts-types)
+[![npm](https://img.shields.io/npm/v/@thalesrc/extra-ts-types.svg)](https://www.npmjs.com/package/@thalesrc/extra-ts-types)
+
+Advanced TypeScript utility types for sophisticated type manipulations. Includes types like `PartialSome`, `DeepestValue`, `Join`, `Tail`, and more for working with complex type scenarios.
+
+**Highlights**: Deep object navigation, Tuple manipulation, Constructor types, Partial utilities
+
+#### [@thalesrc/ts-utils](libs/ts-utils)
+
+TypeScript-specific utility types and helper functions built on top of the TypeScript compiler API.
+
+**Highlights**: TypeScript utilities, Compiler helpers
+
+---
+
+### Web & DOM Utilities
+
+#### [@thalesrc/dom-utils](libs/dom-utils)
+
+Utility functions for DOM manipulation and browser APIs. Simplifies common DOM operations with a modern, type-safe API.
+
+**Highlights**: DOM manipulation, Browser API helpers, Event handling
+
+#### [@thalesrc/drag-drop](https://www.npmjs.com/package/@thalesrc/drag-drop)
+[![npm](https://img.shields.io/npm/v/@thalesrc/drag-drop.svg)](https://www.npmjs.com/package/@thalesrc/drag-drop)
+[![npm](https://img.shields.io/npm/dm/@thalesrc/drag-drop.svg)](https://www.npmjs.com/package/@thalesrc/drag-drop)
+
+Framework-independent drag-and-drop library built with Lit Elements as custom web components. Provides extended drag-drop events, smart drop zones, drag handles, and multiple dragging strategies.
+
+**Highlights**: Web Components, Custom events, Drop zone validation, Drag strategies, Cross-framework compatibility
+
+#### [@thalesrc/paintlet](https://www.npmjs.com/package/@thalesrc/paintlet)
+
+Pre-built CSS Paint API (Houdini) worklets for modern web development. Create stunning visual effects like ripples, rain animations, and organic gradients using the CSS Paint API.
+
+**Highlights**: CSS Houdini, Paint worklets, Visual effects, Animated gradients
+
+#### [@thalesrc/reactive-storage](libs/reactive-storage)
+
+Reactive wrappers for browser storage APIs (localStorage, sessionStorage) with Observable patterns for real-time updates.
+
+**Highlights**: Reactive storage, Observable patterns, Local/Session storage
+
+#### [@thalesrc/rx-utils](https://www.npmjs.com/package/@thalesrc/rx-utils)
+[![npm](https://img.shields.io/npm/v/@thalesrc/rx-utils.svg)](https://www.npmjs.com/package/@thalesrc/rx-utils)
+
+Utility functions and operators for RxJS Observables. Features async iterable conversion, share operators, and Observable extensions.
+
+**Highlights**: RxJS operators, AsyncIterable support, Observable utilities, Stream helpers
+
+---
+
+### Framework-Specific Utilities
+
+#### [@thalesrc/react-utils](libs/react-utils)
+
+React-specific utility hooks and components for modern React development. Simplifies common React patterns and state management.
+
+**Highlights**: Custom hooks, React utilities, State management helpers
+
+---
+
+### Build & Development Tools
+
+#### [@thalesrc/nx-utils](https://www.npmjs.com/package/@thalesrc/nx-utils)
+[![npm](https://img.shields.io/npm/v/@thalesrc/nx-utils.svg)](https://www.npmjs.com/package/@thalesrc/nx-utils)
+
+Powerful Nx executors for monorepo projects. Includes executors for file copying with content replacement and image resizing, package.json generation with auto-exports, parallel command execution, TypeScript building, file watching, platform-specific scripts, and batch operations.
+
+**Highlights**: Copy with transforms, Package.json filling, Parallel execution, TypeScript builder, File watcher, Platform runner
+
+#### [@thalesrc/node-utils](libs/node-utils)
+
+Node.js-specific utility functions for server-side development, file system operations, and CLI tools.
+
+**Highlights**: File system utilities, CLI helpers, Node.js utilities
+
+---
+
+### Infrastructure & DevOps
+
+#### [@thalesrc/auto-proxy](https://hub.docker.com/r/thalesrc/auto-proxy)
+[![Docker](https://img.shields.io/docker/pulls/thalesrc/auto-proxy)](https://hub.docker.com/r/thalesrc/auto-proxy)
+
+Docker-aware nginx reverse proxy with automatic SSL and service discovery. Perfect for development environments with support for HTTP/HTTPS, gRPC, databases (PostgreSQL, MySQL, Redis, MongoDB), automatic SSL certificates, and Docker container discovery.
+
+**Highlights**: Automatic SSL, gRPC support, Database proxying, Docker integration, Development-optimized
+
+#### [@thalesrc/docker-frp](https://hub.docker.com/r/thalesrc/docker-frp)
+[![Docker](https://img.shields.io/docker/pulls/thalesrc/docker-frp)](https://hub.docker.com/r/thalesrc/docker-frp)
+
+Comprehensive Docker container for Fast Reverse Proxy (FRP) with both server and client modes. Features web-based admin UI, multiple proxy types (TCP, UDP, HTTP, HTTPS), and easy configuration.
+
+**Highlights**: FRP server/client, Web admin UI, Multi-protocol, Easy setup, Multi-platform support
+
+---
+
+## 🚀 Quick Start
+
+### Installation
+
+Install individual packages as needed:
+
+```bash
+# JavaScript utilities
+npm install @thalesrc/js-utils
+
+# TypeScript types
+npm install @thalesrc/extra-ts-types
+
+# Drag & drop
+npm install @thalesrc/drag-drop
+
+# RxJS utilities
+npm install @thalesrc/rx-utils
+
+# Nx utilities (dev dependency)
+npm install -D @thalesrc/nx-utils
+
+# Paint API worklets
+npm install @thalesrc/paintlet
 ```
 
-For example:
+### Usage Examples
 
-```sh
-npx nx build myproject
+**JavaScript Utilities:**
+```typescript
+import { compact, uniquify, debounce } from '@thalesrc/js-utils';
+
+const arr = [1, 2, 2, 3, null, undefined, 4];
+compact(arr);    // [1, 2, 2, 3, 4]
+uniquify(arr);   // [1, 2, 3, null, undefined, 4]
+
+debounce(() => console.log('Debounced!'), 300);
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+**Drag & Drop:**
+```html
+<script type="module" src="node_modules/@thalesrc/drag-drop/bundle.mjs"></script>
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+<tha-drag name="item" draggingStrategy="move">
+  <div>Drag me!</div>
+</tha-drag>
 
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-To install a new plugin you can use the `nx add` command. Here's an example of adding the React plugin:
-```sh
-npx nx add @nx/react
+<tha-dropzone accept="item">
+  <div>Drop here!</div>
+</tha-dropzone>
 ```
 
-Use the plugin's generator to create new projects. For example, to create a new React app or library:
+**RxJS Utilities:**
+```typescript
+import { interval } from 'rxjs';
+import { toAsyncIteratable } from '@thalesrc/rx-utils';
 
-```sh
-# Genenerate an app
-npx nx g @nx/react:app demo
-
-# Generate a library
-npx nx g @nx/react:lib some-lib
+const observable = interval(1000);
+for await (const value of toAsyncIteratable(observable)) {
+  console.log(value);
+}
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+---
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 🏗️ Monorepo Structure
 
+This project is built with [Nx](https://nx.dev), a powerful build system for monorepos.
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+```
+thalesrc/
+├── libs/
+│   ├── js-utils/              # JavaScript utilities
+│   ├── ts-utils/              # TypeScript utilities
+│   ├── extra-ts-types/        # TypeScript types
+│   ├── dom-utils/             # DOM utilities
+│   ├── drag-drop/             # Drag & drop library
+│   ├── paintlet/              # CSS Paint API worklets
+│   ├── react-utils/           # React utilities
+│   ├── rx-utils/              # RxJS utilities
+│   ├── reactive-storage/      # Reactive storage
+│   ├── node-utils/            # Node.js utilities
+│   ├── nx-utils/              # Nx executors
+│   ├── auto-proxy/            # Auto proxy Docker image
+│   └── docker-frp/            # FRP Docker image
+├── nx.json
+├── package.json
+└── tsconfig.base.json
+```
 
-## Install Nx Console
+### Development Commands
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+```bash
+# Run tests for a specific library
+nx test js-utils
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+# Build a library
+nx build drag-drop
 
-## Useful links
+# Run all tests
+nx run-many -t test
 
-Learn more:
+# Visualize the project graph
+nx graph
+```
 
-- [Learn more about this workspace setup](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+---
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+---
+
+## 📖 Documentation
+
+- [Website](https://thalesrc.com)
+- [Documentation](https://open-source.thalesrc.com)
+- [API Reference](https://open-source.thalesrc.com/api)
+- [Examples](https://github.com/thalesrc/thalesrc/tree/main/examples)
+
+---
+
+## 📄 License
+
+All packages in this repository are licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 👨‍💻 Author
+
+**Ali Şahin Özçelik**
+
+- Website: [alisah.in](https://alisah.in)
+- Email: alisahinozcelik@gmail.com
+- GitHub: [@thalesrc](https://github.com/thalesrc)
+- Twitter: [@thalesrc](https://twitter.com/thalesrc)
+
+---
+
+## 💖 Support
+
+If you find these libraries helpful, please consider:
+
+- ⭐ Starring the repository
+- 🐛 Reporting bugs or suggesting features via [issues](https://github.com/thalesrc/thalesrc/issues)
+- 💰 [Supporting on Patreon](https://www.patreon.com/alisahin)
+- 📢 Sharing with your network
+
+---
+
+## 🔗 Links
+
+- [GitHub Repository](https://github.com/thalesrc/thalesrc)
+- [npm Organization](https://www.npmjs.com/org/thalesrc)
+- [Docker Hub](https://hub.docker.com/u/thalesrc)
+- [Issues](https://github.com/thalesrc/thalesrc/issues)
+- [Discussions](https://github.com/thalesrc/thalesrc/discussions)
+
+---
+
+<div align="center">
+
+**Made with ❤️ by [Thalesrc](https://github.com/thalesrc)**
+
+</div>

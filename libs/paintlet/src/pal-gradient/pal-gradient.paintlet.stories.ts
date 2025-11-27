@@ -129,8 +129,8 @@ const renderPalGradient = (args: PalGradientStoryArgs) => html`
 
 export const Default: Story = {
   args: {
-    colors: "red, green, blue",
-    complexity: 7,
+    colors: "red, green, blue, white, white",
+    complexity: 10,
     seed: 70,
     animationDuration: 10,
     compositePoints: "destination-over",
