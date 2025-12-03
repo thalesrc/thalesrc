@@ -1,0 +1,33 @@
+{
+  "name": "@thalesrc/hermes",
+  "version": "0.0.0",
+  "description": "Javascript messaging library",
+  "keywords": [
+    "javascript",
+    "messaging",
+    "send",
+    "message",
+    "chrome",
+    "extension",
+    "extensions",
+    "nodejs",
+    "child",
+    "process",
+    "webworkers"
+  ],
+  "homepage": "https://github.com/thalesrc/thalesrc/tree/main/libs/hermes#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thalesrc/thalesrc.git",
+    "directory": "libs/hermes"
+  },
+  "dependencies": {
+    "@thalesrc/js-utils": "^2.12.0",
+    "rxjs": "^7.8.1",
+    "tslib": "*"
+  },
+  "type": "module",
+  "module": "./index.js",
+  "main": "./index.cjs",
+  "typings": "./index.d.ts"
+}

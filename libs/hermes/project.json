@@ -1,0 +1,64 @@
+{
+  "name": "hermes",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/hermes/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@thalesrc/nx-utils:ts-builder",
+      "options": {
+        "tsConfigPath": "libs/hermes/tsconfig.lib.json",
+        "outputPath": "dist/libs/hermes"
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "libs/hermes/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run hermes:publish/prepare",
+          "nx run hermes:publish/to-npm"
+        ],
+        "parallel": false
+      }
+    },
+    "publish/prepare": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run hermes:build",
+          "nx run hermes:publish/prepare/copy",
+          "nx run hermes:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
+        ]
+      }
+    },
+    "publish/prepare/copy": {
+      "executor": "@thalesrc/nx-utils:copy",
+      "options": {
+        "input": ["libs/hermes/README.md", "libs/hermes/LICENSE"],
+        "output": "dist/libs/hermes"
+      }
+    },
+    "publish/prepare/fill-package-json": {
+      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "options": {
+        "outputPath": "dist/libs/hermes",
+        "populateExports": {}
+      }
+    },
+    "publish/to-npm": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm publish --access public",
+        "cwd": "dist/libs/hermes"
+      }
+    }
+  }
+}

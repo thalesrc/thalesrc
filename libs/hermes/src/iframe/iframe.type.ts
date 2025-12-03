@@ -1,0 +1,1 @@
+export type IFrame = HTMLIFrameElement | (() => HTMLIFrameElement);

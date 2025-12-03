@@ -21,6 +21,8 @@
       "@thalesrc/drag-drop/*": ["libs/drag-drop/src/*"],
       "@thalesrc/extra-ts-types": ["libs/extra-ts-types/src/index.ts"],
       "@thalesrc/extra-ts-types/*": ["libs/extra-ts-types/src/*"],
+      "@thalesrc/hermes": ["libs/hermes/src/index.ts"],
+      "@thalesrc/hermes/*": ["libs/hermes/src/*"],
       "@thalesrc/js-utils": ["libs/js-utils/src/index.ts"],
       "@thalesrc/js-utils/*": ["libs/js-utils/src/*"],
       "@thalesrc/node-utils": ["libs/node-utils/src/index.ts"],
