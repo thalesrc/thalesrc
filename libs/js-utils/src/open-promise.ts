@@ -10,8 +10,26 @@ type Rejector = ExecutorParams<unknown>[1];
  * #### Open Promise
  * A promise constructor to resolve or reject from outside
  *
+ * @deprecated Use the native `Promise.withResolvers()` instead, which provides the same functionality.
+ *
  * * * *
- * Example:
+ * Example with native alternative:
+ * ```typescript
+ * // Instead of:
+ * // import { OpenPromise } from "@thalesrc/js-utils";
+ * // const aPromiseWillBeResolvedLater = new OpenPromise();
+ *
+ * // Use:
+ * const { promise, resolve, reject } = Promise.withResolvers();
+ *
+ * promise.then(val => console.log(val));
+ * ...
+ * ...
+ *
+ * resolve({x: 1});
+ * ```
+ *
+ * Legacy Example:
  * ```typescript
  * import { OpenPromise } from "@thalesrc/js-utils";
  *

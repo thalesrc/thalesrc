@@ -8,10 +8,10 @@ describe('Set Intersection Proto Function', () => {
     const bar = [1, 2];
     const baz = new Set([2, 3]);
 
-    expect(foo.intersection(bar)).toEqual(intersection(foo, bar));
-    expect(foo.intersection(baz)).toEqual(intersection(foo, baz));
+    expect(foo.getIntersection(bar)).toEqual(intersection(foo, bar));
+    expect(foo.getIntersection(baz)).toEqual(intersection(foo, baz));
 
-    expect(foo.intersection(bar, false)).toEqual(intersection(foo, bar, false));
-    expect(foo.intersection(baz, false)).toEqual(intersection(foo, baz, false));
+    expect(foo.getIntersection(bar, false)).toEqual(intersection(foo, bar, false));
+    expect(foo.getIntersection(baz, false)).toEqual(intersection(foo, baz, false));
   });
 });

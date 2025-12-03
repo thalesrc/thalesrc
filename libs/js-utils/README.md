@@ -159,6 +159,35 @@ const array = [{a: 1}, {a: 1}, {a: 2}, {a: 3}, {a: 3}, {a: 4}];
 uniquifyByKey(array, 'a'); // [{a: 1}, {a: 2}, {a: 3}, {a: 4}]
 ```
 
+### Class
+
+#### [Mixin](https://thalesrc.github.io/js-utils/modules/_class_mixin_.html)
+Creates a class that combines two classes using the mixin pattern
+
+```typescript
+import { mixin } from "@thalesrc/js-utils/class";
+
+class Timestamped {
+  timestamp = Date.now();
+  getAge() {
+    return Date.now() - this.timestamp;
+  }
+}
+
+class User {
+  constructor(public name: string) {}
+  greet() {
+    return `Hello, ${this.name}`;
+  }
+}
+
+class TimestampedUser extends mixin(User, Timestamped) {}
+
+const user = new TimestampedUser(['John'], []);
+console.log(user.greet()); // "Hello, John"
+console.log(user.getAge()); // Time since creation
+```
+
 ### Function
 
 #### [Debounce](https://thalesrc.github.io/js-utils/modules/_function_debounce_.html)

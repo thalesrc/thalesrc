@@ -51,6 +51,8 @@
     "smart-map",
     "unique-id",
     "array/",
+    "class/",
+    "class/mixin",
     "array/proto/async-map",
     "array/proto/compact",
     "array/proto/difference",

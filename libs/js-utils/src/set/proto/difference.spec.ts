@@ -8,10 +8,10 @@ describe('Set Difference Proto Function', () => {
     const bar = [1, 2];
     const baz = new Set([2, 3]);
 
-    expect(foo.difference(bar)).toEqual(difference(foo, bar));
-    expect(foo.difference(baz)).toEqual(difference(foo, baz));
+    expect(foo.getDifference(bar)).toEqual(difference(foo, bar));
+    expect(foo.getDifference(baz)).toEqual(difference(foo, baz));
 
-    expect(foo.difference(bar, true)).toEqual(difference(foo, bar, true));
-    expect(foo.difference(baz, true)).toEqual(difference(foo, baz, true));
+    expect(foo.getDifference(bar, true)).toEqual(difference(foo, bar, true));
+    expect(foo.getDifference(baz, true)).toEqual(difference(foo, baz, true));
   });
 });

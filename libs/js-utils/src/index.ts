@@ -13,6 +13,7 @@ export {
   uniquify,
   uniquifyByKey
 } from '@thalesrc/js-utils/array';
+export * from '@thalesrc/js-utils/class';
 export * from '@thalesrc/js-utils/function';
 export * from '@thalesrc/js-utils/map';
 export * from '@thalesrc/js-utils/math';

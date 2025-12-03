@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@thalesrc/js-utils": "^2.12.0",
-    "rxjs": "^7.8.1",
+    "rxjs": "*",
     "tslib": "*"
   },
   "type": "module",
