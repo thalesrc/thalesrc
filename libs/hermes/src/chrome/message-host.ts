@@ -5,14 +5,11 @@ import { SuccessfulMessageResponse } from '../message-response.type';
 import { Message } from '../message.interface';
 import { DEFAULT_CONNECTION_NAME } from './default-connection-name';
 
-const PORTS = Symbol('Ports');
-const REQUESTS$ = Symbol('Requests');
-
 export class ChromeMessageHost extends MessageHost {
   private static readonly PORT_IDENTIFIER = 'portIdentifier';
 
-  private [PORTS]: {[key: string]: chrome.runtime.Port} = {};
-  private [REQUESTS$] = new Subject<Message>();
+  #ports: {[key: string]: chrome.runtime.Port} = {};
+  #requests = new Subject<Message>();
 
   constructor(name = DEFAULT_CONNECTION_NAME) {
     super();
@@ -23,25 +20,25 @@ export class ChromeMessageHost extends MessageHost {
       }
 
       port.onMessage.addListener((message: Message, incomingMessagePort: chrome.runtime.Port) => {
-        if (!this[PORTS][incomingMessagePort.sender.tab.id]) {
-          this[PORTS][incomingMessagePort.sender.tab.id] = incomingMessagePort;
+        if (!this.#ports[incomingMessagePort.sender!.tab!.id!]) {
+          this.#ports[incomingMessagePort.sender!.tab!.id!] = incomingMessagePort;
 
           incomingMessagePort.onDisconnect.addListener(disconnectedPort => {
-            delete this[PORTS][disconnectedPort.sender.tab.id];
+            delete this.#ports[disconnectedPort.sender!.tab!.id!];
             this.terminateMessage$.next(message.id);
           });
         }
 
         const newMessage = {
           ...message,
-          id: `${message.id}&${ChromeMessageHost.PORT_IDENTIFIER}=${incomingMessagePort.sender.tab.id}`,
+          id: `${message.id}&${ChromeMessageHost.PORT_IDENTIFIER}=${incomingMessagePort.sender!.tab!.id!}`,
         };
 
-        this[REQUESTS$].next(newMessage);
+        this.#requests.next(newMessage);
       });
     });
 
-    this.listen(this[REQUESTS$]);
+    this.listen(this.#requests);
   }
 
   protected response(message: SuccessfulMessageResponse): void {
@@ -49,8 +46,8 @@ export class ChromeMessageHost extends MessageHost {
 
     message.id = messageId;
 
-    if (this[PORTS][portId]) {
-      this[PORTS][portId].postMessage(message);
+    if (this.#ports[portId]) {
+      this.#ports[portId].postMessage(message);
     }
   }
 }
