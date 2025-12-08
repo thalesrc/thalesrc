@@ -103,6 +103,7 @@
     "ng-packagr": "^18.2.1",
     "nx": "^21.2.3",
     "prettier": "^2.6.2",
+    "rxjs-marbles": "^7.0.1",
     "storybook": "^8.6.14",
     "ts-jest": "^29.1.0",
     "ts-node": "10.9.1",

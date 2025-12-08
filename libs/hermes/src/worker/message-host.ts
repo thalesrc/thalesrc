@@ -13,7 +13,7 @@ const WORKER = Symbol('Worker');
 
 export class WorkerMessageHost extends MessageHost {
   private [REQUESTS$] = new Subject<Message>();
-  private [WORKER]: Worker;
+  private [WORKER]: Worker | undefined;
 
   constructor(worker?: Worker) {
     super();

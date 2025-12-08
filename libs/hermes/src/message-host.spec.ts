@@ -9,7 +9,7 @@ import { Message } from './message.interface';
 import { MESSAGE_LISTENERS } from './selectors';
 
 function asyncMarbles(callback: (m: Context, done: Function) => void) {
-  return (done) => {
+  return (done: jest.DoneCallback) => {
     marbles((m) => {
       callback(m, done);
     })();
@@ -95,15 +95,15 @@ describe.only('Message Host', () => {
     }
 
     class Bar extends Foo {
-      public static [MESSAGE_LISTENERS] = new Map([['bar', [barListener]]]);
+      public static override [MESSAGE_LISTENERS] = new Map([['bar', [barListener]]]);
     }
 
     class Baz extends Foo {
-      public static [MESSAGE_LISTENERS] = new Map([['baz', [bazListener]]]);
+      public static override [MESSAGE_LISTENERS] = new Map([['baz', [bazListener]]]);
     }
 
     class SuperBar extends Bar {
-      public static [MESSAGE_LISTENERS] = new Map([['bar', [superBarListener]]]);
+      public static override [MESSAGE_LISTENERS] = new Map([['bar', [superBarListener]]]);
     }
 
     const bar = new Bar();

@@ -5,7 +5,7 @@ import { GET_NEW_ID, RESPONSES$, SEND } from './selectors';
 import { ErrorMessageResponse, SuccessfulMessageResponse, UncompletedMessageResponse } from './message-response.type';
 
 export function Request(path: string): MethodDecorator {
-  return function(target: object, key: string, descriptor: TypedPropertyDescriptor<any>): TypedPropertyDescriptor<any> {
+  return function(target, key, descriptor: TypedPropertyDescriptor<any>): TypedPropertyDescriptor<any> {
     descriptor.value = function(this: MessageClient, message: any) {
       const messageId = this[GET_NEW_ID]();
 
@@ -20,7 +20,7 @@ export function Request(path: string): MethodDecorator {
           return data as SuccessfulMessageResponse;
         }),
         filter(({id}) => id === messageId),
-        takeWhile(({completed}) => !completed),
+        takeWhile((res) => !res.completed),
         map(({body}: UncompletedMessageResponse) => body),
       );
     };

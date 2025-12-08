@@ -7,13 +7,13 @@ import { MESSAGE_LISTENERS } from './selectors';
  * @param path Acts like an api endpoint path of an XHR for extensions messaging
  */
 export function Listen(path?: string): MethodDecorator {
-  return function(target, key: string, descriptor: TypedPropertyDescriptor<any>) {
-    if (!target.constructor[MESSAGE_LISTENERS]) {
-      target.constructor[MESSAGE_LISTENERS] = new Map();
+  return function(target, key, descriptor) {
+    if (!(target.constructor as any)[MESSAGE_LISTENERS]) {
+      (target.constructor as any)[MESSAGE_LISTENERS] = new Map();
     }
 
-    (target.constructor[MESSAGE_LISTENERS] as ListenerStorage).set(path || key, [
-      ...(target.constructor[MESSAGE_LISTENERS].get(path || key) || []),
+    ((target.constructor as any)[MESSAGE_LISTENERS] as ListenerStorage).set(path! ?? key, [
+      ...((target.constructor as any)[MESSAGE_LISTENERS].get(path ?? key) || []),
       descriptor.value
     ] as any);
   };

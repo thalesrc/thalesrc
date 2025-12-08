@@ -53,7 +53,7 @@ export abstract class MessageHost {
   #getListeners(): ListenerStorage {
     const map: ListenerStorage = new Map();
 
-    let currentProto = this['__proto__' + ''];
+    let currentProto = (this as any)['__proto__' + ''];
 
     while (currentProto.constructor !== Object) {
       if (Reflect.ownKeys(currentProto.constructor).includes(MESSAGE_LISTENERS)) {

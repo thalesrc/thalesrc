@@ -15,7 +15,7 @@ const INSTANCE_ID = Symbol('Instance Id');
 
 export class WorkerMessageClient extends MessageClient {
   public [RESPONSES$] = new Subject<MessageResponse>();
-  protected [WORKER]: Worker;
+  protected [WORKER]: Worker | undefined;
   private [INSTANCE_ID] = Date.now();
 
   constructor(worker?: Worker) {
