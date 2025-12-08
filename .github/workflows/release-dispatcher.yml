@@ -31,6 +31,9 @@ jobs:
             extra-ts-types-v*)
               LIBRARY="extra-ts-types"
               ;;
+            hermes-v*)
+              LIBRARY="hermes"
+              ;;
             node-utils-v*)
               LIBRARY="node-utils"
               ;;
@@ -58,7 +61,7 @@ jobs:
             *)
               echo "❌ No matching library found for tag: $TAG_NAME"
               echo "Expected format: <library-name>-v<version>"
-              echo "Valid libraries: dom-utils, drag-drop, js-utils, extra-ts-types, node-utils, nx-utils, react-utils, reactive-storage, rx-utils, ts-utils, auto-proxy, docker-frp"
+              echo "Valid libraries: dom-utils, drag-drop, js-utils, extra-ts-types, hermes, node-utils, nx-utils, react-utils, reactive-storage, rx-utils, ts-utils, auto-proxy, docker-frp"
               exit 0
               ;;
           esac
