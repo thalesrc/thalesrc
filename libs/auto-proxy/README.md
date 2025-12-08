@@ -1,7 +1,7 @@
 # @thalesrc/auto-proxy
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Docker Pulls](https://img.shields.io/docker/pulls/thalesrc/auto-proxy)](https://hub.docker.com/r/thalesrc/auto-proxy)
+[![GitHub Container Registry](https://img.shields.io/badge/ghcr.io-auto--proxy-blue)](https://github.com/thalesrc/thalesrc/pkgs/container/auto-proxy)
 [![Build Status](https://img.shields.io/github/workflow/status/thalesrc/thalesrc/CI)](https://github.com/thalesrc/thalesrc/actions)
 
 Docker-aware nginx reverse proxy with automatic SSL and service discovery. Perfect for development environments, microservices, and containerized applications.

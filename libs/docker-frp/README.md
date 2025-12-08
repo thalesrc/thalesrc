@@ -1,6 +1,6 @@
 # Docker FRP - Fast Reverse Proxy Container
 
-[![Docker Build](https://img.shields.io/badge/docker-ready-blue.svg)](https://hub.docker.com/r/thalesrc/docker-frp)
+[![GitHub Container Registry](https://img.shields.io/badge/ghcr.io-docker--frp-blue)](https://github.com/thalesrc/thalesrc/pkgs/container/docker-frp)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
 [![FRP Version](https://img.shields.io/badge/frp-v0.65.0-brightgreen.svg)](https://github.com/fatedier/frp)
 

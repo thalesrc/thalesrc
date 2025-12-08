@@ -100,6 +100,18 @@ React-specific utility hooks and components for modern React development. Simpli
 
 ---
 
+### Messaging & Communication
+
+#### [@thalesrc/hermes](https://www.npmjs.com/package/@thalesrc/hermes)
+[![npm](https://img.shields.io/npm/v/@thalesrc/hermes.svg)](https://www.npmjs.com/package/@thalesrc/hermes)
+[![npm](https://img.shields.io/npm/dw/@thalesrc/hermes.svg)](https://www.npmjs.com/package/@thalesrc/hermes)
+
+Cross-context messaging library for seamless communication across iframes, Chrome extensions, web workers, and broadcast channels. Built with RxJS for reactive message handling with decorators for clean, declarative APIs.
+
+**Highlights**: Iframe messaging, Chrome extension support, Web Workers, Broadcast API, RxJS-based, Decorator API
+
+---
+
 ### Build & Development Tools
 
 #### [@thalesrc/nx-utils](https://www.npmjs.com/package/@thalesrc/nx-utils)
@@ -119,15 +131,15 @@ Node.js-specific utility functions for server-side development, file system oper
 
 ### Infrastructure & DevOps
 
-#### [@thalesrc/auto-proxy](https://hub.docker.com/r/thalesrc/auto-proxy)
-[![Docker](https://img.shields.io/docker/pulls/thalesrc/auto-proxy)](https://hub.docker.com/r/thalesrc/auto-proxy)
+#### [@thalesrc/auto-proxy](https://github.com/thalesrc/thalesrc/pkgs/container/auto-proxy)
+[![GitHub Container Registry](https://img.shields.io/badge/ghcr.io-auto--proxy-blue)](https://github.com/thalesrc/thalesrc/pkgs/container/auto-proxy)
 
 Docker-aware nginx reverse proxy with automatic SSL and service discovery. Perfect for development environments with support for HTTP/HTTPS, gRPC, databases (PostgreSQL, MySQL, Redis, MongoDB), automatic SSL certificates, and Docker container discovery.
 
 **Highlights**: Automatic SSL, gRPC support, Database proxying, Docker integration, Development-optimized
 
-#### [@thalesrc/docker-frp](https://hub.docker.com/r/thalesrc/docker-frp)
-[![Docker](https://img.shields.io/docker/pulls/thalesrc/docker-frp)](https://hub.docker.com/r/thalesrc/docker-frp)
+#### [@thalesrc/docker-frp](https://github.com/thalesrc/thalesrc/pkgs/container/docker-frp)
+[![GitHub Container Registry](https://img.shields.io/badge/ghcr.io-docker--frp-blue)](https://github.com/thalesrc/thalesrc/pkgs/container/docker-frp)
 
 Comprehensive Docker container for Fast Reverse Proxy (FRP) with both server and client modes. Features web-based admin UI, multiple proxy types (TCP, UDP, HTTP, HTTPS), and easy configuration.
 
@@ -198,6 +210,22 @@ for await (const value of toAsyncIteratable(observable)) {
 }
 ```
 
+**Hermes Messaging:**
+```typescript
+import { IframeMessageClient, Request } from '@thalesrc/hermes/iframe';
+import { Observable } from 'rxjs';
+
+class MyClient extends IframeMessageClient {
+  @Request('getData')
+  fetchData(query: string): Observable<any> {
+    return null; // Implementation handled by decorator
+  }
+}
+
+const client = new MyClient();
+client.fetchData('user').subscribe(data => console.log(data));
+```
+
 ---
 
 ## 🏗️ Monorepo Structure
@@ -216,6 +244,7 @@ thalesrc/
 │   ├── react-utils/           # React utilities
 │   ├── rx-utils/              # RxJS utilities
 │   ├── reactive-storage/      # Reactive storage
+│   ├── hermes/                # Messaging library
 │   ├── node-utils/            # Node.js utilities
 │   ├── nx-utils/              # Nx executors
 │   ├── auto-proxy/            # Auto proxy Docker image
@@ -296,7 +325,7 @@ If you find these libraries helpful, please consider:
 
 - [GitHub Repository](https://github.com/thalesrc/thalesrc)
 - [npm Organization](https://www.npmjs.com/org/thalesrc)
-- [Docker Hub](https://hub.docker.com/u/thalesrc)
+- [GitHub Packages](https://github.com/orgs/thalesrc/packages)
 - [Issues](https://github.com/thalesrc/thalesrc/issues)
 - [Discussions](https://github.com/thalesrc/thalesrc/discussions)
 

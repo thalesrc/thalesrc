@@ -22,7 +22,7 @@
     "directory": "libs/hermes"
   },
   "dependencies": {
-    "@thalesrc/js-utils": "^2.12.0",
+    "@thalesrc/js-utils": "^3.4.0",
     "rxjs": "*",
     "tslib": "*"
   },

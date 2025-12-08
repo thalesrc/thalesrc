@@ -8,21 +8,14 @@ import { CHANNEL_PATH_SPLITTER } from './channel-path-splitter';
 import { DEFAULT_CHANNEL_NAME } from './default-channel-name';
 import { IFrame } from './iframe.type';
 
-interface HermesMessageEvent<T> extends MessageEvent {
-  data: T;
-}
-
-const TARGET_FRAME = Symbol('Target Frame');
-const _TARGET_FRAME = Symbol('_ Target Frame');
-
 export class IframeMessageClient extends MessageClient {
   public [RESPONSES$] = new Subject<MessageResponse>();
-  private [_TARGET_FRAME]: IFrame;
+  #_targetFrame: IFrame | undefined;
 
-  protected get [TARGET_FRAME](): null | HTMLIFrameElement {
-    return typeof this[_TARGET_FRAME] === 'function'
-      ? (this[_TARGET_FRAME] as () => HTMLIFrameElement)() || null
-      : this[_TARGET_FRAME] as HTMLIFrameElement || null;
+  get #targetFrame(): null | HTMLIFrameElement {
+    return typeof this.#_targetFrame === 'function'
+      ? (this.#_targetFrame as () => HTMLIFrameElement)() ?? null
+      : this.#_targetFrame as HTMLIFrameElement ?? null;
   }
 
   constructor(
@@ -31,10 +24,10 @@ export class IframeMessageClient extends MessageClient {
   ) {
     super();
 
-    this[_TARGET_FRAME] = targetFrame;
+    this.#_targetFrame = targetFrame;
 
-    window.addEventListener('message', ({data, source}: HermesMessageEvent<SuccessfulMessageResponse>) => {
-      const target = this[TARGET_FRAME];
+    window.addEventListener('message', ({data, source}: MessageEvent<SuccessfulMessageResponse>) => {
+      const target = this.#targetFrame;
 
       if (target && source !== target.contentWindow) return;
 
@@ -53,10 +46,10 @@ export class IframeMessageClient extends MessageClient {
   public [SEND]<T>(message: Message<T>) {
     message = {...message, path: `${this.channelName}${CHANNEL_PATH_SPLITTER}${message.path}`};
 
-    const target = this[TARGET_FRAME];
+    const target = this.#targetFrame;
 
     if (target) {
-      target.contentWindow.postMessage(message, '*');
+      target.contentWindow!.postMessage(message, '*');
     } else {
       window.parent.postMessage(message, '*');
     }
