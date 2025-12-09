@@ -231,9 +231,9 @@ mainService.sendDataToWorker([1, 2, 3, 4, 5]).subscribe(result => {
 });
 ```
 
-##### Async Worker Initialization
+##### Flexible Worker Initialization
 
-The worker parameter supports flexible initialization patterns:
+The worker parameter supports multiple initialization patterns for different use cases:
 
 ```typescript
 // Direct Worker instance
@@ -251,6 +251,41 @@ const service4 = new MainThread(async () => {
   const module = await import('./worker.js');
   return new Worker(module.default);
 });
+```
+
+##### Dynamic Worker Management with `initialize()`
+
+The `initialize()` method allows you to switch workers at runtime or re-establish connections:
+
+```typescript
+class MainThread extends WorkerMessageService {
+  // ... decorators and methods
+}
+
+// Start without a worker
+const service = new MainThread();
+
+// Later, connect to a worker dynamically
+service.initialize(new Worker('./worker.js'));
+
+// Switch to a different worker
+service.initialize(new Worker('./different-worker.js'));
+
+// Re-establish connection after worker error
+const worker = new Worker('./worker.js');
+worker.onerror = (error) => {
+  console.error('Worker error, reinitializing...', error);
+  service.initialize(new Worker('./worker.js'));
+};
+service.initialize(worker);
+
+// Conditional worker initialization
+function getWorker() {
+  return navigator.hardwareConcurrency > 2 
+    ? new Worker('./heavy-worker.js')
+    : new Worker('./light-worker.js');
+}
+service.initialize(getWorker);
 ```
 
 #### Worker Thread
