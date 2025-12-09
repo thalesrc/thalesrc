@@ -231,6 +231,28 @@ mainService.sendDataToWorker([1, 2, 3, 4, 5]).subscribe(result => {
 });
 ```
 
+##### Async Worker Initialization
+
+The worker parameter supports flexible initialization patterns:
+
+```typescript
+// Direct Worker instance
+const service1 = new MainThread(new Worker('./worker.js'));
+
+// Promise that resolves to a Worker (for async initialization)
+const workerPromise = import('./worker.js').then(m => new Worker(m.default));
+const service2 = new MainThread(workerPromise);
+
+// Function that returns a Worker (for lazy initialization)
+const service3 = new MainThread(() => new Worker('./worker.js'));
+
+// Function that returns a Promise<Worker> (for async lazy initialization)
+const service4 = new MainThread(async () => {
+  const module = await import('./worker.js');
+  return new Worker(module.default);
+});
+```
+
 #### Worker Thread
 
 ```typescript
