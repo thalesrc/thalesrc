@@ -10,7 +10,7 @@ jobs:
 
     env:
       TAG_NAME: ${{ github.event.client_payload.tag }}
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     steps:
       - name: Set package version env variable
