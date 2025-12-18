@@ -4,13 +4,16 @@ on:
   repository_dispatch:
     types: [publish-hermes]
 
+permissions:
+  id-token: write  # Required for OIDC
+  contents: read
+
 jobs:
   publish:
     runs-on: ubuntu-latest
 
     env:
       TAG_NAME: ${{ github.event.client_payload.tag }}
-      # NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     steps:
       - name: Set package version env variable
