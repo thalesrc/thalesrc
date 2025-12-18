@@ -2,49 +2,46 @@ import { Subject } from "rxjs";
 import { MessageHost } from "../message-host";
 import { MessageResponse } from "../message-response.type";
 import { Message } from "../message.interface";
+import { LISTEN, RESPONSE } from "../selectors";
 
 interface MessageEvent<T> {
   data: T;
 }
 
-const REQUESTS$ = Symbol('Requests');
-const HANDLER = Symbol('Handler');
-const WORKER = Symbol('Worker');
-
 export class WorkerMessageHost extends MessageHost {
-  private [REQUESTS$] = new Subject<Message>();
-  private [WORKER]: Worker | undefined;
+  #requests$ = new Subject<Message>();
+  #worker: Worker | undefined;
 
   constructor(worker?: Worker) {
     super();
 
     if (worker) {
-      this[WORKER] = worker;
-      worker.addEventListener('message', this[HANDLER]);
+      this.#worker = worker;
+      worker.addEventListener('message', this.#handler);
     } else {
-      addEventListener('message', this[HANDLER]);
+      addEventListener('message', this.#handler);
     }
 
-    this.listen(this[REQUESTS$]);
+    this[LISTEN](this.#requests$);
   }
 
-  protected response(message: MessageResponse) {
-    if (this[WORKER]) {
-      this[WORKER].postMessage(message);
+  protected [RESPONSE](message: MessageResponse) {
+    if (this.#worker) {
+      this.#worker.postMessage(message);
     } else {
       (postMessage as any)(message);
     }
   }
 
   public terminate() {
-    if (this[WORKER]) {
-      this[WORKER].removeEventListener('message', this[HANDLER]);
+    if (this.#worker) {
+      this.#worker.removeEventListener('message', this.#handler);
     } else {
-      removeEventListener('message', this[HANDLER]);
+      removeEventListener('message', this.#handler);
     }
   }
 
-  private [HANDLER] = (event: MessageEvent<Message>) => {
-    this[REQUESTS$].next(event.data);
+  #handler = (event: MessageEvent<Message>) => {
+    this.#requests$.next(event.data);
   }
 }

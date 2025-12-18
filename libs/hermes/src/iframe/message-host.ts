@@ -7,6 +7,7 @@ import { CHANNEL_PATH_SPLITTER } from './channel-path-splitter';
 import { DEFAULT_CHANNEL_NAME } from './default-channel-name';
 import { SOURCE_ID_SPLITTER } from './source-id-splitter';
 import { IFrame } from './iframe.type';
+import { LISTEN, RESPONSE } from '../selectors';
 
 export class IframeMessageHost extends MessageHost {
   #requests = new Subject<Message>();
@@ -29,14 +30,14 @@ export class IframeMessageHost extends MessageHost {
 
     window.addEventListener('message', this.#handler);
 
-    this.listen(this.#requests);
+    this[LISTEN](this.#requests);
   }
 
   public terminate(): void {
     window.removeEventListener('message', this.#handler);
   }
 
-  protected response(message: SuccessfulMessageResponse): void {
+  protected [RESPONSE](message: SuccessfulMessageResponse): void {
     const [sourceId, messageId] = message.id.split(SOURCE_ID_SPLITTER);
     const [, source] = this.#sources.find(([sId]) => sId === sourceId)!;
 

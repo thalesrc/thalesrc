@@ -4,6 +4,7 @@ import { MessageHost } from '../message-host';
 import { SuccessfulMessageResponse } from '../message-response.type';
 import { Message } from '../message.interface';
 import { DEFAULT_CONNECTION_NAME } from './default-connection-name';
+import { LISTEN, RESPONSE, TERMINATE_MESSAGE$ } from '../selectors';
 
 export class ChromeMessageHost extends MessageHost {
   private static readonly PORT_IDENTIFIER = 'portIdentifier';
@@ -25,7 +26,7 @@ export class ChromeMessageHost extends MessageHost {
 
           incomingMessagePort.onDisconnect.addListener(disconnectedPort => {
             delete this.#ports[disconnectedPort.sender!.tab!.id!];
-            this.terminateMessage$.next(message.id);
+            this[TERMINATE_MESSAGE$].next(message.id);
           });
         }
 
@@ -38,10 +39,10 @@ export class ChromeMessageHost extends MessageHost {
       });
     });
 
-    this.listen(this.#requests);
+    this[LISTEN](this.#requests);
   }
 
-  protected response(message: SuccessfulMessageResponse): void {
+  protected [RESPONSE](message: SuccessfulMessageResponse): void {
     const [messageId, portId] = message.id.split(`&${ChromeMessageHost.PORT_IDENTIFIER}=`);
 
     message.id = messageId;

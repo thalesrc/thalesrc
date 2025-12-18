@@ -3,6 +3,7 @@ import { MessageHost } from "../message-host";
 import { MessageResponse } from "../message-response.type";
 import { Message } from "../message.interface";
 import { DEFAULT_CHANNEL_NAME } from "./default-channel-name";
+import { LISTEN, RESPONSE } from "../selectors";
 
 interface MessageEvent<T> {
   data: T;
@@ -18,10 +19,10 @@ export class BroadcastMessageHost extends MessageHost {
     this.#channel = new BroadcastChannel(channelName);
 
     this.#channel.addEventListener('message', this.#handler);
-    this.listen(this.#requests$);
+    this[LISTEN](this.#requests$);
   }
 
-  protected response(message: MessageResponse) {
+  protected [RESPONSE](message: MessageResponse) {
     this.#channel.postMessage(message);
   }
 
