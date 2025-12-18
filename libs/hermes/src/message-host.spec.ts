@@ -6,7 +6,7 @@ import { Context, marbles } from 'rxjs-marbles/jest';
 
 import { MessageHost } from './message-host';
 import { Message } from './message.interface';
-import { MESSAGE_LISTENERS } from './selectors';
+import { LISTEN, MESSAGE_LISTENERS, RESPONSE } from './selectors';
 
 function asyncMarbles(callback: (m: Context, done: Function) => void) {
   return (done: jest.DoneCallback) => {
@@ -19,7 +19,7 @@ function asyncMarbles(callback: (m: Context, done: Function) => void) {
 describe.only('Message Host', () => {
   it('should initialize properly', () => {
     class Foo extends MessageHost {
-      public response() {}
+      public [RESPONSE]() {}
     }
 
     expect(Foo).toBeTruthy();
@@ -44,12 +44,12 @@ describe.only('Message Host', () => {
     class Foo extends MessageHost {
       public static [MESSAGE_LISTENERS] = new Map([['a', [aListener]], ['b', [bListener]]]);
 
-      public response = jest.fn();
+      public [RESPONSE] = jest.fn();
 
       constructor() {
         super();
 
-        this.listen(reqs);
+        this[LISTEN](reqs);
       }
     }
 
@@ -58,13 +58,13 @@ describe.only('Message Host', () => {
     m.expect(reqs).toHaveSubscriptions(['^---!', '^---!']);
 
     setTimeout(() => {
-      expect(foo.response).toHaveBeenCalledTimes(6);
-      expect(foo.response).toHaveBeenNthCalledWith(1, {id: '1', body: 'aListener', completed: false});
-      expect(foo.response).toHaveBeenNthCalledWith(2, {id: '1', completed: true});
-      expect(foo.response).toHaveBeenNthCalledWith(3, {id: '2', body: 'bListener', completed: false});
-      expect(foo.response).toHaveBeenNthCalledWith(4, {id: '2', completed: true});
-      expect(foo.response).toHaveBeenNthCalledWith(5, {id: '4', body: 'aListener', completed: false});
-      expect(foo.response).toHaveBeenNthCalledWith(6, {id: '4', completed: true});
+      expect(foo[RESPONSE]).toHaveBeenCalledTimes(6);
+      expect(foo[RESPONSE]).toHaveBeenNthCalledWith(1, {id: '1', body: 'aListener', completed: false});
+      expect(foo[RESPONSE]).toHaveBeenNthCalledWith(2, {id: '1', completed: true});
+      expect(foo[RESPONSE]).toHaveBeenNthCalledWith(3, {id: '2', body: 'bListener', completed: false});
+      expect(foo[RESPONSE]).toHaveBeenNthCalledWith(4, {id: '2', completed: true});
+      expect(foo[RESPONSE]).toHaveBeenNthCalledWith(5, {id: '4', body: 'aListener', completed: false});
+      expect(foo[RESPONSE]).toHaveBeenNthCalledWith(6, {id: '4', completed: true});
       done();
     }, 60);
   }));
@@ -85,12 +85,12 @@ describe.only('Message Host', () => {
     class Foo extends MessageHost {
       public static [MESSAGE_LISTENERS] = new Map([['foo', [fooListener]]]);
 
-      public response = jest.fn();
+      public [RESPONSE] = jest.fn();
 
       constructor() {
         super();
 
-        this.listen(reqs);
+        this[LISTEN](reqs);
       }
     }
 
@@ -113,33 +113,31 @@ describe.only('Message Host', () => {
     m.expect(reqs).toHaveSubscriptions(['^---!', '^---!', '^---!', '^---!', '^---!', '^---!']);
 
     setTimeout(() => {
-      expect(bar.response).toHaveBeenCalledTimes(6);
-      expect(baz.response).toHaveBeenCalledTimes(6);
-      expect(superBar.response).toHaveBeenCalledTimes(8);
+      expect(bar[RESPONSE]).toHaveBeenCalledTimes(6);
+      expect(baz[RESPONSE]).toHaveBeenCalledTimes(6);
+      expect(superBar[RESPONSE]).toHaveBeenCalledTimes(8);
 
-      expect(bar.response).toHaveBeenNthCalledWith(1, {id: '1', body: 'fooListener', completed: false});
-      expect(bar.response).toHaveBeenNthCalledWith(2, {id: '1', completed: true});
-      expect(bar.response).toHaveBeenNthCalledWith(3, {id: '2', body: 'barListener', completed: false});
-      expect(bar.response).toHaveBeenNthCalledWith(4, {id: '2', completed: true});
-      expect(bar.response).toHaveBeenNthCalledWith(5, {id: '4', body: 'fooListener', completed: false});
-      expect(bar.response).toHaveBeenNthCalledWith(6, {id: '4', completed: true});
+      expect(bar[RESPONSE]).toHaveBeenNthCalledWith(1, {id: '1', body: 'fooListener', completed: false});
+      expect(bar[RESPONSE]).toHaveBeenNthCalledWith(2, {id: '1', completed: true});
+      expect(bar[RESPONSE]).toHaveBeenNthCalledWith(3, {id: '2', body: 'barListener', completed: false});
+      expect(bar[RESPONSE]).toHaveBeenNthCalledWith(4, {id: '2', completed: true});
+      expect(bar[RESPONSE]).toHaveBeenNthCalledWith(5, {id: '4', body: 'fooListener', completed: false});
+      expect(bar[RESPONSE]).toHaveBeenNthCalledWith(6, {id: '4', completed: true});
+      expect(baz[RESPONSE]).toHaveBeenNthCalledWith(1, {id: '1', body: 'fooListener', completed: false});
+      expect(baz[RESPONSE]).toHaveBeenNthCalledWith(2, {id: '1', completed: true});
+      expect(baz[RESPONSE]).toHaveBeenNthCalledWith(3, {id: '3', body: 'bazListener', completed: false});
+      expect(baz[RESPONSE]).toHaveBeenNthCalledWith(4, {id: '3', completed: true});
+      expect(baz[RESPONSE]).toHaveBeenNthCalledWith(5, {id: '4', body: 'fooListener', completed: false});
+      expect(baz[RESPONSE]).toHaveBeenNthCalledWith(6, {id: '4', completed: true});
 
-      expect(baz.response).toHaveBeenNthCalledWith(1, {id: '1', body: 'fooListener', completed: false});
-      expect(baz.response).toHaveBeenNthCalledWith(2, {id: '1', completed: true});
-      expect(baz.response).toHaveBeenNthCalledWith(3, {id: '3', body: 'bazListener', completed: false});
-      expect(baz.response).toHaveBeenNthCalledWith(4, {id: '3', completed: true});
-      expect(baz.response).toHaveBeenNthCalledWith(5, {id: '4', body: 'fooListener', completed: false});
-      expect(baz.response).toHaveBeenNthCalledWith(6, {id: '4', completed: true});
-
-      expect(superBar.response).toHaveBeenNthCalledWith(1, {id: '1', body: 'fooListener', completed: false});
-      expect(superBar.response).toHaveBeenNthCalledWith(2, {id: '1', completed: true});
-      expect(superBar.response).toHaveBeenNthCalledWith(3, {id: '2', body: 'superBarListener', completed: false});
-      expect(superBar.response).toHaveBeenNthCalledWith(4, {id: '2', completed: true});
-      expect(superBar.response).toHaveBeenNthCalledWith(5, {id: '2', body: 'barListener', completed: false});
-      expect(superBar.response).toHaveBeenNthCalledWith(6, {id: '2', completed: true});
-      expect(superBar.response).toHaveBeenNthCalledWith(7, {id: '4', body: 'fooListener', completed: false});
-      expect(superBar.response).toHaveBeenNthCalledWith(8, {id: '4', completed: true});
-
+      expect(superBar[RESPONSE]).toHaveBeenNthCalledWith(1, {id: '1', body: 'fooListener', completed: false});
+      expect(superBar[RESPONSE]).toHaveBeenNthCalledWith(2, {id: '1', completed: true});
+      expect(superBar[RESPONSE]).toHaveBeenNthCalledWith(3, {id: '2', body: 'superBarListener', completed: false});
+      expect(superBar[RESPONSE]).toHaveBeenNthCalledWith(4, {id: '2', completed: true});
+      expect(superBar[RESPONSE]).toHaveBeenNthCalledWith(5, {id: '2', body: 'barListener', completed: false});
+      expect(superBar[RESPONSE]).toHaveBeenNthCalledWith(6, {id: '2', completed: true});
+      expect(superBar[RESPONSE]).toHaveBeenNthCalledWith(7, {id: '4', body: 'fooListener', completed: false});
+      expect(superBar[RESPONSE]).toHaveBeenNthCalledWith(8, {id: '4', completed: true});
       done();
     }, 60);
   }));
