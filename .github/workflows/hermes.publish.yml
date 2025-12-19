@@ -1,24 +1,17 @@
 name: Hermes / Publish
 
 on:
-  push:
-    tags:
-      - 'hermes-v*'
-
-permissions:
-  id-token: write  # Required for OIDC
-  contents: read
+  repository_dispatch:
+    types: [publish-hermes]
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      TAG_NAME: ${{ github.event.client_payload.tag }}
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     steps:
-      - name: Set package version env variable
-        run: |
-          TAG_NAME="${{ github.ref_name }}"
-          echo "PACKAGE_VERSION=${TAG_NAME#hermes-v}" >> $GITHUB_ENV
-
       - name: Checkout
         uses: actions/checkout@v4
 
