@@ -12,6 +12,9 @@ jobs:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     steps:
+      - name: Set package version env variable
+        run: echo "PACKAGE_VERSION=${TAG_NAME#hermes-v}" >> $GITHUB_ENV
+
       - name: Checkout
         uses: actions/checkout@v4
 
