@@ -12,6 +12,7 @@ export function Request(path: string): MethodDecorator {
       this[SEND]({body: message, id: messageId, path});
 
       return this[RESPONSES$].pipe(
+        filter(({id}) => id === messageId),
         map((data) => {
           const {error} = data as ErrorMessageResponse;
 
@@ -19,7 +20,6 @@ export function Request(path: string): MethodDecorator {
 
           return data as SuccessfulMessageResponse;
         }),
-        filter(({id}) => id === messageId),
         takeWhile((res) => !res.completed),
         map(({body}: UncompletedMessageResponse) => body),
       );
