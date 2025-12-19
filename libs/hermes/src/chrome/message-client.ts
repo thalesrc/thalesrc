@@ -47,7 +47,7 @@ export class ChromeMessageClient extends MessageClient {
   protected [GET_NEW_ID](): string {
     let result = '' + Date.now();
 
-    for (var i = 0; i < 10; i++) {
+    for (let i = 0; i < 10; i++) {
       result += RANDOM_ID_CHARS.charAt(Math.floor(Math.random() * RANDOM_ID_CHARS_LENGTH));
     }
 

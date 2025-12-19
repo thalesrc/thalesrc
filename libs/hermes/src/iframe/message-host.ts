@@ -49,7 +49,7 @@ export class IframeMessageHost extends MessageHost {
     (source as any).postMessage(message);
   }
 
-  #handler = ({data, source}: MessageEvent<Message>) => {
+  #handler = ({ data, source }: MessageEvent<Message>) => {
     if (!data || typeof data !== 'object' || !data.path || typeof data.id === 'undefined') {
       return;
     }
@@ -72,9 +72,9 @@ export class IframeMessageHost extends MessageHost {
 
     const [sourceId] = this.#sources.find(([, s]) => s === source)!;
     this.#requests.next({
-      body: targetFrame ? data.body : {data: data.body, sender: source},
+      body: targetFrame ? data.body : { data: data.body, sender: source },
       id: `${sourceId}${SOURCE_ID_SPLITTER}${data.id}`,
       path,
     });
-  }
+  };
 }

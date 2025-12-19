@@ -9,19 +9,19 @@ export function Request(path: string): MethodDecorator {
     descriptor.value = function(this: MessageClient, message: any) {
       const messageId = this[GET_NEW_ID]();
 
-      this[SEND]({body: message, id: messageId, path});
+      this[SEND]({ body: message, id: messageId, path });
 
       return this[RESPONSES$].pipe(
         filter(({id}) => id === messageId),
         map((data) => {
-          const {error} = data as ErrorMessageResponse;
+          const { error } = data as ErrorMessageResponse;
 
           if (error) throw error;
 
           return data as SuccessfulMessageResponse;
         }),
         takeWhile((res) => !res.completed),
-        map(({body}: UncompletedMessageResponse) => body),
+        map(({ body }: UncompletedMessageResponse) => body),
       );
     };
 

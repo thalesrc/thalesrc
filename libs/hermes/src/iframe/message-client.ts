@@ -26,7 +26,7 @@ export class IframeMessageClient extends MessageClient {
 
     this.#_targetFrame = targetFrame;
 
-    window.addEventListener('message', ({data, source}: MessageEvent<SuccessfulMessageResponse>) => {
+    window.addEventListener('message', ({ data, source }: MessageEvent<SuccessfulMessageResponse>) => {
       const target = this.#targetFrame;
 
       if (target && source !== target.contentWindow) return;
@@ -44,7 +44,7 @@ export class IframeMessageClient extends MessageClient {
   }
 
   public [SEND]<T>(message: Message<T>) {
-    message = {...message, path: `${this.channelName}${CHANNEL_PATH_SPLITTER}${message.path}`};
+    message = { ...message, path: `${this.channelName}${CHANNEL_PATH_SPLITTER}${message.path}` };
 
     const target = this.#targetFrame;
 

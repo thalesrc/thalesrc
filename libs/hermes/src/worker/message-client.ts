@@ -1,16 +1,15 @@
 import { uniqueId } from "@thalesrc/js-utils/unique-id";
 import { noop } from "@thalesrc/js-utils/function/noop";
-import { promisify } from '@thalesrc/js-utils/promise/promisify';
 import { Subject } from "rxjs";
 import { MessageClient } from "../message-client";
 import { MessageResponse } from "../message-response.type";
 import { Message } from "../message.interface";
 import { GET_NEW_ID, RESPONSES$, SEND } from "../selectors";
+import { ClientWorkerArg, ClientWorkerPromise, initializer } from "./initializer";
 
-type ClientWorkerType = Worker | undefined;
-type ClientWorkerPromise = Promise<ClientWorkerType>;
-type ClientWorkerFactory = () => ClientWorkerType | ClientWorkerPromise;
-type ClientWorkerArg = ClientWorkerType | ClientWorkerPromise | ClientWorkerFactory;
+const WORKER = Symbol('WORKER');
+const HANDLER = Symbol('HANDLER');
+const INSTANCE_ID = Symbol('INSTANCE_ID');
 
 /**
  * WorkerMessageClient
@@ -62,13 +61,13 @@ export class WorkerMessageClient extends MessageClient {
    * Promise resolving to the Worker instance or undefined if running in worker context
    * @private
    */
-  #worker: ClientWorkerPromise = Promise.resolve(undefined);
+  private [WORKER]: ClientWorkerPromise = Promise.resolve(undefined);
 
   /**
    * Unique identifier for this client instance to prevent ID collisions
    * @private
    */
-  #instanceId = Date.now();
+  private [INSTANCE_ID] = '' + Math.floor(Math.random() * 10000);
 
   /**
    * Observable stream of message responses from the worker or main thread
@@ -120,30 +119,11 @@ export class WorkerMessageClient extends MessageClient {
    * };
    */
   initialize(worker?: ClientWorkerArg) {
-    // Deinitialize previous worker if any
-    this.#worker.then(prevWorker => {
-      if (prevWorker) {
-        prevWorker.removeEventListener('message', this.#handler);
-      } else {
-        removeEventListener('message', this.#handler);
-      }
-    }).catch(noop);
-
-    // Resolve worker parameter: execute function if provided, otherwise use value directly
-    const _worker: ClientWorkerType | ClientWorkerPromise | undefined = typeof worker === 'function' ? worker() : worker;
-    // Ensure worker is wrapped in a promise for consistent async handling
-    this.#worker = promisify(_worker);
-
-    // Set up message listener once worker is resolved
-    this.#worker.then(worker => {
-      if (worker) {
-        // Main thread context: listen to specific worker
-        worker.addEventListener('message', this.#handler);
-      } else {
-        // Worker thread context: listen to messages from main thread
-        addEventListener('message', this.#handler);
-      }
-    }).catch(noop);
+    this[WORKER] = initializer(
+      this[WORKER],
+      worker,
+      this[HANDLER]
+    );
   }
 
   /**
@@ -154,7 +134,7 @@ export class WorkerMessageClient extends MessageClient {
    * @internal Used by @Request decorator
    */
   public [SEND]<T>(message: Message<T>) {
-    this.#worker.then(worker => {
+    this[WORKER].then(worker => {
       if (worker) {
         // Main thread: send to worker
         worker.postMessage(message);
@@ -169,7 +149,7 @@ export class WorkerMessageClient extends MessageClient {
    * Handles incoming messages and forwards them to the responses stream
    * @private
    */
-  #handler = (event: MessageEvent<MessageResponse>) => {
+  private [HANDLER] = (event: MessageEvent<MessageResponse>) => {
     this[RESPONSES$].next(event.data);
   }
 
@@ -180,6 +160,6 @@ export class WorkerMessageClient extends MessageClient {
    * @internal Used by @Request decorator
    */
   protected [GET_NEW_ID](): string {
-    return uniqueId('hermes-worker-message-' + this.#instanceId) as string;
+    return uniqueId('hermes-worker-message-' + this[INSTANCE_ID]) as string;
   }
 }

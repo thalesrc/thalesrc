@@ -10,6 +10,7 @@ describe('Listen Decorator', () => {
       @Listen('bar')
       public barListener() {}
     }
+
     const foo = new Foo();
 
     expect(foo.barListener).toBeTruthy();

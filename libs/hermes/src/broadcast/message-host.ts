@@ -33,5 +33,5 @@ export class BroadcastMessageHost extends MessageHost {
 
   #handler = (event: MessageEvent<Message>) => {
     this.#requests$.next(event.data);
-  }
+  };
 }

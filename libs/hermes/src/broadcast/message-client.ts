@@ -28,7 +28,7 @@ export class BroadcastMessageClient extends MessageClient {
 
   #handler = (event: MessageEvent<MessageResponse>) => {
     this[RESPONSES$].next(event.data);
-  }
+  };
 
   protected [GET_NEW_ID](): string {
     return crypto.randomUUID();

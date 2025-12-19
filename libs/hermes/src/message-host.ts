@@ -23,26 +23,26 @@ export abstract class MessageHost {
   protected readonly [LISTEN] = (messages$: Observable<Message>): void => {
     for (const [path, listeners] of this.#getListeners()) {
       messages$
-        .pipe(filter(({path: messagePath}) => path === messagePath))
-        .subscribe(({body, id}) => {
+        .pipe(filter(({ path: messagePath }) => path === messagePath))
+        .subscribe(({ body, id }) => {
           for (const listener of listeners) {
             (listener.call(this, body) as Observable<any>).pipe(
               takeUntil(this[TERMINATE_MESSAGE$].pipe(filter(terminatedMessageId => terminatedMessageId === id))),
             ).subscribe({
               next: result => {
-                this[RESPONSE]({completed: false, id, body: result});
+                this[RESPONSE]({ completed: false, id, body: result });
               },
               error: error => {
-                this[RESPONSE]({completed: true, id, error});
+                this[RESPONSE]({ completed: true, id, error });
               },
               complete: () => {
-                this[RESPONSE]({completed: true, id });
+                this[RESPONSE]({ completed: true, id });
               }
             });
           }
         });
     }
-  }
+  };
 
   /**
    * Build a reponse method to send the responses to the requests by using the communication methods of the platform
@@ -56,7 +56,6 @@ export abstract class MessageHost {
    */
   #getListeners(): ListenerStorage {
     const map: ListenerStorage = new Map();
-
     let currentProto = (this as any)['__proto__' + ''];
 
     while (currentProto.constructor !== Object) {
