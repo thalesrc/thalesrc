@@ -4,7 +4,7 @@ import * as path from 'path';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 
 export default defineConfig(() => ({
-  root: __dirname,
+  root: path.join(__dirname, '..'),
   cacheDir: '../../node_modules/.vite/libs/hermes-browser',
   plugins: [nxViteTsPaths()],
   test: {
@@ -22,14 +22,19 @@ export default defineConfig(() => ({
         },
       },
     },
+    // Only run browser-specific tests
     include: ['src/**/*.browser.spec.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    setupFiles: ['./setup-browser-test.ts'],
+    setupFiles: ['./config/setup-browser-test.ts'],
     reporters: ['default'],
     coverage: {
-      reportsDirectory: '../../coverage/libs/hermes-browser',
+      reportsDirectory: '../../coverage/libs/hermes/browser',
       provider: 'v8' as const,
       include: ['src/worker/**/*.ts'],
-      exclude: ['**/*/index.ts'],
+      exclude: [
+        '**/*/index.ts',
+        '**/*.spec.ts',
+        '**/*.test.ts',
+      ],
     },
   },
 }));

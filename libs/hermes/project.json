@@ -13,33 +13,74 @@
       }
     },
     "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "pnpm nx test:unit hermes",
+          "pnpm nx test:browser hermes"
+        ],
+        "parallel": true
+      },
+      "dependsOn": ["install-playwright-browsers"]
+    },
+    "test:unit": {
       "executor": "@nx/vite:test",
       "options": {
-        "configFile": "libs/hermes/vite.config.ts",
+        "configFile": "libs/hermes/config/vitest.config.ts",
         "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/libs/hermes"
+        "reportsDirectory": "../../coverage/libs/hermes/unit"
       }
     },
     "test:browser": {
       "executor": "@nx/vite:test",
       "options": {
-        "configFile": "libs/hermes/vitest.browser.config.ts",
+        "configFile": "libs/hermes/config/vitest.browser.config.ts",
         "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/libs/hermes-browser"
+        "reportsDirectory": "../../coverage/libs/hermes/browser"
       },
       "dependsOn": ["install-playwright-browsers"]
     },
     "test:browser:headed": {
       "executor": "@nx/vite:test",
       "options": {
-        "configFile": "libs/hermes/vitest.browser.config.ts",
+        "configFile": "libs/hermes/config/vitest.browser.config.ts",
         "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/libs/hermes-browser"
+        "reportsDirectory": "../../coverage/libs/hermes/browser"
       },
       "dependsOn": ["install-playwright-browsers"],
       "env": {
         "HEADLESS": "false"
       }
+    },
+    "test:chrome": {
+      "executor": "@nx/vite:test",
+      "options": {
+        "configFile": "libs/hermes/config/vitest.chrome.config.ts",
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/libs/hermes/chrome"
+      },
+      "dependsOn": ["install-playwright-browsers"]
+    },
+    "test:node": {
+      "executor": "@nx/vite:test",
+      "options": {
+        "configFile": "libs/hermes/config/vitest.node.config.ts",
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/libs/hermes/node"
+      }
+    },
+    "test:all": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "pnpm nx test:unit hermes",
+          "pnpm nx test:browser hermes",
+          "pnpm nx test:chrome hermes",
+          "pnpm nx test:node hermes"
+        ],
+        "parallel": true
+      },
+      "dependsOn": ["install-playwright-browsers"]
     },
     "install-playwright-browsers": {
       "executor": "nx:run-commands",

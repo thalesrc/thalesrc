@@ -533,6 +533,52 @@ const client = new ChromeMessageClient('extension-port');
 - TypeScript 4.x or higher (for decorator support)
 - Modern browser with ES2015+ support
 
+## Development
+
+### Testing
+
+Hermes uses platform-specific test configurations to ensure proper testing across different environments:
+
+```bash
+# Run all tests (unit + browser in parallel)
+pnpm nx test hermes
+
+# Run specific platform tests
+pnpm nx test:unit hermes          # Core functionality (Node.js)
+pnpm nx test:browser hermes       # Web Worker tests (Chromium)
+pnpm nx test:chrome hermes        # Chrome extension tests
+pnpm nx test:node hermes          # Child process tests
+
+# Debug browser tests with visible browser
+pnpm nx test:browser:headed hermes
+```
+
+For detailed testing documentation, see:
+- [TESTING-GUIDE.md](./docs/TESTING-GUIDE.md) - Comprehensive testing guide
+- [TEST-COMMANDS.md](./docs/TEST-COMMANDS.md) - Quick command reference
+- [TESTING-SETUP-SUMMARY.md](./docs/TESTING-SETUP-SUMMARY.md) - Setup overview
+
+### Building
+
+```bash
+# Build the library
+pnpm nx build hermes
+
+# Build and watch for changes
+pnpm nx build hermes --watch
+```
+
+### Contributing
+
+When adding new platform support:
+
+1. Create platform-specific tests: `*.{platform}.spec.ts`
+2. Add configuration: `vitest.{platform}.config.ts`
+3. Add setup file: `setup-{platform}-test.ts`
+4. Update test targets in `project.json`
+
+See [TESTING-GUIDE.md](./TESTING-GUIDE.md) for details on adding new platforms.
+
 ## License
 
 MIT © [Thalesrc](https://github.com/thalesrc)

@@ -6,14 +6,14 @@ import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
 
 export default defineConfig(() => ({
-  root: __dirname,
+  root: path.join(__dirname, '..'),
   cacheDir: '../../node_modules/.vite/libs/hermes',
   plugins: [
     nxViteTsPaths(),
     nxCopyAssetsPlugin(['*.md']),
     dts({
       entryRoot: 'src',
-      tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
+      tsconfigPath: path.join(__dirname, '..', 'tsconfig.lib.json'),
       pathsToAliases: false,
     }),
   ],
@@ -48,21 +48,27 @@ export default defineConfig(() => ({
     watch: false,
     globals: true,
     environment: 'node',
+    // Only run unit tests (exclude platform-specific tests)
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    setupFiles: ['./setup-test.ts'],
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/*.browser.spec.ts',
+      '**/*.chrome.spec.ts',
+      '**/*.node.spec.ts',
+    ],
+    setupFiles: ['./config/setup-test.ts'],
     reporters: ['default'],
     coverage: {
-      reportsDirectory: '../../coverage/libs/hermes',
+      reportsDirectory: '../../coverage/libs/hermes/unit',
       provider: 'v8' as const,
       include: [
         'src/**/*.ts',
       ],
       exclude: [
         '**/*/index.ts',
-        'src/broadcast/*', // Remove these lines later
-        'src/chrome/*',
-        'src/iframe/*',
-        'src/worker/*',
+        '**/*.spec.ts',
+        '**/*.test.ts',
       ],
     },
   },
