@@ -119,6 +119,11 @@ export class WorkerMessageClient extends MessageClient {
    * };
    */
   initialize(worker?: ClientWorkerArg) {
+    // Ensure WORKER is initialized if not already
+    if (!this[WORKER]) {
+      this[WORKER] = Promise.resolve(undefined);
+    }
+
     this[WORKER] = initializer(
       this[WORKER],
       worker,

@@ -9,6 +9,16 @@ applyTo: '**'
 - All libraries are in `libs/` directory
 - Each library is independent and publishable
 
+## Running Nx Commands
+- **Always use `pnpm nx` to run Nx commands**
+- Never use standalone `nx` commands (e.g., avoid `nx test`, `nx build`)
+- Correct examples:
+  - `pnpm nx test mylib`
+  - `pnpm nx build mylib`
+  - `pnpm nx test:browser hermes`
+  - `pnpm nx test:browser hermes -- --browser.headless=false`
+- When providing documentation or examples with Nx commands, always prefix with `pnpm nx`
+
 ## Dependencies Management
 - **Always use pnpm** for package management
 - **CRITICAL**: Install all dependencies and devDependencies at the **root level** (workspace root) **IMMEDIATELY** when they are identified as needed

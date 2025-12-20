@@ -20,13 +20,13 @@ The `test:browser` target automatically installs Playwright browsers before runn
 
 ```bash
 # Run all browser tests
-nx test:browser hermes
+pnpm nx test:browser hermes
 
 # Run browser tests in watch mode (with UI)
-nx test:browser hermes --watch --ui
+pnpm nx test:browser hermes --watch --ui
 
 # Run with coverage
-nx test:browser hermes --coverage
+pnpm nx test:browser hermes --coverage
 ```
 
 ## Test Structure
@@ -99,7 +99,12 @@ Browser tests use `vitest.browser.config.ts`:
 ### Visual Debugging
 Run tests in headed mode:
 ```bash
-nx test:browser hermes -- --browser.headless=false
+pnpm nx test:browser:headed hermes
+```
+
+Or set the environment variable manually:
+```bash
+HEADLESS=false pnpm nx test:browser hermes
 ```
 
 ### Browser DevTools
@@ -142,5 +147,5 @@ Browser tests require Playwright browsers to be installed. In CI:
 npx playwright install chromium
 
 # Run tests
-nx test:browser hermes
+pnpm nx test:browser hermes
 ```

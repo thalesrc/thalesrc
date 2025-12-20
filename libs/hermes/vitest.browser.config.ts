@@ -14,7 +14,7 @@ export default defineConfig(() => ({
       enabled: true,
       name: 'chromium',
       provider: 'playwright',
-      headless: true,
+      headless: process.env.HEADLESS !== 'false',
       // Ensure Web Worker support
       providerOptions: {
         launch: {

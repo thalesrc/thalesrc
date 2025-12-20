@@ -87,6 +87,8 @@ export class WorkerMessageService extends mixin(WorkerMessageHost, WorkerMessage
    */
   constructor(worker?: Worker) {
     super([worker], [worker]);
+
+    this.initialize(worker);
   }
 
   /**

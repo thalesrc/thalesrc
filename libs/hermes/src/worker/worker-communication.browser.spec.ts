@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { firstValueFrom, take, toArray, Observable } from 'rxjs';
+import { firstValueFrom, take, toArray, Observable, of } from 'rxjs';
 import { WorkerMessageClient } from './message-client';
 import { WorkerMessageHost } from './message-host';
 import { Request } from '../request.decorator';
@@ -98,25 +98,36 @@ describe('Worker Communication (Browser)', () => {
   });
 
   it('should receive messages sent from worker to main thread', () => {
-    return new Promise<void>((resolve) => {
+    return new Promise<void>((resolve, reject) => {
+      const timeout = setTimeout(() => reject(new Error('Test timeout - message not received')), 4000);
+
+      // Create a worker that sends a message to main thread
+      const workerCode = `
+        // Send a message to main thread immediately
+        self.postMessage({
+          path: 'test-message',
+          id: '123',
+          body: 'test data'
+        });
+      `;
+
+      const blob = new Blob([workerCode], { type: 'application/javascript' });
+      const workerUrl = URL.createObjectURL(blob);
+      const testWorker = new Worker(workerUrl);
+
       // Listen for it in the host
       class MainHostAPI extends WorkerMessageHost {
         @Listen('test-message')
         public onTestMessage(data: string) {
+          clearTimeout(timeout);
           expect(data).toBe('test data');
+          testWorker.terminate();
           resolve();
-          return [];
+          return of(void 0);
         }
       }
 
-      new MainHostAPI(worker);
-
-      // Send a message directly from worker
-      worker.postMessage({
-        path: 'test-message',
-        id: '123',
-        body: 'test data'
-      });
+      new MainHostAPI(testWorker);
     });
   });
 

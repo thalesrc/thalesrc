@@ -29,6 +29,18 @@
       },
       "dependsOn": ["install-playwright-browsers"]
     },
+    "test:browser:headed": {
+      "executor": "@nx/vite:test",
+      "options": {
+        "configFile": "libs/hermes/vitest.browser.config.ts",
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/libs/hermes-browser"
+      },
+      "dependsOn": ["install-playwright-browsers"],
+      "env": {
+        "HEADLESS": "false"
+      }
+    },
     "install-playwright-browsers": {
       "executor": "nx:run-commands",
       "options": {

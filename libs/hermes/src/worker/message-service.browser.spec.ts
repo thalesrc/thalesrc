@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { firstValueFrom, Observable } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { WorkerMessageService } from './message-service';
 import { Request } from '../request.decorator';
 import { Listen } from '../listen.decorator';
@@ -11,15 +11,12 @@ describe('WorkerMessageService (Browser)', () => {
     // Create a worker that can both send and receive messages
     const workerCode = `
       // Simple bidirectional worker
-      const responses = {};
-      let messageId = 0;
-
       self.onmessage = function(e) {
         const message = e.data;
 
-        // Handle responses to requests we made
-        if (message.id && (message.body !== undefined || message.completed)) {
-          // This is a response
+        // Handle responses to requests we made (responses have completed field or no path)
+        if (!message.path || message.completed !== undefined) {
+          // This is a response, ignore it
           return;
         }
 
@@ -69,7 +66,7 @@ describe('WorkerMessageService (Browser)', () => {
 
       @Listen('mainThreadMethod')
       public mainThreadMethod(value: string) {
-        return ['Response from main: ' + value];
+        return of('Response from main: ' + value);
       }
     }
 
