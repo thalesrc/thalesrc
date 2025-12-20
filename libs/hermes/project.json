@@ -20,41 +20,6 @@
         "reportsDirectory": "../../coverage/libs/hermes"
       }
     },
-    "test:unit": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "vitest run",
-        "cwd": "libs/hermes"
-      }
-    },
-    "test:browser": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "vitest run --config vitest.browser.config.ts",
-        "cwd": "libs/hermes"
-      }
-    },
-    "test:watch": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "vitest watch",
-        "cwd": "libs/hermes"
-      }
-    },
-    "demo": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "vite demo --open",
-        "cwd": "libs/hermes"
-      }
-    },
-    "demo:build": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "vite build",
-        "cwd": "libs/hermes"
-      }
-    },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"]
