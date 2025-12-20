@@ -58,7 +58,7 @@ import { Observable } from 'rxjs';
 class IframeClient extends IframeMessageClient {
   @Request('greeting')
   sayHello(name: string): Observable<string> {
-    return null; // Implementation handled by decorator
+    return null!; // Implementation handled by decorator
   }
 }
 
@@ -121,7 +121,7 @@ class IframeBidirectional extends IframeMessageService {
   // Send messages
   @Request('getData')
   requestData(): Observable<any> {
-    return null;
+    return null!;
   }
 
   // Receive messages
@@ -158,12 +158,12 @@ import { Observable } from 'rxjs';
 class ContentScript extends ChromeMessageClient {
   @Request('fetchData')
   getData(query: string): Observable<any> {
-    return null;
+    return null!;
   }
 
   @Request('saveSettings')
   saveSettings(settings: object): Observable<boolean> {
-    return null;
+    return null!;
   }
 }
 
@@ -212,7 +212,7 @@ import { of, Observable } from 'rxjs';
 class MainThread extends WorkerMessageService {
   @Request('processData')
   sendDataToWorker(data: number[]): Observable<number> {
-    return null;
+    return null!;
   }
 
   @Listen('progress')
@@ -304,7 +304,7 @@ class WorkerThread extends WorkerMessageService {
 
   @Request('progress')
   reportProgress(percent: number): Observable<void> {
-    return null;
+    return null!;
   }
 }
 
@@ -327,7 +327,7 @@ import { of, Observable } from 'rxjs';
 class Tab1 extends BroadcastMessageService {
   @Request('sync')
   requestSync(data: any): Observable<string> {
-    return null;
+    return null!;
   }
 
   @Listen('notification')
@@ -359,7 +359,7 @@ class Tab2 extends BroadcastMessageService {
 
   @Request('notification')
   sendNotification(message: string): Observable<void> {
-    return null;
+    return null!;
   }
 }
 

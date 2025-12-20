@@ -11,8 +11,10 @@ applyTo: '**'
 
 ## Dependencies Management
 - **Always use pnpm** for package management
-- Install all dependencies and devDependencies at the **root level** (workspace root)
+- **CRITICAL**: Install all dependencies and devDependencies at the **root level** (workspace root) **IMMEDIATELY** when they are identified as needed
+- When creating configurations that require new packages (e.g., Vitest browser mode, Storybook, testing utilities), **ADD THE PACKAGES TO ROOT package.json** as part of the same operation - do not document installation instructions without actually installing
 - Do not add dependencies in individual library package.json files unless absolutely necessary
+- If you create setup instructions that mention installing packages, those packages must already be in the root package.json
 
 ## Build Independence
 - Libraries must **not require other libraries to be built** first

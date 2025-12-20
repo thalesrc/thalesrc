@@ -32,11 +32,16 @@ import { ClientWorkerArg } from "./initializer";
  *
  * class MainAPI extends WorkerMessageService {
  *   // Send messages to worker
- *   @Request() fetchData!: () => Promise<Data>;
+ *   @Request()
+ *   fetchData(): Observable<Data> {
+ *     return null!;
+ *   }
  *
  *   // Respond to worker requests
- *   @Response() async saveToLocalStorage(data: any) {
+ *   @Listen()
+ *   saveToLocalStorage(data: any) {
  *     localStorage.setItem('data', JSON.stringify(data));
+ *     return [];
  *   }
  * }
  *
@@ -46,12 +51,16 @@ import { ClientWorkerArg } from "./initializer";
  *
  * class WorkerAPI extends WorkerMessageService {
  *   // Respond to main thread requests
- *   @Response() async fetchData(): Promise<Data> {
- *     return await fetch('/api/data').then(r => r.json());
+ *   @Listen()
+ *   fetchData() {
+ *     return from(fetch('/api/data').then(r => r.json()));
  *   }
  *
  *   // Send messages to main thread
- *   @Request() saveToLocalStorage!: (data: any) => Promise<void>;
+ *   @Request()
+ *   saveToLocalStorage(data: any): Observable<void> {
+ *     return null!;
+ *   }
  * }
  *
  * @example

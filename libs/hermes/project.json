@@ -20,6 +20,24 @@
         "reportsDirectory": "../../coverage/libs/hermes"
       }
     },
+    "test:browser": {
+      "executor": "@nx/vite:test",
+      "options": {
+        "configFile": "libs/hermes/vitest.browser.config.ts",
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/libs/hermes-browser"
+      },
+      "dependsOn": ["install-playwright-browsers"]
+    },
+    "install-playwright-browsers": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec playwright install chromium",
+        "cwd": "{projectRoot}"
+      },
+      "cache": true,
+      "outputs": []
+    },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"]

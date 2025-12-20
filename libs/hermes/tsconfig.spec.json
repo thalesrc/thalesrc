@@ -3,13 +3,16 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "module": "esnext",
-    "types": ["vitest/globals", "node", "@types/chrome"]
+    "types": ["vitest/globals", "node", "@types/chrome", "@vitest/browser/matchers"]
   },
   "include": [
     "vite.config.ts",
+    "vitest.browser.config.ts",
     "src/**/*.test.ts",
     "src/**/*.spec.ts",
+    "src/**/*.browser.spec.ts",
     "src/**/*.d.ts",
-    "setup-test.ts"
+    "setup-test.ts",
+    "setup-browser-test.ts"
   ]
 }
