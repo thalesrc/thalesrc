@@ -13,10 +13,11 @@
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
+      "executor": "@nx/vite:test",
       "options": {
-        "jestConfig": "libs/hermes/jest.config.ts",
-        "passWithNoTests": true
+        "configFile": "libs/hermes/vite.config.ts",
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/libs/hermes"
       }
     },
     "test:unit": {
