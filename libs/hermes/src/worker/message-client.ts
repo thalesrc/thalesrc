@@ -7,9 +7,9 @@ import { Message } from "../message.interface";
 import { GET_NEW_ID, RESPONSES$, SEND } from "../selectors";
 import { ClientWorkerArg, ClientWorkerPromise, initializer } from "./initializer";
 
-const WORKER = Symbol('WORKER');
-const HANDLER = Symbol('HANDLER');
-const INSTANCE_ID = Symbol('INSTANCE_ID');
+const WORKER = Symbol('Client Worker');
+const HANDLER = Symbol('Client Message Handler');
+const INSTANCE_ID = Symbol('Client Instance ID');
 
 /**
  * WorkerMessageClient

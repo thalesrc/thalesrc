@@ -6,9 +6,9 @@ import { LISTEN, RESPONSE } from "../selectors";
 import { ClientWorkerArg, ClientWorkerPromise, initializer } from "./initializer";
 import { noop } from "@thalesrc/js-utils/function/noop";
 
-const WORKER = Symbol('WORKER');
-const HANDLER = Symbol('HANDLER');
-const REQUESTS$ = Symbol('REQUESTS$');
+const WORKER = Symbol('Host Worker');
+const HANDLER = Symbol('Host Message Handler');
+const REQUESTS$ = Symbol('Host Requests Stream');
 
 /**
  * WorkerMessageHost
