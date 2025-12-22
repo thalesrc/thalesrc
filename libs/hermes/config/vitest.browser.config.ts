@@ -23,7 +23,7 @@ export default defineConfig(() => ({
       },
     },
     // Only run browser-specific tests
-    include: ['src/**/*.browser.spec.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    include: ['src/worker/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     setupFiles: ['./config/setup-browser-test.ts'],
     reporters: ['default'],
     coverage: {

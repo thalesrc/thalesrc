@@ -23,7 +23,7 @@ export default defineConfig(() => ({
       },
     },
     // Only run chrome-specific tests
-    include: ['src/**/*.chrome.spec.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    include: ['src/chrome/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     setupFiles: ['./config/setup-chrome-test.ts'],
     reporters: ['default'],
     coverage: {

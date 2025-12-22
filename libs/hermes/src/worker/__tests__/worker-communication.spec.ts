@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { firstValueFrom, take, toArray, Observable, of } from 'rxjs';
-import { WorkerMessageClient } from './message-client';
-import { WorkerMessageHost } from './message-host';
-import { Request } from '../request.decorator';
-import { Listen } from '../listen.decorator';
+import { WorkerMessageClient } from '../message-client';
+import { WorkerMessageHost } from '../message-host';
+import { Request } from '../../request.decorator';
+import { Listen } from '../../listen.decorator';
 
 describe('Worker Communication (Browser)', () => {
   let worker: Worker;

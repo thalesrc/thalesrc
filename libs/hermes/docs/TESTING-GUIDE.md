@@ -6,24 +6,29 @@ This document explains the testing structure for the Hermes library, which suppo
 
 Hermes is organized into platform-specific modules, each with its own test suite:
 
-### Test Types by File Pattern
+### Test Organization by Directory
 
-- **`*.spec.ts`** - Unit tests (Node.js environment)
-  - Core functionality tests
-  - Decorator tests
-  - Base class tests
+Tests are organized by **directory structure** with a clear separation between unit tests and integration tests:
+
+- **`src/**/*.spec.ts`** - Unit tests (Node.js environment)
+  - Core functionality tests (decorators, base classes)
+  - Worker class unit tests (mocked Worker API)
+  - Fast execution, no browser dependencies
   
-- **`*.browser.spec.ts`** - Browser tests (Chromium with Playwright)
-  - Web Worker communication tests
-  - Browser-specific APIs
+- **`src/worker/__tests__/**/*.spec.ts`** - Browser integration tests
+  - Web Worker communication tests with real Worker API
+  - Requires Chromium via Playwright
+  - Tests actual postMessage, Worker lifecycle, etc.
   
-- **`*.chrome.spec.ts`** - Chrome extension tests (Future)
+- **`src/chrome/__tests__/**/*.spec.ts`** - Chrome extension integration tests (Future)
   - Chrome extension messaging APIs
   - Chrome runtime tests
   
-- **`*.node.spec.ts`** - Node.js tests (Future)
+- **`src/node/__tests__/**/*.spec.ts`** - Node.js integration tests (Future)
   - Child process communication
   - Node-specific features
+
+**Key principle**: Unit tests (with mocks) live alongside source files. Integration tests (requiring real APIs) live in `__tests__/` subdirectories.
 
 ## Running Tests
 
@@ -101,7 +106,7 @@ The test targets use `passWithNoTests: true` to avoid failures when platform-spe
 
 ## Writing Tests
 
-### Unit Tests (*.spec.ts)
+### Unit Tests (src/**/*.spec.ts, excluding platform directories)
 
 Standard Vitest tests in Node.js environment:
 
@@ -117,7 +122,7 @@ describe('MyClass', () => {
 });
 ```
 
-### Browser Tests (*.browser.spec.ts)
+### Browser Tests (src/worker/**/*.spec.ts)
 
 Tests that require real browser APIs (Web Workers, DOM, etc.):
 
@@ -134,7 +139,7 @@ describe('WorkerMessageClient (Browser)', () => {
 });
 ```
 
-### Chrome Tests (*.chrome.spec.ts)
+### Chrome Tests (src/chrome/**/*.spec.ts)
 
 Tests for Chrome extension APIs (future):
 
@@ -149,7 +154,7 @@ describe('ChromeMessageClient', () => {
 });
 ```
 
-### Node Tests (*.node.spec.ts)
+### Node Tests (src/node/**/*.spec.ts)
 
 Tests for Node.js-specific features like child processes (future):
 
@@ -198,24 +203,28 @@ pnpm nx test:browser hermes --watch --ui
 
 When adding new platforms:
 
-1. Create `vitest.<platform>.config.ts`
-2. Create `setup-<platform>-test.ts`
+1. Create `vitest.<platform>.config.ts` in `config/` directory
+2. Create `setup-<platform>-test.ts` in `config/` directory
 3. Add `test:<platform>` target in `project.json`
 4. Update `test:all` to include the new platform
-5. Use `*.<platform>.spec.ts` naming pattern
+5. Create platform directory: `src/<platform>/`
+6. Write tests in: `src/<platform>/**/*.spec.ts`
 
 Example for a new platform like "electron":
 
 ```bash
 # Create config
-touch vitest.electron.config.ts
+touch config/vitest.electron.config.ts
 
 # Create setup file
-touch setup-electron-test.ts
+touch config/setup-electron-test.ts
+
+# Create platform directory
+mkdir src/electron
 
 # Add target to project.json
 # "test:electron": { ... }
 
 # Write tests
-touch src/electron/messaging.electron.spec.ts
+touch src/electron/messaging.spec.ts
 ```

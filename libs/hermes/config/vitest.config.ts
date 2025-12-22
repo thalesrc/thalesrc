@@ -53,9 +53,9 @@ export default defineConfig(() => ({
     exclude: [
       '**/node_modules/**',
       '**/dist/**',
-      '**/*.browser.spec.ts',
-      '**/*.chrome.spec.ts',
-      '**/*.node.spec.ts',
+      'src/worker/**',
+      'src/chrome/**',
+      'src/node/**',
     ],
     setupFiles: ['./config/setup-test.ts'],
     reporters: ['default'],

@@ -11,7 +11,7 @@ export default defineConfig(() => ({
     globals: true,
     environment: 'node',
     // Only run node-specific tests (e.g., child process communication)
-    include: ['src/**/*.node.spec.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    include: ['src/node/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     setupFiles: ['./config/setup-node-test.ts'],
     reporters: ['default'],
     coverage: {
