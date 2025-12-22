@@ -13,7 +13,7 @@ function getTestScheduler() {
   });
 }
 
-describe.only('Message Host', () => {
+describe('Message Host', () => {
   it('should initialize properly', () => {
     class Foo extends MessageHost {
       public [RESPONSE]() {}
