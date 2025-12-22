@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hermes Worker Demo</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+    }
+    .demo-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 6px;
+      border: 1px solid #e0e0e0;
+    }
+    .demo-section h2 {
+      margin-top: 0;
+      color: #444;
+      font-size: 18px;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    input[type="number"], input[type="text"] {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    button {
+      padding: 8px 16px;
+      background: #007acc;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #005a9e;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .output {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 15px;
+      min-height: 60px;
+      max-height: 200px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .output .log {
+      margin: 4px 0;
+      padding: 4px 0;
+    }
+    .output .log.request {
+      color: #0066cc;
+    }
+    .output .log.response {
+      color: #00aa00;
+    }
+    .output .log.progress {
+      color: #ff6600;
+    }
+    .output .log.error {
+      color: #cc0000;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 30px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #007acc, #00aa00);
+      transition: width 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔔 Hermes Worker Demo</h1>
+    <p class="subtitle">Demonstrates bidirectional communication between main thread and Web Worker</p>
+
+    <!-- Demo 1: Calculate Sum -->
+    <div class="demo-section">
+      <h2>📊 Calculate Sum in Worker</h2>
+      <p>Send an array of numbers to the worker to calculate their sum.</p>
+      <div class="controls">
+        <input type="text" id="numbersInput" placeholder="e.g., 1,2,3,4,5" value="1,2,3,4,5">
+        <button id="calculateBtn">Calculate Sum</button>
+      </div>
+      <div class="output" id="calculateOutput">
+        <div class="log">Ready to calculate...</div>
+      </div>
+    </div>
+
+    <!-- Demo 2: Process with Progress -->
+    <div class="demo-section">
+      <h2>⏱️ Long-running Task with Progress</h2>
+      <p>Worker reports progress updates back to main thread during processing.</p>
+      <div class="controls">
+        <input type="number" id="itemsInput" min="10" max="1000" value="50" style="width: 100px;">
+        <label>items to process</label>
+        <button id="processBtn">Start Processing</button>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 0%">0%</div>
+      </div>
+      <div class="output" id="processOutput">
+        <div class="log">Ready to process...</div>
+      </div>
+    </div>
+
+    <!-- Demo 3: Fetch Data (Worker requests from Main) -->
+    <div class="demo-section">
+      <h2>🔄 Worker Requests Data from Main Thread</h2>
+      <p>Worker initiates a request to main thread to fetch data.</p>
+      <div class="controls">
+        <input type="text" id="dataKeyInput" placeholder="e.g., config" value="config">
+        <button id="fetchBtn">Request Data from Worker</button>
+      </div>
+      <div class="output" id="fetchOutput">
+        <div class="log">Ready to fetch...</div>
+      </div>
+    </div>
+
+    <!-- Demo 4: Ping-Pong -->
+    <div class="demo-section">
+      <h2>🏓 Ping-Pong Test</h2>
+      <p>Simple latency test between main thread and worker.</p>
+      <div class="controls">
+        <button id="pingBtn">Send Ping</button>
+      </div>
+      <div class="output" id="pingOutput">
+        <div class="log">Ready to ping...</div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>
