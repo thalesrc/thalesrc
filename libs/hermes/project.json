@@ -154,7 +154,7 @@
     "publish/prepare/copy": {
       "executor": "@thalesrc/nx-utils:copy",
       "options": {
-        "input": ["libs/hermes/README.md", "libs/hermes/LICENSE", "libs/hermes/docs"],
+        "input": ["libs/hermes/README.md", "libs/hermes/LICENSE", "libs/hermes/docs/**/*"],
         "output": "dist/libs/hermes"
       }
     },
