@@ -2,6 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/@thalesrc/hermes.svg)](https://www.npmjs.com/package/@thalesrc/hermes)
 [![npm](https://img.shields.io/npm/dw/@thalesrc/hermes.svg)](https://www.npmjs.com/package/@thalesrc/hermes)
+[![codecov](https://codecov.io/gh/thalesrc/thalesrc/graph/badge.svg?token=dz46LY3onk&flag=hermes)](https://codecov.io/gh/thalesrc/thalesrc?flag=hermes)
 [![TypeScript](https://badges.frapsoft.com/typescript/version/typescript-next.svg?v=101)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
