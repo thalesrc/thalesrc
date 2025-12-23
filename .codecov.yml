@@ -1,0 +1,92 @@
+# Codecov configuration for Thalesrc monorepo
+# Documentation: https://docs.codecov.com/docs/codecov-yaml
+
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+    patch:
+      default:
+        target: auto
+        threshold: 1%
+
+# Define flags for each library
+# Each library uploads coverage with its own flag for independent tracking
+flags:
+  hermes:
+    paths:
+      - libs/hermes/src/
+    carryforward: true
+
+  js-utils:
+    paths:
+      - libs/js-utils/src/
+    carryforward: true
+
+  ts-utils:
+    paths:
+      - libs/ts-utils/src/
+    carryforward: true
+
+  rx-utils:
+    paths:
+      - libs/rx-utils/src/
+    carryforward: true
+
+  react-utils:
+    paths:
+      - libs/react-utils/src/
+    carryforward: true
+
+  node-utils:
+    paths:
+      - libs/node-utils/src/
+    carryforward: true
+
+  nx-utils:
+    paths:
+      - libs/nx-utils/src/
+    carryforward: true
+
+  dom-utils:
+    paths:
+      - libs/dom-utils/src/
+    carryforward: true
+
+  drag-drop:
+    paths:
+      - libs/drag-drop/src/
+    carryforward: true
+
+  extra-ts-types:
+    paths:
+      - libs/extra-ts-types/src/
+    carryforward: true
+
+  paintlet:
+    paths:
+      - libs/paintlet/src/
+    carryforward: true
+
+  reactive-storage:
+    paths:
+      - libs/reactive-storage/src/
+    carryforward: true
+
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: false
+  require_base: false
+  require_head: true
+
+# Ignore non-library paths
+ignore:
+  - "docs/**"
+  - "scripts/**"
+  - "**/*.spec.ts"
+  - "**/*.test.ts"
+  - "**/test/**"
+  - "**/tests/**"
