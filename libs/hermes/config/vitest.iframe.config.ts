@@ -5,7 +5,7 @@ import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 
 export default defineConfig(() => ({
   root: path.join(__dirname, '..'),
-  cacheDir: '../../../node_modules/.vite/libs/hermes-chrome',
+  cacheDir: '../../../node_modules/.vite/libs/hermes-iframe',
   plugins: [nxViteTsPaths()],
   test: {
     globals: true,
@@ -14,20 +14,15 @@ export default defineConfig(() => ({
       name: 'chromium',
       provider: 'playwright',
       headless: process.env.HEADLESS !== 'false',
-      providerOptions: {
-        launch: {
-          args: ['--disable-extensions-except=./test-extension', '--load-extension=./test-extension'],
-        },
-      },
     },
-    include: ['src/chrome/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    include: ['src/iframe/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     reporters: ['default'],
     coverage: {
       clean: true,
-      reportsDirectory: path.join(__dirname, '../../../coverage/libs/hermes/chrome'),
+      reportsDirectory: path.join(__dirname, '../../../coverage/libs/hermes/iframe'),
       provider: 'istanbul',
       reporter: ['text', 'json', 'html', 'lcov'],
-      include: ['src/chrome/**/*.ts'],
+      include: ['src/iframe/**/*.ts'],
       exclude: [
         '**/index.ts',
         '**/*.spec.ts',

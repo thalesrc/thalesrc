@@ -537,24 +537,28 @@ const client = new ChromeMessageClient('extension-port');
 
 ### Testing
 
-Hermes uses platform-specific test configurations to ensure proper testing across different environments:
+Hermes uses a modular testing structure with separate configurations for each submodule:
 
 ```bash
-# Run all tests (unit + browser in parallel)
-pnpm nx test hermes
+# Run all tests (all submodules in parallel)
+pnpm nx run hermes:test
 
-# Run specific platform tests
-pnpm nx test:unit hermes          # Core functionality (Node.js)
-pnpm nx test:browser hermes       # Web Worker tests (Chromium)
-pnpm nx test:chrome hermes        # Chrome extension tests
-pnpm nx test:node hermes          # Child process tests
+# Run specific submodule tests
+pnpm nx run hermes:test/core          # Core functionality (Node.js)
+pnpm nx run hermes:test/worker        # Web Worker tests (Browser)
+pnpm nx run hermes:test/chrome        # Chrome extension tests (Browser)
+pnpm nx run hermes:test/broadcast     # Broadcast Channel tests (Browser)
+pnpm nx run hermes:test/iframe        # Iframe communication tests (Browser)
 
-# Debug browser tests with visible browser
-pnpm nx test:browser:headed hermes
+# Run all tests with coverage and merge reports
+pnpm nx run hermes:test/coverage
+
+# Debug browser tests (visible browser)
+pnpm nx run hermes:test/headed
 ```
 
 For detailed testing documentation, see:
-- [TESTING-GUIDE.md](./docs/TESTING-GUIDE.md) - Comprehensive testing guide
+- [TESTING-GUIDE.md](./docs/TESTING-GUIDE.md) - Complete testing guide
 - [TEST-COMMANDS.md](./docs/TEST-COMMANDS.md) - Quick command reference
 - [TESTING-SETUP-SUMMARY.md](./docs/TESTING-SETUP-SUMMARY.md) - Setup overview
 
@@ -570,14 +574,15 @@ pnpm nx build hermes --watch
 
 ### Contributing
 
-When adding new platform support:
+When adding new submodule support:
 
-1. Create platform-specific tests: `*.{platform}.spec.ts`
-2. Add configuration: `vitest.{platform}.config.ts`
-3. Add setup file: `setup-{platform}-test.ts`
-4. Update test targets in `project.json`
+1. Create submodule directory in `src/`
+2. Add test files alongside code: `*.spec.ts`
+3. Create submodule's `vitest.config.ts` in the submodule directory
+4. Add test target in `project.json`
+5. Update main `test` target to include new submodule
 
-See [TESTING-GUIDE.md](./TESTING-GUIDE.md) for details on adding new platforms.
+See [TESTING-GUIDE.md](./docs/TESTING-GUIDE.md) for details on adding new submodules.
 
 ## License
 

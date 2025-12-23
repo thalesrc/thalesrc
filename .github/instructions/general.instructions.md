@@ -13,11 +13,12 @@ applyTo: '**'
 - **Always use `pnpm nx` to run Nx commands**
 - Never use standalone `nx` commands (e.g., avoid `nx test`, `nx build`)
 - Correct examples:
-  - `pnpm nx test mylib`
-  - `pnpm nx build mylib`
-  - `pnpm nx test:browser hermes`
-  - `pnpm nx test:browser hermes -- --browser.headless=false`
+  - `pnpm nx run mylib:test `
+  - `pnpm nx run mylib:build`
+  - `pnpm nx run mylib:test:browser`
+  - `pnpm nx run mylib:test:browser -- --browser.headless=false`
 - When providing documentation or examples with Nx commands, always prefix with `pnpm nx`
+- Exclution: `project.json` and `workspace.json` files should contain standalone `nx` commands without `pnpm` prefix
 
 ## Dependencies Management
 - **Always use pnpm** for package management

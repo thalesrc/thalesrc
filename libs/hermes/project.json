@@ -16,73 +16,109 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "pnpm nx test:unit hermes",
-          "pnpm nx test:browser hermes"
+          "nx run hermes:test/core",
+          "nx run hermes:test/worker",
+          "nx run hermes:test/chrome",
+          "nx run hermes:test/broadcast",
+          "nx run hermes:test/iframe"
         ],
         "parallel": true
       },
-      "dependsOn": ["install-playwright-browsers"]
-    },
-    "test:unit": {
-      "executor": "@nx/vite:test",
-      "options": {
-        "configFile": "libs/hermes/config/vitest.config.ts",
-        "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/libs/hermes/unit"
+      "dependsOn": ["test/prepare/browser"],
+      "configurations": {
+        "with-coverage": {
+          "commands": [
+            "nx run hermes:test/core:with-coverage",
+            "nx run hermes:test/worker:with-coverage",
+            "nx run hermes:test/chrome:with-coverage",
+            "nx run hermes:test/broadcast:with-coverage",
+            "nx run hermes:test/iframe:with-coverage"
+          ]
+        }
       }
     },
-    "test:browser": {
-      "executor": "@nx/vite:test",
+    "test/coverage": {
+      "executor": "nx:run-commands",
       "options": {
-        "configFile": "libs/hermes/config/vitest.browser.config.ts",
-        "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/libs/hermes/browser"
+        "commands": [
+          "nx run hermes:test:with-coverage",
+          "node libs/hermes/scripts/merge-coverage.mjs"
+        ],
+        "parallel": false
       },
-      "dependsOn": ["install-playwright-browsers"]
+      "dependsOn": ["test/prepare/browser"]
     },
-    "test:browser:headed": {
+    "test/core": {
       "executor": "@nx/vite:test",
       "options": {
-        "configFile": "libs/hermes/config/vitest.browser.config.ts",
+        "configFile": "libs/hermes/config/vitest.core.config.ts",
         "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/libs/hermes/browser"
+        "coverage": false
       },
-      "dependsOn": ["install-playwright-browsers"],
-      "env": {
-        "HEADLESS": "false"
+      "configurations": {
+        "with-coverage": {
+          "coverage": true
+        }
       }
     },
-    "test:chrome": {
+    "test/worker": {
+      "executor": "@nx/vite:test",
+      "options": {
+        "configFile": "libs/hermes/config/vitest.worker.config.ts",
+        "passWithNoTests": true,
+        "coverage": false
+      },
+      "dependsOn": ["test/prepare/browser"],
+      "configurations": {
+        "with-coverage": {
+          "coverage": true
+        }
+      }
+    },
+    "test/chrome": {
       "executor": "@nx/vite:test",
       "options": {
         "configFile": "libs/hermes/config/vitest.chrome.config.ts",
         "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/libs/hermes/chrome"
+        "coverage": false
       },
-      "dependsOn": ["install-playwright-browsers"]
-    },
-    "test:node": {
-      "executor": "@nx/vite:test",
-      "options": {
-        "configFile": "libs/hermes/config/vitest.node.config.ts",
-        "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/libs/hermes/node"
+      "dependsOn": ["test/prepare/browser"],
+      "configurations": {
+        "with-coverage": {
+          "coverage": true
+        }
       }
     },
-    "test:all": {
-      "executor": "nx:run-commands",
+    "test/broadcast": {
+      "executor": "@nx/vite:test",
       "options": {
-        "commands": [
-          "pnpm nx test:unit hermes",
-          "pnpm nx test:browser hermes",
-          "pnpm nx test:chrome hermes",
-          "pnpm nx test:node hermes"
-        ],
-        "parallel": true
+        "configFile": "libs/hermes/config/vitest.broadcast.config.ts",
+        "passWithNoTests": true,
+        "coverage": false
       },
-      "dependsOn": ["install-playwright-browsers"]
+      "dependsOn": ["test/prepare/browser"],
+      "configurations": {
+        "with-coverage": {
+          "coverage": true
+        }
+      }
     },
-    "install-playwright-browsers": {
+    "test/iframe": {
+      "executor": "@nx/vite:test",
+      "options": {
+        "configFile": "libs/hermes/config/vitest.iframe.config.ts",
+        "passWithNoTests": true,
+        "coverage": false
+      },
+      "dependsOn": ["test/prepare/browser"],
+      "configurations": {
+        "with-coverage": {
+          "coverage": true
+        }
+      }
+    },
+
+    "test/prepare/browser": {
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec playwright install chromium",
