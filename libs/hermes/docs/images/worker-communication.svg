@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500">
+  <defs>
+    <style>
+      .title { font: bold 24px sans-serif; fill: #2c3e50; }
+      .subtitle { font: 16px sans-serif; fill: #7f8c8d; }
+      .label { font: 14px sans-serif; fill: #34495e; }
+      .code { font: 12px monospace; fill: #2c3e50; }
+      .thread { fill: #ecf0f1; stroke: #95a5a6; stroke-width: 3; }
+      .service { fill: #9b59b6; stroke: #8e44ad; stroke-width: 2; }
+      .arrow { stroke: #e74c3c; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+      .arrow-back { stroke: #2ecc71; stroke-width: 3; fill: none; marker-end: url(#arrowhead-back); }
+      text { text-anchor: middle; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#e74c3c" />
+    </marker>
+    <marker id="arrowhead-back" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#2ecc71" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="450" y="35" class="title">Web Worker Communication</text>
+  <text x="450" y="60" class="subtitle">Bidirectional messaging between main thread and worker</text>
+
+  <!-- Main Thread -->
+  <rect x="50" y="100" width="350" height="350" rx="8" class="thread"/>
+  <text x="225" y="130" class="label" style="font-weight: bold; font-size: 18px;">Main Thread</text>
+
+  <!-- Main Service -->
+  <rect x="80" y="160" width="290" height="110" rx="5" class="service"/>
+  <text x="225" y="190" class="label" style="fill: white; font-weight: bold;">WorkerMessageService</text>
+  <text x="225" y="215" class="code" style="fill: #f39c12;">@Request('processData')</text>
+  <text x="225" y="235" class="label" style="fill: white; font-size: 11px;">Send to worker</text>
+  <text x="225" y="255" class="code" style="fill: #2ecc71;">@Listen('progress')</text>
+
+  <!-- Worker initialization -->
+  <rect x="80" y="300" width="290" height="120" rx="5" style="fill: #34495e;"/>
+  <text x="225" y="330" class="label" style="fill: white; font-weight: bold;">Worker Initialization</text>
+  <text x="100" y="360" class="code" style="fill: #3498db; text-anchor: start;">const worker = new</text>
+  <text x="100" y="380" class="code" style="fill: #3498db; text-anchor: start;">  Worker('./worker.js');</text>
+  <text x="100" y="405" class="code" style="fill: #f39c12; text-anchor: start;">new MainThread(worker);</text>
+
+  <!-- Worker Thread -->
+  <rect x="500" y="100" width="350" height="350" rx="8" class="thread"/>
+  <text x="675" y="130" class="label" style="font-weight: bold; font-size: 18px;">Worker Thread</text>
+
+  <!-- Worker Service -->
+  <rect x="530" y="160" width="290" height="110" rx="5" class="service"/>
+  <text x="675" y="190" class="label" style="fill: white; font-weight: bold;">WorkerMessageService</text>
+  <text x="675" y="215" class="code" style="fill: #2ecc71;">@Listen('processData')</text>
+  <text x="675" y="235" class="label" style="fill: white; font-size: 11px;">Process requests</text>
+  <text x="675" y="255" class="code" style="fill: #f39c12;">@Request('progress')</text>
+
+  <!-- Worker context -->
+  <rect x="530" y="300" width="290" height="120" rx="5" style="fill: #34495e;"/>
+  <text x="675" y="330" class="label" style="fill: white; font-weight: bold;">Self Context</text>
+  <text x="550" y="360" class="code" style="fill: #2ecc71; text-anchor: start;">// Inside worker.js</text>
+  <text x="550" y="380" class="code" style="fill: #3498db; text-anchor: start;">const service = new</text>
+  <text x="550" y="400" class="code" style="fill: #3498db; text-anchor: start;">  WorkerThread(); // auto self</text>
+
+  <!-- Communication Arrows -->
+  <!-- Request arrow -->
+  <path d="M 370 200 L 530 200" class="arrow"/>
+  <text x="450" y="190" class="label" style="fill: #e74c3c; font-weight: bold;">postMessage(request)</text>
+
+  <!-- Response arrow -->
+  <path d="M 530 240 L 370 240" class="arrow-back"/>
+  <text x="450" y="260" class="label" style="fill: #2ecc71; font-weight: bold;">postMessage(response)</text>
+
+  <!-- Progress update arrow -->
+  <path d="M 530 350 L 370 350" class="arrow"/>
+  <text x="450" y="340" class="label" style="fill: #e74c3c; font-weight: bold; font-size: 12px;">progress updates</text>
+
+</svg>

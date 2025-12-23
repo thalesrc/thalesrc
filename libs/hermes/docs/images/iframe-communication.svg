@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500">
+  <defs>
+    <style>
+      .title { font: bold 24px sans-serif; fill: #2c3e50; }
+      .subtitle { font: 16px sans-serif; fill: #7f8c8d; }
+      .label { font: 14px sans-serif; fill: #34495e; }
+      .code { font: 12px monospace; fill: #2c3e50; }
+      .window { fill: #ecf0f1; stroke: #95a5a6; stroke-width: 3; }
+      .titlebar { fill: #bdc3c7; }
+      .iframe-box { fill: #fff; stroke: #3498db; stroke-width: 2; }
+      .client { fill: #3498db; stroke: #2980b9; stroke-width: 2; }
+      .host { fill: #2ecc71; stroke: #27ae60; stroke-width: 2; }
+      .arrow { stroke: #e74c3c; stroke-width: 2.5; fill: none; marker-end: url(#arrowhead); }
+      .arrow-back { stroke: #9b59b6; stroke-width: 2.5; fill: none; marker-end: url(#arrowhead-back); }
+      text { text-anchor: middle; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#e74c3c" />
+    </marker>
+    <marker id="arrowhead-back" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#9b59b6" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="450" y="35" class="title">Iframe Communication</text>
+  <text x="450" y="60" class="subtitle">Parent window ↔ Child iframe messaging</text>
+
+  <!-- Parent Window -->
+  <rect x="50" y="100" width="350" height="350" rx="8" class="window"/>
+  <rect x="50" y="100" width="350" height="30" rx="8" class="titlebar"/>
+  <text x="225" y="122" class="label" style="fill: #34495e; font-weight: bold;">Parent Window</text>
+
+  <!-- Parent Host -->
+  <rect x="80" y="160" width="290" height="80" rx="5" class="host"/>
+  <text x="225" y="185" class="label" style="fill: white; font-weight: bold;">IframeMessageHost</text>
+  <text x="225" y="210" class="code" style="fill: white;">@Listen('greeting')</text>
+  <text x="225" y="230" class="label" style="fill: white; font-size: 11px;">Responds to iframe requests</text>
+
+  <!-- Iframe inside Parent -->
+  <rect x="90" y="270" width="270" height="160" rx="5" class="iframe-box"/>
+  <rect x="90" y="270" width="270" height="25" rx="5" class="titlebar"/>
+  <text x="225" y="288" class="label" style="font-size: 12px; font-weight: bold;">Child Iframe</text>
+
+  <!-- Iframe Client -->
+  <rect x="110" y="320" width="230" height="90" rx="5" class="client"/>
+  <text x="225" y="345" class="label" style="fill: white; font-weight: bold;">IframeMessageClient</text>
+  <text x="225" y="370" class="code" style="fill: white;">@Request('greeting')</text>
+  <text x="225" y="395" class="label" style="fill: white; font-size: 11px;">Sends requests to parent</text>
+
+  <!-- Communication Arrows -->
+  <path d="M 340 360 Q 420 300 420 200" class="arrow"/>
+  <text x="460" y="280" class="label" style="fill: #e74c3c; font-weight: bold;">Request</text>
+
+  <path d="M 400 200 Q 400 280 320 340" class="arrow-back"/>
+  <text x="360" y="260" class="label" style="fill: #9b59b6; font-weight: bold;">Response</text>
+
+  <!-- Right side: Code Examples -->
+  <rect x="500" y="100" width="350" height="160" rx="5" style="fill: #2c3e50; stroke: #34495e; stroke-width: 2;"/>
+  <text x="675" y="130" class="label" style="fill: white; font-weight: bold;">Iframe (Client)</text>
+  <text x="520" y="160" class="code" style="fill: #f39c12; text-anchor: start;">const client = new</text>
+  <text x="520" y="180" class="code" style="fill: #f39c12; text-anchor: start;">  IframeMessageClient();</text>
+  <text x="520" y="210" class="code" style="fill: #3498db; text-anchor: start;">client.sayHello('John')</text>
+  <text x="520" y="230" class="code" style="fill: #3498db; text-anchor: start;">  .subscribe(response =>)</text>
+  <text x="520" y="250" class="code" style="fill: #2ecc71; text-anchor: start;">  console.log(response));</text>
+
+  <rect x="500" y="280" width="350" height="160" rx="5" style="fill: #2c3e50; stroke: #34495e; stroke-width: 2;"/>
+  <text x="675" y="310" class="label" style="fill: white; font-weight: bold;">Parent (Host)</text>
+  <text x="520" y="340" class="code" style="fill: #f39c12; text-anchor: start;">const host = new</text>
+  <text x="520" y="360" class="code" style="fill: #f39c12; text-anchor: start;">  IframeMessageHost();</text>
+  <text x="520" y="390" class="code" style="fill: #2ecc71; text-anchor: start;">@Listen('greeting')</text>
+  <text x="520" y="410" class="code" style="fill: #3498db; text-anchor: start;">return of(`Hello ${data}!`);</text>
+
+</svg>

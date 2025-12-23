@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600">
+  <defs>
+    <style>
+      .title { font: bold 24px sans-serif; fill: #2c3e50; }
+      .subtitle { font: 16px sans-serif; fill: #7f8c8d; }
+      .label { font: 14px sans-serif; fill: #34495e; }
+      .code { font: 11px monospace; fill: #2c3e50; }
+      .tab { fill: #ecf0f1; stroke: #95a5a6; stroke-width: 3; }
+      .service { fill: #9b59b6; stroke: #8e44ad; stroke-width: 2; }
+      .channel { fill: none; stroke: #e74c3c; stroke-width: 4; stroke-dasharray: 10,5; }
+      .arrow { stroke: #3498db; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .broadcast-wave { fill: none; stroke: #e74c3c; stroke-width: 2; opacity: 0.6; }
+      text { text-anchor: middle; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#3498db" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="450" y="35" class="title">Broadcast Channel Communication</text>
+  <text x="450" y="60" class="subtitle">Multi-tab/window messaging within same origin</text>
+
+  <!-- Central Channel -->
+  <circle cx="450" cy="320" r="80" class="channel"/>
+  <text x="450" y="310" class="label" style="font-weight: bold; font-size: 18px; fill: #e74c3c;">Broadcast</text>
+  <text x="450" y="335" class="label" style="font-weight: bold; font-size: 18px; fill: #e74c3c;">Channel</text>
+  <text x="450" y="360" class="code" style="fill: #e74c3c;">"my-app-channel"</text>
+
+  <!-- Broadcast waves -->
+  <circle cx="450" cy="320" r="100" class="broadcast-wave"/>
+  <circle cx="450" cy="320" r="120" class="broadcast-wave"/>
+  <circle cx="450" cy="320" r="140" class="broadcast-wave"/>
+
+  <!-- Tab 1 (Top Left) -->
+  <rect x="50" y="100" width="250" height="140" rx="8" class="tab"/>
+  <rect x="50" y="100" width="250" height="25" rx="8" style="fill: #3498db;"/>
+  <text x="175" y="118" class="label" style="fill: white; font-weight: bold;">Tab 1 🌐</text>
+
+  <rect x="70" y="145" width="210" height="80" rx="5" class="service"/>
+  <text x="175" y="170" class="label" style="fill: white; font-weight: bold; font-size: 13px;">BroadcastMessageService</text>
+  <text x="175" y="192" class="code" style="fill: #f39c12;">@Request('sync')</text>
+  <text x="175" y="210" class="code" style="fill: #2ecc71;">@Listen('notification')</text>
+
+  <!-- Tab 2 (Top Right) -->
+  <rect x="600" y="100" width="250" height="140" rx="8" class="tab"/>
+  <rect x="600" y="100" width="250" height="25" rx="8" style="fill: #3498db;"/>
+  <text x="725" y="118" class="label" style="fill: white; font-weight: bold;">Tab 2 🌐</text>
+
+  <rect x="620" y="145" width="210" height="80" rx="5" class="service"/>
+  <text x="725" y="170" class="label" style="fill: white; font-weight: bold; font-size: 13px;">BroadcastMessageService</text>
+  <text x="725" y="192" class="code" style="fill: #2ecc71;">@Listen('sync')</text>
+  <text x="725" y="210" class="code" style="fill: #f39c12;">@Request('notification')</text>
+
+  <!-- Tab 3 (Bottom Left) -->
+  <rect x="50" y="420" width="250" height="140" rx="8" class="tab"/>
+  <rect x="50" y="420" width="250" height="25" rx="8" style="fill: #3498db;"/>
+  <text x="175" y="438" class="label" style="fill: white; font-weight: bold;">Tab 3 🌐</text>
+
+  <rect x="70" y="465" width="210" height="80" rx="5" class="service"/>
+  <text x="175" y="490" class="label" style="fill: white; font-weight: bold; font-size: 13px;">BroadcastMessageService</text>
+  <text x="175" y="512" class="code" style="fill: #2ecc71;">@Listen('sync')</text>
+  <text x="175" y="530" class="code" style="fill: #2ecc71;">@Listen('notification')</text>
+
+  <!-- Tab 4 (Bottom Right) -->
+  <rect x="600" y="420" width="250" height="140" rx="8" class="tab"/>
+  <rect x="600" y="420" width="250" height="25" rx="8" style="fill: #3498db;"/>
+  <text x="725" y="438" class="label" style="fill: white; font-weight: bold;">Tab 4 🌐</text>
+
+  <rect x="620" y="465" width="210" height="80" rx="5" class="service"/>
+  <text x="725" y="490" class="label" style="fill: white; font-weight: bold; font-size: 13px;">BroadcastMessageService</text>
+  <text x="725" y="512" class="code" style="fill: #f39c12;">@Request('sync')</text>
+  <text x="725" y="530" class="code" style="fill: #f39c12;">@Request('notification')</text>
+
+  <!-- Arrows connecting tabs to channel -->
+  <path d="M 240 240 L 400 280" class="arrow"/>
+  <path d="M 650 240 L 490 280" class="arrow"/>
+  <path d="M 240 420 L 400 360" class="arrow"/>
+  <path d="M 650 420 L 490 360" class="arrow"/>
+
+  <!-- Info Box -->
+  <rect x="325" y="140" width="250" height="90" rx="5" style="fill: #34495e; stroke: #2c3e50; stroke-width: 2;"/>
+  <text x="450" y="165" class="label" style="fill: white; font-weight: bold;">All tabs share the channel</text>
+  <text x="450" y="190" class="label" style="fill: #ecf0f1; font-size: 12px;">Messages sent by one tab</text>
+  <text x="450" y="210" class="label" style="fill: #ecf0f1; font-size: 12px;">are received by all other tabs</text>
+
+</svg>

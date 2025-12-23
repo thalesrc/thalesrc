@@ -39,6 +39,8 @@ The library uses two main abstractions:
 - **`MessageHost`**: Listens for requests and sends responses (uses `@Listen` decorator)
 - **`MessageService`**: Combines both client and host (bidirectional communication)
 
+![Core Architecture](docs/images/core-architecture.svg)
+
 ### Decorators
 
 - **`@Request(path)`**: Marks a method as a message sender
@@ -49,6 +51,8 @@ The library uses two main abstractions:
 ### Iframe Communication
 
 Send and receive messages between iframes and parent windows.
+
+![Iframe Communication](docs/images/iframe-communication.svg)
 
 #### Client-Only (Iframe)
 
@@ -150,6 +154,8 @@ const iframeService = new IframeBidirectional('my-channel');
 
 Communicate across extension contexts (background, content scripts, popups).
 
+![Chrome Extension Communication](docs/images/chrome-extension-communication.svg)
+
 #### Content Script
 
 ```typescript
@@ -203,6 +209,8 @@ const background = new BackgroundScript();
 ### Web Workers
 
 Communicate between main thread and web workers.
+
+![Web Worker Communication](docs/images/worker-communication.svg)
 
 #### Main Thread
 
@@ -318,6 +326,8 @@ const workerService = new WorkerThread();
 ### Broadcast Channel
 
 Communicate between different tabs/windows of the same origin.
+
+![Broadcast Channel Communication](docs/images/broadcast-communication.svg)
 
 #### Tab 1
 

@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600">
+  <defs>
+    <style>
+      .title { font: bold 24px sans-serif; fill: #2c3e50; }
+      .subtitle { font: 16px sans-serif; fill: #7f8c8d; }
+      .label { font: 14px sans-serif; fill: #34495e; }
+      .code { font: 11px monospace; fill: #2c3e50; }
+      .context { fill: #ecf0f1; stroke: #95a5a6; stroke-width: 3; }
+      .client { fill: #3498db; stroke: #2980b9; stroke-width: 2; }
+      .host { fill: #2ecc71; stroke: #27ae60; stroke-width: 2; }
+      .service { fill: #9b59b6; stroke: #8e44ad; stroke-width: 2; }
+      .arrow { stroke: #e74c3c; stroke-width: 2.5; fill: none; marker-end: url(#arrowhead); }
+      .arrow-back { stroke: #f39c12; stroke-width: 2.5; fill: none; marker-end: url(#arrowhead-back); }
+      text { text-anchor: middle; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#e74c3c" />
+    </marker>
+    <marker id="arrowhead-back" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#f39c12" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="450" y="35" class="title">Chrome Extension Communication</text>
+  <text x="450" y="60" class="subtitle">Background script ↔ Content scripts, Popups, DevTools</text>
+
+  <!-- Background Script (Center/Hub) -->
+  <rect x="325" y="240" width="250" height="120" rx="8" class="context"/>
+  <text x="450" y="270" class="label" style="font-weight: bold; font-size: 16px;">Background Script</text>
+  <text x="450" y="290" class="label" style="font-size: 11px; fill: #7f8c8d;">(Service Worker)</text>
+
+  <rect x="345" y="305" width="210" height="45" rx="5" class="host"/>
+  <text x="450" y="325" class="label" style="fill: white; font-weight: bold; font-size: 13px;">ChromeMessageHost</text>
+  <text x="450" y="343" class="code" style="fill: white;">@Listen('fetchData')</text>
+
+  <!-- Content Script (Left) -->
+  <rect x="50" y="100" width="200" height="140" rx="8" class="context"/>
+  <text x="150" y="130" class="label" style="font-weight: bold;">Content Script</text>
+  <text x="150" y="148" class="label" style="font-size: 10px; fill: #7f8c8d;">(webpage)</text>
+
+  <rect x="70" y="165" width="160" height="60" rx="5" class="client"/>
+  <text x="150" y="185" class="label" style="fill: white; font-weight: bold; font-size: 12px;">ChromeMessageClient</text>
+  <text x="150" y="205" class="code" style="fill: white;">@Request('fetchData')</text>
+  <text x="150" y="220" class="code" style="fill: white;">@Request('saveSettings')</text>
+
+  <!-- Popup (Top Right) -->
+  <rect x="650" y="100" width="200" height="140" rx="8" class="context"/>
+  <text x="750" y="130" class="label" style="font-weight: bold;">Popup / Action</text>
+  <text x="750" y="148" class="label" style="font-size: 10px; fill: #7f8c8d;">(browser action)</text>
+
+  <rect x="670" y="165" width="160" height="60" rx="5" class="client"/>
+  <text x="750" y="185" class="label" style="fill: white; font-weight: bold; font-size: 12px;">ChromeMessageClient</text>
+  <text x="750" y="205" class="code" style="fill: white;">@Request('getState')</text>
+  <text x="750" y="220" class="code" style="fill: white;">@Request('updateBadge')</text>
+
+  <!-- DevTools (Bottom Left) -->
+  <rect x="50" y="420" width="200" height="140" rx="8" class="context"/>
+  <text x="150" y="450" class="label" style="font-weight: bold;">DevTools Panel</text>
+  <text x="150" y="468" class="label" style="font-size: 10px; fill: #7f8c8d;">(devtools page)</text>
+
+  <rect x="70" y="485" width="160" height="60" rx="5" class="client"/>
+  <text x="150" y="505" class="label" style="fill: white; font-weight: bold; font-size: 12px;">ChromeMessageClient</text>
+  <text x="150" y="525" class="code" style="fill: white;">@Request('inspect')</text>
+
+  <!-- Options Page (Bottom Right) -->
+  <rect x="650" y="420" width="200" height="140" rx="8" class="context"/>
+  <text x="750" y="450" class="label" style="font-weight: bold;">Options Page</text>
+  <text x="750" y="468" class="label" style="font-size: 10px; fill: #7f8c8d;">(settings)</text>
+
+  <rect x="670" y="485" width="160" height="60" rx="5" class="service"/>
+  <text x="750" y="505" class="label" style="fill: white; font-weight: bold; font-size: 12px;">ChromeMessageService</text>
+  <text x="750" y="525" class="code" style="fill: white;">@Request + @Listen</text>
+
+  <!-- Arrows from contexts to background -->
+  <!-- Content Script to Background -->
+  <path d="M 250 180 L 325 280" class="arrow"/>
+  <text x="270" y="220" class="code" style="fill: #e74c3c; font-size: 10px;">chrome.runtime</text>
+  <text x="270" y="235" class="code" style="fill: #e74c3c; font-size: 10px;">.sendMessage</text>
+
+  <!-- Background to Content Script -->
+  <path d="M 345 295 L 260 200" class="arrow-back"/>
+
+  <!-- Popup to Background -->
+  <path d="M 650 190 L 575 285" class="arrow"/>
+  <text x="630" y="225" class="code" style="fill: #e74c3c; font-size: 10px;">chrome.runtime</text>
+  <text x="630" y="240" class="code" style="fill: #e74c3c; font-size: 10px;">.sendMessage</text>
+
+  <!-- Background to Popup -->
+  <path d="M 555 290 L 660 200" class="arrow-back"/>
+
+  <!-- DevTools to Background -->
+  <path d="M 250 500 L 340 350" class="arrow"/>
+
+  <!-- Background to DevTools -->
+  <path d="M 355 360 L 260 520" class="arrow-back"/>
+
+  <!-- Options to Background -->
+  <path d="M 650 510 L 575 330" class="arrow"/>
+
+  <!-- Background to Options -->
+  <path d="M 555 335 L 660 520" class="arrow-back"/>
+
+  <!-- Legend -->
+  <rect x="320" y="470" width="260" height="90" rx="5" style="fill: #34495e; stroke: #2c3e50; stroke-width: 2;"/>
+  <text x="450" y="495" class="label" style="fill: white; font-weight: bold; font-size: 13px;">Chrome Runtime API</text>
+  <text x="340" y="520" class="code" style="fill: #3498db; text-anchor: start;">chrome.runtime.sendMessage()</text>
+  <text x="340" y="540" class="code" style="fill: #2ecc71; text-anchor: start;">chrome.runtime.onMessage</text>
+
+</svg>
