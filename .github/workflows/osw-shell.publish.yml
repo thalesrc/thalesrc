@@ -44,7 +44,7 @@ jobs:
           cat > firebase.json << 'EOF'
           {
             "hosting": {
-              "target": "osw-shell",
+              "site": "osw-shell",
               "public": "dist/osw/shell",
               "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
               "rewrites": [
