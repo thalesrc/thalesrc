@@ -41,11 +41,9 @@ jobs:
           OSW_HOME_URL: https://home.open-source.thalesrc.com
 
       - name: Publish to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+        uses: cloudflare/wrangler-action@v3
         with:
+          environment: production
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: thalesrc-osw
-          directory: dist/osw/shell
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
+          command: pages deploy dist/osw/shell --project-name=thalesrc-osw
