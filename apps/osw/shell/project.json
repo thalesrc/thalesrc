@@ -33,6 +33,27 @@
       }
     },
     "build": {
+      "executor": "nx:run-commands",
+      "defaultConfiguration": "production",
+      "options": {
+        "parallel": false
+      },
+      "configurations": {
+        "production": {
+          "commands": [
+            "nx run osw/shell:generate-mf-manifest",
+            "nx run osw/shell:build/app:production"
+          ]
+        },
+        "development": {
+          "commands": [
+            "nx run osw/shell:generate-mf-manifest",
+            "nx run osw/shell:build/app:development"
+          ]
+        }
+      }
+    },
+    "build/app": {
       "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
