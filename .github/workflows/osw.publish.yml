@@ -1,0 +1,51 @@
+name: OSW / Publish
+
+on:
+  repository_dispatch:
+    types: [publish-osw]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+
+    env:
+      TAG_NAME: ${{ github.event.client_payload.tag }}
+
+    steps:
+      - name: Set version env variable
+        run: echo "VERSION=${TAG_NAME#osw-v}" >> $GITHUB_ENV
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: pnpm nx run osw/shell:build:production
+        env:
+          OSW_HOME_URL: https://home.open-source.thalesrc.com
+
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: thalesrc-osw
+          directory: dist/osw/shell
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
