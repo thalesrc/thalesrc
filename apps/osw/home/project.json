@@ -1,7 +1,7 @@
 {
-  "name": "osw/shell",
+  "name": "osw/home",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/osw/shell/src",
+  "sourceRoot": "apps/osw/home/src",
   "projectType": "application",
   "tags": [],
   "targets": {
@@ -9,8 +9,8 @@
       "executor": "@thalesrc/nx-utils:run-parallel",
       "options": {
         "commands": [
-          "nx run osw/shell:generate-mf-manifest:serve",
-          "nx run osw/shell:serve/app"
+          {"command": "nx run osw/home:build/tailwind-config -- --watch", "readyWhen": "Sass is watching for changes"},
+          "nx run osw/home:serve/app"
         ]
       }
     },
@@ -18,35 +18,36 @@
       "executor": "@nx/webpack:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "osw/shell:build",
+        "buildTarget": "osw/home:build/app",
         "host": "0.0.0.0",
-        "publicHost": "https://open-source.thalesrc.local",
-        "port": 4200
+        "publicHost": "https://home.open-source.thalesrc.local",
+        "port": 4201
       },
       "configurations": {
         "development": {
-          "buildTarget": "osw/shell:build:development"
+          "buildTarget": "osw/home:build/app:development"
         },
         "production": {
-          "buildTarget": "osw/shell:build:production"
+          "buildTarget": "osw/home:build/app:production"
         }
       }
     },
     "build": {
+      "dependsOn": ["osw/home:build/tailwind-config", "osw/home:build/app"]
+    },
+    "build/app": {
       "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "compiler": "swc",
-        "outputPath": "dist/osw/shell",
-        "index": "apps/osw/shell/src/index.html",
+        "compiler": "babel",
+        "outputPath": "dist/osw/home",
         "baseHref": "/",
-        "main": "apps/osw/shell/src/main.ts",
-        "tsConfig": "apps/osw/shell/tsconfig.app.json",
-        "assets": ["apps/osw/shell/src/assets"],
-        "styles": ["apps/osw/shell/src/styles.scss"],
-        "postcssConfig": "apps/osw/shell/postcss.config.cjs",
-        "webpackConfig": "apps/osw/shell/webpack.config.ts"
+        "main": "apps/osw/home/src/main.tsx",
+        "tsConfig": "apps/osw/home/tsconfig.app.json",
+        "assets": ["apps/osw/home/src/assets"],
+        "postcssConfig": "apps/osw/home/postcss.config.cjs",
+        "webpackConfig": "apps/osw/home/webpack.config.ts"
       },
       "configurations": {
         "development": {
@@ -66,21 +67,10 @@
         }
       }
     },
-    "generate-mf-manifest": {
-      "executor": "@thalesrc/nx-utils:copy",
+    "build/tailwind-config": {
+      "executor": "nx:run-commands",
       "options": {
-        "input": {
-          "path": "apps/osw/shell/config/module-federation.manifest.json",
-          "output": "apps/osw/shell/src/assets",
-          "replace": {
-            "OSW_HOME_URL": "#{OSW_HOME_URL}"
-          }
-        }
-      },
-      "configurations": {
-        "serve": {
-          "watch": true
-        }
+        "command": "sass apps/osw/styles/tailwind.config.scss apps/osw/home/src/styles/tailwind.config.css"
       }
     }
   }

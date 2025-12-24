@@ -13,7 +13,7 @@ services:
       - ENABLE_IPV6=false
       - AUTO_SSL=true
       - CERT_DIR=/etc/nginx/certs
-      - STATIC_PROXIES=HTTP:::open-source.thalesrc.local:::443=>host.docker.internal:::4200,HTTP:::landing.open-source.thalesrc.local:::443=>host.docker.internal:::4300
+      - STATIC_PROXIES=HTTP:::open-source.thalesrc.local:::443=>host.docker.internal:::4200,HTTP:::home.open-source.thalesrc.local:::443=>host.docker.internal:::4201
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro  # Required for container discovery
       - ./.certs:/etc/nginx/certs                  # Certificates accessible to developer
