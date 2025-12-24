@@ -1,9 +1,8 @@
-name: OSW / Publish
+name: OSW / Shell / Publish
 
 on:
   repository_dispatch:
-    types: [publish-osw]
-
+    types: [publish-osw-shell]
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -16,7 +15,7 @@ jobs:
 
     steps:
       - name: Set version env variable
-        run: echo "VERSION=${TAG_NAME#osw-v}" >> $GITHUB_ENV
+        run: echo "VERSION=${TAG_NAME#osw-shell-v}" >> $GITHUB_ENV
 
       - name: Checkout
         uses: actions/checkout@v4
