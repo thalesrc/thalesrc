@@ -1,0 +1,14 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "osw",
+  "sourceRoot": "apps/osw",
+  "projectType": "application",
+  "targets": {
+    "mediator": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["docker compose -f apps/osw/docker-compose.mediator.yml up --build -d"]
+      }
+    }
+  }
+}

@@ -6,9 +6,7 @@ import { arrayize } from '@thalesrc/js-utils/array/arrayize';
 import { never } from '@thalesrc/js-utils/promise/never';
 import { RunParallelExecutorSchema } from './schema';
 import { randomChalkColor } from '../utils/chalk-hex-colors';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const chalk = require('chalk');
+import chalk from 'chalk';
 
 function replaceCommandString(command: string, aliases: Record<string, string>) {
   return Object.entries(aliases).reduce((command, [alias, value]) => command.replace(new RegExp(`<<${alias}>>`, 'g'), value), command);

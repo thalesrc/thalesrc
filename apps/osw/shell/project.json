@@ -1,0 +1,87 @@
+{
+  "name": "osw/shell",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/osw/shell/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "serve": {
+      "executor": "@thalesrc/nx-utils:run-parallel",
+      "options": {
+        "commands": [
+          "nx run osw/shell:generate-mf-manifest:serve",
+          "nx run osw/shell:serve/app"
+        ]
+      }
+    },
+    "serve/app": {
+      "executor": "@nx/webpack:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "osw/shell:build",
+        "host": "0.0.0.0",
+        "publicHost": "https://open-source.thalesrc.local",
+        "port": 4200
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "osw/shell:build:development"
+        },
+        "production": {
+          "buildTarget": "osw/shell:build:production"
+        }
+      }
+    },
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "swc",
+        "outputPath": "dist/osw/shell",
+        "index": "apps/osw/shell/src/index.html",
+        "baseHref": "/",
+        "main": "apps/osw/shell/src/main.ts",
+        "tsConfig": "apps/osw/shell/tsconfig.app.json",
+        "assets": ["apps/osw/shell/src/assets"],
+        "styles": ["apps/osw/shell/src/styles.scss"],
+        "postcssConfig": "apps/osw/shell/postcss.config.cjs",
+        "webpackConfig": "apps/osw/shell/webpack.config.ts"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "fileReplacements": [],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      }
+    },
+    "generate-mf-manifest": {
+      "executor": "@thalesrc/nx-utils:copy",
+      "options": {
+        "input": {
+          "path": "apps/osw/shell/config/module-federation.manifest.json",
+          "output": "apps/osw/shell/src/assets",
+          "replace": {
+            "OSW_LANDING_URL": "#{OSW_LANDING_URL}"
+          }
+        }
+      },
+      "configurations": {
+        "serve": {
+          "watch": true
+        }
+      }
+    }
+  }
+}

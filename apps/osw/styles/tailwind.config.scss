@@ -1,0 +1,46 @@
+@use "sass:math";
+@import "tailwindcss" source(none);
+
+@theme {
+  --color-black: #0a0a0a;
+  --color-white: #f3f3f3;
+  --color-primary: #1a73e8;
+  --color-secondary: #e8f0fe;
+  --color-tertiary: #fbbc04;
+  --color-quaternary: #34a853;
+  --color-success: #34a853;
+  --color-warning: #fbbc04;
+  --color-danger: #ea4335;
+
+  $colors: (
+    primary,
+    secondary,
+    tertiary,
+    quaternary,
+    success,
+    warning,
+    danger
+  );
+
+  @each $color in $colors {
+    @for $i from 1 through 499 {
+      $percent: math.div($i, 500) * 100%;
+      $lightness: 100% - math.div($i, 500) * 100%;
+      --color-#{$color}-#{$i}: color-mix(in xyz, var(--color-#{$color}) #{$percent}, var(--color-white, #ffffff) #{$lightness});
+    }
+
+    --color-#{$color}-500: var(--color-#{$color});
+
+    @for $i from 501 through 999 {
+      $percent: math.div($i - 500, 500) * 100%;
+      $darkness: 100% - math.div($i - 500, 500) * 100%;
+      --color-#{$color}-#{$i}: color-mix(in xyz, var(--color-#{$color}) #{$darkness}, var(--color-black, #000000) #{$percent});
+    }
+  }
+
+  @for $i from 1 through 999 {
+    --color-neutral-#{$i}: color-mix(in xyz, var(--color-white, #ffffff) #{math.div(1000 - $i, 1000) * 100%}, var(--color-black, #000000) #{math.div($i, 1000) * 100%});
+  }
+
+  --color-neutral: var(--color-neutral-500);
+}
