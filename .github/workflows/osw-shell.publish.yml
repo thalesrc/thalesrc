@@ -44,7 +44,6 @@ jobs:
           cat > firebase.json << 'EOF'
           {
             "hosting": {
-              "target": "osw-shell",
               "public": "dist/osw/shell",
               "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
               "rewrites": [
@@ -74,4 +73,3 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
           projectId: ${{ secrets.FIREBASE_PROJECT_ID }}
           channelId: live
-          target: osw-shell
