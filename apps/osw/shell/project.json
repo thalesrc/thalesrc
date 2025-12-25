@@ -18,17 +18,17 @@
       "executor": "@nx/webpack:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "osw/shell:build",
+        "buildTarget": "osw/shell:build/app",
         "host": "0.0.0.0",
         "publicHost": "https://open-source.thalesrc.local",
         "port": 4200
       },
       "configurations": {
         "development": {
-          "buildTarget": "osw/shell:build:development"
+          "buildTarget": "osw/shell:build/app:development"
         },
         "production": {
-          "buildTarget": "osw/shell:build:production"
+          "buildTarget": "osw/shell:build/app:production"
         }
       }
     },

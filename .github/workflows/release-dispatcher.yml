@@ -61,10 +61,13 @@ jobs:
             osw-shell-v*)
               LIBRARY="osw-shell"
               ;;
+            osw-home-v*)
+              LIBRARY="osw-home"
+              ;;
             *)
               echo "❌ No matching library found for tag: $TAG_NAME"
               echo "Expected format: <library-name>-v<version>"
-              echo "Valid libraries: dom-utils, drag-drop, js-utils, extra-ts-types, hermes, node-utils, nx-utils, react-utils, reactive-storage, rx-utils, ts-utils, auto-proxy, docker-frp, osw-shell"
+              echo "Valid libraries: dom-utils, drag-drop, js-utils, extra-ts-types, hermes, node-utils, nx-utils, react-utils, reactive-storage, rx-utils, ts-utils, auto-proxy, docker-frp, osw-shell, osw-home"
               exit 0
               ;;
           esac
