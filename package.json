@@ -111,6 +111,7 @@
     "nx": "^21.2.3",
     "playwright": "^1.49.1",
     "prettier": "^2.6.2",
+    "sass": "^1.97.1",
     "storybook": "^8.6.14",
     "swc-loader": "^0.2.6",
     "ts-jest": "^29.1.0",
