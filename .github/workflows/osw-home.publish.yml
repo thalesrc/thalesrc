@@ -55,6 +55,23 @@ jobs:
               ],
               "headers": [
                 {
+                  "source": "**",
+                  "headers": [
+                    {
+                      "key": "Access-Control-Allow-Origin",
+                      "value": "https://open-source.thalesrc.com"
+                    },
+                    {
+                      "key": "Access-Control-Allow-Methods",
+                      "value": "GET, HEAD, OPTIONS"
+                    },
+                    {
+                      "key": "Access-Control-Allow-Headers",
+                      "value": "Content-Type"
+                    }
+                  ]
+                },
+                {
                   "source": "**/*.@(js|css|woff2|woff|ttf)",
                   "headers": [
                     {
