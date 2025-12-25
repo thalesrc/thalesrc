@@ -7,8 +7,10 @@
   "targets": {
     "serve": {
       "executor": "@thalesrc/nx-utils:run-parallel",
+      "dependsOn": ["osw:mediator"],
       "options": {
         "commands": [
+          { "command": "nx run osw/shell:build/tailwind-config -- --watch", "readyWhen": "Sass is watching for changes" },
           "nx run osw/shell:generate-mf-manifest:serve",
           "nx run osw/shell:serve/app"
         ]
@@ -57,6 +59,7 @@
       "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
+      "dependsOn": ["build/clean", "build/tailwind-config"],
       "options": {
         "compiler": "swc",
         "outputPath": "dist/osw/shell",
@@ -65,7 +68,7 @@
         "main": "apps/osw/shell/src/main.ts",
         "tsConfig": "apps/osw/shell/tsconfig.app.json",
         "assets": ["apps/osw/shell/src/assets"],
-        "styles": ["apps/osw/shell/src/styles.scss"],
+        "styles": ["apps/osw/shell/src/styles/styles.css"],
         "postcssConfig": "apps/osw/shell/postcss.config.cjs",
         "webpackConfig": "apps/osw/shell/webpack.config.ts"
       },
@@ -85,6 +88,18 @@
           "extractLicenses": true,
           "vendorChunk": false
         }
+      }
+    },
+    "build/clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["rm -rf dist/osw/shell"]
+      }
+    },
+    "build/tailwind-config": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "sass apps/osw/styles/tailwind.config.scss apps/osw/shell/src/styles/tailwind.config.css"
       }
     },
     "generate-mf-manifest": {

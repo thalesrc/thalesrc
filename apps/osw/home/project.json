@@ -7,6 +7,7 @@
   "targets": {
     "serve": {
       "executor": "@thalesrc/nx-utils:run-parallel",
+      "dependsOn": ["osw:mediator"],
       "options": {
         "commands": [
           {"command": "nx run osw/home:build/tailwind-config -- --watch", "readyWhen": "Sass is watching for changes"},

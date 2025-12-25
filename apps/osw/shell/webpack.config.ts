@@ -3,7 +3,7 @@ import { withModuleFederation } from '@nx/module-federation/webpack';
 import { configureWarnings } from '../utils/webpack-utils';
 
 const config = composePlugins(
-  withNx(),
+  withNx({}),
   withWeb({}),
   withModuleFederation({
     name: 'osw/shell',

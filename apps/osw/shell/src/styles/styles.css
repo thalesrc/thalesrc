@@ -1,0 +1,8 @@
+@import './tailwind.config.css';
+
+@source "..";
+@source "../../../home/src";
+
+body {
+	background-color: var(--color-tertiary-399);
+}
