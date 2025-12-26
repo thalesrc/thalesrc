@@ -1,0 +1,20 @@
+{
+  "name": "@thalesrc/elements",
+  "version": "0.0.0",
+  "homepage": "https://elements.thalesrc.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thalesrc/thalesrc.git",
+    "directory": "libs/elements"
+  },
+  "dependencies": {
+    "@thalesrc/dom-utils": "^1.0.0",
+    "@thalesrc/js-utils": "^3.3.1",
+    "lit": "*"
+  },
+  "main": "./index.js",
+  "module": "./index.cjs",
+  "typings": "./index.d.ts",
+  "private": false,
+  "_exports": []
+}

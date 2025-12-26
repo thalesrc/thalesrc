@@ -1,0 +1,91 @@
+{
+  "name": "elements",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/elements/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run elements:build/ts",
+          "nx run elements:build/bundle"
+        ],
+        "parallel": true
+      }
+    },
+    "build/bundle": {
+      "executor": "@nx/vite:build",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "configFile": "libs/elements/vite.config.ts",
+        "tsConfig": "libs/elements/tsconfig.lib.json",
+        "outputPath": "dist/libs/elements"
+      },
+      "dependsOn": []
+    },
+    "build/ts": {
+      "executor": "@thalesrc/nx-utils:ts-builder",
+      "options": {
+        "tsConfigPath": "libs/elements/tsconfig.lib.json",
+        "outputPath": "dist/libs/elements"
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run elements:publish/prepare",
+          "nx run elements:publish/to-npm"
+        ],
+        "parallel": false
+      }
+    },
+    "publish/prepare": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run elements:build",
+          "nx run elements:publish/prepare/copy",
+          "nx run elements:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
+        ],
+        "parallel": false
+      }
+    },
+    "publish/prepare/copy": {
+      "executor": "@thalesrc/nx-utils:copy",
+      "options": {
+        "input": ["libs/elements/README.md", "libs/elements/LICENSE"],
+        "output": "dist/libs/elements"
+      }
+    },
+    "publish/prepare/fill-package-json": {
+      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "options": {
+        "outputPath": "dist/libs/elements",
+        "populateExports": {}
+      }
+    },
+    "publish/to-npm": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm publish --access public",
+        "cwd": "dist/libs/elements"
+      }
+    },
+    "storybook": {
+      "executor": "@nx/storybook:storybook",
+      "options": {
+        "configDir": "libs/elements/.storybook",
+        "port": 6006,
+        "ci": true,
+        "quiet": false,
+        "uiFramework": "@storybook/web-components",
+        "buildTarget": "elements:build"
+      }
+    }
+  }
+}

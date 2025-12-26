@@ -19,6 +19,8 @@
       "@thalesrc/dom-utils/*": ["libs/dom-utils/src/*"],
       "@thalesrc/drag-drop": ["libs/drag-drop/src/index.ts"],
       "@thalesrc/drag-drop/*": ["libs/drag-drop/src/*"],
+      "@thalesrc/elements": ["libs/elements/src/index.ts"],
+      "@thalesrc/elements/*": ["libs/elements/src/*"],
       "@thalesrc/extra-ts-types": ["libs/extra-ts-types/src/index.ts"],
       "@thalesrc/extra-ts-types/*": ["libs/extra-ts-types/src/*"],
       "@thalesrc/hermes": ["libs/hermes/src/index.ts"],
