@@ -22,6 +22,9 @@ pnpm add @thalesrc/extra-ts-types
 
 ```typescript
 import { AnyFunction, PartialSome, Join, Tail } from '@thalesrc/extra-ts-types';
+
+// For polyfills (like URLPattern)
+import '@thalesrc/extra-ts-types/polyfills';
 ```
 
 ## API
@@ -137,6 +140,36 @@ type RestArgs = Tail<Args>;
 // Result: [number, boolean]
 ```
 
+## Polyfills
+
+### `URLPattern` (Global Type)
+
+TypeScript type definitions for the URLPattern Web API, which provides pattern matching for URLs.
+
+```typescript
+// Import all polyfills
+import '@thalesrc/extra-ts-types/polyfills';
+
+// Or import URLPattern specifically
+import '@thalesrc/extra-ts-types/polyfills/url-pattern';
+
+// Now URLPattern is available in the global scope
+const pattern = new URLPattern({ pathname: '/books/:id' });
+const result = pattern.exec('https://example.com/books/123');
+console.log(result?.pathname.groups.id); // '123'
+
+// Test if a URL matches
+if (pattern.test('https://example.com/books/456')) {
+  console.log('URL matches!');
+}
+```
+
+**Interfaces:**
+- `URLPattern` - Main interface with `test()` and `exec()` methods
+- `URLPatternInit` - Initialization options for creating patterns
+- `URLPatternResult` - Match results including all URL components and captured groups
+- `URLPatternComponentResult` - Matched text and groups for individual URL components
+
 ## Use Cases
 
 - **Function Type Safety**: Use `AnyFunction` for generic function parameters
@@ -145,6 +178,7 @@ type RestArgs = Tail<Args>;
 - **String Combinations**: Generate all possible string combinations with `Join`
 - **Flexible Interfaces**: Create partially optional interfaces with `PartialSome`
 - **Tuple Manipulation**: Work with tuple types using `Tail`
+- **URL Pattern Matching**: Use `URLPattern` polyfill types for type-safe URL routing and matching
 
 ## Contributing
 

@@ -13,6 +13,16 @@ const meta: Meta = {
     layout: 'fullscreen',
   },
   decorators: [
+    (story) => {
+      if (!document.head.querySelector('tha-router-config')) {
+        const config = document.createElement('tha-router-config');
+
+        config.setAttribute('history', 'memory');
+        document.head.appendChild(config);
+      }
+
+      return html`${story()}`;
+    },
     (story) => html`
       <style>
         .storybook-router-container {
@@ -86,8 +96,8 @@ export const StaticRoutes: Story = {
       <tha-router-link to="/help">Help</tha-router-link>
     </nav>
 
-    <tha-router>
-      <tha-route path="/">
+    <tha-router use="memory">
+      <tha-route path="/" id="dashboard-route">
         <template>
           <h1>📊 Dashboard</h1>
           <p>Welcome to your dashboard.</p>
@@ -123,9 +133,13 @@ export const StaticRoutes: Story = {
 export const TemplateContent: Story = {
   render: () => html`
     <nav>
-      <tha-router-link to="/">Simple Text</tha-router-link>
-      <tha-router-link to="/html">Rich HTML</tha-router-link>
-      <tha-router-link to="/components">Web Components</tha-router-link>
+      <tha-router-link to="back">Go Back</tha-router-link>
+      <tha-router-link to="forward">Go Forward</tha-router-link>
+      <tha-router-link to="./components">./components</tha-router-link>
+      <tha-router-link to="..">..</tha-router-link>
+      <tha-router-link to="/">/</tha-router-link>
+      <tha-router-link to="/foo/bar">/foo/bar</tha-router-link>
+      <tha-router-link to="./baz">./baz</tha-router-link>
     </nav>
 
     <tha-router>

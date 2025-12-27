@@ -13,10 +13,17 @@ export class ThaRouterOutlet extends (SignalWatcher(LitElement) as typeof LitEle
   #routeToRender = signal<WeakRef<ThaRoute> | null>(null);
   #fragmentMap = new WeakMap<DocumentFragment, Node>();
   #fragmentToRender = computed(() => this.#routeToRender.get()?.deref()?.[FRAGMENT].get() ?? null);
-  #updateEffectCleaner = noop;
+  #fragmentUpdateCleaner = noop;
+  #attrUpdateCleaner = noop;
 
   @property({ type: String })
   for: string | null = null;
+
+  @property({ type: String, reflect: true })
+  routePath: string | null = null;
+
+  @property({ type: String, reflect: true })
+  routeID: string | undefined = undefined;
 
   override connectedCallback(): void {
     super.connectedCallback();
@@ -27,7 +34,7 @@ export class ThaRouterOutlet extends (SignalWatcher(LitElement) as typeof LitEle
   #initialize() {
     this.bindToRouter();
 
-    this.#updateEffectCleaner = (this as any).updateEffect(() => {
+    this.#fragmentUpdateCleaner = (this as any).updateEffect(() => {
       Array.from(this.renderRoot.children).forEach(child => this.renderRoot.removeChild(child));
 
       const fragment = this.#fragmentToRender.get()?.deref() ?? null;
@@ -42,6 +49,12 @@ export class ThaRouterOutlet extends (SignalWatcher(LitElement) as typeof LitEle
       }
 
       this.renderRoot.appendChild(node);
+    });
+
+    this.#attrUpdateCleaner = (this as any).updateEffect(() => {
+      const route = this.#routeToRender.get()?.deref() ?? null;
+      this.routePath = route?.getAttribute('path') ?? null;
+      this.routeID = route?.id ? route?.id : undefined;
     });
   }
 
@@ -68,7 +81,6 @@ export class ThaRouterOutlet extends (SignalWatcher(LitElement) as typeof LitEle
   }
 
   [RENDER_ROUTE](route: ThaRoute | null) {
-    console.log('tha-router-outlet rendering route:', route);
     this.#routeToRender.set(route ? new WeakRef(route) : null);
   }
 
@@ -76,7 +88,11 @@ export class ThaRouterOutlet extends (SignalWatcher(LitElement) as typeof LitEle
     super.disconnectedCallback();
 
     this.#boundRouter?.deref()?.assignOutlet(null);
-    this.#updateEffectCleaner();
+
+    try {
+      this.#fragmentUpdateCleaner();
+      this.#attrUpdateCleaner();
+    } catch { /* no-op */ }
   }
 
   protected override createRenderRoot() {
