@@ -8,7 +8,7 @@
     "directory": "libs/elements"
   },
   "dependencies": {
-    "@thalesrc/dom-utils": "^1.0.0",
+    "@lit-labs/signals": "*",
     "@thalesrc/js-utils": "^3.3.1",
     "lit": "*"
   },
@@ -16,5 +16,11 @@
   "module": "./index.cjs",
   "typings": "./index.d.ts",
   "private": false,
-  "_exports": []
+  "_exports": [
+    "router/",
+    "router/tha-router",
+    "router/tha-route",
+    "router/tha-router-link",
+    "router/tha-router-outlet"
+  ]
 }
