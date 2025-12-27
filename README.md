@@ -69,6 +69,14 @@ Framework-independent drag-and-drop library built with Lit Elements as custom we
 
 **Highlights**: Web Components, Custom events, Drop zone validation, Drag strategies, Cross-framework compatibility
 
+#### [@thalesrc/elements](https://www.npmjs.com/package/@thalesrc/elements)
+[![npm](https://img.shields.io/npm/v/@thalesrc/elements.svg)](https://www.npmjs.com/package/@thalesrc/elements)
+[![npm](https://img.shields.io/npm/dm/@thalesrc/elements.svg)](https://www.npmjs.com/package/@thalesrc/elements)
+
+Collection of custom web components built with Lit. Currently features a complete client-side routing solution with declarative components for SPAs. Includes router, route definitions, outlets, navigation links, and global configuration with support for multiple history strategies and reactive updates.
+
+**Highlights**: Router components, Client-side routing, Template-based routes, URLPattern matching, Active link detection, Signal-based reactivity
+
 #### [@thalesrc/paintlet](https://www.npmjs.com/package/@thalesrc/paintlet)
 
 Pre-built CSS Paint API (Houdini) worklets for modern web development. Create stunning visual effects like ripples, rain animations, and organic gradients using the CSS Paint API.

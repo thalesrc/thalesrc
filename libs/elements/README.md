@@ -38,6 +38,29 @@ import '@thalesrc/elements';
 
 ## 📚 Components
 
+### Router Components
+
+A complete client-side routing solution for single-page applications, built with declarative web components.
+
+**Includes:**
+- `<tha-router>` - Main router component managing URL matching and navigation
+- `<tha-route>` - Route definitions with URLPattern syntax for path matching
+- `<tha-router-outlet>` - Content rendering outlet for active routes
+- `<tha-router-link>` - Navigation links with automatic active state detection
+- `<tha-route-config>` - Global router configuration
+
+**Features:**
+- Template-based routing without JavaScript configuration
+- Multiple history strategies (browser, hash, memory)
+- Dynamic route parameters and wildcards
+- Relative path navigation
+- Automatic active link detection
+- Signal-based reactive updates
+
+[Router Documentation →](./src/router/README.md)
+
+---
+
 This library is actively being developed. More components will be added over time.
 
 ## 🤝 Contributing
