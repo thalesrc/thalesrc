@@ -49,7 +49,6 @@ Defines a route with a URL pattern and template content.
 <tha-route path="/users/:id">
   <template>
     <h1>User Profile</h1>
-    <p>User ID: {{id}}</p>
   </template>
 </tha-route>
 ```
@@ -102,7 +101,7 @@ Navigation link that performs client-side routing without page reloads.
 
 <!-- Relative paths -->
 <tha-router-link to="./details">Details</tha-router-link>
-<tha-router-link to="../users">Back to Users</tha-router-link>
+<tha-router-link to="..">Back to Users</tha-router-link>
 
 <!-- History navigation -->
 <tha-router-link to="back">← Back</tha-router-link>
@@ -197,7 +196,7 @@ Global configuration for router defaults. **Recommended** to be placed in `<head
       <template>
         <h1>User Profile</h1>
         <p>Viewing user profile</p>
-        <tha-router-link to="../users">Back to users list</tha-router-link>
+        <tha-router-link to="..">Back to users list</tha-router-link>
       </template>
     </tha-route>
 
@@ -213,27 +212,27 @@ Routes use the [URLPattern API](https://developer.mozilla.org/en-US/docs/Web/API
 
 ### Static Paths
 ```html
-<tha-route path="/">Home</tha-route>
-<tha-route path="/about">About</tha-route>
-<tha-route path="/contact">Contact</tha-route>
+<tha-route path="/"><template>Home</template></tha-route>
+<tha-route path="/about"><template>About</template></tha-route>
+<tha-route path="/contact"><template>Contact</template></tha-route>
 ```
 
 ### Dynamic Segments
 ```html
 <!-- Match /users/123 -->
-<tha-route path="/users/:id">User Profile</tha-route>
+<tha-route path="/users/:id"><template>User Profile</template></tha-route>
 
 <!-- Match /blog/2024/hello-world -->
-<tha-route path="/blog/:year/:slug">Blog Post</tha-route>
+<tha-route path="/blog/:year/:slug"><template>Blog Post</template></tha-route>
 ```
 
 ### Wildcards
 ```html
 <!-- Match /blog, /blog/post, /blog/post/123 -->
-<tha-route path="/blog/*">Blog Section</tha-route>
+<tha-route path="/blog/*"><template>Blog Section</template></tha-route>
 
 <!-- Match any path under /docs -->
-<tha-route path="/docs/**">Documentation</tha-route>
+<tha-route path="/docs/**"><template>Documentation</template></tha-route>
 ```
 
 ## History Strategies
@@ -294,17 +293,17 @@ You can have multiple routers in your application, each managing different secti
 
 ```html
 <!-- Main application router -->
-<tha-router id="app-router" history="browser">
+<tha-router history="browser">
   <tha-route path="/"><template>Home</template></tha-route>
   <tha-route path="/dashboard"><template>Dashboard</template></tha-route>
   <tha-router-outlet></tha-router-outlet>
 </tha-router>
 
 <!-- Separate admin router with hash history -->
-<tha-router id="admin-router" history="hash">
+<tha-router history="hash">
   <tha-route path="/users"><template>Users</template></tha-route>
   <tha-route path="/settings"><template>Settings</template></tha-route>
-  <tha-router-outlet for="admin-router"></tha-router-outlet>
+  <tha-router-outlet></tha-router-outlet>
 </tha-router>
 ```
 
