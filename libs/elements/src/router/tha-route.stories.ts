@@ -96,7 +96,7 @@ export const StaticRoutes: Story = {
       <tha-router-link to="/help">Help</tha-router-link>
     </nav>
 
-    <tha-router use="memory">
+    <tha-router>
       <tha-route path="/" id="dashboard-route">
         <template>
           <h1>📊 Dashboard</h1>

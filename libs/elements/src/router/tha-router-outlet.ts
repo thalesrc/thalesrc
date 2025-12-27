@@ -35,20 +35,12 @@ export class ThaRouterOutlet extends (SignalWatcher(LitElement) as typeof LitEle
     this.bindToRouter();
 
     this.#fragmentUpdateCleaner = (this as any).updateEffect(() => {
-      Array.from(this.renderRoot.children).forEach(child => this.renderRoot.removeChild(child));
+      Array.from(this.renderRoot.children).forEach(child => child.remove());
 
       const fragment = this.#fragmentToRender.get()?.deref() ?? null;
-
       if (!fragment) return;
 
-      let node = this.#fragmentMap.get(fragment);
-
-      if (!node) {
-        node = fragment.cloneNode(true);
-        this.#fragmentMap.set(fragment, node);
-      }
-
-      this.renderRoot.appendChild(node);
+      this.renderRoot.appendChild(fragment.cloneNode(true));
     });
 
     this.#attrUpdateCleaner = (this as any).updateEffect(() => {

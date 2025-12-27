@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@lit-labs/signals": "*",
+    "@thalesrc/extra-ts-types": "^1.4.0",
     "@thalesrc/js-utils": "^3.3.1",
     "history": "*",
     "lit": "*"
@@ -22,6 +23,7 @@
     "router/tha-router",
     "router/tha-route",
     "router/tha-router-link",
-    "router/tha-router-outlet"
+    "router/tha-router-outlet",
+    "router/tha-router-config"
   ]
 }

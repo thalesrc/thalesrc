@@ -123,7 +123,7 @@ export const BasicOutlet: Story = {
 
 export const OutletPlacement: Story = {
   render: () => html`
-    <tha-router>
+    <tha-router id="router-without-inner-outlet">
       <tha-route path="/">
         <template>
           <h1>Top Outlet</h1>
@@ -144,25 +144,24 @@ export const OutletPlacement: Story = {
           <p>This content is rendered at the bottom.</p>
         </template>
       </tha-route>
-
-      <div style="background: #f0f0f0; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-        <h2>Static Header</h2>
-        <nav>
-          <tha-router-link to="/">Top</tha-router-link>
-          <tha-router-link to="/middle">Middle</tha-router-link>
-          <tha-router-link to="/bottom">Bottom</tha-router-link>
-        </nav>
-      </div>
-
-      <div class="outlet-wrapper">
-        <tha-router-outlet></tha-router-outlet>
-      </div>
-
-      <div style="background: #f0f0f0; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
-        <h3>Static Footer</h3>
-        <p>The outlet can be placed anywhere in the router.</p>
-      </div>
     </tha-router>
+    <div style="background: #f0f0f0; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+      <h2>Static Header</h2>
+      <nav>
+        <tha-router-link to="/">Top</tha-router-link>
+        <tha-router-link to="/middle">Middle</tha-router-link>
+        <tha-router-link to="/bottom">Bottom</tha-router-link>
+      </nav>
+    </div>
+
+    <div class="outlet-wrapper">
+      <tha-router-outlet for="router-without-inner-outlet"></tha-router-outlet>
+    </div>
+
+    <div style="background: #f0f0f0; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+      <h3>Static Footer</h3>
+      <p>The outlet can be placed anywhere in the router.</p>
+    </div>
   `,
 };
 

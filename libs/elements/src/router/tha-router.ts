@@ -1,11 +1,12 @@
 import { css, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ThaRoute } from "./tha-route";
+import { PATH_PATTERN, ThaRoute } from "./tha-route";
 import { computed, signal, SignalWatcher } from '@lit-labs/signals';
 import { RENDER_ROUTE, ThaRouterOutlet } from "./tha-router-outlet";
 import { noop } from "@thalesrc/js-utils/function/noop";
 import { History, Update } from 'history';
 import { getHistoryByType, GLOBAL_HISTORY_TYPE, HistoryType } from "./history";
+import { defer } from "@thalesrc/js-utils/function/defer";
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -49,7 +50,7 @@ export class ThaRouter extends (SignalWatcher(LitElement) as typeof LitElement) 
 
   #history = signal<History | null>(null);
   #routeEls = signal<WeakRef<ThaRoute>[]>([]);
-  #activeRoute = computed(() => this.#routeEls.get()[0] ?? null);
+  #activeRoute = signal<WeakRef<ThaRoute> | null>(null);
   #outlet = signal<WeakRef<ThaRouterOutlet> | null>(null);
 
   @property({ type: String })
@@ -80,6 +81,13 @@ export class ThaRouter extends (SignalWatcher(LitElement) as typeof LitElement) 
 
       this.#historyListenerRemover = history ? history.listen(this.#handleRouteChange) : noop;
     });
+
+    defer(() => {
+      this.#handleRouteChange({
+        location: this.#history.get()!.location,
+        action: 'POP' as Update['action'],
+      });
+    });
   }
 
   override attributeChangedCallback(name: string, _old: string | null, value: string | null): void {
@@ -105,7 +113,18 @@ export class ThaRouter extends (SignalWatcher(LitElement) as typeof LitElement) 
   }
 
   #handleRouteChange = (update: Update) => {
-    const searcher = URLPattern;
+    const routes = this.#routeEls.get()
+      .map(weakRef => weakRef.deref()!)
+      .filter(Boolean);
+
+    for (const route of routes) {
+      const pathPattern = route[PATH_PATTERN];
+      if (pathPattern?.test({ pathname: update.location.pathname })) {
+        this.#activeRoute.set(new WeakRef(route));
+        return;
+      }
+    }
+    this.#activeRoute.set(null);
   };
 
   override disconnectedCallback() {
