@@ -1,13 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Thalesrc Open Source Website</title>
-    <base href="/" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
-  </head>
-  <body>
-    <div id="app"></div>
-  </body>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Thalesrc Open Source Website</title>
+  <base href="/" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+</head>
+
+<body>
+  <tha-router>
+    <tha-route path="/">
+      <template>
+        <osw-home></osw-home>
+      </template>
+    </tha-route>
+    <tha-route path="*">
+      <template>
+        <h1>404 - Page Not Found</h1>
+      </template>
+    </tha-route>
+    <tha-router-outlet></tha-router-outlet>
+  </tha-router>
+</body>
+
 </html>

@@ -5,6 +5,7 @@ import { computed, signal } from "@lit-labs/signals";
 import { noop } from "@thalesrc/js-utils/function/noop";
 import { SignalWatcherLitElement } from "./signal-watcher-lit-element";
 import { HISTORY } from "./history-managed";
+import { defer } from "@thalesrc/js-utils/function/defer";
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -123,7 +124,9 @@ export class ThaRouterOutlet extends SignalWatcherLitElement {
   override connectedCallback(): void {
     super.connectedCallback();
 
-    this.bindToRouter();
+    defer(() => {
+      this.bindToRouter();
+    });
 
     this.#fragmentUpdateCleaner = this.updateEffect(() => {
       Array.from(this.renderRoot.children).forEach(child => child.remove());

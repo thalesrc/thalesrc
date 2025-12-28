@@ -3,7 +3,7 @@ import { customElement, property } from "lit/decorators.js";
 import { computed, signal } from "@lit-labs/signals";
 import { compact } from '@thalesrc/js-utils/array/compact';
 import { noop } from "@thalesrc/js-utils/function/noop";
-import { HISTORY, HistoryManaged } from "./history-managed";
+import { HISTORY, HISTORY_TYPE, HistoryManaged } from "./history-managed";
 import { SignalWatcherLitElement } from "./signal-watcher-lit-element";
 
 declare global {
@@ -160,6 +160,8 @@ export class ThaRouterLink extends HistoryManaged(SignalWatcherLitElement) {
    */
   #handleClick = (event: MouseEvent) => {
     const history = this[HISTORY].get();
+
+    console.log(this[HISTORY_TYPE].get());
 
     if (this.to === 'back') return history.back();
     if (this.to === 'forward') return history.forward();

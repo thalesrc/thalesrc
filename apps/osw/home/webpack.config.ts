@@ -1,7 +1,7 @@
 import { composePlugins, withNx } from '@nx/webpack';
 import { withReact } from '@nx/react';
 import { withModuleFederation } from '@nx/module-federation/webpack';
-import { configureExtensions, configureWarnings, overrideMiniCssPluginOptions } from '../utils/webpack-utils';
+import { configureExtensions, configureWarnings, overrideMiniCssPluginOptions, overrideTsCompilerOptions } from '../utils/webpack-utils';
 
 export default composePlugins(
   withNx({extractCss: false}),
@@ -26,8 +26,8 @@ export default composePlugins(
     // as CSS is injected via JS at runtime
     overrideMiniCssPluginOptions(config, {runtime: false});
 
-    // Enable output as module
-    (config.experiments ??= {}).outputModule = true;
+    // Override TypeScript compiler options for modern JavaScript output
+    overrideTsCompilerOptions(config);
 
     return config;
   }

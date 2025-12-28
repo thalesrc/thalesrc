@@ -6,7 +6,10 @@ fetch('/assets/module-federation.manifest.json')
     Object.entries(remotes).map(([name, entry]) => ({ name, entry }))
   )
   .then((remotes) => registerRemotes(remotes))
+  // .then(() => {
+  //   document.head.insertAdjacentHTML('beforeend', `<tha-router-config history="hash"></tha-router-config>`);
+  // })
+  .then(() => Promise.all([
+    import('@thalesrc/elements/router')
+  ]))
   .then(() => import('./bootstrap').catch((err) => console.error(err)));
-
-
-console.log('Main.ts loaded');

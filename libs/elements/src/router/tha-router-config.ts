@@ -221,6 +221,8 @@ export class ThaRouterConfig extends HistoryManaged(SignalWatcherLitElement) {
 
     if (!document.head.contains(this)) return;
 
+    console.log('ThaRouterConfig: Setting global history type to', this[HISTORY_TYPE].get());
+
     // Set the global history type when this element is connected in <head>
     this.#globalHistoryUnsubscribe = this.updateEffect(() => {
       GLOBAL_HISTORY_TYPE.set(this[HISTORY_TYPE].get()!);

@@ -40,7 +40,7 @@ export const HISTORY_TYPE = Symbol('HistoryManaged:historyType');
  *
  * Resolution order: own history → parent history → global history
  */
-export interface HistoryManagedLitElementType {
+export interface HistoryManagedLitElementType extends Element {
   /**
    * History strategy: "browser" | "hash" | "memory" | "memory:name"
    * If undefined, inherits from parent or uses global default.
