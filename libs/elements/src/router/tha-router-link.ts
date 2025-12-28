@@ -1,10 +1,10 @@
 import { LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { getHistoryByType, GLOBAL_HISTORY, HistoryType } from "./history";
-import { computed, signal, SignalWatcher } from "@lit-labs/signals";
-import { History } from "history";
+import { computed, signal } from "@lit-labs/signals";
 import { compact } from '@thalesrc/js-utils/array/compact';
 import { noop } from "@thalesrc/js-utils/function/noop";
+import { HISTORY, HistoryManaged } from "./history-managed";
+import { SignalWatcherLitElement } from "./signal-watcher-lit-element";
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -53,18 +53,9 @@ type LinkType = LinkSymbol | AbsolutePath | RelativePath;
  * ```
  */
 @customElement("tha-router-link")
-export class ThaRouterLink extends (SignalWatcher(LitElement) as typeof LitElement) {
+export class ThaRouterLink extends HistoryManaged(SignalWatcherLitElement) {
   /** Regular expression pattern to validate relative paths */
   #relativeLinkPattern = /^((\.\.\/)+([^.\/].*)?|\.\/[^.\/].*|\.\.)$/i;
-
-  /**
-   * The history management strategy to use for this link.
-   * If not set, uses the global history instance.
-   *
-   * @attr history
-   */
-  @property({ type: String })
-  history: HistoryType | null = null;
 
   /**
    * The navigation target. Can be:
@@ -98,12 +89,13 @@ export class ThaRouterLink extends (SignalWatcher(LitElement) as typeof LitEleme
   #urlPattern = computed(() => {
     const to = this.#to.get();
     if (!to || to === 'back' || to === 'forward') return null;
-    return new URLPattern({ pathname: to });
+
+    try {
+      return new URLPattern({ pathname: to });
+    } catch {
+      return null;
+    }
   });
-  /** Signal containing this link's specific history instance, if set */
-  #selfHistory = signal<History | null>(this.history ? getHistoryByType(this.history) : null);
-  /** Computed history instance - uses self history or falls back to global */
-  #history = computed(() => this.#selfHistory.get() ?? GLOBAL_HISTORY.get());
 
   /**
    * Lifecycle callback when the element is connected to the DOM.
@@ -115,7 +107,7 @@ export class ThaRouterLink extends (SignalWatcher(LitElement) as typeof LitEleme
     this.addEventListener('click', this.#handleClick);
 
     this.#activeStateEffectCleaner = (this as any).updateEffect(() => {
-      const history = this.#history.get();
+      const history = this[HISTORY].get();
       const pattern = this.#urlPattern.get();
 
       this.active = pattern?.test({ pathname: history?.location.pathname ?? '' }) ?? false;
@@ -138,9 +130,6 @@ export class ThaRouterLink extends (SignalWatcher(LitElement) as typeof LitEleme
     super.attributeChangedCallback(name, _old, value);
 
     switch (name) {
-      case 'history':
-        this.#selfHistory.set(value ? getHistoryByType(value as HistoryType) : null);
-        break;
       case 'to':
         this.#to.set(value as LinkType | null);
         break;
@@ -159,7 +148,7 @@ export class ThaRouterLink extends (SignalWatcher(LitElement) as typeof LitEleme
    * @param event - The click event
    */
   #handleClick = (event: MouseEvent) => {
-    const history = this.#history.get();
+    const history = this[HISTORY].get();
 
     if (this.to === 'back') return history.back();
     if (this.to === 'forward') return history.forward();
@@ -184,7 +173,7 @@ export class ThaRouterLink extends (SignalWatcher(LitElement) as typeof LitEleme
 
     link = link?.replaceAll('//', '/') as '/';
 
-    this.#history.get()?.push(link || '/');
+    this[HISTORY].get()?.push(link || '/');
   };
 
   /**

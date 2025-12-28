@@ -116,18 +116,44 @@ Navigation link that performs client-side routing without page reloads.
 </style>
 ```
 
-### `<tha-route-config>`
+### `<tha-router-config>`
 
-Global configuration for router defaults. **Recommended** to be placed in `<head>`.
+Configuration element for managing router history settings. Behavior depends on placement:
+
+**In `<head>` (Global Configuration):**
+- Sets the default history strategy for all routers
+- Affects routers that don't specify their own history
+- Only one should be placed in `<head>`
+
+**In `<body>` (Local Configuration):**
+- Provides history to descendant routers only
+- Allows different sections to use different strategies
+- Can have multiple instances for different sections
 
 **Attributes:**
-- `history`: Default history strategy for all routers (`"browser"`, `"hash"`, `"memory"`)
+- `history`: History strategy - `"browser"` (default), `"hash"`, `"memory"`, or `"memory:name"`
 
-**Example:**
+**Example (Global):**
 ```html
 <head>
-  <tha-route-config history="hash"></tha-route-config>
+  <!-- All routers use hash by default -->
+  <tha-router-config history="hash"></tha-router-config>
 </head>
+```
+
+**Example (Local):**
+```html
+<body>
+  <!-- Section 1: Hash routing -->
+  <tha-router-config history="hash">
+    <tha-router>...</tha-router>
+  </tha-router-config>
+  
+  <!-- Section 2: Memory routing (isolated) -->
+  <tha-router-config history="memory">
+    <tha-router>...</tha-router>
+  </tha-router-config>
+</body>
 ```
 
 ## Complete Example
@@ -137,7 +163,7 @@ Global configuration for router defaults. **Recommended** to be placed in `<head
 <html>
 <head>
   <!-- Global router configuration -->
-  <tha-route-config history="browser"></tha-route-config>
+  <tha-router-config history="browser"></tha-router-config>
   
   <style>
     nav {
@@ -165,6 +191,7 @@ Global configuration for router defaults. **Recommended** to be placed in `<head
     <tha-router-link to="/users">Users</tha-router-link>
   </nav>
 
+  <!-- Main router inherits browser history from head config -->
   <tha-router>
     <tha-route path="/">
       <template>
@@ -289,22 +316,37 @@ Use `<tha-router-link>` elements for navigation:
 
 ## Multiple Routers
 
-You can have multiple routers in your application, each managing different sections:
+You can have multiple routers in your application, each with different history strategies:
 
 ```html
-<!-- Main application router -->
-<tha-router history="browser">
-  <tha-route path="/"><template>Home</template></tha-route>
-  <tha-route path="/dashboard"><template>Dashboard</template></tha-route>
-  <tha-router-outlet></tha-router-outlet>
-</tha-router>
+<head>
+  <!-- Set global default to browser history -->
+  <tha-router-config history="browser"></tha-router-config>
+</head>
+<body>
+  <!-- Main router uses browser history from global config -->
+  <tha-router>
+    <tha-route path="/"><template>Home</template></tha-route>
+    <tha-route path="/dashboard"><template>Dashboard</template></tha-route>
+    <tha-router-outlet></tha-router-outlet>
+  </tha-router>
 
-<!-- Separate admin router with hash history -->
-<tha-router history="hash">
-  <tha-route path="/users"><template>Users</template></tha-route>
-  <tha-route path="/settings"><template>Settings</template></tha-route>
-  <tha-router-outlet></tha-router-outlet>
-</tha-router>
+  <!-- Admin section with hash history (overrides global) -->
+  <tha-router history="hash">
+    <tha-route path="/users"><template>Users</template></tha-route>
+    <tha-route path="/settings"><template>Settings</template></tha-route>
+    <tha-router-outlet></tha-router-outlet>
+  </tha-router>
+  
+  <!-- Widget with isolated memory history -->
+  <tha-router-config history="memory:widget">
+    <tha-router>
+      <tha-route path="/step1"><template>Step 1</template></tha-route>
+      <tha-route path="/step2"><template>Step 2</template></tha-route>
+      <tha-router-outlet></tha-router-outlet>
+    </tha-router>
+  </tha-router-config>
+</body>
 ```
 
 ## Styling

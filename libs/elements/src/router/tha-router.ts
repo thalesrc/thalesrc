@@ -1,12 +1,13 @@
 import { css, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 import { PATH_PATTERN, ThaRoute } from "./tha-route";
-import { computed, signal, SignalWatcher } from '@lit-labs/signals';
+import { signal } from '@lit-labs/signals';
 import { RENDER_ROUTE, ThaRouterOutlet } from "./tha-router-outlet";
 import { noop } from "@thalesrc/js-utils/function/noop";
-import { History, Update } from 'history';
-import { getHistoryByType, GLOBAL_HISTORY_TYPE, HistoryType } from "./history";
+import { Update } from 'history';
 import { defer } from "@thalesrc/js-utils/function/defer";
+import { SignalWatcherLitElement } from "./signal-watcher-lit-element";
+import { HISTORY, HistoryManaged } from "./history-managed";
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -45,7 +46,7 @@ declare global {
  * ```
  */
 @customElement("tha-router")
-export class ThaRouter extends (SignalWatcher(LitElement) as typeof LitElement) {
+export class ThaRouter extends HistoryManaged(SignalWatcherLitElement) {
   /**
    * Injects global styles for tha-router elements to hide non-outlet children.
    * Ensures that only tha-router-outlet elements are visible within the router.
@@ -57,8 +58,6 @@ export class ThaRouter extends (SignalWatcher(LitElement) as typeof LitElement) 
     styleEl.setAttribute("data-id", "tha-router-styles");
     styleEl.textContent = css`
       tha-router {
-        background-color: red;
-
         & > :not(tha-router-outlet) {
           display: none;
         }
@@ -87,32 +86,13 @@ export class ThaRouter extends (SignalWatcher(LitElement) as typeof LitElement) 
   #historyTypeEffectCleaner = noop;
   /** Cleanup function to remove history listener */
   #historyListenerRemover = noop;
-  /** Cleanup function for the global history type change effect */
-  #globalHistoryEffectCleaner = noop;
 
-  /** Signal containing the current History instance */
-  #history = signal<History | null>(null);
   /** Signal containing weak references to all tha-route children */
   #routeEls = signal<WeakRef<ThaRoute>[]>([]);
   /** Signal containing weak reference to the currently active route */
   #activeRoute = signal<WeakRef<ThaRoute> | null>(null);
   /** Signal containing weak reference to the assigned outlet element */
   #outlet = signal<WeakRef<ThaRouterOutlet> | null>(null);
-
-  /**
-   * The history management strategy to use.
-   *
-   * - `"browser"` - HTML5 History API (default)
-   * - `"hash"` - Hash-based routing
-   * - `"memory"` - In-memory history for testing
-   * - `"memory:name"` - Named memory history for isolation
-   *
-   * If not set, uses the global history type.
-   *
-   * @attr history
-   */
-  @property({ type: String })
-  history: HistoryType | null = null;
 
   /**
    * Lifecycle callback when the element is connected to the DOM.
@@ -125,25 +105,23 @@ export class ThaRouter extends (SignalWatcher(LitElement) as typeof LitElement) 
     this.#routeChildObserver.observe(this, { childList: true});
 
     // Effect to render the active route in the assigned outlet
-    this.#routeChildrenEffectCleaner = (this as any).updateEffect(() => {
+    this.#routeChildrenEffectCleaner = this.updateEffect(() => {
       const activeRoute = this.#activeRoute.get()?.deref() ?? null;
       const outlet = this.#outlet.get()?.deref() ?? null;
 
       outlet?.[RENDER_ROUTE](activeRoute);
     });
 
-    // Effect to handle global history type changes
-    this.#globalHistoryEffectCleaner = (this as any).updateEffect(() => {
-      GLOBAL_HISTORY_TYPE.get();
-
-      this.#handleRoutingStrategyChange(this.history);
-    });
-
     // Effect to handle history type changes
-    this.#historyTypeEffectCleaner = (this as any).updateEffect(() => {
-      const history = this.#history.get();
+    this.#historyTypeEffectCleaner = this.updateEffect(() => {
+      const history = this[HISTORY].get();
 
       this.#historyListenerRemover();
+
+      this.#handleRouteChange({
+        location: this[HISTORY].get()!.location,
+        action: 'POP' as Update['action'],
+      });
 
       // Set up listener for navigation events
       this.#historyListenerRemover = history ? history.listen(this.#handleRouteChange) : noop;
@@ -152,28 +130,10 @@ export class ThaRouter extends (SignalWatcher(LitElement) as typeof LitElement) 
     // Initial route matching on connect
     defer(() => {
       this.#handleRouteChange({
-        location: this.#history.get()!.location,
+        location: this[HISTORY].get()!.location,
         action: 'POP' as Update['action'],
       });
     });
-  }
-
-  /**
-   * Lifecycle callback when an attribute changes.
-   * Handles updates to the history attribute.
-   *
-   * @param name - The attribute name that changed
-   * @param _old - The old attribute value
-   * @param value - The new attribute value
-   */
-  override attributeChangedCallback(name: string, _old: string | null, value: string | null): void {
-    super.attributeChangedCallback(name, _old, value);
-
-    switch (name) {
-      case 'history':
-        this.#handleRoutingStrategyChange(value as HistoryType | null);
-        break;
-    }
   }
 
   /**
@@ -185,20 +145,6 @@ export class ThaRouter extends (SignalWatcher(LitElement) as typeof LitElement) 
    */
   assignOutlet(outlet: ThaRouterOutlet | null) {
     this.#outlet.set(outlet ? new WeakRef(outlet) : null);
-  }
-
-  /**
-   * Handles changes to the history strategy by updating the active History instance.
-   * Falls back to the global history type if no value is provided.
-   *
-   * @param value - The history type to use, or null to use global default
-   */
-  #handleRoutingStrategyChange(value: HistoryType | null) {
-    if (!value) {
-      value = GLOBAL_HISTORY_TYPE.get();
-    }
-
-    this.#history.set(getHistoryByType(value));
   }
 
   /**
@@ -232,7 +178,6 @@ export class ThaRouter extends (SignalWatcher(LitElement) as typeof LitElement) 
     try {
       this.#routeChildrenEffectCleaner();
       this.#historyTypeEffectCleaner();
-      this.#globalHistoryEffectCleaner();
     } catch { /* no-op */ }
 
     this.#routeChildObserver.disconnect();

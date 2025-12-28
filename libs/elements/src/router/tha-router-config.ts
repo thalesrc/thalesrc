@@ -1,78 +1,252 @@
 import { LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { DEFAULT_HISTORY_TYPE, GLOBAL_HISTORY_TYPE, HistoryType } from "./history";
+import { customElement } from "lit/decorators.js";
+import { GLOBAL_HISTORY_TYPE } from "./history";
+import { HistoryManaged } from "./history-managed";
+import { SignalWatcherLitElement } from "./signal-watcher-lit-element";
+import { noop } from "@thalesrc/js-utils/function/noop";
 
 declare global {
   interface HTMLElementTagNameMap {
     /**
-     * A configuration element for setting global router defaults.
-     * It allows configuring the default history management strategy for all routers
-     * that don't specify their own history attribute.
-     * The `history` attribute sets the global history type.
+     * A configuration element for managing router history settings.
+     *
+     * Behavior depends on placement:
+     * - **In `<head>`**: Sets global history for all routers
+     * - **In `<body>`**: Provides local history for descendant routers
      */
-    "tha-route-config": ThaRouterConfig;
+    "tha-router-config": ThaRouterConfig;
   }
 }
 
 /**
- * A custom element for configuring global router settings.
+ * A custom element for configuring router history settings.
  *
- * This element sets the default history management strategy for all routers
- * in the application that don't specify their own `history` attribute.
- * It updates the global history type which affects all routers using the default.
+ * This element serves dual purposes depending on its placement in the DOM:
  *
- * Only one instance of this element should exist in the application.
- * **Recommended**: Place this element in the `<head>` section of your HTML
- * to ensure the configuration is applied before any routers are initialized.
+ * ## Global Configuration (placed in `<head>`)
  *
- * @example
+ * When placed in the `<head>` element, it sets the **global default history**
+ * for all routers in the application that don't specify their own history or
+ * inherit from a parent.
+ *
  * ```html
  * <head>
- *   <!-- Set global history type to hash-based routing -->
- *   <tha-route-config history="hash"></tha-route-config>
+ *   <!-- All routers will use hash routing by default -->
+ *   <tha-router-config history="hash"></tha-router-config>
  * </head>
  * <body>
- *   <!-- All routers without explicit history will use hash routing -->
  *   <tha-router>
- *     <tha-route path="/"><template><h1>Home</h1></template></tha-route>
- *     <tha-router-outlet></tha-router-outlet>
+ *     <!-- Uses hash history (global default) -->
+ *     <tha-route path="/home">...</tha-route>
  *   </tha-router>
  * </body>
  * ```
+ *
+ * ## Local Configuration (placed in `<body>`)
+ *
+ * When placed in the `<body>` element, it provides history configuration
+ * for its **descendant routers only**. This allows different sections of
+ * your application to use different history strategies.
+ *
+ * ```html
+ * <body>
+ *   <!-- Section 1: Hash routing -->
+ *   <tha-router-config history="hash">
+ *     <tha-router>
+ *       <!-- Uses hash history from parent config -->
+ *       <tha-route path="/dashboard">...</tha-route>
+ *     </tha-router>
+ *   </tha-router-config>
+ *
+ *   <!-- Section 2: Memory routing (isolated) -->
+ *   <tha-router-config history="memory">
+ *     <tha-router>
+ *       <!-- Uses memory history from parent config -->
+ *       <tha-route path="/preview">...</tha-route>
+ *     </tha-router>
+ *   </tha-router-config>
+ * </body>
+ * ```
+ *
+ * ## Usage Patterns
+ *
+ * ### Set Global Default
+ *
+ * Place in `<head>` to configure all routers:
+ *
+ * ```html
+ * <!DOCTYPE html>
+ * <html>
+ *   <head>
+ *     <tha-router-config history="browser"></tha-router-config>
+ *   </head>
+ *   <body>
+ *     <!-- All routers use browser history -->
+ *   </body>
+ * </html>
+ * ```
+ *
+ * ### Override for Specific Section
+ *
+ * Use local config to override global default:
+ *
+ * ```html
+ * <head>
+ *   <!-- Global: browser history -->
+ *   <tha-router-config history="browser"></tha-router-config>
+ * </head>
+ * <body>
+ *   <!-- Main app uses browser history -->
+ *   <tha-router>...</tha-router>
+ *
+ *   <!-- Admin section uses hash history -->
+ *   <tha-router-config history="hash">
+ *     <tha-router>...</tha-router>
+ *   </tha-router-config>
+ * </body>
+ * ```
+ *
+ * ### Isolate Components with Memory History
+ *
+ * Use named memory history for component isolation:
+ *
+ * ```html
+ * <body>
+ *   <!-- Each component has independent navigation -->
+ *   <tha-router-config history="memory:component1">
+ *     <my-widget>
+ *       <tha-router>...</tha-router>
+ *     </my-widget>
+ *   </tha-router-config>
+ *
+ *   <tha-router-config history="memory:component2">
+ *     <my-widget>
+ *       <tha-router>...</tha-router>
+ *     </my-widget>
+ *   </tha-router-config>
+ * </body>
+ * ```
+ *
+ * ### Testing with Memory History
+ *
+ * Use memory history to avoid affecting browser URL during tests:
+ *
+ * ```typescript
+ * import { fixture, html } from '@open-wc/testing';
+ *
+ * it('should navigate', async () => {
+ *   const el = await fixture(html`
+ *     <tha-router-config history="memory:test">
+ *       <tha-router>
+ *         <tha-route path="/test">Test Page</tha-route>
+ *       </tha-router>
+ *     </tha-router-config>
+ *   `);
+ *
+ *   // Test navigation without affecting browser URL
+ * });
+ * ```
+ *
+ * ## History Resolution
+ *
+ * Router components resolve their history in this order:
+ *
+ * 1. **Own `history` attribute** (highest priority)
+ * 2. **Parent `tha-router-config`** (local configuration)
+ * 3. **Global `tha-router-config`** (in `<head>`)
+ * 4. **Default** (`"browser"`)
+ *
+ * ## Best Practices
+ *
+ * ✅ **DO**: Place one `tha-router-config` in `<head>` for global settings
+ *
+ * ```html
+ * <head>
+ *   <tha-router-config history="browser"></tha-router-config>
+ * </head>
+ * ```
+ *
+ * ✅ **DO**: Use local configs for sections with different routing needs
+ *
+ * ```html
+ * <tha-router-config history="memory">
+ *   <component-preview>...</component-preview>
+ * </tha-router-config>
+ * ```
+ *
+ * ✅ **DO**: Use named memory history for isolated components
+ *
+ * ```html
+ * <tha-router-config history="memory:sidebar">
+ *   <sidebar-nav>...</sidebar-nav>
+ * </tha-router-config>
+ * ```
+ *
+ * ❌ **DON'T**: Place multiple configs in `<head>` (last one wins)
+ *
+ * ```html
+ * <head>
+ *   <tha-router-config history="browser"></tha-router-config>
+ *   <tha-router-config history="hash"></tha-router-config> <!-- Overrides above -->
+ * </head>
+ * ```
+ *
+ * ❌ **DON'T**: Nest configs unnecessarily (inner configs take precedence)
+ *
+ * ```html
+ * <tha-router-config history="browser">
+ *   <tha-router-config history="hash">
+ *     <!-- Uses hash, not browser -->
+ *   </tha-router-config>
+ * </tha-router-config>
+ * ```
  */
 @customElement('tha-router-config')
-export class ThaRouterConfig extends LitElement {
+export class ThaRouterConfig extends HistoryManaged(SignalWatcherLitElement) {
   /**
-   * The global history management strategy to use.
-   *
-   * - `"browser"` - HTML5 History API (default)
-   * - `"hash"` - Hash-based routing
-   * - `"memory"` - In-memory history for testing
-   * - `"memory:name"` - Named memory history instances
-   *
-   * Changes to this property update the global history type,
-   * affecting all routers that don't specify their own history.
-   *
-   * @attr history
+   * Cleanup function for the global history effect.
+   * Only used when the element is placed in `<head>`.
+   * @private
    */
-  @property({ type: String })
-  history: HistoryType = DEFAULT_HISTORY_TYPE;
+  #globalHistoryUnsubscribe = noop;
 
   /**
-   * Lifecycle callback when an attribute changes.
-   * Updates the global history type when the history attribute changes.
+   * Called when the element is connected to the DOM.
    *
-   * @param name - The attribute name that changed
-   * @param _old - The old attribute value
-   * @param value - The new attribute value
+   * - If in `<head>`: Sets up a reactive effect to update global history
+   * - If in `<body>`: Only provides history to descendants (no special setup)
    */
-  override attributeChangedCallback(name: string, _old: string | null, value: string | null): void {
-    super.attributeChangedCallback(name, _old, value);
+  override connectedCallback(): void {
+    super.connectedCallback();
 
-    switch (name) {
-      case 'history':
-        GLOBAL_HISTORY_TYPE.set(value as HistoryType || DEFAULT_HISTORY_TYPE);
-        break;
-    }
+    if (!document.head.contains(this)) return;
+
+    // Set the global history type when this element is connected in <head>
+    this.#globalHistoryUnsubscribe = this.updateEffect(() => {
+      GLOBAL_HISTORY_TYPE.set(this.history!);
+    });
+  }
+
+  /**
+   * Called when the element is disconnected from the DOM.
+   *
+   * Cleans up the global history effect if it was set up.
+   */
+  override disconnectedCallback(): void {
+    super.disconnectedCallback();
+
+    try {
+      this.#globalHistoryUnsubscribe();
+    } catch {}
+  }
+
+  /**
+   * Creates the render root for the element.
+   * Returns the element itself to render children in light DOM.
+   *
+   * @returns The element itself (not a shadow root)
+   */
+  protected override createRenderRoot() {
+    return this;
   }
 }

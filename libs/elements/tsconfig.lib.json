@@ -5,7 +5,7 @@
     "declaration": true,
     "types": ["node", "vite/client"]
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", ".storybook/tha-url-output.ts"],
   "exclude": [
     "vite.config.ts",
     "src/**/*.spec.ts",
