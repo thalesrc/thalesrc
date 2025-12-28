@@ -417,7 +417,7 @@ export const DynamicRoutes: Story = {
 
         <tha-route path="/users/:id">
           <template>
-            <h1>👤 User Profile</h1>
+            <h1>👤 User Profile <tha-router-param name="id"></tha-router-param></h1>
             <div class="user-card">
               <p><strong>User ID from URL pattern:</strong> Check the URL above! 🎯</p>
               <p>The <code>:id</code> parameter in the route pattern matches any value in that segment.</p>

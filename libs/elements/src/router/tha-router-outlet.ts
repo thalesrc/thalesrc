@@ -1,9 +1,10 @@
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import type { ThaRouter } from "./tha-router";
-import { FRAGMENT, ThaRoute } from "./tha-route";
+import { FRAGMENT, PATH_PATTERN, ThaRoute } from "./tha-route";
 import { computed, signal } from "@lit-labs/signals";
 import { noop } from "@thalesrc/js-utils/function/noop";
 import { SignalWatcherLitElement } from "./signal-watcher-lit-element";
+import { HISTORY } from "./history-managed";
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -22,6 +23,7 @@ declare global {
  * @internal
  */
 export const RENDER_ROUTE = Symbol('ThaRouterOutlet:renderRoute');
+export const PARAMS = Symbol('ThaRouterOutlet:params');
 
 /**
  * A custom element that serves as a rendering target for router content.
@@ -50,15 +52,40 @@ export const RENDER_ROUTE = Symbol('ThaRouterOutlet:renderRoute');
 @customElement("tha-router-outlet")
 export class ThaRouterOutlet extends SignalWatcherLitElement {
   /** Weak reference to the bound router instance */
-  #boundRouter: WeakRef<ThaRouter> | undefined;
+  #boundRouter = signal<WeakRef<ThaRouter> | undefined>(undefined);
   /** Signal containing weak reference to the route to render */
   #routeToRender = signal<WeakRef<ThaRoute> | null>(null);
   /** Computed signal that extracts the fragment from the route to render */
   #fragmentToRender = computed(() => this.#routeToRender.get()?.deref()?.[FRAGMENT].get() ?? null);
+
+  #ownParams = computed(() => {
+    const router = this.#boundRouter.get()?.deref();
+    const route = this.#routeToRender.get()?.deref();
+    const pattern = route?.[PATH_PATTERN];
+
+    if (!router || !pattern) return null;
+
+    const {location: {pathname}} = router[HISTORY].get();
+
+    return pattern.exec(pathname, 'http://dummy.base')?.pathname.groups ?? null;
+  });
+
+  [PARAMS] = computed(() => {
+    const ownParams = this.#ownParams.get() ?? {};
+    const parent = this.parentElement?.closest('tha-router-outlet') as ThaRouterOutlet;
+    const parentParams: Record<string, string | undefined> = parent?.[PARAMS].get() ?? {};
+
+    return Object.freeze({...parentParams, ...ownParams});
+  });
+
+  @state()
+  params: Record<string, string | undefined> = {};
+
   /** Cleanup function for the fragment update effect */
   #fragmentUpdateCleaner = noop;
   /** Cleanup function for the attribute update effect */
   #attrUpdateCleaner = noop;
+  #paramsUpdateCleaner = noop;
 
   /**
    * The ID of a specific tha-router element to bind to.
@@ -96,17 +123,9 @@ export class ThaRouterOutlet extends SignalWatcherLitElement {
   override connectedCallback(): void {
     super.connectedCallback();
 
-    this.#initialize();
-  }
-
-  /**
-   * Initializes the outlet by binding to a router and setting up reactive effects.
-   * Creates effects for rendering route content and updating reflected attributes.
-   */
-  #initialize() {
     this.bindToRouter();
 
-    this.#fragmentUpdateCleaner = (this as any).updateEffect(() => {
+    this.#fragmentUpdateCleaner = this.updateEffect(() => {
       Array.from(this.renderRoot.children).forEach(child => child.remove());
 
       const fragment = this.#fragmentToRender.get()?.deref() ?? null;
@@ -115,10 +134,27 @@ export class ThaRouterOutlet extends SignalWatcherLitElement {
       this.renderRoot.appendChild(fragment.cloneNode(true));
     });
 
-    this.#attrUpdateCleaner = (this as any).updateEffect(() => {
+    this.#attrUpdateCleaner = this.updateEffect(() => {
       const route = this.#routeToRender.get()?.deref() ?? null;
       this.routePath = route?.getAttribute('path') ?? null;
       this.routeID = route?.id ? route?.id : undefined;
+    });
+
+    this.#paramsUpdateCleaner = this.updateEffect(() => {
+      const params = this[PARAMS].get();
+
+      Array.from(this.attributes)
+        .filter(attr => attr.name.startsWith('param-'))
+        .filter(attr => !(attr.name.slice(6) in params))
+        .forEach(attr => {
+          this.removeAttribute(attr.name);
+        });
+
+      for (const [key, value] of Object.entries(params)) {
+        this.setAttribute(`param-${key}`, value ?? '');
+      }
+
+      this.params = params;
     });
   }
 
@@ -145,13 +181,13 @@ export class ThaRouterOutlet extends SignalWatcherLitElement {
       }
     }
 
-    const prevRouter = this.#boundRouter?.deref() ?? null;
+    const prevRouter = this.#boundRouter?.get()?.deref() ?? null;
 
     if (prevRouter === router) return prevRouter;
 
     prevRouter?.assignOutlet(null);
     router?.assignOutlet(this);
-    this.#boundRouter = router ? new WeakRef(router) : undefined;
+    this.#boundRouter.set(router ? new WeakRef(router) : undefined);
 
     return router ?? null;
   }
@@ -174,11 +210,12 @@ export class ThaRouterOutlet extends SignalWatcherLitElement {
   override disconnectedCallback(): void {
     super.disconnectedCallback();
 
-    this.#boundRouter?.deref()?.assignOutlet(null);
+    this.#boundRouter?.get()?.deref()?.assignOutlet(null);
 
     try {
       this.#fragmentUpdateCleaner();
       this.#attrUpdateCleaner();
+      this.#paramsUpdateCleaner();
     } catch { /* no-op */ }
   }
 
