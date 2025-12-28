@@ -1,9 +1,9 @@
-import { LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import type { ThaRouter } from "./tha-router";
 import { FRAGMENT, ThaRoute } from "./tha-route";
-import { computed, signal, SignalWatcher } from "@lit-labs/signals";
+import { computed, signal } from "@lit-labs/signals";
 import { noop } from "@thalesrc/js-utils/function/noop";
+import { SignalWatcherLitElement } from "./signal-watcher-lit-element";
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -48,7 +48,7 @@ export const RENDER_ROUTE = Symbol('ThaRouterOutlet:renderRoute');
  * ```
  */
 @customElement("tha-router-outlet")
-export class ThaRouterOutlet extends (SignalWatcher(LitElement) as typeof LitElement) {
+export class ThaRouterOutlet extends SignalWatcherLitElement {
   /** Weak reference to the bound router instance */
   #boundRouter: WeakRef<ThaRouter> | undefined;
   /** Signal containing weak reference to the route to render */

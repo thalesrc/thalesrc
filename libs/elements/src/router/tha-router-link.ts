@@ -68,9 +68,6 @@ export class ThaRouterLink extends HistoryManaged(SignalWatcherLitElement) {
     document.head.appendChild(styleEl);
   }
 
-  /** Regular expression pattern to validate relative paths */
-  #relativeLinkPattern = /^((\.\.\/)+([^.\/].*)?|\.\/[^.\/].*|\.\.)$/i;
-
   /**
    * The navigation target. Can be:
    * - Absolute path: `/users`, `/about`
@@ -170,7 +167,7 @@ export class ThaRouterLink extends HistoryManaged(SignalWatcherLitElement) {
     const currentPath = history.location.pathname + history.location.search + history.location.hash;
 
     let link = this.to;
-    if (this.#relativeLinkPattern.test(link ?? '')) {
+    if (link?.startsWith('.')) {
       const segments = compact(currentPath.split('/'));
       const linkSegments = compact(link!.split('/'));
 
