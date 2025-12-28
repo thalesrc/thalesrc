@@ -1,4 +1,4 @@
-import { LitElement } from "lit";
+import { css, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { computed, signal } from "@lit-labs/signals";
 import { compact } from '@thalesrc/js-utils/array/compact';
@@ -54,6 +54,20 @@ type LinkType = LinkSymbol | AbsolutePath | RelativePath;
  */
 @customElement("tha-router-link")
 export class ThaRouterLink extends HistoryManaged(SignalWatcherLitElement) {
+  /** Injects global styles for tha-router-link elements to show pointer cursor */
+  static {
+    const styleEl = document.createElement("style");
+
+    styleEl.setAttribute("type", "text/css");
+    styleEl.setAttribute("data-id", "tha-router-link-styles");
+    styleEl.textContent = css`
+      tha-router-link {
+        cursor: pointer;
+      }
+    `.toString();
+    document.head.appendChild(styleEl);
+  }
+
   /** Regular expression pattern to validate relative paths */
   #relativeLinkPattern = /^((\.\.\/)+([^.\/].*)?|\.\/[^.\/].*|\.\.)$/i;
 

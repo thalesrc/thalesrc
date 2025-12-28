@@ -1,7 +1,8 @@
 import { customElement } from "lit/decorators.js";
-import { computed, html, signal } from "@lit-labs/signals";
+import { html, signal, watch } from "@lit-labs/signals";
 import { HISTORY, HistoryManaged } from "../src/router/history-managed";
 import { SignalWatcherLitElement } from "../src/router/signal-watcher-lit-element";
+import { noop } from "@thalesrc/js-utils/function/noop";
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -37,28 +38,38 @@ declare global {
  */
 @customElement('tha-url-output')
 export class ThaUrlOutput extends HistoryManaged(SignalWatcherLitElement) {
-  #browserUrl = signal(window.location.href);
-  #historyUrl = computed(() => {
-    const history = this[HISTORY].get();
-    const { pathname, search, hash } = history.location;
+  #historyChangeUnsubscribe = noop;
+  #historyEventsUnsubscribe = noop;
 
-    return `${pathname}${search}${hash}`;
-  });
+  #browserUrl = signal(location.href);
+  #historyUrl = signal(this[HISTORY].get()!.location.pathname + this[HISTORY].get()!.location.search + this[HISTORY].get()!.location.hash);
 
   override connectedCallback(): void {
     super.connectedCallback();
 
-    window.addEventListener('popstate', this.#onLocationChange);
-    window.addEventListener('hashchange', this.#onLocationChange);
+    addEventListener('popstate', this.#onLocationChange);
+    addEventListener('pushstate', this.#onLocationChange);
+    addEventListener('hashchange', this.#onLocationChange);
+
+    this.#historyChangeUnsubscribe = this.updateEffect(() => {
+      const history = this[HISTORY].get();
+
+      this.#historyUrl.set(history.location.pathname + history.location.search + history.location.hash);
+
+      this.#historyEventsUnsubscribe();
+      this.#historyEventsUnsubscribe = history.listen(({ location }) => {
+        this.#historyUrl.set(location.pathname + location.search + location.hash);
+      });
+    })
   }
 
   protected override render() {
     return html`
       <div>
-        <strong>History URL:</strong> ${this.#historyUrl.get()}
+        <strong>History URL:</strong> ${this.#historyUrl}
       </div>
       <div>
-        <strong>Browser URL:</strong> ${this.#browserUrl.get()}
+        <strong>Browser URL:</strong> ${this.#browserUrl}
       </div>
     `;
   }
@@ -70,7 +81,14 @@ export class ThaUrlOutput extends HistoryManaged(SignalWatcherLitElement) {
   override disconnectedCallback(): void {
     super.disconnectedCallback();
 
-    window.removeEventListener('popstate', this.#onLocationChange);
-    window.removeEventListener('hashchange', this.#onLocationChange);
+    removeEventListener('popstate', this.#onLocationChange);
+    removeEventListener('pushstate', this.#onLocationChange);
+    removeEventListener('hashchange', this.#onLocationChange);
+
+    this.#historyEventsUnsubscribe();
+
+    try {
+      this.#historyChangeUnsubscribe();
+    } catch {}
   }
 }

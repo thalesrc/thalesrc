@@ -1,7 +1,7 @@
 import { LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
 import { GLOBAL_HISTORY_TYPE } from "./history";
-import { HistoryManaged } from "./history-managed";
+import { HISTORY_TYPE, HistoryManaged } from "./history-managed";
 import { SignalWatcherLitElement } from "./signal-watcher-lit-element";
 import { noop } from "@thalesrc/js-utils/function/noop";
 
@@ -223,7 +223,7 @@ export class ThaRouterConfig extends HistoryManaged(SignalWatcherLitElement) {
 
     // Set the global history type when this element is connected in <head>
     this.#globalHistoryUnsubscribe = this.updateEffect(() => {
-      GLOBAL_HISTORY_TYPE.set(this.history!);
+      GLOBAL_HISTORY_TYPE.set(this[HISTORY_TYPE].get()!);
     });
   }
 
