@@ -6,7 +6,6 @@ import { arrayize } from '@thalesrc/js-utils/array/arrayize';
 import { never } from '@thalesrc/js-utils/promise/never';
 import { RunParallelExecutorSchema } from './schema';
 import { randomChalkColor } from '../utils/chalk-hex-colors';
-import chalk from 'chalk';
 
 function replaceCommandString(command: string, aliases: Record<string, string>) {
   return Object.entries(aliases).reduce((command, [alias, value]) => command.replace(new RegExp(`<<${alias}>>`, 'g'), value), command);
@@ -20,6 +19,11 @@ const runExecutor: PromiseExecutor<RunParallelExecutorSchema> = async (
    * Get the log color
    */
   const logColor = randomChalkColor();
+  // Load chalk dynamically to support environments where chalk is an ES module
+  // (require() of an ES module will fail). Dynamic import() works in
+  // CommonJS at runtime and also works with ESM chalk packages.
+  const _chalkModule = await import('chalk');
+  const chalk = (_chalkModule as any).default ?? _chalkModule;
   /**
    * Normalize the commands to have the same structure
    */

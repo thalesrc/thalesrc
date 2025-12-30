@@ -1,5 +1,6 @@
 import { composePlugins, withNx, withWeb } from '@nx/webpack';
 import { withModuleFederation } from '@nx/module-federation/webpack';
+import * as Dotenv from 'dotenv-webpack';
 import { configureWarnings, overrideTsCompilerOptions } from '../utils/webpack-utils';
 
 const config = composePlugins(
@@ -19,6 +20,13 @@ const config = composePlugins(
 
     // Override TypeScript compiler options for modern JavaScript output
     overrideTsCompilerOptions(config);
+
+    config.plugins.push(
+      new Dotenv({
+        path: 'apps/osw/shell/.env',
+        prefix: 'import.meta.env.'
+      })
+    )
 
     return config;
   });

@@ -6,9 +6,17 @@ fetch('/assets/module-federation.manifest.json')
     Object.entries(remotes).map(([name, entry]) => ({ name, entry }))
   )
   .then((remotes) => registerRemotes(remotes))
-  // .then(() => {
-  //   document.head.insertAdjacentHTML('beforeend', `<tha-router-config history="hash"></tha-router-config>`);
-  // })
+  .then(() => { // Head insertions
+    const gtagScript = document.createElement('script');
+
+    gtagScript.async = true;
+    gtagScript.src = `https://www.googletagmanager.com/gtag/js?id=${import.meta.env.GOOGLE_ANALYTICS_ID}`;
+    window.dataLayer = window.dataLayer || [];
+    function gtag(...args: any[]){window.dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', `${import.meta.env.GOOGLE_ANALYTICS_ID}`);
+    document.head.appendChild(gtagScript);
+  })
   .then(() => Promise.all([
     import('@thalesrc/elements/router')
   ]))

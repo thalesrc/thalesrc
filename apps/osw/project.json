@@ -4,6 +4,13 @@
   "sourceRoot": "apps/osw",
   "projectType": "application",
   "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx run osw/shell:serve", "nx run osw/home:serve"],
+        "parallel": true
+      }
+    },
     "mediator": {
       "executor": "nx:run-commands",
       "options": {
