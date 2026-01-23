@@ -43,7 +43,7 @@ const meta: Meta = {
       }
     </style>
     <div class="container">
-      <tha-drag replaceclone>
+      <tha-drag replaceclone disabled>
         <tha-drag-handle>Drag Handle</tha-drag-handle>
         Drag Me
       </tha-drag>

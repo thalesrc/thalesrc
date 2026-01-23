@@ -206,6 +206,13 @@ export class DragElement extends LitElement {
   @property({ type: Boolean, reflect: true })
   dropAccepted = false;
 
+  /**
+   * Indicates whether the drag element is disabled.
+   * When disabled, the element cannot be dragged.
+   */
+  @property({ type: Boolean, reflect: true })
+  declare disabled: boolean;
+
   override connectedCallback(): void {
     super.connectedCallback();
 
@@ -458,6 +465,7 @@ export class DragElement extends LitElement {
    * @returns True if the element should handle the event, false otherwise.
    */
   #shouldHandleEvent(event: DragEvent): boolean {
+    if (this.disabled) return false;
     if (!this.#handles.size) return true;
 
     if (this.#handles.has(event.target as DragHandleElement)) return true;

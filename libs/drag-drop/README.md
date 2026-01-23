@@ -141,6 +141,7 @@ The main draggable element component.
 | `draggingStrategy` | `"move" \| "copyMove"` | `"move"` | Drag behavior strategy |
 | `replaceClone` | `boolean` | `false` | Whether to replace element with clone during drag |
 | `dragGroup` | `string` | `""` | Group name for drag operations (future feature) |
+| `disabled` | `boolean` | `false` | Disables drag operations when set to true |
 
 #### Attributes
 
@@ -158,6 +159,27 @@ The main draggable element component.
   <div>My Draggable Item</div>
 </tha-drag>
 ```
+
+#### Disabling Drag Operations
+
+You can disable dragging on a `<tha-drag>` element by setting the `disabled` attribute:
+
+```html
+<!-- Dragging is disabled -->
+<tha-drag name="item-1" disabled>
+  <div>This item cannot be dragged</div>
+</tha-drag>
+
+<!-- Dynamically toggle disabled state -->
+<tha-drag name="item-2" id="toggleItem">
+  <div>Toggle me</div>
+</tha-drag>
+<button onclick="document.getElementById('toggleItem').disabled = !document.getElementById('toggleItem').disabled">
+  Toggle Drag
+</button>
+```
+
+When disabled, the element will not respond to any drag operations, including when using drag handles.
 
 ### `<tha-dropzone>`
 
