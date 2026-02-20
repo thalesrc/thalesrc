@@ -1,0 +1,78 @@
+{
+  "name": "ng-pack",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/ng-pack/src",
+  "prefix": "tng",
+  "projectType": "library",
+  "release": {
+    "version": {
+      "manifestRootsToUpdate": ["dist/{projectRoot}"],
+      "currentVersionResolver": "git-tag",
+      "fallbackCurrentVersionResolver": "disk"
+    }
+  },
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:package",
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "options": {
+        "project": "libs/ng-pack/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/ng-pack/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/ng-pack/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "nx-release-publish": {
+      "options": {
+        "packageRoot": "dist/{projectRoot}"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "storybook": {
+      "executor": "@storybook/angular:start-storybook",
+      "options": {
+        "configDir": "libs/ng-pack/.storybook",
+        "port": 6007,
+        "compodoc": false,
+        "tsConfig": "libs/ng-pack/tsconfig.storybook.json",
+        "styles": [],
+        "stylePreprocessorOptions": {
+          "includePaths": []
+        }
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
+    },
+    "build-storybook": {
+      "executor": "@storybook/angular:build-storybook",
+      "outputs": ["{options.outputDir}"],
+      "options": {
+        "configDir": "libs/ng-pack/.storybook",
+        "outputDir": "dist/storybook/ng-pack",
+        "compodoc": false,
+        "tsConfig": "libs/ng-pack/tsconfig.storybook.json",
+        "styles": [],
+        "stylePreprocessorOptions": {
+          "includePaths": []
+        }
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
+    }
+  }
+}

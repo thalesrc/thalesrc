@@ -5,7 +5,14 @@ const jsoncParser = require('jsonc-eslint-parser');
 
 module.exports = [
   {
-    ignores: ['**/node_modules/**', '**/dist/**', '**/build/**', '**/.nx/**'],
+    ignores: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/build/**',
+      '**/.nx/**',
+      '**/vite.config.*.timestamp*',
+      '**/vitest.config.*.timestamp*',
+    ],
   },
   {
     files: ['**/*.json'],
@@ -38,7 +45,7 @@ module.exports = [
           caughtErrorsIgnorePattern: '^_',
         },
       ],
-      'semi': ['error', 'always'],
+      semi: ['error', 'always'],
       'object-curly-spacing': ['error', 'always'],
       'block-spacing': ['error', 'always'],
       'padding-line-between-statements': [
@@ -46,7 +53,20 @@ module.exports = [
         {
           blankLine: 'always',
           prev: '*',
-          next: ['return', 'throw', 'break', 'continue', 'if', 'switch', 'try', 'while', 'do', 'for', 'class', 'function'],
+          next: [
+            'return',
+            'throw',
+            'break',
+            'continue',
+            'if',
+            'switch',
+            'try',
+            'while',
+            'do',
+            'for',
+            'class',
+            'function',
+          ],
         },
         {
           blankLine: 'always',

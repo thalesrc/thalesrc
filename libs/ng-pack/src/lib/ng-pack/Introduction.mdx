@@ -1,0 +1,44 @@
+# NgPack Library
+
+Welcome to the NgPack library Storybook!
+
+## Overview
+
+This library is built with:
+- **Angular 21**
+- **Nx 22**
+- **Storybook 8**
+
+## Structure
+
+The library has the following structure:
+
+### Main Entry Point
+- **@telperion/ng-pack** - The main library entry point
+- Contains the `NgPack` component
+
+### Secondary Entry Points
+- **@telperion/ng-pack/tsf** - The TSF module
+- Demonstrates how to structure sub-modules in an Angular library
+
+## Usage
+
+```typescript
+// Import from main entry point
+import { NgPack } from '@telperion/ng-pack';
+
+// Import from secondary entry point
+import { TsfModule } from '@telperion/ng-pack/tsf';
+```
+
+## Development
+
+To run Storybook locally:
+```bash
+pnpm nx run ng-pack:storybook
+```
+
+To build Storybook:
+```bash
+pnpm nx run ng-pack:build-storybook
+```
