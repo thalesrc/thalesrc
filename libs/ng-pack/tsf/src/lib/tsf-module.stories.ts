@@ -23,6 +23,11 @@ export const ModuleImported: Story = {
         <p>The TsfModule from @telperion/ng-pack/tsf is successfully imported.</p>
         <p>You can add your own components to this module and showcase them here.</p>
       </div>
+      <form tsfForm>
+        <label for="firstname">First Name:</label>
+        <input id="firstname" name="firstname" type="text" tsfField />
+        <button type="submit">Submit</button>
+      </form>
     `,
   }),
 };

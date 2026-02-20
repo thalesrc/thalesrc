@@ -17,6 +17,7 @@
     "paths": {
       "@telperion/ng-pack": ["libs/ng-pack/src/index.ts"],
       "@telperion/ng-pack/tsf": ["libs/ng-pack/tsf/src/index.ts"],
+      "@telperion/ng-pack/utils": ["libs/ng-pack/utils/src/index.ts"],
       "@thalesrc/dom-utils": ["libs/dom-utils/src/index.ts"],
       "@thalesrc/dom-utils/*": ["libs/dom-utils/src/*"],
       "@thalesrc/drag-drop": ["libs/drag-drop/src/index.ts"],
