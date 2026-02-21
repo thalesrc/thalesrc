@@ -28,6 +28,7 @@ export class FieldDirective {
 
   fieldTree: Signal<FieldTree<unknown>> = computed(() => this.#field ? this.#field.fieldTree() : this.#form.form[this.name()] as FieldTree<unknown>);
 
+  path: Signal<string> = computed(() => this.#field ? `${this.#field.path()}.${this.name()}` : this.name());
   value = computed(() => this.fieldTree()().value());
 
   constructor() {

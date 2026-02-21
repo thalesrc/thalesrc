@@ -3,14 +3,14 @@ import { FieldAccessor, provideFieldAccessor } from "../field-accessor";
 import { Subject } from "rxjs";
 
 @Directive({
-  selector: "input[tsfField]",
+  selector: "input[tsfField],textarea[tsfField]",
   providers: [provideFieldAccessor(InputFieldAccessorDirective)],
   host: {
     '(input)': '_handleInput()',
   }
 })
 export class InputFieldAccessorDirective implements FieldAccessor<string> {
-  #elRef = inject<ElementRef<HTMLInputElement>>(ElementRef);
+  #elRef = inject<ElementRef<HTMLInputElement | HTMLTextAreaElement>>(ElementRef);
   #valueChange$ = new Subject<string>();
 
   defaultValue: Signal<string> = signal(this.#elRef.nativeElement.value);

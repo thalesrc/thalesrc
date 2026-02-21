@@ -1,5 +1,5 @@
 import { Directive, signal } from "@angular/core";
-import { form } from "@angular/forms/signals";
+import { form, PathKind, required, SchemaPathTree } from "@angular/forms/signals";
 import { provideServiceDirective } from "@telperion/ng-pack/utils";
 import { FormService, UPSERT_FIELD } from "./form.service";
 
@@ -10,9 +10,21 @@ import { FormService, UPSERT_FIELD } from "./form.service";
 })
 export class FormDirective {
   #formContent = signal({} as Record<string, unknown>);
-  form = form(this.#formContent);
+  #schema: SchemaPathTree<Record<string, unknown>, PathKind.Root> = null!;
+
+  form = form(this.#formContent, schema => {
+    this.#schema = schema;
+  });
+
+  constructor() {
+    setTimeout(() => {
+      required(this.#schema['firstname'] as SchemaPathTree<Record<string, unknown>, PathKind.Root>, {message: 'First name is required'});
+    }, 5000);
+  }
 
   [UPSERT_FIELD](name: string, value: unknown) {
     this.#formContent.update(content => ({ ...content, [name]: value }));
+
+    return this.#schema;
   }
 }
