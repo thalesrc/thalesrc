@@ -4,7 +4,8 @@
   "peerDependencies": {
     "@angular/common": "*",
     "@angular/core": "*",
-    "@angular/forms": "*"
+    "@angular/forms": "*",
+    "rxjs": "*"
   },
   "sideEffects": false
 }

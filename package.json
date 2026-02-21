@@ -1,12 +1,12 @@
 {
-  "name": "@thalesrc/thalesrc",
+  "name": "@telperion/telperion",
   "version": "0.0.0",
-  "bugs": "https://github.com/thalesrc/thalesrc/issues",
+  "bugs": "https://github.com/telperiontech/telperion/issues",
   "license": "MIT",
-  "homepage": "https://open-source.thalesrc.com",
+  "homepage": "https://open-source.telperion.tr",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thalesrc/thalesrc.git"
+    "url": "https://github.com/telperiontech/telperion.git"
   },
   "author": {
     "name": "Ali Şahin Özçelik",

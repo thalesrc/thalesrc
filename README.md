@@ -1,4 +1,4 @@
-# Thalesrc
+# Telperion Technology Open Source Libraries
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub](https://img.shields.io/github/stars/thalesrc/thalesrc?style=social)](https://github.com/thalesrc/thalesrc)

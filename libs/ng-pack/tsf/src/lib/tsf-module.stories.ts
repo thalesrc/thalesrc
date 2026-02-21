@@ -1,12 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { TsfModule } from './tsf-module';
+import { JsonPipe } from '@angular/common';
 
 const meta: Meta<typeof TsfModule> = {
   title: 'NgPack/TSF Module',
   decorators: [
     moduleMetadata({
-      imports: [TsfModule],
+      imports: [TsfModule, JsonPipe],
     }),
   ],
   tags: ['autodocs'],
@@ -23,11 +24,15 @@ export const ModuleImported: Story = {
         <p>The TsfModule from @telperion/ng-pack/tsf is successfully imported.</p>
         <p>You can add your own components to this module and showcase them here.</p>
       </div>
-      <form tsfForm>
+      <form tsfForm #form="tsfForm">
         <label for="firstname">First Name:</label>
-        <input id="firstname" name="firstname" type="text" tsfField />
+        <input id="firstname" name="firstname" type="text" tsfField #firstname="tsfField" />
         <button type="submit">Submit</button>
       </form>
+
+      <button (click)="firstname.setValue('John')">Set First Name to John</button>
+
+      <pre>{{ form.form().value() | json }}</pre>
     `,
   }),
 };
