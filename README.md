@@ -100,6 +100,17 @@ Utility functions and operators for RxJS Observables. Features async iterable co
 
 ### Framework-Specific Utilities
 
+#### [@telperion/ng-pack](libs/ng-pack)
+
+Collection of Angular utilities and libraries organized as secondary entry points. Includes signal-based storage management, template-driven form utilities, and common Angular helpers.
+
+**Sub-modules:**
+- **storage-signals**: Signal-based localStorage/sessionStorage with reactive updates and nested property access
+- **template-signal-forms**: Signal-based forms for template-driven forms _(under construction)_
+- **utils**: Common Angular utilities and helpers _(under construction)_
+
+**Highlights**: Angular signals, Reactive storage, Nested property access, Template forms, Type-safe
+
 #### [@thalesrc/react-utils](libs/react-utils)
 
 React-specific utility hooks and components for modern React development. Simplifies common React patterns and state management.
