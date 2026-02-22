@@ -41,7 +41,10 @@
       "@thalesrc/rx-utils": ["libs/rx-utils/src/index.ts"],
       "@thalesrc/rx-utils/*": ["libs/rx-utils/src/*"],
       "@thalesrc/ts-utils": ["libs/ts-utils/src/index.ts"],
-      "@thalesrc/ts-utils/*": ["libs/ts-utils/src/*"]
+      "@thalesrc/ts-utils/*": ["libs/ts-utils/src/*"],
+      "@telperion/ng-pack/storage-signals": [
+        "libs/ng-pack/storage-signals/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]
