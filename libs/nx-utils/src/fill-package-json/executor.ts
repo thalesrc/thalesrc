@@ -33,10 +33,12 @@ const runExecutor: PromiseExecutor<FillPackageJsonExecutorSchema> = async (
   };
 
   // Replace * dependencies with the root dependencies
-  for (const key in packagePackageJson.dependencies) {
-    if (packagePackageJson.dependencies[key] !== '*') continue;
+  for (const group of ['dependencies', 'peerDependencies', 'devDependencies'] as const) {
+    for (const key in packagePackageJson[group]) {
+      if (packagePackageJson[group][key] !== '*') continue;
 
-    packagePackageJson.dependencies[key] = mergedDependencies[key];
+      packagePackageJson[group][key] = mergedDependencies[key];
+    }
   }
 
   // Fill package.json fields

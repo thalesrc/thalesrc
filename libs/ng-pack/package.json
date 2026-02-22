@@ -1,11 +1,21 @@
 {
   "name": "@telperion/ng-pack",
-  "version": "0.0.1",
+  "version": "0.0.0",
+  "scripts": {
+    "nx": "nx"
+  },
   "peerDependencies": {
     "@angular/common": "*",
     "@angular/core": "*",
     "@angular/forms": "*",
     "rxjs": "*"
+  },
+  "dependencies": {
+    "@thalesrc/reactive-storage": "^1.0.5"
+  },
+  "devDependencies": {
+    "nx": "*",
+    "@nx/angular": "*"
   },
   "sideEffects": false
 }

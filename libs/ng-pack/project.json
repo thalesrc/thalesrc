@@ -29,6 +29,63 @@
       },
       "defaultConfiguration": "production"
     },
+    "publish/prepare": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run ng-pack:publish/prepare/copy",
+          "nx run ng-pack:publish/prepare/fill-package-json",
+          "nx run ng-pack:publish/prepare/install-deps",
+          "nx run ng-pack:publish/prepare/build"
+        ],
+        "parallel": false
+      }
+    },
+    "publish/prepare/build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["pnpm nx run ng-pack:publish/prepare/build/app"],
+        "cwd": "libs/ng-pack/.tmp"
+      }
+    },
+    "publish/prepare/build/app": {
+      "executor": "@nx/angular:package",
+      "outputs": ["{workspaceRoot}/dist"],
+      "options": {
+        "project": "ng-package.json",
+        "tsConfig": "tsconfig.lib.prod.json"
+      }
+    },
+    "publish/prepare/install-deps": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["pnpm install"],
+        "cwd": "libs/ng-pack/.tmp"
+      }
+    },
+    "publish/prepare/copy": {
+      "executor": "@thalesrc/nx-utils:copy",
+      "options": {
+        "input": [
+          "libs/ng-pack/*",
+          "tsconfig.base.json",
+          {
+            "path": "libs/ng-pack/tsconfig.json",
+            "replace": {
+              "../../tsconfig.base.json": "./tsconfig.base.json"
+            }
+          }
+        ],
+        "output": ".tmp/"
+      }
+    },
+    "publish/prepare/fill-package-json": {
+      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "options": {
+        "outputPath": "libs/ng-pack/.tmp",
+        "populateExports": false
+      }
+    },
     "nx-release-publish": {
       "options": {
         "packageRoot": "dist/{projectRoot}"

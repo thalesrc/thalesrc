@@ -1,6 +1,6 @@
 import '@thalesrc/js-utils/array/proto/async-map';
 
-import { copyFile as fsCopyFile, readFile, writeFile, watch as fsWatch } from 'fs/promises';
+import { copyFile as fsCopyFile, readFile, writeFile, watch as fsWatch, stat, cp } from 'fs/promises';
 
 import { ExecutorContext, logger } from '@nx/devkit';
 import { arrayize, never } from "@thalesrc/js-utils";
@@ -44,6 +44,13 @@ async function basicCopy({ file, output }: Input) {
   await fsCopyFile(file, `${output}/${getFileName(file)}`);
 }
 
+async function copyDirectory({ file, output }: Input) {
+  const dirName = getFileName(file);
+  const targetPath = `${output}/${dirName}`;
+
+  await cp(file, targetPath, { recursive: true });
+}
+
 function resize({ file, output, resize: { width, height, name } }: Input) {
   const [fileName, ext] = getFileName(file).split('.');
 
@@ -52,6 +59,15 @@ function resize({ file, output, resize: { width, height, name } }: Input) {
 
 async function copyFile(input: Input) {
   await ensureDirectory(input.output);
+
+  // Check if the path is a directory
+  const stats = await stat(input.file);
+
+  if (stats.isDirectory()) {
+    await copyDirectory(input);
+    logger.log(`Copied directory ${input.file} to ${input.output}`);
+    return;
+  }
 
   if (input.replace)
     await readReplaceWrite(input);

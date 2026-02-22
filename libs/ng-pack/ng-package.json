@@ -3,5 +3,6 @@
   "dest": "../../dist/libs/ng-pack",
   "lib": {
     "entryFile": "src/index.ts"
-  }
+  },
+  "allowedNonPeerDependencies": ["@thalesrc/reactive-storage"]
 }
