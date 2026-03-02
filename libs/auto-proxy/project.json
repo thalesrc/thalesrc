@@ -7,7 +7,7 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "docker build -t telperion/auto-proxy:latest .",
+        "command": "docker build -t telperiontech/auto-proxy:latest .",
         "cwd": "libs/auto-proxy"
       }
     }

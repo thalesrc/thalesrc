@@ -42,7 +42,7 @@ docker run --detach \
   --publish 6379:6379 \
   --publish 27017:27017 \
   --volume /var/run/docker.sock:/tmp/docker.sock:ro \
-  telperion/auto-proxy
+  telperiontech/auto-proxy
 
 # Start your services with HOST_MAPPING
 docker run --detach \
@@ -79,7 +79,7 @@ version: '3.8'
 
 services:
   auto-proxy:
-    image: telperion/auto-proxy
+    image: telperiontech/auto-proxy
     ports:
       - "80:80"          # HTTP port
       - "443:443"        # HTTPS port
@@ -280,7 +280,7 @@ version: '3.8'
 
 services:
   auto-proxy:
-    image: telperion/auto-proxy
+    image: telperiontech/auto-proxy
     ports:
       - "80:80"
       - "443:443"
@@ -388,7 +388,7 @@ version: '3.8'
 
 services:
   auto-proxy:
-    image: telperion/auto-proxy
+    image: telperiontech/auto-proxy
     ports:
       - "80:80"
       - "443:443"
@@ -463,7 +463,7 @@ Perfect for local development of microservices with automatic service discovery:
 version: '3.8'
 services:
   auto-proxy:
-    image: telperion/auto-proxy
+    image: telperiontech/auto-proxy
     ports: ["80:80", "443:443", "50051:50051"]
     volumes: ["/var/run/docker.sock:/tmp/docker.sock:ro"]
 
@@ -533,7 +533,7 @@ Proxy to services outside of Docker or on remote servers using `STATIC_PROXIES`:
 version: '3.8'
 services:
   auto-proxy:
-    image: telperion/auto-proxy
+    image: telperiontech/auto-proxy
     ports: ["80:80", "443:443", "6379:6379"]
     volumes: ["/var/run/docker.sock:/tmp/docker.sock:ro"]
     environment:
@@ -578,7 +578,7 @@ WebSocket, SSE, and WebRTC applications:
 version: '3.8'
 services:
   auto-proxy:
-    image: telperion/auto-proxy
+    image: telperiontech/auto-proxy
     ports: ["80:80", "443:443"]
     volumes: ["/var/run/docker.sock:/tmp/docker.sock:ro"]
 
@@ -616,7 +616,7 @@ Unified database access through the proxy:
 version: '3.8'
 services:
   auto-proxy:
-    image: telperion/auto-proxy
+    image: telperiontech/auto-proxy
     ports: ["80:80", "443:443", "5432:5432", "3306:3306", "6379:6379"]
     volumes: ["/var/run/docker.sock:/tmp/docker.sock:ro"]
 
@@ -679,7 +679,7 @@ Mount custom nginx configurations:
 ```bash
 docker run -d \
   -v /path/to/custom.conf:/etc/nginx/conf.d/custom.conf:ro \
-  telperion/auto-proxy
+  telperiontech/auto-proxy
 ```
 
 ### Health Monitoring
@@ -728,7 +728,7 @@ docker run -d \
   --publish 6379:6379 \    # Redis
   --publish 27017:27017 \  # MongoDB
   --volume /var/run/docker.sock:/tmp/docker.sock:ro \
-  telperion/auto-proxy
+  telperiontech/auto-proxy
 
 # Start database services
 docker run -d \
@@ -829,7 +829,7 @@ docker run -d \
 version: '3.8'
 services:
   auto-proxy:
-    image: telperion/auto-proxy
+    image: telperiontech/auto-proxy
     ports: ["80:80", "443:443"]
     volumes: ["/var/run/docker.sock:/tmp/docker.sock:ro"]
 
@@ -910,14 +910,14 @@ git clone https://github.com/telperiontech/telperion.git
 cd Telperion/libs/auto-proxy
 
 # Build the Docker image
-docker build -t telperion/auto-proxy .
+docker build -t telperiontech/auto-proxy .
 
 # Run locally
 docker run -d \
   --name telperion-auto-proxy \
   -p 80:80 -p 443:443 \
   -v /var/run/docker.sock:/tmp/docker.sock:ro \
-  telperion/auto-proxy
+  telperiontech/auto-proxy
 ```
 
 ## 🤝 Contributing
@@ -966,5 +966,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 [Website](https://telperion.tr) • [GitHub](https://github.com/Telperion) • [NPM](https://www.npmjs.com/org/Telperion)
 
 </div>
+
+
 
 

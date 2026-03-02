@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: telperion/auto-proxy
+  IMAGE_NAME: telperiontech/auto-proxy
 
 jobs:
   build-and-publish:
