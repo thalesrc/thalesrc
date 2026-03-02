@@ -358,14 +358,28 @@ initial_startup() {
     log_info "🚀 Starting Telperion Auto Proxy Orchestrator..."
     log_info "Smart SSL certificate management enabled - nginx stops only when needed"
 
-    # Run initial orchestration cycle
-    if orchestration_cycle; then
-        log_success "SSL configuration initialized"
-    else
-        log_info "SSL configuration already up to date"
-    fi
+    # Discover hostnames from containers
+    local hostnames
+    hostnames=$(discover_hostnames)
 
-    log_success "✅ Initial startup completed"
+    # Generate certificates for all discovered hostnames
+    log_info "Ensuring SSL certificates for all hostnames..."
+    ensure_certificates "$hostnames" || {
+        log_error "Failed to ensure certificates during startup"
+        exit 1
+    }
+
+    # Generate initial nginx configuration
+    log_info "Generating initial nginx configuration..."
+    update_nginx_config || {
+        log_error "Failed to generate initial nginx configuration"
+        exit 1
+    }
+
+    # Start nginx
+    start_nginx
+
+    log_success "✅ Initial startup completed - nginx is running"
 }
 
 # Monitor docker events and trigger orchestration
