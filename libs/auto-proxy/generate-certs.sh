@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Thales Auto Proxy - Automatic SSL Certificate Generator
+# Telperion Auto Proxy - Automatic SSL Certificate Generator
 # Generates self-signed SSL certificates for hostnames found in HOST_MAPPING
 
 set -e
@@ -68,7 +68,7 @@ generate_certificate() {
     openssl genrsa -out "$key_file" $KEY_SIZE 2>/dev/null
 
     # Create certificate signing request
-    openssl req -new -key "$key_file" -out "$csr_file" -subj "/CN=$hostname/O=Thales Auto Proxy/C=US" 2>/dev/null
+    openssl req -new -key "$key_file" -out "$csr_file" -subj "/CN=$hostname/O=Telperion Auto Proxy/C=US" 2>/dev/null
 
     # Generate self-signed certificate with SAN
     openssl x509 -req -in "$csr_file" -signkey "$key_file" -out "$cert_file" -days $CERT_VALIDITY_DAYS \
@@ -208,7 +208,7 @@ extract_hostnames_from_args() {
 
 # Main function
 main() {
-    log_info "Thales Auto Proxy - SSL Certificate Generator"
+    log_info "Telperion Auto Proxy - SSL Certificate Generator"
     log_info "Certificate directory: $CERT_DIR"
     log_info "Certificate validity: $CERT_VALIDITY_DAYS days"
 
@@ -229,3 +229,4 @@ main() {
 
 # Run main function with all arguments
 main "$@"
+

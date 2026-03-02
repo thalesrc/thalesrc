@@ -1,5 +1,5 @@
 {
-  "name": "@thalesrc/auto-proxy",
+  "name": "@telperion/auto-proxy",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "tags": ["auto-proxy", "docker", "reverse-proxy", "nginx", "ssl"],
@@ -7,7 +7,7 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "docker build -t thalesrc/auto-proxy:latest .",
+        "command": "docker build -t telperion/auto-proxy:latest .",
         "cwd": "libs/auto-proxy"
       }
     }

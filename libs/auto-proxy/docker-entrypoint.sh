@@ -3,10 +3,10 @@ set -e
 
 # Print version information
 function _print_version() {
-    if [[ -n "${THALES_AUTO_PROXY_VERSION:-}" ]]; then
-        echo "Info: running thales-auto-proxy version ${THALES_AUTO_PROXY_VERSION}"
+    if [[ -n "${TELPERION_AUTO_PROXY_VERSION:-}" ]]; then
+        echo "Info: running telperion-auto-proxy version ${TELPERION_AUTO_PROXY_VERSION}"
     else
-        echo "Info: running thales-auto-proxy (development version)"
+        echo "Info: running telperion-auto-proxy (development version)"
     fi
 }
 
@@ -19,7 +19,7 @@ function _check_unix_socket() {
         if [[ ! -S ${SOCKET_FILE} ]]; then
             cat >&2 <<-EOT
 				ERROR: you need to share your Docker host socket with a volume at ${SOCKET_FILE}
-				Typically you should run your thales-auto-proxy with: \`-v /var/run/docker.sock:${SOCKET_FILE}:ro\`
+				Typically you should run your telperion-auto-proxy with: \`-v /var/run/docker.sock:${SOCKET_FILE}:ro\`
 				See the documentation for more details.
 			EOT
             exit 1
@@ -80,7 +80,7 @@ function _create_error_pages() {
 <body>
     <h1>503 - Service Unavailable</h1>
     <p>The service you are trying to reach is currently unavailable.</p>
-    <p><em>Thales Auto Proxy</em></p>
+    <p><em>Telperion Auto Proxy</em></p>
 </body>
 </html>
 EOF
@@ -111,7 +111,7 @@ export DEFAULT_ROOT="${DEFAULT_ROOT:-404}"
 export ENABLE_IPV6="${ENABLE_IPV6:-false}"
 export SSL_POLICY="${SSL_POLICY:-Mozilla-Intermediate}"
 
-echo "Starting Thales Auto Proxy..."
+echo "Starting Telperion Auto Proxy..."
 echo "HOST_MAPPING: ${HOST_MAPPING}"
 echo "STATIC_PROXIES: ${STATIC_PROXIES}"
 echo "TARGET_HOST: ${TARGET_HOST}"
@@ -120,3 +120,4 @@ echo "HTTPS_PORT: ${HTTPS_PORT}"
 
 # Execute the command passed to docker run
 exec "$@"
+

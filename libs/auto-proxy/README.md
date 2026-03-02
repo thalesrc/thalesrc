@@ -1,8 +1,8 @@
-# @thalesrc/auto-proxy
+# @telperion/auto-proxy
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub Container Registry](https://img.shields.io/badge/ghcr.io-auto--proxy-blue)](https://github.com/thalesrc/thalesrc/pkgs/container/auto-proxy)
-[![Build Status](https://img.shields.io/github/workflow/status/thalesrc/thalesrc/CI)](https://github.com/thalesrc/thalesrc/actions)
+[![GitHub Container Registry](https://img.shields.io/badge/ghcr.io-auto--proxy-blue)](https://github.com/telperiontech/telperion/pkgs/container/auto-proxy)
+[![Build Status](https://img.shields.io/github/workflow/status/telperiontech/telperion/CI)](https://github.com/telperiontech/telperion/actions)
 
 Docker-aware nginx reverse proxy with automatic SSL and service discovery. Perfect for development environments, microservices, and containerized applications.
 
@@ -33,7 +33,7 @@ Docker-aware nginx reverse proxy with automatic SSL and service discovery. Perfe
 ```bash
 # Start the auto-proxy with all protocol support
 docker run --detach \
-  --name thalesrc-auto-proxy \
+  --name telperion-auto-proxy \
   --publish 80:80 \
   --publish 443:443 \
   --publish 50051:50051 \
@@ -42,7 +42,7 @@ docker run --detach \
   --publish 6379:6379 \
   --publish 27017:27017 \
   --volume /var/run/docker.sock:/tmp/docker.sock:ro \
-  thalesrc/auto-proxy
+  telperion/auto-proxy
 
 # Start your services with HOST_MAPPING
 docker run --detach \
@@ -79,7 +79,7 @@ version: '3.8'
 
 services:
   auto-proxy:
-    image: thalesrc/auto-proxy
+    image: telperion/auto-proxy
     ports:
       - "80:80"          # HTTP port
       - "443:443"        # HTTPS port
@@ -280,7 +280,7 @@ version: '3.8'
 
 services:
   auto-proxy:
-    image: thalesrc/auto-proxy
+    image: telperion/auto-proxy
     ports:
       - "80:80"
       - "443:443"
@@ -388,7 +388,7 @@ version: '3.8'
 
 services:
   auto-proxy:
-    image: thalesrc/auto-proxy
+    image: telperion/auto-proxy
     ports:
       - "80:80"
       - "443:443"
@@ -463,7 +463,7 @@ Perfect for local development of microservices with automatic service discovery:
 version: '3.8'
 services:
   auto-proxy:
-    image: thalesrc/auto-proxy
+    image: telperion/auto-proxy
     ports: ["80:80", "443:443", "50051:50051"]
     volumes: ["/var/run/docker.sock:/tmp/docker.sock:ro"]
 
@@ -533,7 +533,7 @@ Proxy to services outside of Docker or on remote servers using `STATIC_PROXIES`:
 version: '3.8'
 services:
   auto-proxy:
-    image: thalesrc/auto-proxy
+    image: telperion/auto-proxy
     ports: ["80:80", "443:443", "6379:6379"]
     volumes: ["/var/run/docker.sock:/tmp/docker.sock:ro"]
     environment:
@@ -578,7 +578,7 @@ WebSocket, SSE, and WebRTC applications:
 version: '3.8'
 services:
   auto-proxy:
-    image: thalesrc/auto-proxy
+    image: telperion/auto-proxy
     ports: ["80:80", "443:443"]
     volumes: ["/var/run/docker.sock:/tmp/docker.sock:ro"]
 
@@ -616,7 +616,7 @@ Unified database access through the proxy:
 version: '3.8'
 services:
   auto-proxy:
-    image: thalesrc/auto-proxy
+    image: telperion/auto-proxy
     ports: ["80:80", "443:443", "5432:5432", "3306:3306", "6379:6379"]
     volumes: ["/var/run/docker.sock:/tmp/docker.sock:ro"]
 
@@ -679,7 +679,7 @@ Mount custom nginx configurations:
 ```bash
 docker run -d \
   -v /path/to/custom.conf:/etc/nginx/conf.d/custom.conf:ro \
-  thalesrc/auto-proxy
+  telperion/auto-proxy
 ```
 
 ### Health Monitoring
@@ -722,13 +722,13 @@ The auto-proxy provides **TCP passthrough** for database connections. Database p
 ```bash
 # Start auto-proxy with database ports
 docker run -d \
-  --name thales-auto-proxy \
+  --name telperion-auto-proxy \
   --publish 5432:5432 \    # PostgreSQL
   --publish 3306:3306 \    # MySQL
   --publish 6379:6379 \    # Redis
   --publish 27017:27017 \  # MongoDB
   --volume /var/run/docker.sock:/tmp/docker.sock:ro \
-  thalesrc/auto-proxy
+  telperion/auto-proxy
 
 # Start database services
 docker run -d \
@@ -829,7 +829,7 @@ docker run -d \
 version: '3.8'
 services:
   auto-proxy:
-    image: thalesrc/auto-proxy
+    image: telperion/auto-proxy
     ports: ["80:80", "443:443"]
     volumes: ["/var/run/docker.sock:/tmp/docker.sock:ro"]
 
@@ -873,7 +873,7 @@ nginx access logs are available at `/var/log/nginx/access.log`:
 
 ```bash
 # View real-time logs
-docker exec thalesrc-auto-proxy tail -f /var/log/nginx/access.log
+docker exec telperion-auto-proxy tail -f /var/log/nginx/access.log
 
 # Custom log format
 NGINX_LOG_FORMAT='$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"'
@@ -885,7 +885,7 @@ Monitor container discovery and SSL certificate generation:
 
 ```bash
 # View orchestrator logs
-docker logs thalesrc-auto-proxy
+docker logs telperion-auto-proxy
 
 # Enable debug logging
 DEBUG=true
@@ -906,18 +906,18 @@ monitoring:
 
 ```bash
 # Clone the repository
-git clone https://github.com/thalesrc/thalesrc.git
-cd thalesrc/libs/auto-proxy
+git clone https://github.com/telperiontech/telperion.git
+cd Telperion/libs/auto-proxy
 
 # Build the Docker image
-docker build -t thalesrc/auto-proxy .
+docker build -t telperion/auto-proxy .
 
 # Run locally
 docker run -d \
-  --name thalesrc-auto-proxy \
+  --name telperion-auto-proxy \
   -p 80:80 -p 443:443 \
   -v /var/run/docker.sock:/tmp/docker.sock:ro \
-  thalesrc/auto-proxy
+  telperion/auto-proxy
 ```
 
 ## 🤝 Contributing
@@ -942,10 +942,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🆘 Support
 
-- 📖 [Documentation](https://github.com/thalesrc/thalesrc/tree/main/libs/auto-proxy)
-- 🐛 [Bug Reports](https://github.com/thalesrc/thalesrc/issues)
-- 💬 [Discussions](https://github.com/thalesrc/thalesrc/discussions)
-- 📧 [Email Support](mailto:hello@thalesrc.com)
+- 📖 [Documentation](https://github.com/telperiontech/telperion/tree/main/libs/auto-proxy)
+- 🐛 [Bug Reports](https://github.com/telperiontech/telperion/issues)
+- 💬 [Discussions](https://github.com/telperiontech/telperion/discussions)
+- 📧 [Email Support](mailto:hello@telperion.tr)
 
 ## 🗺️ Roadmap
 
@@ -961,8 +961,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-**Made with ❤️ by [Thalesrc](https://github.com/thalesrc)**
+**Made with ❤️ by [Telperion](https://github.com/Telperion)**
 
-[Website](https://thalesrc.com) • [GitHub](https://github.com/thalesrc) • [NPM](https://www.npmjs.com/org/thalesrc)
+[Website](https://telperion.tr) • [GitHub](https://github.com/Telperion) • [NPM](https://www.npmjs.com/org/Telperion)
 
 </div>
+
+

@@ -1,11 +1,11 @@
-# Thales Auto Proxy - Docker-aware nginx reverse proxy with automatic SSL and service discovery
+# Telperion Auto Proxy - Docker-aware nginx reverse proxy with automatic SSL and service discovery
 FROM nginx:1.25-alpine
 
-LABEL maintainer="Thales <hello@thalesrc.com>"
+LABEL maintainer="Telperion <hello@telperion.tr>"
 LABEL version="1.0.0"
 LABEL description="Docker-aware nginx reverse proxy with automatic SSL and service discovery"
-LABEL org.opencontainers.image.source="https://github.com/thalesrc/thalesrc"
-LABEL org.opencontainers.image.title="Thales Auto Proxy"
+LABEL org.opencontainers.image.source="https://github.com/telperiontech/telperion"
+LABEL org.opencontainers.image.title="Telperion Auto Proxy"
 LABEL org.opencontainers.image.description="Perfect for development environments, microservices, and containerized applications"
 
 # Install required packages including Docker CLI

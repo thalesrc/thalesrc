@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Thales Auto Proxy Startup Script
+# Telperion Auto Proxy Startup Script
 # This script starts the auto proxy with event-driven SSL certificate management
 
 set -e
@@ -32,7 +32,7 @@ log_error() {
     echo -e "${RED}[AUTO-PROXY-START]${NC} $1"
 }
 
-log_info "🚀 Starting Thales Auto Proxy..."
+log_info "🚀 Starting Telperion Auto Proxy..."
 log_info "Event-driven architecture enabled"
 
 # Create certificate directory
@@ -68,3 +68,4 @@ else
     log_info "Starting nginx..."
     exec nginx -g "daemon off;"
 fi
+

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Thales Auto Proxy - Event-Driven SSL Certificate Orchestrator
+# Telperion Auto Proxy - Event-Driven SSL Certificate Orchestrator
 # This script implements the robust approach:
 # 1. Listen for Docker container changes
 # 2. Stop nginx gracefully
@@ -150,7 +150,7 @@ discover_hostnames() {
         log_warning "No containers found" >&2
     else
         while IFS= read -r container_name; do
-            if [[ -z "$container_name" ]] || [[ "$container_name" == "thales-auto-proxy" ]]; then
+            if [[ -z "$container_name" ]] || [[ "$container_name" == "telperion-auto-proxy" ]]; then
                 continue
             fi
 
@@ -349,7 +349,7 @@ orchestration_cycle() {
 
 # Initial startup
 initial_startup() {
-    log_info "🚀 Starting Thales Auto Proxy Orchestrator..."
+    log_info "🚀 Starting Telperion Auto Proxy Orchestrator..."
     log_info "Smart SSL certificate management enabled - nginx stops only when needed"
 
     # Run initial orchestration cycle
@@ -372,7 +372,7 @@ monitor_docker_events() {
         local container=$(echo "$event" | cut -d' ' -f2)
 
         # Skip events for our own container
-        if [[ "$container" == "thales-auto-proxy" ]]; then
+        if [[ "$container" == "telperion-auto-proxy" ]]; then
             continue
         fi
 
@@ -415,3 +415,4 @@ main() {
 
 # Run main function
 main "$@"
+
