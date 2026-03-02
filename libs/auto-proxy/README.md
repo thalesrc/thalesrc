@@ -226,6 +226,106 @@ docker run -d --env HOST_MAPPING="MYSQL:::mysql.myapp.local:::3306" mysql:8
 docker run -d --env HOST_MAPPING="HTTP:::admin.myapp.local:::4000,GRPC:::admin.myapp.local:::50052" my-admin-service
 ```
 
+### CUSTOM_HEADERS Configuration
+
+The `CUSTOM_HEADERS` environment variable allows you to inject custom HTTP headers into the proxy configuration for your service. This is useful for applications that require specific headers to function correctly behind a reverse proxy.
+
+**Format:**
+```
+CUSTOM_HEADERS="HEADER-NAME=value,HEADER-NAME=value,..."
+```
+
+**Standard Headers Already Included:**
+
+The following headers are automatically set for all HTTP services:
+- `Host: $http_host`
+- `X-Real-IP: $remote_addr`
+- `X-Forwarded-For: $proxy_add_x_forwarded_for`
+- `X-Scheme: $scheme` ✨ **NEW** - Required by many applications (pgAdmin, Grafana, etc.) to generate correct URLs
+- `X-Forwarded-Proto: $scheme`
+- `X-Forwarded-Port: $server_port`
+- `X-Original-URI: $request_uri`
+- `Upgrade: $http_upgrade` (for WebSocket)
+- `Connection: $connection_upgrade` (for WebSocket)
+
+**Common Use Cases:**
+
+```bash
+# pgAdmin subdirectory deployment (if using path-based routing)
+docker run -d \
+  --name pgadmin \
+  --env HOST_MAPPING="HTTP:::pgadmin.myapp.local:::80" \
+  --env CUSTOM_HEADERS="X-Script-Name=/pgadmin" \
+  dpage/pgadmin4
+
+# Grafana with custom headers
+docker run -d \
+  --name grafana \
+  --env HOST_MAPPING="HTTP:::grafana.myapp.local:::3000" \
+  --env CUSTOM_HEADERS="X-Custom-Header=value" \
+  grafana/grafana
+
+# Multiple custom headers
+docker run -d \
+  --name my-service \
+  --env HOST_MAPPING="HTTP:::app.myapp.local:::8080" \
+  --env CUSTOM_HEADERS="X-Script-Name=/app,X-Custom-Auth=token123" \
+  my-service-image
+```
+
+**Docker Compose Example:**
+
+```yaml
+version: '3.8'
+
+services:
+  auto-proxy:
+    image: thalesrc/auto-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - app-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - HOST_MAPPING=HTTP:::pgadmin.myapp.local:::80
+      - CUSTOM_HEADERS=X-Script-Name=/pgadmin
+      - PGADMIN_DEFAULT_EMAIL=admin@example.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    networks:
+      - app-network
+
+  grafana:
+    image: grafana/grafana
+    environment:
+      - HOST_MAPPING=HTTP:::grafana.myapp.local:::3000
+      - CUSTOM_HEADERS=X-Custom-Header=monitoring
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+```
+
+**Notes:**
+- Custom headers only apply to HTTP protocol services (not gRPC or DATABASE)
+- Headers are comma-separated: `Header1=value1,Header2=value2`
+- Header values cannot contain commas
+- When multiple containers share the same hostname (load balancing), custom headers from the first container are used
+- The `X-Scheme` header is now included by default, so you don't need to add it manually
+
+**Troubleshooting:**
+
+If your application generates incorrect URLs (HTTP instead of HTTPS, WebSocket connection errors):
+- The `X-Scheme` header (now included by default) helps applications generate correct URLs
+- pgAdmin specifically requires `X-Scheme` for proper WebSocket connections over SSL
+- For subdirectory deployments, add `X-Script-Name=/your-path` to `CUSTOM_HEADERS`
+
 
 
 ### Environment Variables
@@ -234,6 +334,7 @@ docker run -d --env HOST_MAPPING="HTTP:::admin.myapp.local:::4000,GRPC:::admin.m
 | Variable | Description | Supported Protocols |
 |----------|-------------|---------------------|
 | `HOST_MAPPING` | Custom format: `PROTOCOL:::HOSTNAME:::PORT,...` | `HTTP`, `GRPC`, `DATABASE` |
+| `CUSTOM_HEADERS` | Custom HTTP headers: `HEADER-NAME=value,HEADER-NAME=value,...` | `HTTP` only |
 
 #### For Auto-Proxy Container:
 | Variable | Default | Description |

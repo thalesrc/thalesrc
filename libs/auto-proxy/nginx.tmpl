@@ -180,6 +180,7 @@ server {
         proxy_set_header Host $http_host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Scheme $scheme;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Port $server_port;
         proxy_set_header X-Original-URI $request_uri;
@@ -266,9 +267,23 @@ server {
         proxy_set_header Host $http_host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Scheme $scheme;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Port $server_port;
         proxy_set_header X-Original-URI $request_uri;
+
+        # Custom headers from CUSTOM_HEADERS environment variable
+{{ $first_container := index $containers 0 }}
+{{ $custom_headers := index $first_container.Env "CUSTOM_HEADERS" }}
+{{ if $custom_headers }}
+{{ $header_pairs := split $custom_headers "," }}
+{{ range $header_pair := $header_pairs }}
+{{ $header_parts := split $header_pair "=" }}
+{{ if eq (len $header_parts) 2 }}
+        proxy_set_header {{ index $header_parts 0 }} {{ index $header_parts 1 }};
+{{ end }}
+{{ end }}
+{{ end }}
 
         # WebSocket and SSE support
         proxy_set_header Upgrade $http_upgrade;
