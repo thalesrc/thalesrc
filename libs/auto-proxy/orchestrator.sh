@@ -91,6 +91,12 @@ start_nginx() {
         return 0
     fi
 
+    # Clean up stale PID file before starting
+    if [[ -f /var/run/nginx.pid ]]; then
+        log_info "Removing stale nginx PID file"
+        rm -f /var/run/nginx.pid
+    fi
+
     log_info "Starting nginx..."
     nginx -g "daemon off;" &
     NGINX_PID=$!

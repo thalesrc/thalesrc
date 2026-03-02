@@ -65,6 +65,26 @@ function _setup_directories() {
     mkdir -p /usr/share/nginx/html
 }
 
+# Clean up stale runtime files from previous container runs
+function _cleanup_stale_files() {
+    echo "Info: Cleaning up stale runtime files..."
+
+    # Remove stale nginx PID file
+    if [[ -f /var/run/nginx.pid ]]; then
+        echo "Info: Removing stale nginx PID file"
+        rm -f /var/run/nginx.pid
+    fi
+
+    # Remove any lock files
+    rm -f /var/run/nginx*.lock 2>/dev/null || true
+
+    # Clean up any stale docker-gen files
+    rm -f /tmp/docker-gen*.pid 2>/dev/null || true
+
+    # Clean up any stale unix sockets
+    rm -f /var/run/nginx*.sock 2>/dev/null || true
+}
+
 # Create a default error page
 function _create_error_pages() {
     cat > /usr/share/nginx/html/50x.html <<EOF
@@ -92,6 +112,7 @@ function _init() {
     _check_unix_socket
     _resolvers
     _setup_directories
+    _cleanup_stale_files
     _create_error_pages
     _dhparam
     # SSL certificate generation is now handled by the orchestrator
