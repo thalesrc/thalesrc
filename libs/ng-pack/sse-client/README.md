@@ -5,7 +5,7 @@ Angular service for Server-Sent Events (SSE) with RxJS Observables and HttpClien
 ## Features
 
 - 🚀 **Observable-based API** - Seamlessly integrate with RxJS ecosystem
-- 🔗 **HttpClient-inspired interceptors** - Familiar pattern for request/response manipulation
+- 🔗 **HttpClient-inspired interceptors** - Functional and class-based interceptors (shareable with HttpClient)
 - 🎯 **Type-safe** - Full TypeScript support with generic typing
 - ⚡ **EventSource wrapper** - Clean abstraction over native EventSource API
 - 🔄 **Reactive streaming** - Real-time data updates with automatic cleanup
@@ -162,6 +162,84 @@ export const appConfig: ApplicationConfig = {
 ```
 
 **Interceptor execution order:** Interceptors are executed in the order they are provided. In the example above, the chain is: logging → auth → retry → EventSource connection.
+
+#### Class-based Interceptors
+
+For more complex scenarios, you can create class-based interceptors and provide them directly using the `SSE_INTERCEPTORS` token. This is particularly useful when you need dependency injection or want to share logic between HTTP and SSE interceptors.
+
+**Using SSE_INTERCEPTORS token:**
+
+```typescript
+import { Injectable } from '@angular/core';
+import { SseInterceptor, SseRequest, SseNextFn, SSE_INTERCEPTORS } from '@telperion/ng-pack/sse-client';
+import { Observable } from 'rxjs';
+
+@Injectable()
+export class ApiUrlInterceptor implements SseInterceptor<unknown> {
+  sseIntercept<T = unknown>(request: SseRequest, next: SseNextFn<T>): Observable<T> {
+    const url = request.url.replace(/^@/, 'https://api.example.com');
+    return next({ ...request, url });
+  }
+}
+
+// Provide directly using the token
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideSseClient(),
+    { provide: SSE_INTERCEPTORS, useClass: ApiUrlInterceptor, multi: true }
+  ]
+};
+```
+
+**Unified HTTP and SSE Interceptor:**
+
+You can create a single interceptor class that handles both HTTP and SSE requests, allowing you to share authentication, URL rewriting, or other common logic:
+
+```typescript
+import { Injectable } from '@angular/core';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { SseInterceptor, SseRequest, SseNextFn, SSE_INTERCEPTORS } from '@telperion/ng-pack/sse-client';
+import { localStorageSignal } from '@telperion/ng-pack/storage-signals';
+import { Observable } from 'rxjs';
+
+@Injectable()
+export class BaseApiInterceptor implements HttpInterceptor, SseInterceptor<unknown> {
+
+  // Handle HTTP requests
+  intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    return next.handle(req.clone({ url: this.#replaceUrl(req.url) }));
+  }
+
+  // Handle SSE requests
+  sseIntercept<T = unknown>(request: SseRequest, next: SseNextFn<T>): Observable<T> {
+    return next({ ...request, url: this.replaceUrl(request.url)});
+  }
+
+  #replaceUrl(url: string): string {
+    return `https://my-api.domain.com/${url}`;
+  }
+}
+
+// Register for both HTTP and SSE
+export const appConfig: ApplicationConfig = {
+  providers: [
+    // Provide the same interceptor for both HTTP and SSE
+    { provide: HTTP_INTERCEPTORS, useClass: BaseApiInterceptor, multi: true },
+    { provide: SSE_INTERCEPTORS, useClass: BaseApiInterceptor, multi: true },
+    
+    provideHttpClient(withFetch(), withInterceptorsFromDi()),
+    provideSseClient(),
+  ]
+};
+```
+
+This pattern is especially useful when you want to:
+- Share authentication logic between HTTP and SSE
+- Apply consistent URL transformations
+- Reuse common error handling
+- Maintain a single source of truth for API configuration
+
+**Note:** You can combine both approaches - use the `SSE_INTERCEPTORS` token for class-based interceptors and `withSseInterceptors()` for functional interceptors. Class-based interceptors provided via the token will execute before functional interceptors provided via `withSseInterceptors()`.
 
 ### Advanced Usage
 
@@ -402,6 +480,41 @@ interface SseInterceptor<T = unknown> {
 }
 ```
 
+**Example:**
+```typescript
+@Injectable()
+class MyInterceptor implements SseInterceptor<unknown> {
+  sseIntercept<T>(request: SseRequest, next: SseNextFn<T>): Observable<T> {
+    console.log('Intercepting:', request.url);
+    return next(request);
+  }
+}
+```
+
+---
+
+### `SSE_INTERCEPTORS`
+
+Injection token for providing class-based SSE interceptors directly.
+
+```typescript
+const SSE_INTERCEPTORS: InjectionToken<SseInterceptor<unknown>[]>
+```
+
+**Usage:**
+```typescript
+import { SSE_INTERCEPTORS } from '@telperion/ng-pack/sse-client';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideSseClient(),
+    { provide: SSE_INTERCEPTORS, useClass: MyInterceptor, multi: true }
+  ]
+};
+```
+
+**Note:** This token allows you to provide class-based interceptors that can leverage dependency injection. It's particularly useful for creating interceptors that implement both `HttpInterceptor` and `SseInterceptor` to share logic between HTTP and SSE requests.
+
 ## Best Practices
 
 ### 1. Always Unsubscribe
@@ -503,6 +616,37 @@ export const appConfig: ApplicationConfig = {
   ]
 };
 ```
+
+### 7. Share Logic with HTTP Interceptors
+
+When you need the same logic for both HTTP and SSE (auth, URL rewriting, etc.), create a unified interceptor class:
+
+```typescript
+@Injectable()
+class UnifiedInterceptor implements HttpInterceptor, SseInterceptor<unknown> {
+  intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    // HTTP logic
+  }
+  
+  sseIntercept<T>(request: SseRequest, next: SseNextFn<T>): Observable<T> {
+    // SSE logic (can reuse same helper methods)
+  }
+}
+
+// ✅ Good - shared interceptor for both
+providers: [
+  { provide: HTTP_INTERCEPTORS, useClass: UnifiedInterceptor, multi: true },
+  { provide: SSE_INTERCEPTORS, useClass: UnifiedInterceptor, multi: true },
+]
+
+// ❌ Bad - duplicated logic in separate interceptors
+```
+
+This approach:
+- Reduces code duplication
+- Ensures consistent behavior across HTTP and SSE
+- Makes configuration and API changes easier to manage
+- Allows sharing of injected dependencies
 
 ## Common Use Cases
 
