@@ -1,5 +1,9 @@
 # @telperion/ng-pack
 
+[![npm version](https://img.shields.io/npm/v/@telperion/ng-pack.svg)](https://www.npmjs.com/package/@telperion/ng-pack)
+[![npm downloads](https://img.shields.io/npm/dm/@telperion/ng-pack.svg)](https://www.npmjs.com/package/@telperion/ng-pack)
+[![License](https://img.shields.io/npm/l/@telperion/ng-pack.svg)](https://github.com/telperiontech/telperion/blob/main/libs/ng-pack/LICENSE)
+
 A collection of Angular utilities and libraries
 
 ## Installation
