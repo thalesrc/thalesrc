@@ -83,11 +83,12 @@ Pre-built CSS Paint API (Houdini) worklets for modern web development. Create st
 
 **Highlights**: CSS Houdini, Paint worklets, Visual effects, Animated gradients
 
-#### [@thalesrc/reactive-storage](libs/reactive-storage)
+#### [@telperion/reactive-storage](https://www.npmjs.com/package/@telperion/reactive-storage)
+[![npm](https://img.shields.io/npm/v/@telperion/reactive-storage.svg)](https://www.npmjs.com/package/@telperion/reactive-storage)
 
-Reactive wrappers for browser storage APIs (localStorage, sessionStorage) with Observable patterns for real-time updates.
+RxJS-based reactive wrapper for browser storage APIs (localStorage and sessionStorage). Provides an Observable-based API for real-time storage updates with support for nested property access, automatic synchronization, and FIFO-queued write operations. Serves as the foundation for Angular Signal-based and React hooks-based storage utilities.
 
-**Highlights**: Reactive storage, Observable patterns, Local/Session storage
+**Highlights**: Reactive storage, Observable patterns, Nested property access, Type-safe, FIFO operations, Framework foundation
 
 #### [@thalesrc/rx-utils](https://www.npmjs.com/package/@thalesrc/rx-utils)
 [![npm](https://img.shields.io/npm/v/@thalesrc/rx-utils.svg)](https://www.npmjs.com/package/@thalesrc/rx-utils)

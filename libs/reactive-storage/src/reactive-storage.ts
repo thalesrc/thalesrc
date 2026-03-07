@@ -17,6 +17,13 @@ export interface ReactiveStorageChangeEvent<S = string> {
   value: any;
 }
 
+/**
+ * Abstract base class for reactive storage implementations.
+ * Provides RxJS-based reactive API for storage with support for nested property access.
+ * All write operations are queued using FIFO promises to ensure consistency.
+ *
+ * @template S - Storage store name type (defaults to string)
+ */
 export abstract class ReactiveStorage<S extends string = string> {
   private static FifoGroup = Symbol();
   private static extractData<T = any>(data: any, prop: string = null!): T {
@@ -72,6 +79,15 @@ export abstract class ReactiveStorage<S extends string = string> {
     return this.#_stream$;
   }
 
+  /**
+   * Get an observable that emits the current value and all future changes.
+   * Supports dot notation for nested property access (e.g., 'user.settings.theme').
+   *
+   * @template T - Expected return type
+   * @param storeName - Name of the storage store
+   * @param key - Property path using dot notation (empty string for entire store)
+   * @returns Observable that emits current value and all updates
+   */
   get<T = Record<string, any>>(storeName: S, key = ''): Observable<T> {
     return this.#stream$.pipe(
       map(allData => ReactiveStorage.extractData(allData, `${storeName}.${key}`)),
@@ -120,11 +136,27 @@ export abstract class ReactiveStorage<S extends string = string> {
     return;
   }
 
+  /**
+   * Set a value in storage. Overwrites existing value.
+   * Pass undefined as value to remove the property.
+   *
+   * @param storeName - Name of the storage store
+   * @param key - Property path using dot notation
+   * @param value - Value to set (undefined removes the value)
+   */
   @FifoPromise({ group: ReactiveStorage.FifoGroup, timeout: 1000 })
   async set(storeName: S, key: string, value: any): Promise<void> {
     return await this.#set(storeName, key, value);
   }
 
+  /**
+   * Merge a partial object into existing value.
+   * Only works with object values.
+   *
+   * @param storeName - Name of the storage store
+   * @param key - Property path using dot notation
+   * @param value - Partial object to merge with existing value
+   */
   @FifoPromise({ group: ReactiveStorage.FifoGroup, timeout: 1000 })
   async patch(storeName: S, key: string, value: any): Promise<void> {
     const existing = await firstValueFrom(this.get<any[]>(storeName, key));
@@ -132,17 +164,24 @@ export abstract class ReactiveStorage<S extends string = string> {
     await this.#set(storeName, key, Object.assign({}, existing, compact(value)));
   }
 
+  /**
+   * Delete a value from storage.
+   *
+   * @param storeName - Name of the storage store
+   * @param key - Property path using dot notation (empty string deletes entire store)
+   */
   @FifoPromise({ group: ReactiveStorage.FifoGroup, timeout: 1000 })
   async delete(storeName: S, key = ''): Promise<void> {
     return await this.#set(storeName, key, undefined);
   }
 
   /**
-   * Insert an item into an array
+   * Add items to an array in storage.
+   * Creates array if it doesn't exist.
    *
-   * @param storeName Store Name
-   * @param key path to array
-   * @param value value to push into array
+   * @param storeName - Name of the storage store
+   * @param key - Path to array property using dot notation
+   * @param values - Values to push into the array
    */
   @FifoPromise({ group: ReactiveStorage.FifoGroup, timeout: 1000 })
   async push(storeName: S, key: string, ...values: any[]): Promise<void> {
@@ -152,11 +191,11 @@ export abstract class ReactiveStorage<S extends string = string> {
   }
 
   /**
-   * Remove a value from the array
+   * Remove a specific value from an array in storage.
    *
-   * @param storeName Store Name
-   * @param key path to array
-   * @param value value to remove from the array
+   * @param storeName - Name of the storage store
+   * @param key - Path to array property using dot notation
+   * @param value - Value to remove from the array
    */
   @FifoPromise({ group: ReactiveStorage.FifoGroup, timeout: 1000 })
   async drop(storeName: S, key: string, value: any): Promise<void> {

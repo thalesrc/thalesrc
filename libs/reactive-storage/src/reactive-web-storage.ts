@@ -4,6 +4,12 @@ import { ReactiveStorage, ReactiveStorageChangeEvent } from "./reactive-storage"
 import { RegexParser } from './regex-parser';
 import { toAsyncIterator } from './async-iterator.polyfill';
 
+/**
+ * Abstract implementation of ReactiveStorage for browser Web Storage API.
+ * Stores data as JSON in localStorage or sessionStorage with app namespacing.
+ *
+ * @template S - Storage store name type
+ */
 export abstract class AbstractReactiveWebStorage<S extends string = string> extends ReactiveStorage<S> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static JsonParse(string: string): any {
@@ -46,6 +52,12 @@ export abstract class AbstractReactiveWebStorage<S extends string = string> exte
   }
 }
 
+/**
+ * Generic reactive web storage wrapper.
+ * Allows using any Storage implementation (localStorage, sessionStorage, or custom).
+ *
+ * @template S - Storage store name type
+ */
 export class ReactiveWebStorage<S extends string = string> extends AbstractReactiveWebStorage<S> {
   constructor(
     override readonly storage: Storage,
