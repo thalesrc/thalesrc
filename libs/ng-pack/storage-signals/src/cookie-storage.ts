@@ -297,5 +297,5 @@ export function cookieStorageSignal<T>(store: string, key: string, options?: Rea
   const provider = inject(CookieStorageProvider);
   const storage = provider.getStore(options);
 
-  return storageSignal(storage, store, key);
+  return storageSignal<T>(storage, store, key);
 }
