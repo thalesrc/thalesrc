@@ -18,15 +18,17 @@ npm install @telperion/ng-pack
 
 **Import:** `@telperion/ng-pack/storage-signals`
 
-Angular signals-based wrapper for browser's localStorage and sessionStorage with reactive updates.
+Angular signals-based wrapper for browser's localStorage, sessionStorage, and cookies with reactive updates.
 
 #### Key Features
 
 - 🚀 Signal-based API integrated with Angular's signal system
 - 🔄 Reactive updates automatically synced across components
 - 🎯 Nested property access using dot notation
-- 🏪 Support for both localStorage and sessionStorage
+- 🏪 Support for localStorage, sessionStorage, and cookies
 - 🔑 Namespaced storage organization
+- 🍪 Full cookie configuration (secure, sameSite, maxAge, etc.)
+- 🔗 Cross-instance synchronization for cookie storage
 
 #### Quick Start
 
@@ -57,6 +59,47 @@ import { localStorageSignal } from '@telperion/ng-pack/storage-signals';
 export class SettingsComponent {
   // Access nested properties with dot notation
   theme = localStorageSignal<string>('settings', 'ui.theme');
+}
+```
+
+**Cookie Storage:**
+
+```typescript
+import { ApplicationConfig } from '@angular/core';
+import { provideCookieStorage } from '@telperion/ng-pack/storage-signals';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideCookieStorage('my-app', {
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 86400 // 24 hours
+    }),
+  ]
+};
+```
+
+```typescript
+import { Component } from '@angular/core';
+import { cookieStorageSignal } from '@telperion/ng-pack/storage-signals';
+
+@Component({
+  selector: 'app-auth',
+  template: `
+    <div>
+      @if (authToken()) {
+        <button (click)="authToken.delete()">Logout</button>
+      } @else {
+        <button (click)="authToken.set('token123')">Login</button>
+      }
+    </div>
+  `
+})
+export class AuthComponent {
+  // Cookie with custom expiry
+  authToken = cookieStorageSignal<string>('auth', 'token', {
+    maxAge: 3600 // 1 hour
+  });
 }
 ```
 

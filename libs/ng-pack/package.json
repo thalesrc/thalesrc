@@ -1,7 +1,7 @@
 {
   "name": "@telperion/ng-pack",
   "version": "0.0.0",
-  "description": "Collection of Angular utilities and libraries organized as secondary entry points. Includes signal-based storage (localStorage/sessionStorage), SSE client with HttpClient-inspired interceptors, event modifier plugins, and more. Built with TypeScript, RxJS, and Angular Signals for modern Angular applications.",
+  "description": "Collection of Angular utilities and libraries organized as secondary entry points. Includes signal-based storage (localStorage/sessionStorage/cookieStorage), SSE client with HttpClient-inspired interceptors, event modifier plugins, and more. Built with TypeScript, RxJS, and Angular Signals for modern Angular applications.",
   "keywords": [
     "angular",
     "angular-signals",
@@ -11,6 +11,7 @@
     "eventsource",
     "localstorage",
     "sessionstorage",
+    "cookie",
     "storage",
     "signals",
     "interceptors",
@@ -36,7 +37,7 @@
   "dependencies": {
     "@thalesrc/extra-ts-types": "^1.4.0",
     "@thalesrc/js-utils": "^3.4.0",
-    "@thalesrc/reactive-storage": "^1.0.5"
+    "@telperion/reactive-storage": "^1.2.0"
   },
   "devDependencies": {
     "@angular/cli": "*"

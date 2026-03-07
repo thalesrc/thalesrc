@@ -106,12 +106,12 @@ Utility functions and operators for RxJS Observables. Features async iterable co
 Collection of Angular utilities and libraries organized as secondary entry points. Includes signal-based storage management, template-driven form utilities, and common Angular helpers.
 
 **Sub-modules:**
-- **storage-signals**: Signal-based localStorage/sessionStorage with reactive updates and nested property access
+- **storage-signals**: Signal-based localStorage/sessionStorage/cookies with reactive updates, nested property access, and configurable cookie options
 - **sse-client**: HttpClient-inspired SSE client with Observable-based streaming, interceptor chain, and reactive real-time updates
 - **template-signal-forms**: Signal-based forms for template-driven forms _(under construction)_
 - **utils**: Angular utilities including event modifiers, directive-as-service provider, and Promise-based HTTP client with tuple error handling
 
-**Highlights**: Angular signals, Reactive storage, SSE client, Interceptors, Real-time streaming, Nested property access, Template forms, Event modifiers, HTTP utilities, Type-safe
+**Highlights**: Angular signals, Reactive storage, Cookie storage, SSE client, Interceptors, Real-time streaming, Nested property access, Template forms, Event modifiers, HTTP utilities, Type-safe
 
 #### [@thalesrc/react-utils](libs/react-utils)
 
