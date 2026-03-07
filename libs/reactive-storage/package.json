@@ -1,5 +1,5 @@
 {
-  "name": "@thalesrc/reactive-storage",
+  "name": "@telperion/reactive-storage",
   "version": "0.0.0",
   "dependencies": {
     "tslib": "*",
