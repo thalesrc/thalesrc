@@ -1,6 +1,25 @@
 {
   "name": "@telperion/reactive-storage",
   "version": "0.0.0",
+  "description": "RxJS-based reactive storage library for browser environments. Provides Observable-based wrappers for localStorage, sessionStorage, and cookies with immutability, type safety, and cross-instance synchronization support. Built with TypeScript and RxJS for reactive data management.",
+  "keywords": [
+    "rxjs",
+    "reactive",
+    "storage",
+    "localstorage",
+    "sessionstorage",
+    "cookies",
+    "observable",
+    "browser-storage",
+    "typescript",
+    "immutable",
+    "web-storage",
+    "reactive-programming",
+    "state-management",
+    "async-storage",
+    "cookie-storage",
+    "storage-sync"
+  ],
   "dependencies": {
     "tslib": "*",
     "rxjs": "*",
@@ -16,6 +35,8 @@
     "reactive-storage",
     "reactive-web-storage",
     "reactive-web-local-storage",
-    "reactive-web-session-storage"
-  ]
+    "reactive-web-session-storage",
+    "reactive-cookie-storage"
+  ],
+  "sideEffects": false
 }
