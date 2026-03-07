@@ -4,5 +4,5 @@
   "lib": {
     "entryFile": "src/index.ts"
   },
-  "allowedNonPeerDependencies": ["@thalesrc/reactive-storage", "@thalesrc/js-utils", "@thalesrc/extra-ts-types"]
+  "allowedNonPeerDependencies": ["@telperion/reactive-storage", "@thalesrc/js-utils", "@thalesrc/extra-ts-types"]
 }
