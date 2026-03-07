@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { ReactiveStorage, ReactiveStorageChangeEvent } from "./reactive-storage";
 import { RegexParser } from './regex-parser';
 import { toAsyncIterator } from './async-iterator.polyfill';
+import { jsonParse } from './json-parse';
 
 /**
  * Abstract implementation of ReactiveStorage for browser Web Storage API.
@@ -12,12 +13,8 @@ import { toAsyncIterator } from './async-iterator.polyfill';
  */
 export abstract class AbstractReactiveWebStorage<S extends string = string> extends ReactiveStorage<S> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static JsonParse(string: string): any {
-    try {
-      return JSON.parse(string);
-    } catch {
-      return undefined!;
-    }
+  static #parse(string: string): any {
+    return jsonParse(string);
   }
 
   protected abstract readonly appName: string;
@@ -34,7 +31,7 @@ export abstract class AbstractReactiveWebStorage<S extends string = string> exte
 
     return Object.fromEntries(keys.map(key => [
       key.split('/')[1],
-      AbstractReactiveWebStorage.JsonParse(this.storage.getItem(key)!)
+      AbstractReactiveWebStorage.#parse(this.storage.getItem(key)!)
     ]));
 	}
 
