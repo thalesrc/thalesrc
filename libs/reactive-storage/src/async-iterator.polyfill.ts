@@ -89,5 +89,8 @@ export function toAsyncIterator<T>(observable: Observable<T>): AsyncGenerator<T,
     [Symbol.asyncIterator]() {
       return this;
     },
+    async [Symbol.asyncDispose]() {
+      subscription?.unsubscribe();
+    },
   };
 }
