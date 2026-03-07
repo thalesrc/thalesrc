@@ -120,6 +120,14 @@
     "set/proto/intersection",
     "string/",
     "string/proto/limit",
-    "string/limit"
+    "string/limit",
+    "time/",
+    "time/seconds",
+    "time/minutes",
+    "time/hours",
+    "time/days",
+    "time/weeks",
+    "time/months",
+    "time/years"
   ]
 }
