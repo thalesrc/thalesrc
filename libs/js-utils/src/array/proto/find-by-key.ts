@@ -1,4 +1,4 @@
-import { findByKey } from '@thalesrc/js-utils/array/find-by-key';
+import { findByKey } from '@telperion/js-utils/array/find-by-key';
 
 declare global {
   export interface Array<T> {
@@ -10,7 +10,7 @@ declare global {
      * * * *
      * Example:
      * ```typescript
-     * import "@thalesrc/js-utils/array/proto/find-by-key";
+     * import "@telperion/js-utils/array/proto/find-by-key";
      *
      * const array = [{a: 1}, {a: 2}, {a: 3}];
      *

@@ -4,7 +4,7 @@
  * * * *
  * Example usage:
  * ```typescript
- * import { arrayize } from "@thalesrc/js-utils";
+ * import { arrayize } from "@telperion/js-utils";
  *
  * const foo = 'foo';
  * const bar = ['bar'];

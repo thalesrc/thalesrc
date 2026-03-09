@@ -6,7 +6,7 @@
  * * * *
  * Example:
  * ```typescript
- * import { tryOneByOne } from "@thalesrc/js-utils/promise";
+ * import { tryOneByOne } from "@telperion/js-utils/promise";
  *
  * async function fooFunction() {
  *   const foo = await tryOneByOne([
@@ -22,7 +22,7 @@
  *
  * Static Example:
  * ```typescript
- * import "@thalesrc/js-utils/promise/static/try-one-by-one";
+ * import "@telperion/js-utils/promise/static/try-one-by-one";
  *
  * async function fooFunction() {
  *   const foo = await Promise.tryOneByOne([

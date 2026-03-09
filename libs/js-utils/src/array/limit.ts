@@ -6,7 +6,7 @@
  * * * *
  * Example:
  * ```typescript
- * import { limit } from "@thalesrc/js-utils/array";
+ * import { limit } from "@telperion/js-utils/array";
  *
  * const array = ["a", "b", "c", "d", "e", "f"];
  *
@@ -15,7 +15,7 @@
  *
  * Prototype Example:
  * ```typescript
- * import "@thalesrc/js-utils/array/proto/limit";
+ * import "@telperion/js-utils/array/proto/limit";
  *
  * const array = ["a", "b", "c", "d", "e", "f"];
  *

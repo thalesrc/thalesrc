@@ -1,4 +1,4 @@
-import { SmartMap } from '@thalesrc/js-utils/smart-map';
+import { SmartMap } from '@telperion/js-utils/smart-map';
 
 /**
  * Cache object to store previously created functions
@@ -13,7 +13,7 @@ const CACHE = new SmartMap<any, () => any>();
  * * * *
  * Example:
  * ```typescript
- * import { of } from "@thalesrc/js-utils/function";
+ * import { of } from "@telperion/js-utils/function";
  *
  * const base = [1, 2, 5, {}, "x", "y"];
  * const mapTo = of("thales rocks");
@@ -23,7 +23,7 @@ const CACHE = new SmartMap<any, () => any>();
  * ```
  * Function Static Example:
  * ```typescript
- * import "@thalesrc/js-utils/function/static/of";
+ * import "@telperion/js-utils/function/static/of";
  *
  * const base = [1, 2, 5, {}, "x", "y"];
  * const mapTo = Function.of("thales rocks");

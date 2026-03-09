@@ -6,7 +6,7 @@
  * * * *
  * Example:
  * ```typescript
- * import { uniquify } "@thalesrc/js-utils/array";
+ * import { uniquify } "@telperion/js-utils/array";
  *
  * const array = ["a", "b", "c", "a", "b", "c"];
  *
@@ -15,7 +15,7 @@
  *
  * Prototype Example:
  * ```typescript
- * import "@thalesrc/js-utils/array/proto/uniquify";
+ * import "@telperion/js-utils/array/proto/uniquify";
  *
  * const array = ["a", "b", "c", "a", "b", "c"];
  *

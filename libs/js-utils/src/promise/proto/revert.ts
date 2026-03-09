@@ -1,4 +1,4 @@
-import { revert } from '@thalesrc/js-utils/promise/revert';
+import { revert } from '@telperion/js-utils/promise/revert';
 
 declare global {
   export interface Promise<T> {
@@ -10,7 +10,7 @@ declare global {
      * * * *
      * Example usage:
      * ```typescript
-     * import "@thalesrc/js-utils/dist/as-proto/promise-revert";
+     * import "@telperion/js-utils/dist/as-proto/promise-revert";
      *
      * Promise.reject(new Error('foo'))
      *  .revert()

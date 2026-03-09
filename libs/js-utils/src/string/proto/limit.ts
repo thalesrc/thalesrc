@@ -1,6 +1,6 @@
 import type { Tail } from '@thalesrc/extra-ts-types';
 
-import { limit } from '@thalesrc/js-utils/string/limit';
+import { limit } from '@telperion/js-utils/string/limit';
 
 type FuncType = typeof limit;
 type FuncArgs = Parameters<FuncType>;
@@ -17,7 +17,7 @@ declare global {
      * * * *
      * Example:
      * ```typescript
-     * import "@thalesrc/js-utils/string/proto/limit";
+     * import "@telperion/js-utils/string/proto/limit";
      *
      * const str = 'foobarbaz';
      *

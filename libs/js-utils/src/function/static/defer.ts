@@ -1,4 +1,4 @@
-import { defer } from '@thalesrc/js-utils/function/defer';
+import { defer } from '@telperion/js-utils/function/defer';
 
 declare global {
   export interface FunctionConstructor {
@@ -8,7 +8,7 @@ declare global {
      * * * *
      * Example as promise static method
      * ```typescript
-     * import "@thalesrc/js-utils/function/static/defer";
+     * import "@telperion/js-utils/function/static/defer";
      *
      * Function.defer(() => aFunctionToDefer())
      *  .then(res => ...)

@@ -1,1 +1,1 @@
-export * from '@thalesrc/js-utils/string/limit';
+export * from '@telperion/js-utils/string/limit';

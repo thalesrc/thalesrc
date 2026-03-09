@@ -1,4 +1,4 @@
-import { difference, Substraction } from '@thalesrc/js-utils/array/difference';
+import { difference, Substraction } from '@telperion/js-utils/array/difference';
 
 declare global {
   export interface Array<T> {
@@ -10,7 +10,7 @@ declare global {
      * * * *
      * Example:
      * ```typescript
-     * import "@thalesrc/js-utils/array/proto/array-difference";
+     * import "@telperion/js-utils/array/proto/array-difference";
      *
      * const base = ["a", "b", "c", "d", "a", "b", "c", "d"];
      *

@@ -1,4 +1,4 @@
-import { isTruthy } from '@thalesrc/js-utils/is-truthy';
+import { isTruthy } from '@telperion/js-utils/is-truthy';
 
 /**
  * #### Filters falsy values of the given array
@@ -8,7 +8,7 @@ import { isTruthy } from '@thalesrc/js-utils/is-truthy';
  * * * *
  * Example usage:
  * ```typescript
- * import { compact } from "@thalesrc/js-utils/array";
+ * import { compact } from "@telperion/js-utils/array";
  *
  * const arr = [undefined, "", false, 0, 1, "1"];
  * const compacted = compact(arr); // [1, "1"];
@@ -17,7 +17,7 @@ import { isTruthy } from '@thalesrc/js-utils/is-truthy';
  *
  * Example as Array Prototype:
  * ```typescript
- * import "@thalesrc/js-utils/array/proto/compact";
+ * import "@telperion/js-utils/array/proto/compact";
  *
  * const arr = [undefined, "", false, 0, 1, "1"];
  * const compacted = arr.compact(); // [1, "1"];

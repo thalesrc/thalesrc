@@ -6,7 +6,7 @@
  * * * *
  * Example:
  * ```typescript
- * import { findByKey } from "@thalesrc/js-utils/array";
+ * import { findByKey } from "@telperion/js-utils/array";
  *
  * const array = [{a: 1}, {a: 2}, {a: 3}];
  *
@@ -15,7 +15,7 @@
  *
  * Prototype Example:
  * ```typescript
- * import "@thalesrc/js-utils/array/proto/find-by-key";
+ * import "@telperion/js-utils/array/proto/find-by-key";
  *
  * const array = [{a: 1}, {a: 2}, {a: 3}];
  *

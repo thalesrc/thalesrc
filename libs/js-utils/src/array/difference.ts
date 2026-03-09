@@ -12,7 +12,7 @@ export type Substraction<T = any> = T[] | Set<T>;
  * * * *
  * Example:
  * ```typescript
- * import { difference } from "@thalesrc/js-utils/array";
+ * import { difference } from "@telperion/js-utils/array";
  *
  * const base = ["a", "b", "c", "d", "a", "b", "c", "d"];
  *
@@ -22,7 +22,7 @@ export type Substraction<T = any> = T[] | Set<T>;
  *
  * Array Prototype Example:
  * ```typescript
- * import "@thalesrc/js-utils/array/proto/difference";
+ * import "@telperion/js-utils/array/proto/difference";
  *
  * const base = ["a", "b", "c", "d", "a", "b", "c", "d"];
  *
@@ -31,7 +31,7 @@ export type Substraction<T = any> = T[] | Set<T>;
  *
  * Set Prototype Example:
  * ```typescript
- * import "@thalesrc/js-utils/set/proto/difference";
+ * import "@telperion/js-utils/set/proto/difference";
  *
  * const base = new Set(["a", "b", "c", "d"]);
  *

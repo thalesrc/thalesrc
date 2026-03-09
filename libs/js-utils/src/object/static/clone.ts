@@ -1,4 +1,4 @@
-import { clone } from '@thalesrc/js-utils/object/clone';
+import { clone } from '@telperion/js-utils/object/clone';
 
 declare global {
   export interface ObjectConstructor {
@@ -12,7 +12,7 @@ declare global {
      * * * *
      * Example:
      * ```typescript
-     * import { clone } from "@thalesrc/js-utils";
+     * import { clone } from "@telperion/js-utils";
      *
      * const object = {a: 1, b: {c: true, d: ["x", "y"]}};
      *
@@ -29,7 +29,7 @@ declare global {
      *
      * Static usage example:
      * ```typescript
-     * import "@thalesrc/js-utils/dist/as-static/clone";
+     * import "@telperion/js-utils/dist/as-static/clone";
      *
      * const object = {a: 1, b: 2};
      * const clonedObject = Object.clone(object); // {a: 1, b: 2}

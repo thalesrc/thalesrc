@@ -12,19 +12,19 @@ export {
   replace,
   uniquify,
   uniquifyByKey
-} from '@thalesrc/js-utils/array';
-export * from '@thalesrc/js-utils/class';
-export * from '@thalesrc/js-utils/function';
-export * from '@thalesrc/js-utils/map';
-export * from '@thalesrc/js-utils/math';
-export { clone, deepest, deepFreeze } from '@thalesrc/js-utils/object';
-export * from '@thalesrc/js-utils/promise';
-// export {  } from '@thalesrc/js-utils/string';
+} from '@telperion/js-utils/array';
+export * from '@telperion/js-utils/class';
+export * from '@telperion/js-utils/function';
+export * from '@telperion/js-utils/map';
+export * from '@telperion/js-utils/math';
+export { clone, deepest, deepFreeze } from '@telperion/js-utils/object';
+export * from '@telperion/js-utils/promise';
+// export {  } from '@telperion/js-utils/string';
 
-export * from '@thalesrc/js-utils/compact';
-export * from '@thalesrc/js-utils/is-falsy';
-export * from '@thalesrc/js-utils/is-truthy';
-export * from '@thalesrc/js-utils/open-promise';
-export * from '@thalesrc/js-utils/smart-map';
-export * from '@thalesrc/js-utils/unique-id';
-export * from '@thalesrc/js-utils/limit';
+export * from '@telperion/js-utils/compact';
+export * from '@telperion/js-utils/is-falsy';
+export * from '@telperion/js-utils/is-truthy';
+export * from '@telperion/js-utils/open-promise';
+export * from '@telperion/js-utils/smart-map';
+export * from '@telperion/js-utils/unique-id';
+export * from '@telperion/js-utils/limit';

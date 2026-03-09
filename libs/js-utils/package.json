@@ -1,5 +1,5 @@
 {
-  "name": "@thalesrc/js-utils",
+  "name": "@telperion/js-utils",
   "version": "0.0.0",
   "description": "Javascript utility functions for web development",
   "keywords": [
@@ -28,10 +28,10 @@
     "never",
     "arrayize"
   ],
-  "homepage": "https://js-utils.thalesrc.com",
+  "homepage": "https://open-source.telperion.tr/js-utils",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thalesrc/thalesrc.git",
+    "url": "https://github.com/telperiontech/telperion.git",
     "directory": "libs/js-utils"
   },
   "dependencies": {

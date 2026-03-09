@@ -1,4 +1,4 @@
-import { tryOneByOne } from '@thalesrc/js-utils/promise/try-one-by-one';
+import { tryOneByOne } from '@telperion/js-utils/promise/try-one-by-one';
 
 declare global {
   export interface PromiseConstructor {
@@ -9,7 +9,7 @@ declare global {
      * * * *
      * Example:
      * ```typescript
-     * import "@thalesrc/js-utils/promise/static/try-one-by-one";
+     * import "@telperion/js-utils/promise/static/try-one-by-one";
      *
      * async function fooFunction() {
      *   const foo = await Promise.tryOneByOne([

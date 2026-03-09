@@ -1,4 +1,4 @@
-import { intersection, Inclusion } from '@thalesrc/js-utils/array/intersection';
+import { intersection, Inclusion } from '@telperion/js-utils/array/intersection';
 
 declare global {
   export interface Set<T> {
@@ -10,7 +10,7 @@ declare global {
      * * * *
      * Example:
      * ```typescript
-     * import "@thalesrc/js-utils/set/proto/intersection";
+     * import "@telperion/js-utils/set/proto/intersection";
      *
      * const base = new Set(["a", "b", "c", "d"]);
      *

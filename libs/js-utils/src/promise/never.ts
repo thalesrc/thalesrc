@@ -1,11 +1,11 @@
-import { noop } from '@thalesrc/js-utils/function/noop';
+import { noop } from '@telperion/js-utils/function/noop';
 
 /**
  * A promise which never resolves
  *
  * Example:
  * ```typescript
- * import { NEVER } from '@thalesrc/js-utils/promise';
+ * import { NEVER } from '@telperion/js-utils/promise';
  *
  * function foo(promise = NEVER) {
  *   promise.then(val => {
@@ -21,7 +21,7 @@ export const NEVER = new Promise<any>(noop);
  *
  * Example:
  * ```typescript
- * import { never } from '@thalesrc/js-utils/promise';
+ * import { never } from '@telperion/js-utils/promise';
  *
  * function foo(promise) {
  *   promise = promise || never();

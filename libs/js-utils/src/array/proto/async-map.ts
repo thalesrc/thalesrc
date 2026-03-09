@@ -1,4 +1,4 @@
-import { asyncMap } from '@thalesrc/js-utils/array/async-map';
+import { asyncMap } from '@telperion/js-utils/array/async-map';
 
 declare global {
   export interface Array<T> {
@@ -10,7 +10,7 @@ declare global {
      * * * *
      * Example:
      * ```typescript
-     * import "@thalesrc/js-utils/array/proto/async-map";
+     * import "@telperion/js-utils/array/proto/async-map";
      *
      * const array = [1, 2, 3];
      *

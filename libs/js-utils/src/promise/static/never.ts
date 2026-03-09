@@ -1,4 +1,4 @@
-import { never, NEVER } from '@thalesrc/js-utils/promise/never';
+import { never, NEVER } from '@telperion/js-utils/promise/never';
 
 declare global {
   export interface PromiseConstructor {
@@ -7,7 +7,7 @@ declare global {
      *
      * Example:
      * ```typescript
-     * import '@thalesrc/js-utils/promise/static/never';
+     * import '@telperion/js-utils/promise/static/never';
      *
      * function foo(promise) {
      *   promise = promise || Promise.never();
@@ -27,7 +27,7 @@ declare global {
      *
      * Example:
      * ```typescript
-     * import '@thalesrc/js-utils/promise/static/never';
+     * import '@telperion/js-utils/promise/static/never';
      *
      * function foo(promise = Promise.NEVER) {
      *   promise.then(val => {

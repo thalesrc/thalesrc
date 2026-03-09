@@ -6,7 +6,7 @@ import type { DeepestObject } from "@thalesrc/extra-ts-types";
  *  * * * *
  * Example usage:
  * ```typescript
- * import { deepest } from "@thalesrc/js-utils/object";
+ * import { deepest } from "@telperion/js-utils/object";
  *
  * const a = {
  *  x: null
@@ -25,7 +25,7 @@ import type { DeepestObject } from "@thalesrc/extra-ts-types";
  * ```
  * Static usage example:
  * ```typescript
- * import "@thalesrc/js-utils/object/static/deepest";
+ * import "@telperion/js-utils/object/static/deepest";
  *
  * const a = {
  *  x: null

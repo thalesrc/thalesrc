@@ -1,4 +1,4 @@
-import { chain } from "@thalesrc/js-utils/promise/chain";
+import { chain } from "@telperion/js-utils/promise/chain";
 
 declare global {
   export interface PromiseConstructor {

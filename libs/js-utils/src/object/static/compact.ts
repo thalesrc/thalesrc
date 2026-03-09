@@ -1,4 +1,4 @@
-import { compact } from '@thalesrc/js-utils/object/compact';
+import { compact } from '@telperion/js-utils/object/compact';
 
 declare global {
   export interface ObjectConstructor {
@@ -8,7 +8,7 @@ declare global {
      *  * * * *
      * Example usage:
      * ```typescript
-     * import "@thalesrc/js-utils/object/static/compact";
+     * import "@telperion/js-utils/object/static/compact";
      *
      * const a = {
      *  x: null,

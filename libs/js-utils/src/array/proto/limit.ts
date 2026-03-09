@@ -1,4 +1,4 @@
-import { limit } from '@thalesrc/js-utils/array/limit';
+import { limit } from '@telperion/js-utils/array/limit';
 
 declare global {
   export interface Array<T> {
@@ -10,7 +10,7 @@ declare global {
      * * * *
      * Example:
      * ```typescript
-     * import "@thalesrc/js-utils/array/proto/limit";
+     * import "@telperion/js-utils/array/proto/limit";
      *
      * const array = ["a", "b", "c", "d", "e", "f"];
      *

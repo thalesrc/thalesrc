@@ -1,5 +1,5 @@
-import { limit as strLimit } from '@thalesrc/js-utils/string/limit';
-import { limit as arrLimit } from '@thalesrc/js-utils/array/limit';
+import { limit as strLimit } from '@telperion/js-utils/string/limit';
+import { limit as arrLimit } from '@telperion/js-utils/array/limit';
 
 export function limit<T = any>(array: T[], count: number): T[];
 export function limit(str: string, count: number): string;
@@ -11,7 +11,7 @@ export function limit(str: string, count: number): string;
  * * * *
  * Example usage:
  * ```typescript
- * import { limit } from "@thalesrc/js-utils";
+ * import { limit } from "@telperion/js-utils";
  *
  * const str = 'foobarbaz';
  * const array = ["a", "b", "c", "d", "e", "f"];

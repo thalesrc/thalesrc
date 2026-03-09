@@ -1,5 +1,5 @@
-import { compact as objCompact } from '@thalesrc/js-utils/object/compact';
-import { compact as arrCompact } from '@thalesrc/js-utils/array/compact';
+import { compact as objCompact } from '@telperion/js-utils/object/compact';
+import { compact as arrCompact } from '@telperion/js-utils/array/compact';
 
 export function compact<T = any>(array: T[]): T[];
 export function compact<T extends Object>(object: T): Partial<T>;
@@ -12,7 +12,7 @@ export function compact<T extends Object>(object: T): Partial<T>;
  * * * *
  * Example usage:
  * ```typescript
- * import { compact } from "@thalesrc/js-utils";
+ * import { compact } from "@telperion/js-utils";
  *
  * const arr = [undefined, "", false, 0, 1, "1"];
  * const compacted = compact(arr); // [1, "1"];

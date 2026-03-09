@@ -1,6 +1,6 @@
-import { timeout } from '@thalesrc/js-utils/promise/timeout';
-import { promisify } from '@thalesrc/js-utils/promise/promisify';
-import { OpenPromise } from '@thalesrc/js-utils/open-promise';
+import { timeout } from '@telperion/js-utils/promise/timeout';
+import { promisify } from '@telperion/js-utils/promise/promisify';
+import { OpenPromise } from '@telperion/js-utils/open-promise';
 
 export type DebounceFunction<T> = (...args: any[]) => (T | Promise<T>);
 
@@ -62,7 +62,7 @@ export function debounceWithKey<T>(
  * * * *
  * Example usage:
  * ```typescript
- * import { debounce } from "@thalesrc/js-utils/promise";
+ * import { debounce } from "@telperion/js-utils/promise";
  *
  * function foo() {
  *   console.log("hello");
@@ -77,7 +77,7 @@ export function debounceWithKey<T>(
  *
  * Static usage example:
  * ```typescript
- * import "@thalesrc/js-utils/dist/as-proto/debounce";
+ * import "@telperion/js-utils/dist/as-proto/debounce";
  *
  * function foo() {
  *   console.log("hello");

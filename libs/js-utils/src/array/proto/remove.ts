@@ -1,6 +1,6 @@
 import type { Tail } from '@thalesrc/extra-ts-types';
 
-import { remove } from '@thalesrc/js-utils/array/remove';
+import { remove } from '@telperion/js-utils/array/remove';
 
 type FuncType<T> = typeof remove<T>;
 type FuncArgs<T> = Parameters<FuncType<T>>;
@@ -19,7 +19,7 @@ declare global {
      * * * *
      * Example:
      * ```typescript
-     * import "@thalesrc/js-utils/array/proto/remove";
+     * import "@telperion/js-utils/array/proto/remove";
      *
      * const array = ["a", "b", "c", "a", "b", "c"];
      *

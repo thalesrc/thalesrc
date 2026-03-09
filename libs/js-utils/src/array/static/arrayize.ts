@@ -1,4 +1,4 @@
-import { arrayize } from "@thalesrc/js-utils/array/arrayize";
+import { arrayize } from "@telperion/js-utils/array/arrayize";
 
 declare global {
   export interface ArrayConstructor {

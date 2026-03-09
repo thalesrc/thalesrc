@@ -1,4 +1,4 @@
-import { intersection, Inclusion } from '@thalesrc/js-utils/array/intersection';
+import { intersection, Inclusion } from '@telperion/js-utils/array/intersection';
 
 declare global {
   export interface Array<T> {
@@ -10,7 +10,7 @@ declare global {
      * * * *
      * Example:
      * ```typescript
-     * import "@thalesrc/js-utils/array/proto/intersection";
+     * import "@telperion/js-utils/array/proto/intersection";
      *
      * const base = ["a", "b", "c", "d", "a", "b", "c", "d"];
      *

@@ -1,4 +1,4 @@
-import { noop } from '@thalesrc/js-utils/function/noop';
+import { noop } from '@telperion/js-utils/function/noop';
 
 declare global {
   export interface FunctionConstructor {
@@ -7,7 +7,7 @@ declare global {
      * * * *
      * Static usage example:
      * ```typescript
-     * import "@thalesrc/js-utils/function/static/noop";
+     * import "@telperion/js-utils/function/static/noop";
      *
      * Function.noop();
      * document.onload = Function.noop;

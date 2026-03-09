@@ -1,6 +1,6 @@
 import type { Tail } from '@thalesrc/extra-ts-types';
 
-import { replace, ReplaceItemsOptions, ReplaceByMapOptions } from '@thalesrc/js-utils/array/replace';
+import { replace, ReplaceItemsOptions, ReplaceByMapOptions } from '@telperion/js-utils/array/replace';
 
 declare global {
   export interface Array<T> {
@@ -12,7 +12,7 @@ declare global {
      * * * *
      * Example:
      * ```typescript
-     * import "@thalesrc/js-utils/array/proto/replace";
+     * import "@telperion/js-utils/array/proto/replace";
      *
      * const array = ["a", "b", "c", "a", "b", "c"];
      *
@@ -34,7 +34,7 @@ declare global {
      * * * *
      * Example:
      * ```typescript
-     * import "@thalesrc/js-utils/array/proto/replace";
+     * import "@telperion/js-utils/array/proto/replace";
      *
      * const array = ["a", "b", "c", "a", "b", "c"];
      *
@@ -56,7 +56,7 @@ declare global {
      * * * *
      * Example:
      * ```typescript
-     * import "@thalesrc/js-utils/array/proto/replace";
+     * import "@telperion/js-utils/array/proto/replace";
      *
      * const array = ["a", "b", "c", "a", "b", "c"];
      * const map = new Map();

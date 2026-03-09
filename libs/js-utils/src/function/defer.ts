@@ -1,4 +1,4 @@
-import { noop } from '@thalesrc/js-utils/function/noop';
+import { noop } from '@telperion/js-utils/function/noop';
 
 /**
  * #### Delays the execution of the passed function to increase the render performance
@@ -6,7 +6,7 @@ import { noop } from '@thalesrc/js-utils/function/noop';
  * * * *
  * Example usage:
  * ```typescript
- * import { defer } from "@thalesrc/js-utils/function";
+ * import { defer } from "@telperion/js-utils/function";
  *
  * defer(() => aFunctionToDefer())
  *  .then(res => ...)
@@ -14,7 +14,7 @@ import { noop } from '@thalesrc/js-utils/function/noop';
  * ```
  * Example as promise static method
  * ```typescript
- * import "@thalesrc/js-utils/function/static/defer";
+ * import "@telperion/js-utils/function/static/defer";
  *
  * Function.defer(() => aFunctionToDefer())
  *  .then(res => ...)

@@ -19,7 +19,7 @@ const PROPS_TO_FILTER = ['constructor'];
  * * * *
  * Example:
  * ```typescript
- * import { mixin } from "@thalesrc/js-utils/class";
+ * import { mixin } from "@telperion/js-utils/class";
  *
  * class Timestamped {
  *   timestamp = Date.now();

@@ -6,7 +6,7 @@
  * * * *
  * Example:
  * ```typescript
- * import { uniquifyByKey } "@thalesrc/js-utils/array";
+ * import { uniquifyByKey } "@telperion/js-utils/array";
  *
  * const array = [{a: 1}, {a: 1}, {a: 2}, {a: 3}, {a: 3}, {a: 4}];
  *
@@ -15,7 +15,7 @@
  *
  * Prototype Example:
  * ```typescript
- * import "@thalesrc/js-utils/array/proto/uniquify-by-key";
+ * import "@telperion/js-utils/array/proto/uniquify-by-key";
  *
  * const array = [{a: 1}, {a: 1}, {a: 2}, {a: 3}, {a: 3}, {a: 4}];
  *

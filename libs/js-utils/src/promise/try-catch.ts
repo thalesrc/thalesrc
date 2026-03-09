@@ -6,7 +6,7 @@
  * * * *
  * Example:
  * ```typescript
- * import { tryCatch } from "@thalesrc/js-utils/promise";
+ * import { tryCatch } from "@telperion/js-utils/promise";
  *
  * async function fooFunction() {
  *   const promise = anAsyncCall();
@@ -23,7 +23,7 @@
  *
  * Prototype Example:
  * ```typescript
- * import "@thalesrc/js-utils/promise/proto/try-catch";
+ * import "@telperion/js-utils/promise/proto/try-catch";
  *
  * async function fooFunction() {
  *   const [error, result] = await anAsyncCall().tryCatch();

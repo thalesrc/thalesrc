@@ -1,4 +1,4 @@
-import { minMax } from '@thalesrc/js-utils/math/min-max';
+import { minMax } from '@telperion/js-utils/math/min-max';
 
 declare global {
   export interface Math {
@@ -7,7 +7,7 @@ declare global {
      *
      * * * *
      * ```typescript
-     * import "@thalesrc/js-utils/math/static/min-max";
+     * import "@telperion/js-utils/math/static/min-max";
      *
      * const limitedValue = Math.minMax(200, 300, Math.random() * 1000);
      * ```

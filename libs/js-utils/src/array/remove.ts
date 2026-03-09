@@ -8,7 +8,7 @@
  * * * *
  * Example:
  * ```typescript
- * import { remove } from "@thalesrc/js-utils/array";
+ * import { remove } from "@telperion/js-utils/array";
  *
  * const array = ["a", "b", "c", "a", "b", "c"];
  *
@@ -18,7 +18,7 @@
  *
  * Prototype Example:
  * ```typescript
- * import "@thalesrc/js-utils/array/proto/remove";
+ * import "@telperion/js-utils/array/proto/remove";
  *
  * const array = ["a", "b", "c", "a", "b", "c"];
  *

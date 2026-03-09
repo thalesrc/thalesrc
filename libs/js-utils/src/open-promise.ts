@@ -1,5 +1,5 @@
 import type { ConstructorType } from '@thalesrc/extra-ts-types';
-import { noop } from '@thalesrc/js-utils/function/noop';
+import { noop } from '@telperion/js-utils/function/noop';
 
 type Executor<T> = ConstructorParameters<ConstructorType<typeof Promise<T>>>[0];
 type ExecutorParams<T> = Parameters<Executor<T>>;
@@ -16,7 +16,7 @@ type Rejector = ExecutorParams<unknown>[1];
  * Example with native alternative:
  * ```typescript
  * // Instead of:
- * // import { OpenPromise } from "@thalesrc/js-utils";
+ * // import { OpenPromise } from "@telperion/js-utils";
  * // const aPromiseWillBeResolvedLater = new OpenPromise();
  *
  * // Use:
@@ -31,7 +31,7 @@ type Rejector = ExecutorParams<unknown>[1];
  *
  * Legacy Example:
  * ```typescript
- * import { OpenPromise } from "@thalesrc/js-utils";
+ * import { OpenPromise } from "@telperion/js-utils";
  *
  * const aPromiseWillBeResolvedLater = new OpenPromise();
  *

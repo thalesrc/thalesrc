@@ -1,4 +1,4 @@
-import { limit as arrLimit } from '@thalesrc/js-utils/array/limit';
+import { limit as arrLimit } from '@telperion/js-utils/array/limit';
 
 /**
  * #### Limit
@@ -8,7 +8,7 @@ import { limit as arrLimit } from '@thalesrc/js-utils/array/limit';
  * * * *
  * Example:
  * ```typescript
- * import { limit } from "@thalesrc/js-utils/string";
+ * import { limit } from "@telperion/js-utils/string";
  *
  * const str = 'foobarbaz';
  *
@@ -17,7 +17,7 @@ import { limit as arrLimit } from '@thalesrc/js-utils/array/limit';
  *
  * Prototype Example:
  * ```typescript
- * import "@thalesrc/js-utils/string/proto/limit";
+ * import "@telperion/js-utils/string/proto/limit";
  *
  * const str = 'foobarbaz';
  *

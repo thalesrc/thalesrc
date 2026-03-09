@@ -11,7 +11,7 @@ const KEY__WEAKMAP: unique symbol = Symbol('SmartMap.weakMap');
  * * * *
  * Example usage:
  * ```typescript
- * import { SmartMap } from "@thalesrc/js-utils";
+ * import { SmartMap } from "@telperion/js-utils";
  *
  * const aMap = new SmartMap();
  *

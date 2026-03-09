@@ -1,4 +1,4 @@
-import { deepest } from '@thalesrc/js-utils/object/deepest';
+import { deepest } from '@telperion/js-utils/object/deepest';
 
 declare global {
   export interface ObjectConstructor {
@@ -8,7 +8,7 @@ declare global {
      *  * * * *
      * Example usage:
      * ```typescript
-     * import "@thalesrc/js-utils/object/static/deepest";
+     * import "@telperion/js-utils/object/static/deepest";
      *
      * const a = {
      *  x: null

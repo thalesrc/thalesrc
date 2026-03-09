@@ -1,6 +1,6 @@
 import type { AnyFunction } from '@thalesrc/extra-ts-types';
 
-import { debounce, DEFAULT_DEBOUNCE_TIME } from '@thalesrc/js-utils/function/debounce';
+import { debounce, DEFAULT_DEBOUNCE_TIME } from '@telperion/js-utils/function/debounce';
 
 declare global {
   export interface Function {
@@ -10,7 +10,7 @@ declare global {
      * * * *
      * Example usage:
      * ```typescript
-     * import "@thalesrc/js-utils/function/proto/debounce";
+     * import "@telperion/js-utils/function/proto/debounce";
      *
      * function foo() {
      *   console.log("hello");

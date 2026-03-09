@@ -1,4 +1,4 @@
-import { OpenPromise } from '@thalesrc/js-utils/open-promise';
+import { OpenPromise } from '@telperion/js-utils/open-promise';
 
 export interface PromiseTimeoutFunction {
   /**
@@ -15,7 +15,7 @@ export interface PromiseTimeoutFunction {
    * * * *
    * Usage via promise instance:
    * ```typescript
-   * import { timeout } from "@thalesrc/js-utils/promise";
+   * import { timeout } from "@telperion/js-utils/promise";
    *
    * const timeout = timeout(1000);
    *
@@ -28,7 +28,7 @@ export interface PromiseTimeoutFunction {
    *
    * Usage via key
    * ```typescript
-   * import { timeout } from "@thalesrc/js-utils/promise";
+   * import { timeout } from "@telperion/js-utils/promise";
    *
    * const key = Symbol();
    *
@@ -40,7 +40,7 @@ export interface PromiseTimeoutFunction {
    * ```
    * Static usage example:
    * ```typescript
-   * import "@thalesrc/js-utils/promise/static/timeout";
+   * import "@telperion/js-utils/promise/static/timeout";
    *
    * const timeout = Promise.timeout(1000);
    *
@@ -158,21 +158,21 @@ function promiseTimeoutInitializer() {
  * * * *
  * Example:
  * ```typescript
- * import { timeout } from "@thalesrc/js-utils/promise";
+ * import { timeout } from "@telperion/js-utils/promise";
  *
  * timeout(1000);
  *  .then(() => console.log("will be logged after a second"));
  * ```
  * Example with a resolve value:
  * ```typescript
- * import { timeout } from "@thalesrc/js-utils/promise";
+ * import { timeout } from "@telperion/js-utils/promise";
  *
  * timeout(1000, "foo");
  *  .then(val => console.log("will log 'foo' after a second", val));
  * ```
  * Can be used in promise chaining:
  * ```typescript
- * import { timeout } from "@thalesrc/js-utils/promise";
+ * import { timeout } from "@telperion/js-utils/promise";
  *
  * fetch("http://localhost:8080/anEndpoint") // Fetch something
  *  .then(val => timeout(1000, val)) // Wait a second after response
@@ -182,7 +182,7 @@ function promiseTimeoutInitializer() {
  * ```
  * Static usage example:
  * ```typescript
- * import "@thalesrc/js-utils/promise/static/timeout";
+ * import "@telperion/js-utils/promise/static/timeout";
  *
  * Promise.timeout(1000);
  *  .then(() => console.log("will be logged after a second"));

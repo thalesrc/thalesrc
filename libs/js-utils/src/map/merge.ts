@@ -6,7 +6,7 @@
  * * * *
  * Example usage:
  * ```typescript
- * import { merge } from "@thalesrc/js-utils/map";
+ * import { merge } from "@telperion/js-utils/map";
  *
  * const first = new Map();
  * first.set("a", 1);

@@ -6,7 +6,7 @@
  * * * *
  * Example:
  * ```typescript
- * import { asyncMap } "@thalesrc/js-utils/array";
+ * import { asyncMap } "@telperion/js-utils/array";
  *
  * const array = [1, 2, 3];
  *
@@ -19,7 +19,7 @@
  *
  * Example as Array Prototype:
  * ```typescript
- * import "@thalesrc/js-utils/array/proto/async-map";
+ * import "@telperion/js-utils/array/proto/async-map";
  *
  * const array = [1, 2, 3];
  *

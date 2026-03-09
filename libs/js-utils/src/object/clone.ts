@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { difference } from '@thalesrc/js-utils/array/difference';
-import { intersection } from '@thalesrc/js-utils/array/intersection';
-import { merge } from '@thalesrc/js-utils/map/merge';
+import { difference } from '@telperion/js-utils/array/difference';
+import { intersection } from '@telperion/js-utils/array/intersection';
+import { merge } from '@telperion/js-utils/map/merge';
 
 /**
  * #### Cloning Options
@@ -16,7 +16,7 @@ export interface ICloneOptions {
    * * * *
    * Example:
    * ```typescript
-   * import { clone } from "@thalesrc/js-utils/object";
+   * import { clone } from "@telperion/js-utils/object";
    *
    * const object = {
    *   width: 250,
@@ -38,7 +38,7 @@ export interface ICloneOptions {
    * * * *
    * Example:
    * ```typescript
-   * import { clone } from "@thalesrc/js-utils/object";
+   * import { clone } from "@telperion/js-utils/object";
    *
    * const john = { age: 20, willBeReferenced: true };
    * const jane = { age: 25, willBeReferenced: false };
@@ -64,7 +64,7 @@ export interface ICloneOptions {
    * * * *
    * Example:
    * ```typescript
-   * import { clone } from "@thalesrc/js-utils/object";
+   * import { clone } from "@telperion/js-utils/object";
    *
    * const object = {
    *   width: 250,
@@ -85,7 +85,7 @@ export interface ICloneOptions {
    * * * *
    * Example:
    * ```typescript
-   * import { clone } from "@thalesrc/js-utils/object";
+   * import { clone } from "@telperion/js-utils/object";
    *
    * const object = {
    *  width: 250,
@@ -230,7 +230,7 @@ function objectCloner(objectToClone: Record<any, any>, options: TNonOptionalClon
  * * * *
  * Example:
  * ```typescript
- * import { clone } from "@thalesrc/js-utils/object";
+ * import { clone } from "@telperion/js-utils/object";
  *
  * const object = {a: 1, b: {c: true, d: ["x", "y"]}};
  *
@@ -247,7 +247,7 @@ function objectCloner(objectToClone: Record<any, any>, options: TNonOptionalClon
  *
  * Static usage example:
  * ```typescript
- * import "@thalesrc/js-utils/object/static/clone";
+ * import "@telperion/js-utils/object/static/clone";
  *
  * const object = {a: 1, b: 2};
  * const clonedObject = Object.clone(object); // {a: 1, b: 2}

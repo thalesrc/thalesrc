@@ -1,4 +1,4 @@
-import { timeout, PromiseTimeoutFunction } from '@thalesrc/js-utils/promise/timeout';
+import { timeout, PromiseTimeoutFunction } from '@telperion/js-utils/promise/timeout';
 
 declare global {
   export interface PromiseConstructor {
@@ -9,7 +9,7 @@ declare global {
      * * * *
      * Example:
      * ```typescript
-     * import "@thalesrc/js-utils/promise/static/timeout";
+     * import "@telperion/js-utils/promise/static/timeout";
      *
      * Promise.timeout(1000);
      *  .then(() => console.log("will be logged after a second"));

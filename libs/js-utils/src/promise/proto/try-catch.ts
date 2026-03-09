@@ -1,4 +1,4 @@
-import { tryCatch } from '@thalesrc/js-utils/promise/try-catch';
+import { tryCatch } from '@telperion/js-utils/promise/try-catch';
 
 declare global {
   export interface Promise<T> {
@@ -10,7 +10,7 @@ declare global {
      * * * *
      * Example:
      * ```typescript
-     * import "@thalesrc/js-utils/as-proto/promise-try-catch";
+     * import "@telperion/js-utils/as-proto/promise-try-catch";
      *
      * async function fooFunction() {
      *   const [error, result] = await anAsyncCall().tryCatch();

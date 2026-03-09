@@ -1,4 +1,4 @@
-import { uniquifyByKey } from '@thalesrc/js-utils/array/uniquify-by-key';
+import { uniquifyByKey } from '@telperion/js-utils/array/uniquify-by-key';
 
 declare global {
   export interface Array<T> {
@@ -10,7 +10,7 @@ declare global {
      * * * *
      * Example:
      * ```typescript
-     * import "@thalesrc/js-utils/array/proto/uniquify-by-key";
+     * import "@telperion/js-utils/array/proto/uniquify-by-key";
      *
      * const array = [{a: 1}, {a: 1}, {a: 2}, {a: 3}, {a: 3}, {a: 4}];
      *

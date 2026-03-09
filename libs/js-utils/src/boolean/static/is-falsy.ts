@@ -1,4 +1,4 @@
-import { isFalsy } from '@thalesrc/js-utils/is-falsy';
+import { isFalsy } from '@telperion/js-utils/is-falsy';
 
 declare global {
   export interface BooleanConstructor {
@@ -8,7 +8,7 @@ declare global {
      * * * *
      * Example usage:
      * ```typescript
-     * import "@thalesrc/js-utils/boolean/static/is-falsy";
+     * import "@telperion/js-utils/boolean/static/is-falsy";
      *
      * Boolean.isFalsy(undefined); // true
      * Boolean.isFalsy(true); // false

@@ -1,4 +1,4 @@
-import { uniquify } from '@thalesrc/js-utils/array/uniquify';
+import { uniquify } from '@telperion/js-utils/array/uniquify';
 
 declare global {
   export interface Array<T> {
@@ -10,7 +10,7 @@ declare global {
      * * * *
      * Example:
      * ```typescript
-     * import "@thalesrc/js-utils/array/proto/uniquify";
+     * import "@telperion/js-utils/array/proto/uniquify";
      *
      * const array = ["a", "b", "c", "a", "b", "c"];
      *

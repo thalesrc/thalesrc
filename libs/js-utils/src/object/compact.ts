@@ -6,7 +6,7 @@
  *  * * * *
  * Example usage:
  * ```typescript
- * import { compact } from "@thalesrc/js-utils/object";
+ * import { compact } from "@telperion/js-utils/object";
  *
  * const a = {
  *  x: null,
@@ -19,7 +19,7 @@
  * ```
  * Static usage example:
  * ```typescript
- * import "@thalesrc/js-utils/object/static/compact";
+ * import "@telperion/js-utils/object/static/compact";
  *
  * const a = {
  *  x: null,
