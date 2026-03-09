@@ -406,6 +406,73 @@ const str = 'foobarbaz';
 limit(str, 3); // 'foo'
 ```
 
+### Time
+
+Time utility functions for converting time units to milliseconds. These are particularly useful for setTimeout, setInterval, and Date operations.
+
+#### [Seconds](https://open-source.telperion.tr/js-utils/modules/_time_seconds_.html)
+Converts seconds to milliseconds
+
+```typescript
+import { seconds } from "@telperion/js-utils/time";
+
+setTimeout(() => console.log('5 seconds later'), seconds(5));
+```
+
+#### [Minutes](https://open-source.telperion.tr/js-utils/modules/_time_minutes_.html)
+Converts minutes to milliseconds
+
+```typescript
+import { minutes } from "@telperion/js-utils/time";
+
+setTimeout(() => console.log('2 minutes later'), minutes(2));
+```
+
+#### [Hours](https://open-source.telperion.tr/js-utils/modules/_time_hours_.html)
+Converts hours to milliseconds
+
+```typescript
+import { hours } from "@telperion/js-utils/time";
+
+const sessionDuration = hours(2); // 7200000 ms
+```
+
+#### [Days](https://open-source.telperion.tr/js-utils/modules/_time_days_.html)
+Converts days to milliseconds
+
+```typescript
+import { days } from "@telperion/js-utils/time";
+
+const expiryDate = Date.now() + days(7); // 7 days from now
+```
+
+#### [Weeks](https://open-source.telperion.tr/js-utils/modules/_time_weeks_.html)
+Converts weeks to milliseconds
+
+```typescript
+import { weeks } from "@telperion/js-utils/time";
+
+const trialPeriod = weeks(2); // 2 weeks in milliseconds
+```
+
+#### [Months](https://open-source.telperion.tr/js-utils/modules/_time_months_.html)
+Converts months to milliseconds (assumes 30 days per month)
+
+```typescript
+import { months } from "@telperion/js-utils/time";
+
+const subscriptionPeriod = months(3); // ~3 months in milliseconds
+```
+
+#### [Years](https://open-source.telperion.tr/js-utils/modules/_time_years_.html)
+Converts years to milliseconds (assumes 365 days per year)
+
+```typescript
+import { years } from "@telperion/js-utils/time";
+
+const licenseExpiry = Date.now() + years(1); // ~1 year from now
+```
+
 ### Etc.
 
 #### [Arrayize](https://open-source.telperion.tr/js-utils/modules/_arrayize_.html)
