@@ -15,9 +15,9 @@ coverage:
 # Define flags for each library
 # Each library uploads coverage with its own flag for independent tracking
 flags:
-  hermes:
+  messenger:
     paths:
-      - libs/hermes/src/
+      - libs/messenger/src/
     carryforward: true
 
   js-utils:

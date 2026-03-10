@@ -51,7 +51,7 @@ export class IframeMessageHost extends MessageHost {
       id: messageId,
     };
 
-    (source as any).postMessage(message);
+    (source as any).postMessage(message, '*');
   }
 
   #handler = ({ data, source }: MessageEvent<Message>) => {
