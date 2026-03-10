@@ -1,19 +1,19 @@
-name: Hermes / Publish
+name: Messenger / Publish
 
 on:
-  repository_dispatch:
-    types: [publish-hermes]
+  push:
+    tags:
+      - 'messenger-v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     env:
-      TAG_NAME: ${{ github.event.client_payload.tag }}
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     steps:
-      - name: Set package version env variable
-        run: echo "PACKAGE_VERSION=${TAG_NAME#hermes-v}" >> $GITHUB_ENV
+      - name: Set package version
+        run: echo "PACKAGE_VERSION=${GITHUB_REF_NAME#messenger-v}" >> $GITHUB_ENV
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,17 +34,17 @@ jobs:
         run: pnpm install
 
       - name: Test with Coverage
-        run: pnpm nx run hermes:test/coverage
+        run: pnpm nx run messenger:test/coverage
 
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./coverage/libs/hermes/merged
-          flags: hermes
-          name: hermes-coverage
+          directory: ./coverage/libs/messenger/merged
+          flags: messenger
+          name: messenger-coverage
           fail_ci_if_error: false
           verbose: true
 
       - name: Publish
-        run: pnpm nx run hermes:publish
+        run: pnpm nx run messenger:publish
