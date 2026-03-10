@@ -8,14 +8,17 @@ import { CHANNEL_PATH_SPLITTER } from './channel-path-splitter';
 import { DEFAULT_CHANNEL_NAME } from './default-channel-name';
 import { IFrame } from './iframe.type';
 
+const TARGET_FRAME = Symbol('IframeMessageClient Target Frame');
+const OPTION_TARGET_FRAME = Symbol('IframeMessageClient Option Target Frame');
+
 export class IframeMessageClient extends MessageClient {
   public [RESPONSES$] = new Subject<MessageResponse>();
-  #_targetFrame: IFrame | undefined;
+  private [OPTION_TARGET_FRAME]: IFrame;
 
-  get #targetFrame(): null | HTMLIFrameElement {
-    return typeof this.#_targetFrame === 'function'
-      ? (this.#_targetFrame as () => HTMLIFrameElement)() ?? null
-      : this.#_targetFrame as HTMLIFrameElement ?? null;
+  private get [TARGET_FRAME](): null | HTMLIFrameElement {
+    return typeof this[OPTION_TARGET_FRAME] === 'function'
+      ? (this[OPTION_TARGET_FRAME] as () => HTMLIFrameElement | undefined)() ?? null
+      : this[OPTION_TARGET_FRAME] as HTMLIFrameElement ?? null;
   }
 
   constructor(
@@ -24,10 +27,10 @@ export class IframeMessageClient extends MessageClient {
   ) {
     super();
 
-    this.#_targetFrame = targetFrame;
+    this[OPTION_TARGET_FRAME] = targetFrame;
 
     window.addEventListener('message', ({ data, source }: MessageEvent<SuccessfulMessageResponse>) => {
-      const target = this.#targetFrame;
+      const target = this[TARGET_FRAME];
 
       if (target && source !== target.contentWindow) return;
 
@@ -46,7 +49,7 @@ export class IframeMessageClient extends MessageClient {
   public [SEND]<T>(message: Message<T>) {
     message = { ...message, path: `${this.channelName}${CHANNEL_PATH_SPLITTER}${message.path}` };
 
-    const target = this.#targetFrame;
+    const target = this[TARGET_FRAME];
 
     if (target) {
       target.contentWindow!.postMessage(message, '*');

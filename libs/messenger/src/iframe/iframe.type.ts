@@ -1,1 +1,1 @@
-export type IFrame = HTMLIFrameElement | (() => HTMLIFrameElement);
+export type IFrame = HTMLIFrameElement | (() => HTMLIFrameElement | undefined) | undefined;
