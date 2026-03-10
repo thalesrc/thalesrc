@@ -1,0 +1,183 @@
+{
+  "name": "messenger",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/messenger/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@thalesrc/nx-utils:ts-builder",
+      "options": {
+        "tsConfigPath": "libs/messenger/tsconfig.lib.json",
+        "outputPath": "dist/libs/messenger"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run messenger:test/core",
+          "nx run messenger:test/worker",
+          "nx run messenger:test/chrome",
+          "nx run messenger:test/broadcast",
+          "nx run messenger:test/iframe"
+        ],
+        "parallel": true
+      },
+      "dependsOn": ["test/prepare/browser"],
+      "configurations": {
+        "with-coverage": {
+          "commands": [
+            "nx run messenger:test/core:with-coverage",
+            "nx run messenger:test/worker:with-coverage",
+            "nx run messenger:test/chrome:with-coverage",
+            "nx run messenger:test/broadcast:with-coverage",
+            "nx run messenger:test/iframe:with-coverage"
+          ]
+        }
+      }
+    },
+    "test/coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run messenger:test:with-coverage",
+          "node libs/messenger/scripts/merge-coverage.mjs"
+        ],
+        "parallel": false
+      },
+      "dependsOn": ["test/prepare/browser"]
+    },
+    "test/core": {
+      "executor": "@nx/vite:test",
+      "options": {
+        "configFile": "libs/messenger/config/vitest.core.config.ts",
+        "passWithNoTests": true,
+        "coverage": false
+      },
+      "configurations": {
+        "with-coverage": {
+          "coverage": true
+        }
+      }
+    },
+    "test/worker": {
+      "executor": "@nx/vite:test",
+      "options": {
+        "configFile": "libs/messenger/config/vitest.worker.config.ts",
+        "passWithNoTests": true,
+        "coverage": false
+      },
+      "dependsOn": ["test/prepare/browser"],
+      "configurations": {
+        "with-coverage": {
+          "coverage": true
+        }
+      }
+    },
+    "test/chrome": {
+      "executor": "@nx/vite:test",
+      "options": {
+        "configFile": "libs/messenger/config/vitest.chrome.config.ts",
+        "passWithNoTests": true,
+        "coverage": false
+      },
+      "dependsOn": ["test/prepare/browser"],
+      "configurations": {
+        "with-coverage": {
+          "coverage": true
+        }
+      }
+    },
+    "test/broadcast": {
+      "executor": "@nx/vite:test",
+      "options": {
+        "configFile": "libs/messenger/config/vitest.broadcast.config.ts",
+        "passWithNoTests": true,
+        "coverage": false
+      },
+      "dependsOn": ["test/prepare/browser"],
+      "configurations": {
+        "with-coverage": {
+          "coverage": true
+        }
+      }
+    },
+    "test/iframe": {
+      "executor": "@nx/vite:test",
+      "options": {
+        "configFile": "libs/messenger/config/vitest.iframe.config.ts",
+        "passWithNoTests": true,
+        "coverage": false
+      },
+      "dependsOn": ["test/prepare/browser"],
+      "configurations": {
+        "with-coverage": {
+          "coverage": true
+        }
+      }
+    },
+
+    "test/prepare/browser": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec playwright install chromium",
+        "cwd": "{projectRoot}"
+      },
+      "cache": true,
+      "outputs": []
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run messenger:publish/prepare",
+          "nx run messenger:publish/to-npm"
+        ],
+        "parallel": false
+      }
+    },
+    "publish/prepare": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run messenger:build",
+          "nx run messenger:publish/prepare/copy",
+          "nx run messenger:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
+        ]
+      }
+    },
+    "publish/prepare/copy": {
+      "executor": "@thalesrc/nx-utils:copy",
+      "options": {
+        "input": [
+          "libs/messenger/README.md",
+          "libs/messenger/LICENSE",
+          {
+            "path": "libs/messenger/docs/images/**/*.svg",
+            "output": "dist/libs/messenger/docs/images"
+          }
+        ],
+        "output": "dist/libs/messenger"
+      }
+    },
+    "publish/prepare/fill-package-json": {
+      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "options": {
+        "outputPath": "dist/libs/messenger",
+        "populateExports": {}
+      }
+    },
+    "publish/to-npm": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm publish --access public",
+        "cwd": "dist/libs/messenger"
+      }
+    }
+  }
+}

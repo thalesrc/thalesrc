@@ -1,0 +1,50 @@
+{
+  "name": "@telperion/messenger",
+  "version": "0.0.0",
+  "description": "Javascript messaging library",
+  "keywords": [
+    "javascript",
+    "messaging",
+    "send",
+    "message",
+    "chrome",
+    "extension",
+    "extensions",
+    "nodejs",
+    "child",
+    "process",
+    "webworkers"
+  ],
+  "homepage": "https://open-source.telperion.tr/messenger",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/telperiontech/telperion.git",
+    "directory": "libs/messenger"
+  },
+  "dependencies": {
+    "@telperion/js-utils": "^3.5.0",
+    "rxjs": "*",
+    "tslib": "*"
+  },
+  "type": "module",
+  "module": "./index.js",
+  "main": "./index.cjs",
+  "typings": "./index.d.ts",
+  "_exports": [
+    "broadcast/",
+    "broadcast/message-client",
+    "broadcast/message-host",
+    "broadcast/message-service",
+    "chrome/",
+    "chrome/message-client",
+    "chrome/message-host",
+    "iframe/",
+    "iframe/message-client",
+    "iframe/message-host",
+    "iframe/message-service",
+    "worker/",
+    "worker/message-client",
+    "worker/message-host",
+    "worker/message-service"
+  ]
+}
