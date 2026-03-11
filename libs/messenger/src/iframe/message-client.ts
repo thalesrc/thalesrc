@@ -20,7 +20,7 @@ export class IframeMessageClient extends MessageClient {
 
   constructor(
     private channelName = DEFAULT_CHANNEL_NAME,
-    targetFrame: IFrameArg
+    targetFrame?: IFrameArg
   ) {
     super();
 

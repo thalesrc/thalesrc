@@ -7,7 +7,7 @@ import { IFrameArg } from "./iframe.type";
 export class IframeMessageService extends mixin(IframeMessageHost, IframeMessageClient) {
   constructor(
     channelName = DEFAULT_CHANNEL_NAME,
-    targetFrame: IFrameArg
+    targetFrame?: IFrameArg
   ) {
     super([channelName, targetFrame], [channelName, targetFrame]);
   }
