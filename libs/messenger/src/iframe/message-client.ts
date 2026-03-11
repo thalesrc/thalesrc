@@ -1,55 +1,68 @@
-import { uniqueId } from '@telperion/js-utils';
+import { uniqueId } from '@telperion/js-utils/unique-id';
+import { noop } from '@telperion/js-utils/function/noop';
+import { promisify } from '@telperion/js-utils/promise/promisify';
+import { timeout } from '@telperion/js-utils/promise/timeout';
 import { Subject } from 'rxjs';
+
 import { MessageClient } from '../message-client';
 import { MessageResponse, SuccessfulMessageResponse } from '../message-response.type';
 import { Message } from '../message.interface';
 import { GET_NEW_ID, RESPONSES$, SEND } from '../selectors';
 import { CHANNEL_PATH_SPLITTER } from './channel-path-splitter';
 import { DEFAULT_CHANNEL_NAME } from './default-channel-name';
-import { IFrame } from './iframe.type';
+import { IFrameArg, IFrameType } from './iframe.type';
 
-const TARGET_FRAME = Symbol('IframeMessageClient Target Frame');
-const OPTION_TARGET_FRAME = Symbol('IframeMessageClient Option Target Frame');
+const TARGET = Symbol('IframeMessageClient Target');
 
 export class IframeMessageClient extends MessageClient {
   public [RESPONSES$] = new Subject<MessageResponse>();
-  private [OPTION_TARGET_FRAME]: IFrame;
-
-  private get [TARGET_FRAME](): null | HTMLIFrameElement {
-    return typeof this[OPTION_TARGET_FRAME] === 'function'
-      ? (this[OPTION_TARGET_FRAME] as () => HTMLIFrameElement | undefined)() ?? null
-      : this[OPTION_TARGET_FRAME] as HTMLIFrameElement ?? null;
-  }
+  private [TARGET] = Promise.resolve([undefined as IFrameType, noop] as const);
 
   constructor(
     private channelName = DEFAULT_CHANNEL_NAME,
-    targetFrame?: IFrame
+    targetFrame: IFrameArg
   ) {
     super();
 
-    this[OPTION_TARGET_FRAME] = targetFrame;
-
-    window.addEventListener('message', ({ data, source }: MessageEvent<SuccessfulMessageResponse>) => {
-      const target = this[TARGET_FRAME];
-
-      if (target && source !== target.contentWindow) return;
-
-      if (!data
-        || typeof data !== 'object'
-        || typeof data.id === 'undefined'
-        || typeof data.completed === 'undefined'
-      ) {
-        return;
-      }
-
-      this[RESPONSES$].next(data);
-    });
+    this.initialize(targetFrame);
   }
 
-  public [SEND]<T>(message: Message<T>) {
+  initialize(target: IFrameArg): void {
+    this[TARGET] = Promise.race([
+      this[TARGET],
+      timeout(5000, [null, noop] as const)
+    ])
+      .then(([_, deinitialize]) => deinitialize())
+      .catch(noop)
+      .then(() => {
+        const frame = typeof target === 'function' ? target() : target;
+        return promisify(frame);
+      })
+      .then((frame) => {
+        const listener = ({ data, source }: MessageEvent<SuccessfulMessageResponse>) => {
+          if (frame && source !== frame.contentWindow) return;
+
+          if (!data
+            || typeof data !== 'object'
+            || typeof data.id === 'undefined'
+            || typeof data.completed === 'undefined'
+          ) {
+            return;
+          }
+
+          this[RESPONSES$].next(data);
+        };
+
+        window.addEventListener('message', listener);
+
+        return [frame, () => window.removeEventListener('message', listener)];
+      })
+  }
+
+  public async [SEND]<T>(message: Message<T>) {
     message = { ...message, path: `${this.channelName}${CHANNEL_PATH_SPLITTER}${message.path}` };
 
-    const target = this[TARGET_FRAME];
+    const [target] = await this[TARGET];
 
     if (target) {
       target.contentWindow!.postMessage(message, '*');

@@ -1,45 +1,61 @@
-import { uniqueId } from '@telperion/js-utils';
+import { uniqueId } from '@telperion/js-utils/unique-id';
+import { noop } from '@telperion/js-utils/function/noop';
+import { promisify } from '@telperion/js-utils/promise/promisify';
+import { timeout } from '@telperion/js-utils/promise/timeout';
 import { Subject } from 'rxjs';
+
 import { MessageHost } from '../message-host';
 import { SuccessfulMessageResponse } from '../message-response.type';
 import { Message } from '../message.interface';
 import { CHANNEL_PATH_SPLITTER } from './channel-path-splitter';
 import { DEFAULT_CHANNEL_NAME } from './default-channel-name';
 import { SOURCE_ID_SPLITTER } from './source-id-splitter';
-import { IFrame } from './iframe.type';
 import { LISTEN, RESPONSE } from '../selectors';
+import { IFrameArg, IFrameType } from './iframe.type';
 
-const OPTIONS_TARGET_FRAME = Symbol('IframeMessageHost Option Target Frame');
-const TARGET_FRAME = Symbol('IframeMessageHost Target Frame');
 const REQUESTS = Symbol('IframeMessageHost Requests');
 const SOURCES = Symbol('IframeMessageHost Sources');
+const HANDLER = Symbol('IframeMessageHost Handler');
 
 export class IframeMessageHost extends MessageHost {
   private [REQUESTS] = new Subject<Message>();
   private [SOURCES]: Array<[string, MessageEventSource]> = [];
-  private [OPTIONS_TARGET_FRAME]: IFrame = undefined;
 
-  private get [TARGET_FRAME](): null | HTMLIFrameElement {
-    return typeof this[OPTIONS_TARGET_FRAME] === 'function'
-      ? (this[OPTIONS_TARGET_FRAME] as () => HTMLIFrameElement | undefined)() ?? null
-      : this[OPTIONS_TARGET_FRAME] as HTMLIFrameElement ?? null;
-  }
+  #deinitialize = Promise.resolve(noop);
 
   constructor(
     private channelName = DEFAULT_CHANNEL_NAME,
-    targetFrame?: IFrame
+    targetFrame?: IFrameArg
   ) {
     super();
 
-    this[OPTIONS_TARGET_FRAME] = targetFrame;
-
-    window.addEventListener('message', this.#handler);
+    this.initialize(targetFrame);
 
     this[LISTEN](this[REQUESTS]);
   }
 
+  initialize(targetFrame: IFrameArg): void {
+    this.#deinitialize = Promise.race([
+      this.#deinitialize,
+      timeout(5000, noop)
+    ])
+      .then(callback => callback())
+      .then(() => {
+        const _frame = typeof targetFrame === 'function' ? targetFrame() : targetFrame;
+        return promisify(_frame);
+      })
+      .then(frame => {
+        const handler = this[HANDLER](frame);
+        window.addEventListener('message', handler);
+
+        return () => {
+          window.removeEventListener('message', handler);
+        }
+      });
+  }
+
   public terminate(): void {
-    window.removeEventListener('message', this.#handler);
+    this.#deinitialize.then(callback => callback()).catch(noop);
   }
 
   protected [RESPONSE](message: SuccessfulMessageResponse): void {
@@ -51,15 +67,13 @@ export class IframeMessageHost extends MessageHost {
       id: messageId,
     };
 
-    (source as any).postMessage(message, '*');
+    (source as Window).postMessage(message, '*');
   }
 
-  #handler = ({ data, source }: MessageEvent<Message>) => {
+  private [HANDLER] = (targetFrame: IFrameType) => ({ data, source }: MessageEvent<Message>) => {
     if (!data || typeof data !== 'object' || !data.path || typeof data.id === 'undefined') {
       return;
     }
-
-    const targetFrame = this[TARGET_FRAME];
 
     if (targetFrame && targetFrame.contentWindow !== source) {
       return;
