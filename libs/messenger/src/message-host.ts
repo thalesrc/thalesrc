@@ -1,4 +1,4 @@
-import { Observable, Subject } from 'rxjs';
+import { from, Observable, of, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { ListenerStorage } from './listener-storage.type';
@@ -26,7 +26,15 @@ export abstract class MessageHost {
         .pipe(filter(({ path: messagePath }) => path === messagePath))
         .subscribe(({ body, id }) => {
           for (const listener of listeners) {
-            (listener.call(this, body) as Observable<any>).pipe(
+            let result$: Observable<any> = listener.call(this, body);
+
+            if (result$ instanceof Promise) {
+              result$ = from(result$);
+            } else if (!(result$ instanceof Observable)) {
+              result$ = of(result$);
+            }
+
+            result$.pipe(
               takeUntil(this[TERMINATE_MESSAGE$].pipe(filter(terminatedMessageId => terminatedMessageId === id))),
             ).subscribe({
               next: result => {
