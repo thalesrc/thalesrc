@@ -40,9 +40,6 @@ jobs:
             react-utils-v*)
               LIBRARY="react-utils"
               ;;
-            rx-utils-v*)
-              LIBRARY="rx-utils"
-              ;;
             ts-utils-v*)
               LIBRARY="ts-utils"
               ;;
@@ -58,7 +55,7 @@ jobs:
             *)
               echo "❌ No matching library found for tag: $TAG_NAME"
               echo "Expected format: <library-name>-v<version>"
-              echo "Valid libraries: dom-utils, drag-drop, elements, extra-ts-types, node-utils, nx-utils, react-utils, rx-utils, ts-utils, docker-frp, osw-shell, osw-home"
+              echo "Valid libraries: dom-utils, drag-drop, elements, extra-ts-types, node-utils, nx-utils, react-utils, ts-utils, docker-frp, osw-shell, osw-home"
               exit 0
               ;;
           esac
