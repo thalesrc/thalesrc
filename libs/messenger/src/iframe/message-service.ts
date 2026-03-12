@@ -10,6 +10,8 @@ export class IframeMessageService extends mixin(IframeMessageHost, IframeMessage
     targetFrame?: IFrameArg
   ) {
     super([channelName, targetFrame], [channelName, targetFrame]);
+
+    this.initialize(targetFrame);
   }
 
   public override initialize = (target: IFrameArg): void => {
