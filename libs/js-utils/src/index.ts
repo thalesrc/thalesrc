@@ -19,6 +19,7 @@ export * from '@telperion/js-utils/map';
 export * from '@telperion/js-utils/math';
 export { clone, deepest, deepFreeze } from '@telperion/js-utils/object';
 export * from '@telperion/js-utils/promise';
+export * from '@telperion/js-utils/time';
 // export {  } from '@telperion/js-utils/string';
 
 export * from '@telperion/js-utils/compact';
