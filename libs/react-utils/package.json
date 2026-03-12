@@ -7,7 +7,7 @@
     "rxjs": "*",
     "react-hook-form": "*",
     "@thalesrc/reactive-storage": "^1.0.5",
-    "@thalesrc/extra-ts-types": "^1.2.0"
+    "@telperion/extra-ts-types": "^1.5.0"
   },
   "type": "module",
   "module": "./src/index.js",

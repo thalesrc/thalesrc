@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { inject } from "@angular/core";
-import { AnyFunction } from '@thalesrc/extra-ts-types';
+import { AnyFunction } from '@telperion/extra-ts-types';
 import { tryCatch } from "@thalesrc/js-utils/promise/try-catch";
 import { firstValueFrom, Observable } from 'rxjs';
 

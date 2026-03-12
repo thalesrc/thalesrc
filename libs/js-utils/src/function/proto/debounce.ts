@@ -1,4 +1,4 @@
-import type { AnyFunction } from '@thalesrc/extra-ts-types';
+import type { AnyFunction } from '@telperion/extra-ts-types';
 
 import { debounce, DEFAULT_DEBOUNCE_TIME } from '@telperion/js-utils/function/debounce';
 

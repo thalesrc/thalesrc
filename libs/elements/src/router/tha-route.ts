@@ -1,5 +1,5 @@
 import { signal } from "@lit-labs/signals";
-import type { URLPattern } from "@thalesrc/extra-ts-types/polyfills/url-pattern";
+import type { URLPattern } from "@telperion/extra-ts-types/polyfills/url-pattern";
 import { LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 

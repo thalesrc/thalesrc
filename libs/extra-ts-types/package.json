@@ -1,12 +1,12 @@
 {
-  "name": "@thalesrc/extra-ts-types",
+  "name": "@telperion/extra-ts-types",
   "version": "0.0.0",
   "description": "Extra TypeScript types",
   "keywords": ["typescript", "types", "extra", "advanced", "utility"],
-  "homepage": "https://extra-ts-types.thalesrc.com",
+  "homepage": "https://open-source.telperion.tr/extra-ts-types",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thalesrc/thalesrc.git",
+    "url": "git+https://github.com/telperiontech/telperion.git",
     "directory": "libs/extra-ts-types"
   },
   "dependencies": {

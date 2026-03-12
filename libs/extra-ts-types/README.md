@@ -1,30 +1,30 @@
-# @thalesrc/extra-ts-types
+# @telperion/extra-ts-types
 
-[![npm version](https://badge.fury.io/js/@thalesrc%2Fextra-ts-types.svg)](https://badge.fury.io/js/@thalesrc%2Fextra-ts-types)
+[![npm version](https://badge.fury.io/js/@telperion%2Fextra-ts-types.svg)](https://badge.fury.io/js/@telperion%2Fextra-ts-types)
 
 Extra TypeScript utility types for advanced type manipulation and better type safety.
 
 ## Installation
 
 ```bash
-npm install @thalesrc/extra-ts-types
+npm install @telperion/extra-ts-types
 ```
 
 ```bash
-yarn add @thalesrc/extra-ts-types
+yarn add @telperion/extra-ts-types
 ```
 
 ```bash
-pnpm add @thalesrc/extra-ts-types
+pnpm add @telperion/extra-ts-types
 ```
 
 ## Usage
 
 ```typescript
-import { AnyFunction, PartialSome, Join, Tail } from '@thalesrc/extra-ts-types';
+import { AnyFunction, PartialSome, Join, Tail } from '@telperion/extra-ts-types';
 
 // For polyfills (like URLPattern)
-import '@thalesrc/extra-ts-types/polyfills';
+import '@telperion/extra-ts-types/polyfills';
 ```
 
 ## API
@@ -148,10 +148,10 @@ TypeScript type definitions for the URLPattern Web API, which provides pattern m
 
 ```typescript
 // Import all polyfills
-import '@thalesrc/extra-ts-types/polyfills';
+import '@telperion/extra-ts-types/polyfills';
 
 // Or import URLPattern specifically
-import '@thalesrc/extra-ts-types/polyfills/url-pattern';
+import '@telperion/extra-ts-types/polyfills/url-pattern';
 
 // Now URLPattern is available in the global scope
 const pattern = new URLPattern({ pathname: '/books/:id' });
@@ -182,12 +182,12 @@ if (pattern.test('https://example.com/books/456')) {
 
 ## Contributing
 
-This package is part of the [Thalesrc](https://github.com/thalesrc) monorepo. Contributions are welcome!
+This package is part of the [Telperion](https://github.com/telperiontech) monorepo. Contributions are welcome!
 
 ## License
 
-MIT © [Thalesrc](https://github.com/thalesrc)
+MIT © [Telperion](https://github.com/telperiontech)
 
 ## Homepage
 
-Visit [extra-ts-types.thalesrc.com](https://extra-ts-types.thalesrc.com) for more information and examples.
+Visit [extra-ts-types.telperion.dev](https://extra-ts-types.telperion.dev) for more information and examples.

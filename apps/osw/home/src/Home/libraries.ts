@@ -31,7 +31,7 @@ export const libraries: Library[] = [
 		type: 'npm'
 	},
 	{
-		name: '@thalesrc/extra-ts-types',
+		name: '@telperion/extra-ts-types',
 		description: 'Extra TypeScript utility types for advanced type manipulation and better type safety. Expand your type toolkit with powerful type utilities.',
 		category: 'TypeScript',
 		emoji: '🔷',

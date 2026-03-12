@@ -1,4 +1,4 @@
-import type { Tail } from '@thalesrc/extra-ts-types';
+import type { Tail } from '@telperion/extra-ts-types';
 
 import { limit } from '@telperion/js-utils/string/limit';
 

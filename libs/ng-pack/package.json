@@ -35,7 +35,7 @@
     "rxjs": "*"
   },
   "dependencies": {
-    "@thalesrc/extra-ts-types": "^1.4.0",
+    "@telperion/extra-ts-types": "^1.5.0",
     "@thalesrc/js-utils": "^3.4.0",
     "@telperion/reactive-storage": "^1.2.0"
   },

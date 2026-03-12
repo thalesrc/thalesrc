@@ -28,9 +28,6 @@ jobs:
             elements-v*)
               LIBRARY="elements"
               ;;
-            extra-ts-types-v*)
-              LIBRARY="extra-ts-types"
-              ;;
             node-utils-v*)
               LIBRARY="node-utils"
               ;;
@@ -55,7 +52,7 @@ jobs:
             *)
               echo "❌ No matching library found for tag: $TAG_NAME"
               echo "Expected format: <library-name>-v<version>"
-              echo "Valid libraries: dom-utils, drag-drop, elements, extra-ts-types, node-utils, nx-utils, react-utils, ts-utils, docker-frp, osw-shell, osw-home"
+              echo "Valid libraries: dom-utils, drag-drop, elements, node-utils, nx-utils, react-utils, ts-utils, docker-frp, osw-shell, osw-home"
               exit 0
               ;;
           esac

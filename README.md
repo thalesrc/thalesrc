@@ -38,8 +38,8 @@ The swiss army knife of JavaScript utilities. A comprehensive collection of 50+ 
 
 **Highlights**: Array utilities, Promise helpers, Object manipulation, String operations, Function utilities
 
-#### [@thalesrc/extra-ts-types](https://www.npmjs.com/package/@thalesrc/extra-ts-types)
-[![npm](https://img.shields.io/npm/v/@thalesrc/extra-ts-types.svg)](https://www.npmjs.com/package/@thalesrc/extra-ts-types)
+#### [@telperion/extra-ts-types](https://www.npmjs.com/package/@telperion/extra-ts-types)
+[![npm](https://img.shields.io/npm/v/@telperion/extra-ts-types.svg)](https://www.npmjs.com/package/@telperion/extra-ts-types)
 
 Advanced TypeScript utility types for sophisticated type manipulations. Includes types like `PartialSome`, `DeepestValue`, `Join`, `Tail`, and more for working with complex type scenarios.
 
@@ -180,7 +180,7 @@ Install individual packages as needed:
 npm install @thalesrc/js-utils
 
 # TypeScript types
-npm install @thalesrc/extra-ts-types
+npm install @telperion/extra-ts-types
 
 # Drag & drop
 npm install @thalesrc/drag-drop

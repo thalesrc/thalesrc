@@ -1,4 +1,4 @@
-import type { Tail } from '@thalesrc/extra-ts-types';
+import type { Tail } from '@telperion/extra-ts-types';
 
 import { replace, ReplaceItemsOptions, ReplaceByMapOptions } from '@telperion/js-utils/array/replace';
 

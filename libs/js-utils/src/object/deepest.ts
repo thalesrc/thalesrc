@@ -1,4 +1,4 @@
-import type { DeepestObject } from "@thalesrc/extra-ts-types";
+import type { DeepestObject } from "@telperion/extra-ts-types";
 
 /**
  * #### Get deepest object in an object chain

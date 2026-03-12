@@ -24,6 +24,8 @@
       "@thalesrc/drag-drop/*": ["libs/drag-drop/src/*"],
       "@thalesrc/elements": ["libs/elements/src/index.ts"],
       "@thalesrc/elements/*": ["libs/elements/src/*"],
+      "@telperion/extra-ts-types": ["libs/extra-ts-types/src/index.ts"],
+      "@telperion/extra-ts-types/*": ["libs/extra-ts-types/src/*"],
       "@thalesrc/extra-ts-types": ["libs/extra-ts-types/src/index.ts"],
       "@thalesrc/extra-ts-types/*": ["libs/extra-ts-types/src/*"],
       "@thalesrc/hermes": ["libs/messenger/src/index.ts"],

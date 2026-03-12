@@ -1,5 +1,5 @@
 import { createContext, PropsWithChildren, useMemo } from "react";
-import { PartialSome } from "@thalesrc/extra-ts-types";
+import { PartialSome } from "@telperion/extra-ts-types";
 import { useExistingPromiseCall } from "@thalesrc/react-utils/hooks/existing-promise-call.hook";
 
 /**

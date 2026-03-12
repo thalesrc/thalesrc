@@ -1,4 +1,4 @@
-import type { ConstructorType } from '@thalesrc/extra-ts-types';
+import type { ConstructorType } from '@telperion/extra-ts-types';
 import { noop } from '@telperion/js-utils/function/noop';
 
 type Executor<T> = ConstructorParameters<ConstructorType<typeof Promise<T>>>[0];

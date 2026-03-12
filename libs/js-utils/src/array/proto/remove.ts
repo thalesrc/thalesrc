@@ -1,4 +1,4 @@
-import type { Tail } from '@thalesrc/extra-ts-types';
+import type { Tail } from '@telperion/extra-ts-types';
 
 import { remove } from '@telperion/js-utils/array/remove';
 
