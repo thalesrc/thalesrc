@@ -29,7 +29,7 @@ export class IframeMessageHost extends MessageHost {
   ) {
     super();
 
-    this.initialize(targetFrame);
+    IframeMessageHost.prototype.initialize.call(this, targetFrame);
 
     this[LISTEN](this[REQUESTS]);
   }

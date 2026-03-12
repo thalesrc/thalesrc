@@ -24,7 +24,7 @@ export class IframeMessageClient extends MessageClient {
   ) {
     super();
 
-    this.initialize(targetFrame);
+    IframeMessageClient.prototype.initialize.call(this, targetFrame);
   }
 
   initialize(target: IFrameArg): void {
