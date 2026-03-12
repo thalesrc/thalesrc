@@ -1,15 +1,15 @@
-# @thalesrc/rx-utils
+# @telperion/rx-utils
 
-[![npm version](https://badge.fury.io/js/%40thalesrc%2Frx-utils.svg)](https://badge.fury.io/js/%40thalesrc%2Frx-utils)
-[![Build Status](https://github.com/thalesrc/thalesrc/actions/workflows/rx-utils.publish.yml/badge.svg)](https://github.com/thalesrc/thalesrc/actions/workflows/rx-utils.publish.yml)
-[![npm downloads](https://img.shields.io/npm/dm/@thalesrc/rx-utils.svg)](https://www.npmjs.com/package/@thalesrc/rx-utils)
+[![npm version](https://badge.fury.io/js/%40telperion%2Frx-utils.svg)](https://badge.fury.io/js/%40telperion%2Frx-utils)
+[![Build Status](https://github.com/telperiontech/telperion/actions/workflows/rx-utils.publish.yml/badge.svg)](https://github.com/telperiontech/telperion/actions/workflows/rx-utils.publish.yml)
+[![npm downloads](https://img.shields.io/npm/dm/@telperion/rx-utils.svg)](https://www.npmjs.com/package/@telperion/rx-utils)
 
 Utility functions and operators for RxJS Observables.
 
 ## Installation
 
 ```bash
-npm install @thalesrc/rx-utils
+npm install @telperion/rx-utils
 ```
 
 ## Features
@@ -29,7 +29,7 @@ Converts an RxJS Observable into an AsyncIterable, allowing you to use `for awai
 
 ```typescript
 import { of } from 'rxjs';
-import { toAsyncIteratable } from '@thalesrc/rx-utils/to-async-iteratable';
+import { toAsyncIteratable } from '@telperion/rx-utils/to-async-iteratable';
 
 const observable = of(1, 2, 3);
 const asyncIterable = toAsyncIteratable(observable);
@@ -51,7 +51,7 @@ Creates an AsyncIterator from an Observable. This function is used internally by
 
 ```typescript
 import { of } from 'rxjs';
-import { makeAsyncIterator } from '@thalesrc/rx-utils/to-async-iteratable';
+import { makeAsyncIterator } from '@telperion/rx-utils/to-async-iteratable';
 
 const observable = of(1, 2, 3);
 const asyncIterator = makeAsyncIterator(observable);
@@ -74,7 +74,7 @@ An RxJS operator that shares the last emitted value from the source Observable w
 ```typescript
 import { interval } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { shareLast } from '@thalesrc/rx-utils/operators/share-last';
+import { shareLast } from '@telperion/rx-utils/operators/share-last';
 
 const source = interval(1000).pipe(
   take(5),
@@ -99,7 +99,7 @@ You can optionally import the static extension to add async iterator support dir
 
 ```typescript
 import { of } from 'rxjs';
-import '@thalesrc/rx-utils/static/async-iterator';
+import '@telperion/rx-utils/static/async-iterator';
 
 const observable = of(1, 2, 3);
 
@@ -117,7 +117,7 @@ for await (const value of observable) {
 
 ```typescript
 import { HttpClient } from '@angular/common/http';
-import { toAsyncIteratable } from '@thalesrc/rx-utils/to-async-iteratable';
+import { toAsyncIteratable } from '@telperion/rx-utils/to-async-iteratable';
 
 class DataService {
   constructor(private http: HttpClient) {}
@@ -139,7 +139,7 @@ This library is written in TypeScript and provides full type definitions. All fu
 ## Dependencies
 
 - `rxjs`: For Observable support
-- `@thalesrc/js-utils`: For OpenPromise utility (used internally)
+- `@telperion/js-utils`: For OpenPromise utility (used internally)
 - `tslib`: TypeScript runtime helpers
 
 ## License

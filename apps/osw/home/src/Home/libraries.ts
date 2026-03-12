@@ -51,7 +51,7 @@ export const libraries: Library[] = [
 		type: 'npm'
 	},
 	{
-		name: '@thalesrc/rx-utils',
+		name: '@telperion/rx-utils',
 		description: 'Powerful RxJS utilities and operators. Convert Observables to AsyncIterables, create custom operators, and streamline reactive programming.',
 		category: 'RxJS',
 		emoji: '🌊',

@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Observable, distinctUntilChanged, firstValueFrom, from, lastValueFrom, map, startWith, switchMap, take } from "rxjs";
-import { compact } from "@thalesrc/js-utils/array/compact";
-import { remove } from "@thalesrc/js-utils/array/remove";
-import { deepFreeze } from "@thalesrc/js-utils/object/deep-freeze";
-import { shareLast } from "@thalesrc/rx-utils/operators/share-last";
+import { compact } from "@telperion/js-utils/array/compact";
+import { remove } from "@telperion/js-utils/array/remove";
+import { deepFreeze } from "@telperion/js-utils/object/deep-freeze";
+import { shareLast } from "@telperion/rx-utils/operators/share-last";
 import { FifoPromise } from "@thalesrc/ts-utils/fifo-promise";
 
 const GET_ALL = Symbol('Reactive Storage Get All');

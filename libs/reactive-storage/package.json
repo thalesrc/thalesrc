@@ -23,8 +23,8 @@
   "dependencies": {
     "tslib": "*",
     "rxjs": "*",
-    "@thalesrc/js-utils": "^3.3.1",
-    "@thalesrc/rx-utils": "^1.0.0",
+    "@telperion/js-utils": "^3.5.0",
+    "@telperion/rx-utils": "^1.3.0",
     "@thalesrc/ts-utils": "^1.0.1"
   },
   "type": "module",

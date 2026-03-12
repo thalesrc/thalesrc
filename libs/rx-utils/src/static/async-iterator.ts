@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { makeAsyncIterator } from "@thalesrc/rx-utils/to-async-iteratable";
+import { makeAsyncIterator } from "@telperion/rx-utils/to-async-iteratable";
 
 declare module 'rxjs' {
   interface Observable<T> {

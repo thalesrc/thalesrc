@@ -44,6 +44,8 @@
       "@thalesrc/reactive-storage/*": ["libs/reactive-storage/src/*"],
       "@telperion/reactive-storage": ["libs/reactive-storage/src/index.ts"],
       "@telperion/reactive-storage/*": ["libs/reactive-storage/src/*"],
+      "@telperion/rx-utils": ["libs/rx-utils/src/index.ts"],
+      "@telperion/rx-utils/*": ["libs/rx-utils/src/*"],
       "@thalesrc/rx-utils": ["libs/rx-utils/src/index.ts"],
       "@thalesrc/rx-utils/*": ["libs/rx-utils/src/*"],
       "@thalesrc/ts-utils": ["libs/ts-utils/src/index.ts"],

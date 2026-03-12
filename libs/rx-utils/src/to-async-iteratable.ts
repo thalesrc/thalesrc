@@ -1,4 +1,4 @@
-import { OpenPromise } from "@thalesrc/js-utils/open-promise";
+import { OpenPromise } from "@telperion/js-utils/open-promise";
 import { type Observable } from "rxjs";
 
 /**
@@ -53,7 +53,7 @@ export function makeAsyncIterator<T>(observable: Observable<T>): AsyncIterator<T
  * Example usage:
  * ```ts
  * import { of } from 'rxjs';
- * import { toAsyncIterator } from '@thalesrc/rx-utils';
+ * import { toAsyncIterator } from '@telperion/rx-utils';
  *
  * const observable = of(1, 2, 3);
  * const asyncIterable = toAsyncIterator(observable);

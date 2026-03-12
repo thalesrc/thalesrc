@@ -90,8 +90,8 @@ RxJS-based reactive wrapper for browser storage APIs (localStorage and sessionSt
 
 **Highlights**: Reactive storage, Observable patterns, Nested property access, Type-safe, FIFO operations, Framework foundation
 
-#### [@thalesrc/rx-utils](https://www.npmjs.com/package/@thalesrc/rx-utils)
-[![npm](https://img.shields.io/npm/v/@thalesrc/rx-utils.svg)](https://www.npmjs.com/package/@thalesrc/rx-utils)
+#### [@telperion/rx-utils](https://www.npmjs.com/package/@telperion/rx-utils)
+[![npm](https://img.shields.io/npm/v/@telperion/rx-utils.svg)](https://www.npmjs.com/package/@telperion/rx-utils)
 
 Utility functions and operators for RxJS Observables. Features async iterable conversion, share operators, and Observable extensions.
 
@@ -186,7 +186,7 @@ npm install @thalesrc/extra-ts-types
 npm install @thalesrc/drag-drop
 
 # RxJS utilities
-npm install @thalesrc/rx-utils
+npm install @telperion/rx-utils
 
 # Nx utilities (dev dependency)
 npm install -D @thalesrc/nx-utils
@@ -224,7 +224,7 @@ debounce(() => console.log('Debounced!'), 300);
 **RxJS Utilities:**
 ```typescript
 import { interval } from 'rxjs';
-import { toAsyncIteratable } from '@thalesrc/rx-utils';
+import { toAsyncIteratable } from '@telperion/rx-utils';
 
 const observable = interval(1000);
 for await (const value of toAsyncIteratable(observable)) {
