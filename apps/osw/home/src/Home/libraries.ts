@@ -70,16 +70,7 @@ export const libraries: Library[] = [
 		packageName: 'dom-utils',
 		type: 'npm'
 	},
-	{
-		name: '@thalesrc/drag-drop',
-		description: 'Framework-independent drag-and-drop library built with Lit Elements. Works with React, Vue, Angular, or vanilla JS with extended drag-drop events.',
-		category: 'Browser',
-		emoji: '🎪',
-		gradient: 'from-warning-400 via-warning-500 to-warning-700',
-		hoverGradient: 'hover:from-warning-500 hover:via-warning-600 hover:to-warning-800',
-		packageName: 'drag-drop',
-		type: 'npm'
-	},
+
 	{
 		name: '@thalesrc/node-utils',
 		description: 'Server-side Node.js utilities for backend development. Streamline server operations with battle-tested helper functions.',

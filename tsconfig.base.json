@@ -20,8 +20,6 @@
       "@telperion/ng-pack/utils": ["libs/ng-pack/utils/src/index.ts"],
       "@thalesrc/dom-utils": ["libs/dom-utils/src/index.ts"],
       "@thalesrc/dom-utils/*": ["libs/dom-utils/src/*"],
-      "@thalesrc/drag-drop": ["libs/drag-drop/src/index.ts"],
-      "@thalesrc/drag-drop/*": ["libs/drag-drop/src/*"],
       "@thalesrc/elements": ["libs/elements/src/index.ts"],
       "@thalesrc/elements/*": ["libs/elements/src/*"],
       "@telperion/extra-ts-types": ["libs/extra-ts-types/src/index.ts"],

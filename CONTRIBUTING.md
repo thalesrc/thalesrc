@@ -68,7 +68,7 @@ This project is built with [Nx](https://nx.dev), a powerful build system for mon
 ```bash
 # ✅ Correct
 pnpm nx test js-utils
-pnpm nx build drag-drop
+pnpm nx build elements
 pnpm nx run hermes:test:browser
 
 # ❌ Incorrect
@@ -111,9 +111,8 @@ thalesrc/
 ├── libs/                      # All library packages
 │   ├── js-utils/              # JavaScript utilities
 │   ├── ts-utils/              # TypeScript utilities
-│   ├── drag-drop/             # Drag & drop library
 │   ├── hermes/                # Cross-context messaging
-│   ├── elements/              # Web components
+│   ├── elements/              # Web components (router, drag-drop)
 │   ├── react-utils/           # React utilities
 │   ├── rx-utils/              # RxJS utilities
 │   └── ...                    # Other libraries
@@ -310,14 +309,14 @@ We follow conventional commit messages for consistency:
 
 ### Scope
 
-The scope should be the name of the affected library (e.g., `js-utils`, `hermes`, `drag-drop`).
+The scope should be the name of the affected library (e.g., `js-utils`, `hermes`, `elements`).
 
 ### Examples
 
 ```bash
 feat(js-utils): add new array utility function
 fix(hermes): resolve iframe message handling issue
-docs(drag-drop): update usage examples in README
+docs(elements): update drag-drop usage examples in README
 test(rx-utils): add tests for toAsyncIterable
 refactor(elements): simplify router implementation
 ```

@@ -61,21 +61,17 @@ Utility functions for DOM manipulation and browser APIs. Simplifies common DOM o
 
 **Highlights**: DOM manipulation, Browser API helpers, Event handling
 
-#### [@thalesrc/drag-drop](https://www.npmjs.com/package/@thalesrc/drag-drop)
-[![npm](https://img.shields.io/npm/v/@thalesrc/drag-drop.svg)](https://www.npmjs.com/package/@thalesrc/drag-drop)
-[![npm](https://img.shields.io/npm/dm/@thalesrc/drag-drop.svg)](https://www.npmjs.com/package/@thalesrc/drag-drop)
-
-Framework-independent drag-and-drop library built with Lit Elements as custom web components. Provides extended drag-drop events, smart drop zones, drag handles, and multiple dragging strategies.
-
-**Highlights**: Web Components, Custom events, Drop zone validation, Drag strategies, Cross-framework compatibility
-
 #### [@thalesrc/elements](https://www.npmjs.com/package/@thalesrc/elements)
 [![npm](https://img.shields.io/npm/v/@thalesrc/elements.svg)](https://www.npmjs.com/package/@thalesrc/elements)
 [![npm](https://img.shields.io/npm/dm/@thalesrc/elements.svg)](https://www.npmjs.com/package/@thalesrc/elements)
 
-Collection of custom web components built with Lit. Currently features a complete client-side routing solution with declarative components for SPAs. Includes router, route definitions, outlets, navigation links, and global configuration with support for multiple history strategies and reactive updates.
+Collection of custom web components built with Lit. Features a complete client-side routing solution with declarative components for SPAs and a framework-independent drag-and-drop system with extended events, smart drop zones, drag handles, and multiple dragging strategies.
 
-**Highlights**: Router components, Client-side routing, Template-based routes, URLPattern matching, Active link detection, Signal-based reactivity
+**Sub-modules:**
+- **router**: Client-side routing with router, route definitions, outlets, navigation links, and global configuration with support for multiple history strategies and reactive updates
+- **drag-drop**: Drag-and-drop web components with extended drag-drop events, smart drop zones, drag handles, and multiple dragging strategies
+
+**Highlights**: Router components, Client-side routing, URLPattern matching, Signal-based reactivity, Drag & drop, Web Components, Drop zone validation, Cross-framework compatibility
 
 #### [@thalesrc/paintlet](https://www.npmjs.com/package/@thalesrc/paintlet)
 
@@ -182,9 +178,6 @@ npm install @thalesrc/js-utils
 # TypeScript types
 npm install @telperion/extra-ts-types
 
-# Drag & drop
-npm install @thalesrc/drag-drop
-
 # RxJS utilities
 npm install @telperion/rx-utils
 
@@ -208,9 +201,11 @@ uniquify(arr);   // [1, 2, 3, null, undefined, 4]
 debounce(() => console.log('Debounced!'), 300);
 ```
 
-**Drag & Drop:**
+**Drag & Drop (via @thalesrc/elements):**
 ```html
-<script type="module" src="node_modules/@thalesrc/drag-drop/bundle.mjs"></script>
+<script type="module">
+import '@thalesrc/elements/drag-drop';
+</script>
 
 <tha-drag name="item" draggingStrategy="move">
   <div>Drag me!</div>
@@ -261,7 +256,6 @@ thalesrc/
 │   ├── ts-utils/              # TypeScript utilities
 │   ├── extra-ts-types/        # TypeScript types
 │   ├── dom-utils/             # DOM utilities
-│   ├── drag-drop/             # Drag & drop library
 │   ├── paintlet/              # CSS Paint API worklets
 │   ├── react-utils/           # React utilities
 │   ├── rx-utils/              # RxJS utilities
@@ -283,7 +277,7 @@ thalesrc/
 nx test js-utils
 
 # Build a library
-nx build drag-drop
+nx build elements
 
 # Run all tests
 nx run-many -t test

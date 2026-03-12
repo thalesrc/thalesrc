@@ -55,9 +55,9 @@ flags:
       - libs/dom-utils/src/
     carryforward: true
 
-  drag-drop:
+  elements:
     paths:
-      - libs/drag-drop/src/
+      - libs/elements/src/
     carryforward: true
 
   extra-ts-types:

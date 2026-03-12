@@ -22,9 +22,6 @@ jobs:
             dom-utils-v*)
               LIBRARY="dom-utils"
               ;;
-            drag-drop-v*)
-              LIBRARY="drag-drop"
-              ;;
             elements-v*)
               LIBRARY="elements"
               ;;
@@ -52,7 +49,7 @@ jobs:
             *)
               echo "❌ No matching library found for tag: $TAG_NAME"
               echo "Expected format: <library-name>-v<version>"
-              echo "Valid libraries: dom-utils, drag-drop, elements, node-utils, nx-utils, react-utils, ts-utils, docker-frp, osw-shell, osw-home"
+              echo "Valid libraries: dom-utils, elements, node-utils, nx-utils, react-utils, ts-utils, docker-frp, osw-shell, osw-home"
               exit 0
               ;;
           esac

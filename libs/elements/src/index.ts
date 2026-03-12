@@ -6,3 +6,6 @@
 // Router components
 export * from './router';
 
+// Drag & drop components
+export * from './drag-drop';
+
