@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { inject } from "@angular/core";
 import { AnyFunction } from '@telperion/extra-ts-types';
-import { tryCatch } from "@thalesrc/js-utils/promise/try-catch";
+import { tryCatch } from "@telperion/js-utils/promise/try-catch";
 import { firstValueFrom, Observable } from 'rxjs';
 
 export type Fetcher = {
