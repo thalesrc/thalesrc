@@ -23,7 +23,9 @@
     "httpclient",
     "secondary-entrypoint",
     "angular-utilities",
-    "event-manager"
+    "event-manager",
+    "promise",
+    "toSignal"
   ],
   "scripts": {
     "ng": "ng"

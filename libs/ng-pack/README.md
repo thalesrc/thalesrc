@@ -200,7 +200,8 @@ Angular utility functions and plugins for enhanced development experience.
 - 🎯 Event modifier syntax for templates (`.pd`, `.sp`)
 - 🔗 Directive-as-service provider utility
 - 🌐 Promise-based HTTP client with tuple error handling
-- 📦 Tree-shakeable and type-safe
+- � Unified `toSignal` — convert values, Promises, or Observables to Signals
+- �📦 Tree-shakeable and type-safe
 - ⚡ Zero dependencies
 
 #### Quick Start

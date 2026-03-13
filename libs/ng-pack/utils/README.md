@@ -242,6 +242,36 @@ All methods return a Promise that resolves to a tuple:
 4. **DI integration**: Works seamlessly with Angular's dependency injection
 5. **Clean code**: Reduces boilerplate and improves readability
 
+### toSignal
+
+A unified helper that converts a plain value, a Promise, or an Observable into an Angular `Signal`. It normalises the input through `@angular/core/rxjs-interop`'s `toSignal`, so you can use a single call regardless of the source type.
+
+#### Usage
+
+```typescript
+import { toSignal } from '@telperion/ng-pack/utils';
+
+// From a plain value
+const count = toSignal(42);
+
+// From a Promise
+const user = toSignal(fetch('/api/me').then(r => r.json()));
+
+// From an Observable
+const messages = toSignal(this.messageService.messages$);
+
+// With options (forwarded to Angular's toSignal)
+const data = toSignal(this.dataService.data$, { initialValue: [] });
+```
+
+#### API
+
+`toSignal<T>(source: T | Promise<T> | Observable<T>, options?): Signal<T | undefined>`
+
+- `source` - A plain value, Promise, or Observable
+- `options` (optional) - Configuration forwarded to Angular's `toSignal` (e.g., `{ initialValue }` )
+- Returns a read-only `Signal<T | undefined>`
+
 ## License
 
 MIT
