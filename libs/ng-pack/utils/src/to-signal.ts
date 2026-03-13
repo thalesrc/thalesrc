@@ -26,11 +26,11 @@ import { promisify } from '@telperion/js-utils/promise/promisify';
  */
 export function toSignal<T>(
   source: T | Promise<T> | Observable<T>,
-  options: Partial<Parameters<typeof ngToSignal<T>>[1]> = {}
+  options: Partial<Parameters<typeof ngToSignal<T, T>>[1]> = {}
 ): Signal<T | undefined> {
   if (!(source instanceof Observable)) {
     source = promisify(source);
   }
 
-  return ngToSignal(from(source), options as Parameters<typeof ngToSignal<T>>[1]);
+  return ngToSignal(from(source), options as Parameters<typeof ngToSignal<T, T>>[1]);
 }
