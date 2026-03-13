@@ -373,6 +373,25 @@ export class SecureFeedComponent {
 }
 ```
 
+#### Base Init Configuration
+
+Use `withBaseInit()` to set default `EventSourceInit` options for all SSE connections:
+
+```typescript
+import { ApplicationConfig } from '@angular/core';
+import { provideSseClient, withBaseInit } from '@telperion/ng-pack/sse-client';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideSseClient(
+      withBaseInit({ withCredentials: true })
+    )
+  ]
+};
+```
+
+Options provided via `withBaseInit()` are merged into every request and can be overridden per-call through `SseClient.start()`.
+
 ## API Reference
 
 ### `provideSseClient(...features: SseFeature[][]): Provider[]`
@@ -430,6 +449,24 @@ withSseInterceptors(
   loggingInterceptor,
   authInterceptor,
   retryInterceptor
+)
+```
+
+---
+
+### `withBaseInit(init: Partial<EventSourceInit>): SseFeature[]`
+
+Configures default `EventSourceInit` options that are merged into every SSE request.
+
+**Parameters:**
+- `init` - Partial EventSource initialization options (e.g., `{ withCredentials: true }`)
+
+**Returns:** Array of SSE features to be used with `provideSseClient()`
+
+**Example:**
+```typescript
+provideSseClient(
+  withBaseInit({ withCredentials: true })
 )
 ```
 

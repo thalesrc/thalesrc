@@ -126,11 +126,12 @@ Angular service for Server-Sent Events (SSE) with RxJS Observables and HttpClien
 
 ```typescript
 import { ApplicationConfig } from '@angular/core';
-import { provideSseClient, withSseInterceptors } from '@telperion/ng-pack/sse-client';
+import { provideSseClient, withSseInterceptors, withBaseInit } from '@telperion/ng-pack/sse-client';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideSseClient(
+      withBaseInit({ withCredentials: true }),
       withSseInterceptors(loggingInterceptor, authInterceptor)
     ),
   ]
