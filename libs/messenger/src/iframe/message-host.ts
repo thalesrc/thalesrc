@@ -1,5 +1,6 @@
 import { uniqueId } from '@telperion/js-utils/unique-id';
 import { noop } from '@telperion/js-utils/function/noop';
+import { call } from '@telperion/js-utils/function/call';
 import { promisify } from '@telperion/js-utils/promise/promisify';
 import { timeout } from '@telperion/js-utils/promise/timeout';
 import { Subject } from 'rxjs';
@@ -39,7 +40,7 @@ export class IframeMessageHost extends MessageHost {
       this.#deinitialize,
       timeout(5000, noop)
     ])
-      .then(callback => callback())
+      .then(call)
       .then(() => {
         const _frame = typeof targetFrame === 'function' ? targetFrame() : targetFrame;
         return promisify(_frame);
@@ -55,7 +56,7 @@ export class IframeMessageHost extends MessageHost {
   }
 
   public terminate(): void {
-    this.#deinitialize.then(callback => callback()).catch(noop);
+    this.#deinitialize.then(call).catch(noop);
   }
 
   protected [RESPONSE](message: SuccessfulMessageResponse): void {
