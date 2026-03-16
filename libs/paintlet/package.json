@@ -34,7 +34,6 @@
   },
   "_exports": [
     "check/",
-    "rain/",
-    "ellipse-gradient/"
+    "rain/"
   ]
 }
