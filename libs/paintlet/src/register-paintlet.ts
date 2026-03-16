@@ -12,7 +12,7 @@ interface ArgDefinition {
 function registerCSSProperties(
   name: string,
   properties: CSSPropertyDefinition[],
-  args: ArgDefinition[],
+  args: ArgDefinition[] | ((name: string) => string),
   keyframes?: Record<string, string>
 ): void {
   if (typeof document === 'undefined') return;
@@ -52,11 +52,7 @@ function registerCSSProperties(
         )
         .join('')
     : '';
-  const paintFunctionCSS = `
-@function --${name}(${args.map(arg => `--${arg.name} type(${arg.syntax}): ${arg.default}`).join(', ')}) returns <image> {
-  result: paint(${name}${args.length > 0 ? `, ${args.map(arg => `var(--${arg.name}, ${arg.default})`).join(', ')}` : ''});
-}
-  `
+  const paintFunctionCSS = typeof args === 'function' ? args(name) : defaultArgsToCSS(name, args);
 
   const allContent = propertiesCSS + keyframesCSS + paintFunctionCSS;
   if (!allContent.trim()) return;
@@ -72,7 +68,7 @@ export function registerPaintlet(
   name: string,
   paintletClass: any,
   cssProperties: CSSPropertyDefinition[],
-  args: ArgDefinition[] = [],
+  args: ArgDefinition[] | ((name: string) => string) = [],
   keyframes: Record<string, string> = {}
 ): void {
   if (typeof CSS === 'undefined' || !(CSS as any).paintWorklet) {
@@ -92,4 +88,12 @@ export function registerPaintlet(
 
   // Register CSS custom properties and keyframes for animation support
   registerCSSProperties(name, cssProperties, args, keyframes);
+}
+
+function defaultArgsToCSS(name: string, args: ArgDefinition[]): string {
+  return `
+@function --${name}(${args.map(arg => `--${arg.name} type(${arg.syntax}): ${arg.default}`).join(', ')}) returns <image> {
+  result: paint(${name}${args.length > 0 ? `, ${args.map(arg => `var(--${arg.name}, ${arg.default})`).join(', ')}` : ''});
+}
+  `;
 }

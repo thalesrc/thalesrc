@@ -1,5 +1,5 @@
 {
-  "name": "@thalesrc/paintlet",
+  "name": "@telperion/paintlet",
   "version": "0.0.0",
   "description": "Pre-built CSS Paint API worklets for modern web development",
   "keywords": [
