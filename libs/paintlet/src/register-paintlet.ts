@@ -77,8 +77,7 @@ export function registerPaintlet(
   }
 
   const paintletCode = `
-    ${paintletClass.toString()}
-    registerPaint('${name}', ${paintletClass.name});
+registerPaint('${name}', ${paintletClass.toString()});
   `;
 
   const blob = new Blob([paintletCode], { type: 'application/javascript' });
