@@ -1,4 +1,4 @@
-import { PaintRenderingContext2D, PaintSize } from "../paint.type";
+﻿import { PaintRenderingContext2D, PaintSize } from "../paint.type";
 import { registerPaintlet } from "../register-paintlet";
 
 /**
@@ -21,88 +21,88 @@ interface CheckConfig {
  * Creates a grid-line pattern with horizontal and vertical lines
  *
  * Custom Properties:
- * - --tha-check-cell-size: Uniform cell size (supports number or percentage, default: 20)
- * - --tha-check-cell-width: Horizontal spacing between vertical lines (auto = inherit cell-size, supports percentage)
- * - --tha-check-cell-height: Vertical spacing between horizontal lines (auto = inherit cell-size, supports percentage)
- * - --tha-check-stroke-width: Uniform stroke width for all lines (default: .5)
- * - --tha-check-stroke-width-h: Stroke width for horizontal lines (auto = inherit stroke-width)
- * - --tha-check-stroke-width-v: Stroke width for vertical lines (auto = inherit stroke-width)
- * - --tha-check-stroke-color: Uniform stroke color for all lines (default: #333333)
- * - --tha-check-stroke-color-h: Color for horizontal lines (auto = inherit stroke-color)
- * - --tha-check-stroke-color-v: Color for vertical lines (auto = inherit stroke-color)
+ * - --tp-check-cell-size: Uniform cell size (supports number or percentage, default: 20)
+ * - --tp-check-cell-width: Horizontal spacing between vertical lines (auto = inherit cell-size, supports percentage)
+ * - --tp-check-cell-height: Vertical spacing between horizontal lines (auto = inherit cell-size, supports percentage)
+ * - --tp-check-stroke-width: Uniform stroke width for all lines (default: .5)
+ * - --tp-check-stroke-width-h: Stroke width for horizontal lines (auto = inherit stroke-width)
+ * - --tp-check-stroke-width-v: Stroke width for vertical lines (auto = inherit stroke-width)
+ * - --tp-check-stroke-color: Uniform stroke color for all lines (default: #333333)
+ * - --tp-check-stroke-color-h: Color for horizontal lines (auto = inherit stroke-color)
+ * - --tp-check-stroke-color-v: Color for vertical lines (auto = inherit stroke-color)
  *
  * @example
  * ```css
  * .element {
- *   background-image: paint(tha-check);
- *   --tha-check-cell-size: 20;
- *   --tha-check-stroke-color: #333333;
+ *   background-image: paint(tp-check);
+ *   --tp-check-cell-size: 20;
+ *   --tp-check-stroke-color: #333333;
  * }
  * ```
  *
  * @example
  * ```css
  * .element {
- *   background-image: paint(tha-check);
- *   --tha-check-cell-width: 40;
- *   --tha-check-cell-height: 20;
- *   --tha-check-stroke-color-h: #e74c3c;
- *   --tha-check-stroke-color-v: #3498db;
+ *   background-image: paint(tp-check);
+ *   --tp-check-cell-width: 40;
+ *   --tp-check-cell-height: 20;
+ *   --tp-check-stroke-color-h: #e74c3c;
+ *   --tp-check-stroke-color-v: #3498db;
  * }
  * ```
  */
 export class CheckPaintlet {
   static PROPERTIES = [
     {
-      name: '--tha-check-cell-size',
+      name: '--tp-check-cell-size',
       syntax: '<number> | <percentage>',
       inherits: true,
       initialValue: '20',
     },
     {
-      name: '--tha-check-cell-width',
+      name: '--tp-check-cell-width',
       syntax: '<number> | <percentage> | auto',
       inherits: true,
       initialValue: 'auto',
     },
     {
-      name: '--tha-check-cell-height',
+      name: '--tp-check-cell-height',
       syntax: '<number> | <percentage> | auto',
       inherits: true,
       initialValue: 'auto',
     },
     {
-      name: '--tha-check-stroke-width',
+      name: '--tp-check-stroke-width',
       syntax: '<number>',
       inherits: true,
       initialValue: '.5',
     },
     {
-      name: '--tha-check-stroke-width-h',
+      name: '--tp-check-stroke-width-h',
       syntax: '<number> | auto',
       inherits: true,
       initialValue: 'auto',
     },
     {
-      name: '--tha-check-stroke-width-v',
+      name: '--tp-check-stroke-width-v',
       syntax: '<number> | auto',
       inherits: true,
       initialValue: 'auto',
     },
     {
-      name: '--tha-check-stroke-color',
+      name: '--tp-check-stroke-color',
       syntax: '<color>',
       inherits: true,
       initialValue: '#333333',
     },
     {
-      name: '--tha-check-stroke-color-h',
+      name: '--tp-check-stroke-color-h',
       syntax: '<color> | auto',
       inherits: true,
       initialValue: 'auto',
     },
     {
-      name: '--tha-check-stroke-color-v',
+      name: '--tp-check-stroke-color-v',
       syntax: '<color> | auto',
       inherits: true,
       initialValue: 'auto',
@@ -120,16 +120,16 @@ export class CheckPaintlet {
   static get contextOptions() { return {alpha: true}; }
 
   #getConfig(properties: StylePropertyMapReadOnly, geom: PaintSize): CheckConfig {
-    const cellSize = properties.get('--tha-check-cell-size') as CSSUnitValue;
-    const strokeWidth = properties.get('--tha-check-stroke-width') as CSSUnitValue;
-    const strokeColor = properties.get('--tha-check-stroke-color')?.toString() ?? '#333333';
+    const cellSize = properties.get('--tp-check-cell-size') as CSSUnitValue;
+    const strokeWidth = properties.get('--tp-check-stroke-width') as CSSUnitValue;
+    const strokeColor = properties.get('--tp-check-stroke-color')?.toString() ?? '#333333';
 
-    const cellWidth = properties.get('--tha-check-cell-width');
-    const cellHeight = properties.get('--tha-check-cell-height');
-    const strokeWidthH = properties.get('--tha-check-stroke-width-h');
-    const strokeWidthV = properties.get('--tha-check-stroke-width-v');
-    const strokeColorH = properties.get('--tha-check-stroke-color-h');
-    const strokeColorV = properties.get('--tha-check-stroke-color-v');
+    const cellWidth = properties.get('--tp-check-cell-width');
+    const cellHeight = properties.get('--tp-check-cell-height');
+    const strokeWidthH = properties.get('--tp-check-stroke-width-h');
+    const strokeWidthV = properties.get('--tp-check-stroke-width-v');
+    const strokeColorH = properties.get('--tp-check-stroke-color-h');
+    const strokeColorV = properties.get('--tp-check-stroke-color-v');
 
     return {
       get cellSize() {
@@ -246,4 +246,4 @@ export class CheckPaintlet {
 }
 
 // Auto-register the paintlet when module loads
-registerPaintlet('tha-check', CheckPaintlet, CheckPaintlet.PROPERTIES);
+registerPaintlet('tp-check', CheckPaintlet, CheckPaintlet.PROPERTIES);

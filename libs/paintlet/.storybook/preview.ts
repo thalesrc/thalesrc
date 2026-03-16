@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/web-components';
-import '@thalesrc/paintlet';
+import '@telperion/paintlet';
 
 const preview: Preview = {
   parameters: {

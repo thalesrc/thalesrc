@@ -1,4 +1,4 @@
-import { CSSPropertyDefinition, PaintRenderingContext2D, PaintSize } from '../paint.type';
+﻿import { CSSPropertyDefinition, PaintRenderingContext2D, PaintSize } from '../paint.type';
 import { registerPaintlet } from '../register-paintlet';
 
 /**
@@ -31,73 +31,73 @@ interface RainConfig {
  * Creates animated rain effect with customizable properties
  *
  * Custom Properties:
- * - --tha-rain-color: Color of the raindrops (default: #4a90e2)
- * - --tha-rain-density: Number of raindrops (default: 50)
- * - --tha-rain-angle: Angle of rain in degrees, 90 is vertical (default: 75)
- * - --tha-rain-min-length: Minimum length of raindrops in pixels (default: 10)
- * - --tha-rain-max-length: Maximum length of raindrops in pixels (default: 30)
- * - --tha-rain-min-thickness: Minimum thickness of raindrops (default: 1)
- * - --tha-rain-max-thickness: Maximum thickness of raindrops (default: 2)
- * - --tha-rain-frame: Animation frame from 0 to 1000 (default: 0)
+ * - --tp-rain-color: Color of the raindrops (default: #4a90e2)
+ * - --tp-rain-density: Number of raindrops (default: 50)
+ * - --tp-rain-angle: Angle of rain in degrees, 90 is vertical (default: 75)
+ * - --tp-rain-min-length: Minimum length of raindrops in pixels (default: 10)
+ * - --tp-rain-max-length: Maximum length of raindrops in pixels (default: 30)
+ * - --tp-rain-min-thickness: Minimum thickness of raindrops (default: 1)
+ * - --tp-rain-max-thickness: Maximum thickness of raindrops (default: 2)
+ * - --tp-rain-frame: Animation frame from 0 to 1000 (default: 0)
  *
  * @example
  * ```css
  * .rain-effect {
  *   background-image: paint(rain);
- *   --tha-rain-color: #4a90e2;
- *   --tha-rain-density: 50;
- *   --tha-rain-angle: 75;
- *   --tha-rain-frame: 0;
- *   animation: tha-rain-animation 2s linear infinite;
+ *   --tp-rain-color: #4a90e2;
+ *   --tp-rain-density: 50;
+ *   --tp-rain-angle: 75;
+ *   --tp-rain-frame: 0;
+ *   animation: tp-rain-animation 2s linear infinite;
  * }
  * ```
  */
 export class RainPaintlet {
   static PROPERTIES: CSSPropertyDefinition[] = [
     {
-      name: '--tha-rain-color',
+      name: '--tp-rain-color',
       syntax: '<color>',
       inherits: true,
       initialValue: '#4a90e2',
     },
     {
-      name: '--tha-rain-density',
+      name: '--tp-rain-density',
       syntax: '<number>',
       inherits: true,
       initialValue: 50,
     },
     {
-      name: '--tha-rain-angle',
+      name: '--tp-rain-angle',
       syntax: '<number>',
       inherits: true,
       initialValue: 75,
     },
     {
-      name: '--tha-rain-min-length',
+      name: '--tp-rain-min-length',
       syntax: '<number>',
       inherits: true,
       initialValue: 10,
     },
     {
-      name: '--tha-rain-max-length',
+      name: '--tp-rain-max-length',
       syntax: '<number>',
       inherits: true,
       initialValue: 30,
     },
     {
-      name: '--tha-rain-min-thickness',
+      name: '--tp-rain-min-thickness',
       syntax: '<number>',
       inherits: true,
       initialValue: 1,
     },
     {
-      name: '--tha-rain-max-thickness',
+      name: '--tp-rain-max-thickness',
       syntax: '<number>',
       inherits: true,
       initialValue: 2,
     },
     {
-      name: '--tha-rain-frame',
+      name: '--tp-rain-frame',
       syntax: '<number>',
       inherits: true,
       initialValue: 0,
@@ -127,14 +127,14 @@ export class RainPaintlet {
    */
   #getConfig(properties: StylePropertyMapReadOnly): RainConfig {
     return {
-      color: properties.get('--tha-rain-color')?.toString() || RainPaintlet.RAIN_DEFAULTS.color,
-      density: parseFloat(properties.get('--tha-rain-density')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.density)),
-      angle: parseFloat(properties.get('--tha-rain-angle')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.angle)),
-      minLength: parseFloat(properties.get('--tha-rain-min-length')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.minLength)),
-      maxLength: parseFloat(properties.get('--tha-rain-max-length')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.maxLength)),
-      minThickness: parseFloat(properties.get('--tha-rain-min-thickness')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.minThickness)),
-      maxThickness: parseFloat(properties.get('--tha-rain-max-thickness')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.maxThickness)),
-      frame: parseFloat(properties.get('--tha-rain-frame')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.frame)),
+      color: properties.get('--tp-rain-color')?.toString() || RainPaintlet.RAIN_DEFAULTS.color,
+      density: parseFloat(properties.get('--tp-rain-density')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.density)),
+      angle: parseFloat(properties.get('--tp-rain-angle')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.angle)),
+      minLength: parseFloat(properties.get('--tp-rain-min-length')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.minLength)),
+      maxLength: parseFloat(properties.get('--tp-rain-max-length')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.maxLength)),
+      minThickness: parseFloat(properties.get('--tp-rain-min-thickness')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.minThickness)),
+      maxThickness: parseFloat(properties.get('--tp-rain-max-thickness')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.maxThickness)),
+      frame: parseFloat(properties.get('--tp-rain-frame')?.toString() || String(RainPaintlet.RAIN_DEFAULTS.frame)),
     };
   }
 
@@ -244,6 +244,6 @@ export class RainPaintlet {
 }
 
 // Auto-register the paintlet when module loads
-registerPaintlet('tha-rain', RainPaintlet, RainPaintlet.PROPERTIES, [], {
-  'tha-rain-animation': '--tha-rain-frame',
+registerPaintlet('tp-rain', RainPaintlet, RainPaintlet.PROPERTIES, [], {
+  'tp-rain-animation': '--tp-rain-frame',
 });

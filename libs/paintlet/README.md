@@ -1,10 +1,10 @@
-# @thalesrc/paintlet
+﻿# @telperion/paintlet
 
 Pre-built CSS Paint API worklets for modern web development.
 
 ## Overview
 
-`@thalesrc/paintlet` provides a collection of ready-to-use CSS Paint API (Houdini) worklets that enable powerful custom painting effects in CSS. These paintlets allow you to create complex visual effects that would be difficult or impossible with standard CSS.
+`@telperion/paintlet` provides a collection of ready-to-use CSS Paint API (Houdini) worklets that enable powerful custom painting effects in CSS. These paintlets allow you to create complex visual effects that would be difficult or impossible with standard CSS.
 
 ## Features
 
@@ -17,19 +17,19 @@ Pre-built CSS Paint API worklets for modern web development.
 ## Installation
 
 ```bash
-npm install @thalesrc/paintlet
+npm install @telperion/paintlet
 ```
 
 or
 
 ```bash
-pnpm add @thalesrc/paintlet
+pnpm add @telperion/paintlet
 ```
 
 or
 
 ```bash
-yarn add @thalesrc/paintlet
+yarn add @telperion/paintlet
 ```
 
 ## Usage
@@ -39,7 +39,7 @@ yarn add @thalesrc/paintlet
 Import the paintlet module to automatically register all worklets:
 
 ```typescript
-import '@thalesrc/paintlet';
+import '@telperion/paintlet';
 ```
 
 ### Using in CSS
@@ -50,12 +50,12 @@ Apply the ripple effect using the custom CSS function:
 .ripple-effect {
   width: 300px;
   height: 300px;
-  background-image: --tha-ripple();
+  background-image: --tp-ripple();
   
   /* Customize with CSS custom properties */
-  --tha-ripple-color: #3498db;
-  --tha-ripple-density: 5;
-  --tha-ripple-wave-width: 2;
+  --tp-ripple-color: #3498db;
+  --tp-ripple-density: 5;
+  --tp-ripple-wave-width: 2;
 }
 ```
 
@@ -66,18 +66,18 @@ Apply the ripple effect using the custom CSS function:
 Creates concentric circular waves radiating from the center.
 
 **Custom Properties:**
-- `--tha-ripple-color`: Color of the ripple waves (default: `#3498db`)
-- `--tha-ripple-density`: Number of ripple waves (default: `5`)
-- `--tha-ripple-wave-width`: Width of each wave line in pixels (default: `2`)
+- `--tp-ripple-color`: Color of the ripple waves (default: `#3498db`)
+- `--tp-ripple-density`: Number of ripple waves (default: `5`)
+- `--tp-ripple-wave-width`: Width of each wave line in pixels (default: `2`)
 
 **Example:**
 
 ```css
 .element {
-  background-image: --tha-ripple();
-  --tha-ripple-color: #e74c3c;
-  --tha-ripple-density: 10;
-  --tha-ripple-wave-width: 3;
+  background-image: --tp-ripple();
+  --tp-ripple-color: #e74c3c;
+  --tp-ripple-density: 10;
+  --tp-ripple-wave-width: 3;
 }
 ```
 
@@ -86,24 +86,24 @@ Creates concentric circular waves radiating from the center.
 Creates an animated rain effect with customizable raindrops.
 
 **Custom Properties:**
-- `--tha-rain-color`: Color of the raindrops (default: `#4a90e2`)
-- `--tha-rain-density`: Number of raindrops (default: `50`)
-- `--tha-rain-angle`: Angle of rain in degrees, 90 is vertical (default: `75`)
-- `--tha-rain-min-length`: Minimum length of raindrops in pixels (default: `10`)
-- `--tha-rain-max-length`: Maximum length of raindrops in pixels (default: `30`)
-- `--tha-rain-min-thickness`: Minimum thickness of raindrops (default: `1`)
-- `--tha-rain-max-thickness`: Maximum thickness of raindrops (default: `2`)
-- `--tha-rain-frame`: Animation frame from 0 to 1000 (default: `0`)
+- `--tp-rain-color`: Color of the raindrops (default: `#4a90e2`)
+- `--tp-rain-density`: Number of raindrops (default: `50`)
+- `--tp-rain-angle`: Angle of rain in degrees, 90 is vertical (default: `75`)
+- `--tp-rain-min-length`: Minimum length of raindrops in pixels (default: `10`)
+- `--tp-rain-max-length`: Maximum length of raindrops in pixels (default: `30`)
+- `--tp-rain-min-thickness`: Minimum thickness of raindrops (default: `1`)
+- `--tp-rain-max-thickness`: Maximum thickness of raindrops (default: `2`)
+- `--tp-rain-frame`: Animation frame from 0 to 1000 (default: `0`)
 
 **Animated Example:**
 
 ```css
 .rain-effect {
-  background-image: --tha-rain();
-  animation: --tha-rain-animation(1s);
-  --tha-rain-color: #4a90e2;
-  --tha-rain-density: 50;
-  --tha-rain-angle: 75;
+  background-image: --tp-rain();
+  animation: --tp-rain-animation(1s);
+  --tp-rain-color: #4a90e2;
+  --tp-rain-density: 50;
+  --tp-rain-angle: 75;
 }
 ```
 
@@ -112,12 +112,12 @@ Creates an animated rain effect with customizable raindrops.
 Creates organic, flowing gradients with multiple colors using a three-layer rendering approach: a conic gradient base, radial gradients at animated points, and linear gradients connecting them.
 
 **Custom Properties:**
-- `--tha-pal-gradient-complexity`: Number of points (default: `5`, affects circle sizes inversely)
-- `--tha-pal-gradient-seed`: Random seed for generation (default: `0`)
-- `--tha-pal-gradient-composite-points`: Blend mode for points (default: `screen`)
-- `--tha-pal-gradient-composite-lines`: Blend mode for connecting lines (default: `lighter`)
-- `--tha-pal-gradient-frame`: Animation frame from 0 to 100 for circular motion (default: `0`)
-- `--tha-pal-gradient-color-1` through `--tha-pal-gradient-color-10`: Individual color variables (default: `none`)
+- `--tp-pal-gradient-complexity`: Number of points (default: `5`, affects circle sizes inversely)
+- `--tp-pal-gradient-seed`: Random seed for generation (default: `0`)
+- `--tp-pal-gradient-composite-points`: Blend mode for points (default: `screen`)
+- `--tp-pal-gradient-composite-lines`: Blend mode for connecting lines (default: `lighter`)
+- `--tp-pal-gradient-frame`: Animation frame from 0 to 100 for circular motion (default: `0`)
+- `--tp-pal-gradient-color-1` through `--tp-pal-gradient-color-10`: Individual color variables (default: `none`)
 
 **Usage with Function Arguments:**
 
@@ -125,9 +125,9 @@ Pass colors as function arguments (up to 10 colors supported):
 
 ```css
 .pal-gradient {
-  background-image: --tha-pal-gradient(#667eea, #764ba2, #f093fb, #4facfe);
-  --tha-pal-gradient-complexity: 7;
-  --tha-pal-gradient-seed: 42;
+  background-image: --tp-pal-gradient(#667eea, #764ba2, #f093fb, #4facfe);
+  --tp-pal-gradient-complexity: 7;
+  --tp-pal-gradient-seed: 42;
 }
 ```
 
@@ -137,13 +137,13 @@ Alternatively, use CSS custom properties for more flexibility:
 
 ```css
 .pal-gradient-vars {
-  background-image: --tha-pal-gradient();
-  --tha-pal-gradient-color-1: #667eea;
-  --tha-pal-gradient-color-2: #764ba2;
-  --tha-pal-gradient-color-3: #f093fb;
-  --tha-pal-gradient-color-4: #4facfe;
-  --tha-pal-gradient-complexity: 7;
-  --tha-pal-gradient-seed: 42;
+  background-image: --tp-pal-gradient();
+  --tp-pal-gradient-color-1: #667eea;
+  --tp-pal-gradient-color-2: #764ba2;
+  --tp-pal-gradient-color-3: #f093fb;
+  --tp-pal-gradient-color-4: #4facfe;
+  --tp-pal-gradient-complexity: 7;
+  --tp-pal-gradient-seed: 42;
 }
 ```
 
@@ -151,12 +151,12 @@ Alternatively, use CSS custom properties for more flexibility:
 
 ```css
 .animated-pal {
-  background-image: --tha-pal-gradient(#ff006e, #8338ec, #3a86ff, #06ffa5);
-  animation: --tha-pal-gradient-animation(10s);
-  --tha-pal-gradient-complexity: 8;
-  --tha-pal-gradient-seed: 15;
-  --tha-pal-gradient-composite-points: screen;
-  --tha-pal-gradient-composite-lines: lighter;
+  background-image: --tp-pal-gradient(#ff006e, #8338ec, #3a86ff, #06ffa5);
+  animation: --tp-pal-gradient-animation(10s);
+  --tp-pal-gradient-complexity: 8;
+  --tp-pal-gradient-seed: 15;
+  --tp-pal-gradient-composite-points: screen;
+  --tp-pal-gradient-composite-lines: lighter;
 }
 ```
 
@@ -166,9 +166,9 @@ Experiment with different composite operations for unique effects:
 
 ```css
 .custom-blend {
-  background-image: --tha-pal-gradient(#ffd3e1, #c8b6ff, #b8e0ff);
-  --tha-pal-gradient-composite-points: lighten;
-  --tha-pal-gradient-composite-lines: color-dodge;
+  background-image: --tp-pal-gradient(#ffd3e1, #c8b6ff, #b8e0ff);
+  --tp-pal-gradient-composite-points: lighten;
+  --tp-pal-gradient-composite-lines: color-dodge;
 }
 ```
 
@@ -178,20 +178,20 @@ Create dynamic color transitions by animating the color variables:
 
 ```css
 .color-morphing {
-  background-image: --tha-pal-gradient();
+  background-image: --tp-pal-gradient();
   animation: color-shift 5s infinite alternate;
 }
 
 @keyframes color-shift {
   0% {
-    --tha-pal-gradient-color-1: #667eea;
-    --tha-pal-gradient-color-2: #764ba2;
-    --tha-pal-gradient-color-3: #f093fb;
+    --tp-pal-gradient-color-1: #667eea;
+    --tp-pal-gradient-color-2: #764ba2;
+    --tp-pal-gradient-color-3: #f093fb;
   }
   100% {
-    --tha-pal-gradient-color-1: #ff006e;
-    --tha-pal-gradient-color-2: #8338ec;
-    --tha-pal-gradient-color-3: #3a86ff;
+    --tp-pal-gradient-color-1: #ff006e;
+    --tp-pal-gradient-color-2: #8338ec;
+    --tp-pal-gradient-color-3: #3a86ff;
   }
 }
 ```
@@ -202,21 +202,21 @@ Combine point movement with color transitions for mesmerizing effects:
 
 ```css
 .full-animation {
-  background-image: --tha-pal-gradient();
+  background-image: --tp-pal-gradient();
   animation: 
-    --tha-pal-gradient-animation(10s),
+    --tp-pal-gradient-animation(10s),
     color-pulse 8s infinite alternate;
-  --tha-pal-gradient-complexity: 8;
+  --tp-pal-gradient-complexity: 8;
 }
 
 @keyframes color-pulse {
   0%, 100% {
-    --tha-pal-gradient-color-1: #667eea;
-    --tha-pal-gradient-color-2: #764ba2;
+    --tp-pal-gradient-color-1: #667eea;
+    --tp-pal-gradient-color-2: #764ba2;
   }
   50% {
-    --tha-pal-gradient-color-1: #ff6b9d;
-    --tha-pal-gradient-color-2: #c44569;
+    --tp-pal-gradient-color-1: #ff6b9d;
+    --tp-pal-gradient-color-2: #c44569;
   }
 }
 ```
@@ -232,8 +232,8 @@ For unsupported browsers, consider using a polyfill or providing fallback styles
 
 ## Development
 
-This library is part of the [Thalesrc](https://github.com/thalesrc/thalesrc) monorepo.
+This library is part of the [Telperion](https://github.com/telperiontech/telperion) monorepo.
 
 ## License
 
-MIT © [Thalesrc](https://github.com/thalesrc)
+MIT Â© [Telperion](https://github.com/telperiontech)

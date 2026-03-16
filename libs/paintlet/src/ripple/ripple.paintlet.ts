@@ -1,4 +1,4 @@
-import { PaintRenderingContext2D, PaintSize } from "../paint.type";
+﻿import { PaintRenderingContext2D, PaintSize } from "../paint.type";
 import { registerPaintlet } from "../register-paintlet";
 
 /**
@@ -15,36 +15,36 @@ interface RippleConfig {
  * Creates concentric circular waves radiating from the center
  *
  * Custom Properties:
- * - --tha-ripple-color: Color of the ripple waves (default: #3498db)
- * - --tha-ripple-density: Number of ripple waves (default: 5)
- * - --tha-ripple-wave-width: Width of each wave line in pixels (default: 2)
+ * - --tp-ripple-color: Color of the ripple waves (default: #3498db)
+ * - --tp-ripple-density: Number of ripple waves (default: 5)
+ * - --tp-ripple-wave-width: Width of each wave line in pixels (default: 2)
  *
  * @example
  * ```css
  * .element {
  *   background-image: paint(ripple);
- *   --tha-ripple-color: #3498db;
- *   --tha-ripple-density: 5;
- *   --tha-ripple-wave-width: 2;
+ *   --tp-ripple-color: #3498db;
+ *   --tp-ripple-density: 5;
+ *   --tp-ripple-wave-width: 2;
  * }
  * ```
  */
 export class RipplePaintlet {
   static PROPERTIES = [
     {
-      name: '--tha-ripple-color',
+      name: '--tp-ripple-color',
       syntax: '<color>',
       inherits: true,
       initialValue: '#3498db',
     },
     {
-      name: '--tha-ripple-density',
+      name: '--tp-ripple-density',
       syntax: '<number>',
       inherits: true,
       initialValue: 5,
     },
     {
-      name: '--tha-ripple-wave-width',
+      name: '--tp-ripple-wave-width',
       syntax: '<number>',
       inherits: true,
       initialValue: 2,
@@ -69,9 +69,9 @@ export class RipplePaintlet {
    */
   #getConfig(properties: StylePropertyMapReadOnly): RippleConfig {
     return {
-      color: properties.get('--tha-ripple-color')?.toString() || RipplePaintlet.RIPPLE_DEFAULTS.color,
-      density: parseFloat(properties.get('--tha-ripple-density')?.toString() || String(RipplePaintlet.RIPPLE_DEFAULTS.density)),
-      waveWidth: parseFloat(properties.get('--tha-ripple-wave-width')?.toString() || String(RipplePaintlet.RIPPLE_DEFAULTS.waveWidth)),
+      color: properties.get('--tp-ripple-color')?.toString() || RipplePaintlet.RIPPLE_DEFAULTS.color,
+      density: parseFloat(properties.get('--tp-ripple-density')?.toString() || String(RipplePaintlet.RIPPLE_DEFAULTS.density)),
+      waveWidth: parseFloat(properties.get('--tp-ripple-wave-width')?.toString() || String(RipplePaintlet.RIPPLE_DEFAULTS.waveWidth)),
     };
   }
 
@@ -116,4 +116,4 @@ export class RipplePaintlet {
 }
 
 // Auto-register the paintlet when module loads
-registerPaintlet('tha-ripple', RipplePaintlet, RipplePaintlet.PROPERTIES);
+registerPaintlet('tp-ripple', RipplePaintlet, RipplePaintlet.PROPERTIES);

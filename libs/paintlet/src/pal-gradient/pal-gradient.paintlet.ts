@@ -1,4 +1,4 @@
-import { CSSPropertyDefinition, PaintRenderingContext2D, PaintSize } from '../paint.type';
+﻿import { CSSPropertyDefinition, PaintRenderingContext2D, PaintSize } from '../paint.type';
 import { registerPaintlet } from '../register-paintlet';
 
 /**
@@ -30,20 +30,20 @@ interface PalGradientConfig {
  * 3. Linear gradients connecting adjacent points
  *
  * Custom Properties:
- * - --tha-pal-gradient-complexity: Number of points (default: 5, affects circle sizes inversely)
- * - --tha-pal-gradient-seed: Random seed for generation (default: 0)
- * - --tha-pal-gradient-composite-points: Blend mode for points (default: screen)
- * - --tha-pal-gradient-composite-lines: Blend mode for connecting lines (default: lighter)
- * - --tha-pal-gradient-frame: Animation frame from 0 to 100 for circular motion (default: 0)
+ * - --tp-pal-gradient-complexity: Number of points (default: 5, affects circle sizes inversely)
+ * - --tp-pal-gradient-seed: Random seed for generation (default: 0)
+ * - --tp-pal-gradient-composite-points: Blend mode for points (default: screen)
+ * - --tp-pal-gradient-composite-lines: Blend mode for connecting lines (default: lighter)
+ * - --tp-pal-gradient-frame: Animation frame from 0 to 100 for circular motion (default: 0)
  *
  * @example
  * ```css
  * .element {
- *   --tha-pal-gradient-complexity: 7;
- *   --tha-pal-gradient-seed: 42;
- *   --tha-pal-gradient-composite-lines: difference;
- *   background-image: --tha-pal-gradient(#667eea, #764ba2, #f093fb, #4facfe);
- *   animation: --tha-pal-gradient-animation(10s);
+ *   --tp-pal-gradient-complexity: 7;
+ *   --tp-pal-gradient-seed: 42;
+ *   --tp-pal-gradient-composite-lines: difference;
+ *   background-image: --tp-pal-gradient(#667eea, #764ba2, #f093fb, #4facfe);
+ *   animation: --tp-pal-gradient-animation(10s);
  * }
  * ```
  */
@@ -61,37 +61,37 @@ export class PalGradientPaintlet {
 
   static readonly PROPERTIES: CSSPropertyDefinition[] = [
     {
-      name: '--tha-pal-gradient-complexity',
+      name: '--tp-pal-gradient-complexity',
       syntax: '<number>',
       inherits: true,
       initialValue: PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.complexity,
     },
     {
-      name: '--tha-pal-gradient-seed',
+      name: '--tp-pal-gradient-seed',
       syntax: '<number>',
       inherits: true,
       initialValue: PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.seed,
     },
     {
-      name: '--tha-pal-gradient-composite-points',
+      name: '--tp-pal-gradient-composite-points',
       syntax: '<mix-blend-mode>',
       inherits: true,
       initialValue: PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.compositePoints,
     },
     {
-      name: '--tha-pal-gradient-composite-lines',
+      name: '--tp-pal-gradient-composite-lines',
       syntax: '<mix-blend-mode>',
       inherits: true,
       initialValue: PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.compositeLines,
     },
     ...Array.from({ length: PalGradientPaintlet.SUPPORTED_COLOR_COUNT }, (_, i) => ({
-      name: `--tha-pal-gradient-color-${i + 1}`,
+      name: `--tp-pal-gradient-color-${i + 1}`,
       syntax: 'none | <color>',
       inherits: true,
       initialValue: 'none',
     })),
     {
-      name: '--tha-pal-gradient-frame',
+      name: '--tp-pal-gradient-frame',
       syntax: '<number>',
       inherits: true,
       initialValue: PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.frame,
@@ -113,7 +113,7 @@ export class PalGradientPaintlet {
    */
   #getConfig(properties: StylePropertyMapReadOnly, args: CSSStyleValue[]): PalGradientConfig {
     const propColors = Array.from({ length: PalGradientPaintlet.SUPPORTED_COLOR_COUNT }, (_, i) =>
-      properties.get(`--tha-pal-gradient-color-${i + 1}`)?.toString() || 'none'
+      properties.get(`--tp-pal-gradient-color-${i + 1}`)?.toString() || 'none'
     );
 
     const colors = propColors.map((color, index) =>
@@ -123,17 +123,17 @@ export class PalGradientPaintlet {
     return {
       colors: colors.length > 0 ? colors : PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.colors,
       complexity: parseFloat(
-        properties.get('--tha-pal-gradient-complexity')?.toString() ||
+        properties.get('--tp-pal-gradient-complexity')?.toString() ||
         String(PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.complexity)
       ),
       seed: parseFloat(
-        properties.get('--tha-pal-gradient-seed')?.toString() ||
+        properties.get('--tp-pal-gradient-seed')?.toString() ||
         String(PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.seed)
       ),
-      compositePoints: properties.get('--tha-pal-gradient-composite-points')?.toString() as GlobalCompositeOperation ?? PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.compositePoints,
-      compositeLines: properties.get('--tha-pal-gradient-composite-lines')?.toString() as GlobalCompositeOperation ?? PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.compositeLines,
+      compositePoints: properties.get('--tp-pal-gradient-composite-points')?.toString() as GlobalCompositeOperation ?? PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.compositePoints,
+      compositeLines: properties.get('--tp-pal-gradient-composite-lines')?.toString() as GlobalCompositeOperation ?? PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.compositeLines,
       frame: parseFloat(
-        properties.get('--tha-pal-gradient-frame')?.toString() ||
+        properties.get('--tp-pal-gradient-frame')?.toString() ||
         String(PalGradientPaintlet.PAL_GRADIENT_DEFAULTS.frame)
       ),
     };
@@ -293,15 +293,15 @@ export class PalGradientPaintlet {
 
 // Auto-register the paintlet when module loads
 registerPaintlet(
-  'tha-pal-gradient',
+  'tp-pal-gradient',
   PalGradientPaintlet,
   PalGradientPaintlet.PROPERTIES,
   Array.from({ length: PalGradientPaintlet.SUPPORTED_COLOR_COUNT }, (_, i) => ({
     name: `color-${i + 1}`,
     syntax: 'none | <color>',
-    default: 'var(--tha-pal-gradient-color-' + (i + 1) + ', none)',
+    default: 'var(--tp-pal-gradient-color-' + (i + 1) + ', none)',
   })),
   {
-    'tha-pal-gradient-animation': '--tha-pal-gradient-frame',
+    'tp-pal-gradient-animation': '--tp-pal-gradient-frame',
   }
 );

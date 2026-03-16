@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components';
+﻿import type { Meta, StoryObj } from '@storybook/web-components';
 import { html } from 'lit';
 import './ripple.paintlet';
 
@@ -68,9 +68,9 @@ Creates concentric circular waves radiating from the center using CSS Paint API.
 
 ## CSS Custom Properties
 
-- \`--tha-ripple-color\`: Color of the ripple waves
-- \`--tha-ripple-density\`: Number of ripple waves
-- \`--tha-ripple-wave-width\`: Width of each wave line in pixels
+- \`--tp-ripple-color\`: Color of the ripple waves
+- \`--tp-ripple-density\`: Number of ripple waves
+- \`--tp-ripple-wave-width\`: Width of each wave line in pixels
 
 ## Browser Support
 
@@ -95,10 +95,10 @@ const renderRipple = (args: RippleStoryArgs) => html`
     style="
       width: ${args.width || 300}px;
       height: ${args.height || 300}px;
-      background-image: --tha-ripple();
-      --tha-ripple-color: ${args.color};
-      --tha-ripple-density: ${args.density};
-      --tha-ripple-wave-width: ${args.waveWidth};
+      background-image: --tp-ripple();
+      --tp-ripple-color: ${args.color};
+      --tp-ripple-density: ${args.density};
+      --tp-ripple-wave-width: ${args.waveWidth};
       border: 1px solid #e0e0e0;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);

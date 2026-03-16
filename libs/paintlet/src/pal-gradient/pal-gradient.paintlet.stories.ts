@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components';
+﻿import type { Meta, StoryObj } from '@storybook/web-components';
 import { css, html } from 'lit';
 import './pal-gradient.paintlet';
 
@@ -114,12 +114,12 @@ const renderPalGradient = (args: PalGradientStoryArgs) => html`
     style="
       width: ${args.width || 400}px;
       height: ${args.height || 400}px;
-      background-image: --tha-pal-gradient(${args.colors});
-      animation: --tha-pal-gradient-animation(${args.animationDuration || 5}s);
-      --tha-pal-gradient-complexity: ${args.complexity};
-      --tha-pal-gradient-seed: ${args.seed};
-      --tha-pal-gradient-composite-points: ${args.compositePoints || 'lighter'};
-      --tha-pal-gradient-composite-lines: ${args.compositeLines || 'color-dodge'};
+      background-image: --tp-pal-gradient(${args.colors});
+      animation: --tp-pal-gradient-animation(${args.animationDuration || 5}s);
+      --tp-pal-gradient-complexity: ${args.complexity};
+      --tp-pal-gradient-seed: ${args.seed};
+      --tp-pal-gradient-composite-points: ${args.compositePoints || 'lighter'};
+      --tp-pal-gradient-composite-lines: ${args.compositeLines || 'color-dodge'};
       border: 1px solid #e0e0e0;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -190,14 +190,14 @@ export const ColorfullCirclesWithColorAnimation: Story = {
     style.textContent = css`
       @keyframes color-shift {
         from {
-          --tha-pal-gradient-color-1: #ffff00;
-          --tha-pal-gradient-color-2: #ff00ff;
-          --tha-pal-gradient-color-3: #00ffff;
+          --tp-pal-gradient-color-1: #ffff00;
+          --tp-pal-gradient-color-2: #ff00ff;
+          --tp-pal-gradient-color-3: #00ffff;
         }
         to {
-          --tha-pal-gradient-color-1: #ff0000;
-          --tha-pal-gradient-color-2: #00ff00;
-          --tha-pal-gradient-color-3: #0000ff;
+          --tp-pal-gradient-color-1: #ff0000;
+          --tp-pal-gradient-color-2: #00ff00;
+          --tp-pal-gradient-color-3: #0000ff;
         }
       }
     `.cssText;
@@ -209,12 +209,12 @@ export const ColorfullCirclesWithColorAnimation: Story = {
     <div style="
         width: ${args.width || 400}px;
         height: ${args.height || 400}px;
-        background-image: --tha-pal-gradient();
-        animation: --tha-pal-gradient-animation(${args.animationDuration || 5}s), color-shift ${args.animationDuration || 5}s infinite alternate;
-        --tha-pal-gradient-complexity: ${args.complexity};
-        --tha-pal-gradient-seed: ${args.seed};
-        --tha-pal-gradient-composite-points: ${args.compositePoints as any || 'lighter'};
-        --tha-pal-gradient-composite-lines: ${args.compositeLines as any || 'color-dodge'};
+        background-image: --tp-pal-gradient();
+        animation: --tp-pal-gradient-animation(${args.animationDuration || 5}s), color-shift ${args.animationDuration || 5}s infinite alternate;
+        --tp-pal-gradient-complexity: ${args.complexity};
+        --tp-pal-gradient-seed: ${args.seed};
+        --tp-pal-gradient-composite-points: ${args.compositePoints as any || 'lighter'};
+        --tp-pal-gradient-composite-lines: ${args.compositeLines as any || 'color-dodge'};
         border: 1px solid #e0e0e0;
         border-radius: 12px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);

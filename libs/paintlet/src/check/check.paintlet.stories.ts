@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components';
+﻿import type { Meta, StoryObj } from '@storybook/web-components';
 import { html } from 'lit';
 import './check.paintlet';
 
@@ -126,15 +126,15 @@ or look unexpected with certain configurations.
 
 | Property | Default | Notes |
 |---|---|---|
-| \`--tha-check-cell-size\` | \`20\` | Uniform cell size, overridden by cell-width/cell-height |
-| \`--tha-check-cell-width\` | \`auto\` | Falls back to cell-size when auto |
-| \`--tha-check-cell-height\` | \`auto\` | Falls back to cell-size when auto |
-| \`--tha-check-stroke-width\` | \`.5\` | Uniform stroke width |
-| \`--tha-check-stroke-width-h\` | \`auto\` | Falls back to stroke-width when auto |
-| \`--tha-check-stroke-width-v\` | \`auto\` | Falls back to stroke-width when auto |
-| \`--tha-check-stroke-color\` | \`#333333\` | Uniform stroke color |
-| \`--tha-check-stroke-color-h\` | \`auto\` | Falls back to stroke-color when auto |
-| \`--tha-check-stroke-color-v\` | \`auto\` | Falls back to stroke-color when auto |
+| \`--tp-check-cell-size\` | \`20\` | Uniform cell size, overridden by cell-width/cell-height |
+| \`--tp-check-cell-width\` | \`auto\` | Falls back to cell-size when auto |
+| \`--tp-check-cell-height\` | \`auto\` | Falls back to cell-size when auto |
+| \`--tp-check-stroke-width\` | \`.5\` | Uniform stroke width |
+| \`--tp-check-stroke-width-h\` | \`auto\` | Falls back to stroke-width when auto |
+| \`--tp-check-stroke-width-v\` | \`auto\` | Falls back to stroke-width when auto |
+| \`--tp-check-stroke-color\` | \`#333333\` | Uniform stroke color |
+| \`--tp-check-stroke-color-h\` | \`auto\` | Falls back to stroke-color when auto |
+| \`--tp-check-stroke-color-v\` | \`auto\` | Falls back to stroke-color when auto |
         `,
       },
     },
@@ -149,16 +149,16 @@ const renderCheck = (args: CheckStoryArgs) => html`
     style="
       width: ${args.width}px;
       height: ${args.height}px;
-      background-image: --tha-check();
-      --tha-check-cell-size: ${args.cellSize};
-      --tha-check-cell-width: ${args.cellWidth};
-      --tha-check-cell-height: ${args.cellHeight};
-      --tha-check-stroke-width: ${args.strokeWidth};
-      --tha-check-stroke-width-h: ${args.strokeWidthH};
-      --tha-check-stroke-width-v: ${args.strokeWidthV};
-      --tha-check-stroke-color: ${args.strokeColor};
-      --tha-check-stroke-color-h: ${args.strokeColorH};
-      --tha-check-stroke-color-v: ${args.strokeColorV};
+      background-image: --tp-check();
+      --tp-check-cell-size: ${args.cellSize};
+      --tp-check-cell-width: ${args.cellWidth};
+      --tp-check-cell-height: ${args.cellHeight};
+      --tp-check-stroke-width: ${args.strokeWidth};
+      --tp-check-stroke-width-h: ${args.strokeWidthH};
+      --tp-check-stroke-width-v: ${args.strokeWidthV};
+      --tp-check-stroke-color: ${args.strokeColor};
+      --tp-check-stroke-color-h: ${args.strokeColorH};
+      --tp-check-stroke-color-v: ${args.strokeColorV};
       border: 1px solid #e0e0e0;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -217,7 +217,7 @@ export const ThickStrokeOverlap: Story = {
 
 /**
  * At very small cell sizes the grid is so dense it looks like a solid color
- * with moiré artifacts depending on display DPI.
+ * with moirÃ© artifacts depending on display DPI.
  */
 export const TinyCellMoire: Story = {
   args: {
@@ -238,7 +238,7 @@ export const TinyCellMoire: Story = {
     docs: {
       description: {
         story:
-          'Cell size of 3px creates a grid so dense it produces moiré patterns on most screens. The individual lines become indistinguishable.',
+          'Cell size of 3px creates a grid so dense it produces moirÃ© patterns on most screens. The individual lines become indistinguishable.',
       },
     },
   },
@@ -324,7 +324,7 @@ export const MismatchedStrokeWidths: Story = {
     docs: {
       description: {
         story:
-          'Horizontal stroke width 8 vs vertical 0.5 makes intersections look oddly notched — the thin vertical lines almost disappear against the thick horizontals.',
+          'Horizontal stroke width 8 vs vertical 0.5 makes intersections look oddly notched â€” the thin vertical lines almost disappear against the thick horizontals.',
       },
     },
   },
@@ -353,7 +353,7 @@ export const IntersectionColorBleed: Story = {
     docs: {
       description: {
         story:
-          'Red horizontal and blue vertical lines overlap at intersections. Because vertical lines are drawn after horizontal ones, the vertical color always wins at crossings — there is no true blending.',
+          'Red horizontal and blue vertical lines overlap at intersections. Because vertical lines are drawn after horizontal ones, the vertical color always wins at crossings â€” there is no true blending.',
       },
     },
   },
@@ -382,7 +382,7 @@ export const PercentageCellSize: Story = {
     docs: {
       description: {
         story:
-          'Cell width and height set to 10%. On a 300×200 container this means 30px wide × 20px tall cells — the grid is square-ish. But resize the container and the proportions shift in non-obvious ways.',
+          'Cell width and height set to 10%. On a 300Ã—200 container this means 30px wide Ã— 20px tall cells â€” the grid is square-ish. But resize the container and the proportions shift in non-obvious ways.',
       },
     },
   },
@@ -417,7 +417,7 @@ export const TransparentOverlap: Story = {
 };
 
 /**
- * Experiment freely — use the controls panel to discover more drawbacks.
+ * Experiment freely â€” use the controls panel to discover more drawbacks.
  */
 export const Playground: Story = {
   args: {

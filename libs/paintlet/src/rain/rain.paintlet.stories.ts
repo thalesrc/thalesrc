@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/web-components';
+﻿import type { Meta, StoryObj } from '@storybook/web-components';
 import { html } from 'lit';
 import './rain.paintlet';
 
@@ -113,23 +113,23 @@ Creates an animated rain effect using CSS Paint API and CSS animations.
 
 ## CSS Custom Properties
 
-- \`--tha-rain-color\`: Color of the raindrops
-- \`--tha-rain-density\`: Number of raindrops
-- \`--tha-rain-angle\`: Angle of rain in degrees (90 is vertical)
-- \`--tha-rain-min-length\`: Minimum length of raindrops in pixels
-- \`--tha-rain-max-length\`: Maximum length of raindrops in pixels
-- \`--tha-rain-min-thickness\`: Minimum thickness of raindrops
-- \`--tha-rain-max-thickness\`: Maximum thickness of raindrops
-- \`--tha-rain-frame\`: Animation frame from 0 to 1000 (use with CSS animation)
+- \`--tp-rain-color\`: Color of the raindrops
+- \`--tp-rain-density\`: Number of raindrops
+- \`--tp-rain-angle\`: Angle of rain in degrees (90 is vertical)
+- \`--tp-rain-min-length\`: Minimum length of raindrops in pixels
+- \`--tp-rain-max-length\`: Maximum length of raindrops in pixels
+- \`--tp-rain-min-thickness\`: Minimum thickness of raindrops
+- \`--tp-rain-max-thickness\`: Maximum thickness of raindrops
+- \`--tp-rain-frame\`: Animation frame from 0 to 1000 (use with CSS animation)
 
 ## Animation
 
-The rain paintlet automatically registers a \`tha-rain-animation\` keyframe animation:
+The rain paintlet automatically registers a \`tp-rain-animation\` keyframe animation:
 
 \`\`\`css
 .rain-effect {
   background-image: paint(rain);
-  animation: --tha-rain-animation(1s);
+  animation: --tp-rain-animation(1s);
 }
 \`\`\`
 
@@ -156,15 +156,15 @@ const renderRain = (args: RainStoryArgs) => html`
     .rain-container {
       width: ${args.width || 400}px;
       height: ${args.height || 400}px;
-      background-image: --tha-rain();
-      --tha-rain-color: ${args.color};
-      --tha-rain-density: ${args.density};
-      --tha-rain-angle: ${args.angle};
-      --tha-rain-min-length: ${args.minLength};
-      --tha-rain-max-length: ${args.maxLength};
-      --tha-rain-min-thickness: ${args.minThickness};
-      --tha-rain-max-thickness: ${args.maxThickness};
-      animation: --tha-rain-animation(${args.speed}s);
+      background-image: --tp-rain();
+      --tp-rain-color: ${args.color};
+      --tp-rain-density: ${args.density};
+      --tp-rain-angle: ${args.angle};
+      --tp-rain-min-length: ${args.minLength};
+      --tp-rain-max-length: ${args.maxLength};
+      --tp-rain-min-thickness: ${args.minThickness};
+      --tp-rain-max-thickness: ${args.maxThickness};
+      animation: --tp-rain-animation(${args.speed}s);
       border: 1px solid #e0e0e0;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
