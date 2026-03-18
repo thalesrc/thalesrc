@@ -39,10 +39,10 @@ export class SseClient {
    *   .subscribe(data => console.log('Received:', data));
    * ```
    */
-  start<T>(url: string, init: EventSourceInit = {}): Observable<T> {
+  start<T = string>(url: string, init: EventSourceInit = {}): Observable<T> {
     return this.#interceptors.reduceRight(
       (next, interceptor) => (req) => interceptor.sseIntercept(req, next),
-      (req: SseRequest) => this.#createEventSource(req) as Observable<T>
+      (req: SseRequest) => this.#createEventSource<T>(req)
     )({ url, init });
   }
 
