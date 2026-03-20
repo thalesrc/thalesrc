@@ -14,6 +14,7 @@
     "to-async-iteratable",
     "static/async-iterator",
     "operators/",
+    "operators/pluck",
     "operators/share-last"
   ]
 }
