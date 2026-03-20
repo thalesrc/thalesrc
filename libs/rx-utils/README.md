@@ -18,6 +18,7 @@ This library provides useful utilities for working with RxJS Observables:
 
 - **toAsyncIteratable**: Convert RxJS Observables to AsyncIterables for use with `for await...of` loops
 - **makeAsyncIterator**: Create an AsyncIterator from an Observable
+- **pluck**: RxJS operator that emits the value of a specified key from the source object
 - **shareLast**: RxJS operator that shares the last emitted value without reference counting
 - **Static extension**: Optionally extend Observable prototype with async iterator support
 
@@ -66,6 +67,26 @@ const result2 = await asyncIterator.next(); // { value: 2, done: false }
 
 **Returns:**
 - `AsyncIterator<T>` - An AsyncIterator that yields values from the Observable
+
+### pluck (Operator)
+
+An RxJS operator that emits the value of a specified key from the source object. A type-safe replacement for the deprecated RxJS `pluck` operator.
+
+```typescript
+import { of } from 'rxjs';
+import { pluck } from '@telperion/rx-utils/operators';
+
+of({ name: 'Alice', age: 30 }).pipe(
+  pluck('name')
+).subscribe(console.log);
+// Output: "Alice"
+```
+
+**Parameters:**
+- `key: K` - The key to pluck from the source object
+
+**Returns:**
+- `OperatorFunction<T, T[K]>` - An operator function that maps each source object to the value of the specified key
 
 ### shareLast (Operator)
 
