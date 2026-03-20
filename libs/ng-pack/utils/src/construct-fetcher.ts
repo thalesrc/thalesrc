@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { inject } from "@angular/core";
+import { inject, Injector } from "@angular/core";
 import { AnyFunction } from '@telperion/extra-ts-types';
 import { tryCatch } from "@telperion/js-utils/promise/try-catch";
 import { firstValueFrom, Observable } from 'rxjs';
@@ -33,8 +33,8 @@ export type Fetcher = {
  * }
  * ```
  */
-export function constructFetcher() {
-  const client = inject(HttpClient);
+export function constructFetcher(injector?: Injector) {
+  const client = injector ? injector.get(HttpClient) : inject(HttpClient);
 
   return new Proxy({} as Fetcher, {
     get(target, prop) {
