@@ -293,6 +293,17 @@ const a = {
 compact(a); // {z: 20}
 ```
 
+#### [Map](https://open-source.telperion.tr/js-utils/modules/_object_map_.html)
+Maps the values of an object using a callback function
+
+```typescript
+import { map } from "@telperion/js-utils/object";
+
+const obj = { a: 1, b: 2, c: 3 };
+
+map(obj, value => value * 2); // { a: 2, b: 4, c: 6 }
+```
+
 #### [Deepest](https://open-source.telperion.tr/js-utils/modules/_object_deepest_.html)
 Get deepest value in an object chain
 

@@ -8,4 +8,11 @@ export default {
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../coverage/libs/js-utils',
+  collectCoverageFrom: [
+    'src/**/*.ts',
+    '!src/**/index.ts',
+    '!src/**/*.spec.ts',
+    '!src/**/*.test.ts',
+  ],
+  coverageReporters: ['text', 'json', 'html', 'lcov'],
 };

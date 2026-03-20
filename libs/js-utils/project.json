@@ -19,6 +19,14 @@
         "passWithNoTests": true
       }
     },
+    "test/coverage": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "libs/js-utils/jest.config.ts",
+        "passWithNoTests": true,
+        "codeCoverage": true
+      }
+    },
     "publish": {
       "executor": "nx:run-commands",
       "options": {

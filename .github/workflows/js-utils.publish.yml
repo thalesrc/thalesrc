@@ -34,8 +34,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Test
-        run: pnpm nx run js-utils:test
+      - name: Test with Coverage
+        run: pnpm nx run js-utils:test/coverage
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./coverage/libs/js-utils
+          flags: js-utils
+          name: js-utils-coverage
+          fail_ci_if_error: false
+          verbose: true
 
       - name: Publish
         run: pnpm nx run js-utils:publish
