@@ -2,7 +2,8 @@
 Javascript utility functions for web development
 
 [![npm](https://img.shields.io/npm/v/@telperion/js-utils.svg)](https://www.npmjs.com/package/@telperion/js-utils)
-[![npm](https://img.shields.io/npm/dw/@telperion/js-utils.svg)](https://www.npmjs.com/package/@telperion/js-utils)
+[![npm](https://img.shields.io/npm/dm/@telperion/js-utils.svg)](https://www.npmjs.com/package/@telperion/js-utils)
+[![codecov](https://codecov.io/gh/telperiontech/telperion/graph/badge.svg?token=dz46LY3onk&flag=js-utils)](https://app.codecov.io/gh/telperiontech/telperion/tree/main?flags%5B0%5D=js-utils)
 [![TypeScript](https://badges.frapsoft.com/typescript/version/typescript-next.svg?v=101)](https://github.com/ellerbrock/typescript-badges/)
 [![npm](https://img.shields.io/npm/l/@telperion/js-utils.svg)](https://github.com/telperiontech/telperion/blob/main/LICENSE)
 

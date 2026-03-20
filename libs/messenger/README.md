@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/@telperion/messenger.svg)](https://www.npmjs.com/package/@telperion/messenger)
 [![npm](https://img.shields.io/npm/dw/@telperion/messenger.svg)](https://www.npmjs.com/package/@telperion/messenger)
-[![codecov](https://codecov.io/gh/telperiontech/telperion/graph/badge.svg?token=dz46LY3onk&flag=messenger)](https://codecov.io/gh/telperiontech/telperion?flag=messenger)
+[![codecov](https://codecov.io/gh/telperiontech/telperion/graph/badge.svg?token=dz46LY3onk&flag=messenger)](https://app.codecov.io/gh/telperiontech/telperion/tree/main?flags%5B0%5D=messenger)
 [![TypeScript](https://badges.frapsoft.com/typescript/version/typescript-next.svg?v=101)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
