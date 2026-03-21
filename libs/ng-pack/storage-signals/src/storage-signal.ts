@@ -62,6 +62,7 @@ export interface StorageSignal<T> extends WritableSignal<T | null | undefined> {
   delete(): void;
 }
 
+export type StorageKeyType = string | Signal<string | undefined> | undefined;
 
 /**
  * Creates a StorageSignal from a ReactiveStorage instance.
@@ -108,24 +109,28 @@ export interface StorageSignal<T> extends WritableSignal<T | null | undefined> {
  *
  * @internal This is primarily for internal use. Use the specialized signal creators instead.
  */
-export function storageSignal<T>(storage: ReactiveStorage, store: string, key: string | Signal<string>): StorageSignal<T> {
-  const resolvedKey = typeof key === 'string' ? () => key : key;
-  const source$ = computed(() => storage.get<T>(store, resolvedKey()));
+export function storageSignal<T>(
+  storage: ReactiveStorage,
+  store: string,
+  key: StorageKeyType
+): StorageSignal<T> {
+  const resolvedKey = typeof key === 'string' || key === undefined ? () => key : key;
+  const source$ = computed(() => storage.get<T>(store, resolvedKey() ?? ''));
   const source = observableSignalToSignal(source$, undefined);
 
   function setter(value: T | null | undefined) {
-    storage.set(store, resolvedKey(), value);
+    storage.set(store, resolvedKey() ?? '', value);
   }
 
   function updater(updaterFn: (value: T | null | undefined) => T | null | undefined) {
     const currentValue = source();
     const newValue = updaterFn(currentValue);
 
-    storage.set(store, resolvedKey(), newValue);
+    storage.set(store, resolvedKey() ?? '', newValue);
   }
 
   function deleter() {
-    storage.delete(store, resolvedKey());
+    storage.delete(store, resolvedKey() ?? '');
   }
 
   return new Proxy(source as StorageSignal<T>, {

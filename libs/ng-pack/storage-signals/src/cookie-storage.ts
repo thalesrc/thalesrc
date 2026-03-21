@@ -1,7 +1,7 @@
-import { inject, Provider, Signal } from '@angular/core';
+import { inject, Provider } from '@angular/core';
 import { ReactiveCookieStorage, ReactiveCookieStorageOptions } from '@telperion/reactive-storage';
 
-import { storageSignal } from "./storage-signal";
+import { StorageKeyType, storageSignal } from "./storage-signal";
 
 /**
  * Internal provider that manages ReactiveCookieStorage instances with different configurations.
@@ -294,7 +294,7 @@ export function provideCookieStorage(
  *
  * @public
  */
-export function cookieStorageSignal<T>(store: string, key: string | Signal<string>, options?: ReactiveCookieStorageOptions) {
+export function cookieStorageSignal<T>(store: string, key: StorageKeyType, options?: ReactiveCookieStorageOptions) {
   const provider = inject(CookieStorageProvider);
   const storage = provider.getStore(options);
 

@@ -1,7 +1,7 @@
-import { inject, InjectionToken, Provider, Signal } from "@angular/core";
+import { inject, InjectionToken, Provider } from "@angular/core";
 import { ReactiveWebSessionStorage } from '@telperion/reactive-storage';
 
-import { storageSignal } from "./storage-signal";
+import { StorageKeyType, storageSignal } from "./storage-signal";
 
 /**
  * Injection token for the ReactiveWebSessionStorage singleton.
@@ -161,7 +161,7 @@ export function provideSessionStorage(appName?: string): Provider {
  *
  * @public
  */
-export function sessionStorageSignal<T>(store: string, key: string | Signal<string>) {
+export function sessionStorageSignal<T>(store: string, key: StorageKeyType) {
   const storage = inject(SESSION_STORAGE);
 
   return storageSignal<T>(storage, store, key);
