@@ -1,6 +1,7 @@
 import { toSignal } from "@angular/core/rxjs-interop";
 import { ReactiveStorage } from '@telperion/reactive-storage';
 import { StorageSignal } from "./storage-signal";
+import { computed, Signal } from "@angular/core";
 
 /**
  * Creates a StorageSignal from a ReactiveStorage instance.
@@ -47,22 +48,23 @@ import { StorageSignal } from "./storage-signal";
  *
  * @internal This is primarily for internal use. Use the specialized signal creators instead.
  */
-export function storageSignal<T>(storage: ReactiveStorage, store: string, key: string): StorageSignal<T> {
-  const source = toSignal(storage.get<T>(store, key));
+export function storageSignal<T>(storage: ReactiveStorage, store: string, key: string | Signal<string>): StorageSignal<T> {
+  const resolvedKey = typeof key === 'string' ? () => key : key;
+  const source = computed(() => toSignal(storage.get<T>(store, resolvedKey()))());
 
   function setter(value: T | null | undefined) {
-    storage.set(store, key, value);
+    storage.set(store, resolvedKey(), value);
   }
 
   function updater(updaterFn: (value: T | null | undefined) => T | null | undefined) {
     const currentValue = source();
     const newValue = updaterFn(currentValue);
 
-    storage.set(store, key, newValue);
+    storage.set(store, resolvedKey(), newValue);
   }
 
   function deleter() {
-    storage.delete(store, key);
+    storage.delete(store, resolvedKey());
   }
 
   return new Proxy(source as StorageSignal<T>, {
