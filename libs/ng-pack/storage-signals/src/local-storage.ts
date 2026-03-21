@@ -1,4 +1,4 @@
-import { inject, InjectionToken, Provider } from "@angular/core";
+import { inject, InjectionToken, Provider, Signal } from "@angular/core";
 import { ReactiveWebLocalStorage } from '@telperion/reactive-storage';
 
 import { storageSignal } from "./storage";
@@ -142,7 +142,7 @@ export function provideLocalStorage(appName?: string): Provider {
  *
  * @public
  */
-export function localStorageSignal<T>(store: string, key: string): StorageSignal<T> {
+export function localStorageSignal<T>(store: string, key: string | Signal<string>): StorageSignal<T> {
   const storage = inject(LOCAL_STORAGE);
 
   return storageSignal(storage, store, key);
