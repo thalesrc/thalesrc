@@ -3,6 +3,8 @@ import { toSignal as ngToSignal } from "@angular/core/rxjs-interop";
 import { from, Observable } from "rxjs";
 import { promisify } from '@telperion/js-utils/promise/promisify';
 
+type ToSignalOptions<T> = Partial<Parameters<typeof ngToSignal<T, T>>[1]>;
+
 /**
  * Converts a value, Promise, or Observable into an Angular Signal.
  * Accepts any of the three source types and normalises them through
@@ -24,13 +26,13 @@ import { promisify } from '@telperion/js-utils/promise/promisify';
  * const sig = toSignal(myService.data$);
  * ```
  */
-export function toSignal<T>(
+export function toSignal<T, O extends ToSignalOptions<T>>(
   source: T | Promise<T> | Observable<T>,
-  options: Partial<Parameters<typeof ngToSignal<T, T>>[1]> = {}
-): Signal<T | undefined> {
+  options: O = {} as O
+): O extends { initialValue: T } ? Signal<T> : Signal<T | undefined> {
   if (!(source instanceof Observable)) {
     source = promisify(source);
   }
 
-  return ngToSignal(from(source), options as Parameters<typeof ngToSignal<T, T>>[1]);
+  return ngToSignal(from(source), options as ToSignalOptions<any>) as any;
 }
