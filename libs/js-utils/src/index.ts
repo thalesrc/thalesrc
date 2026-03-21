@@ -7,6 +7,7 @@ export {
   asyncMap,
   difference,
   findByKey,
+  gather,
   intersection,
   remove,
   replace,

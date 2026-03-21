@@ -26,7 +26,8 @@
     "remove",
     "deepest",
     "never",
-    "arrayize"
+    "arrayize",
+    "gather"
   ],
   "homepage": "https://open-source.telperion.tr/js-utils",
   "repository": {
@@ -57,6 +58,7 @@
     "array/proto/compact",
     "array/proto/difference",
     "array/proto/find-by-key",
+    "array/proto/gather",
     "array/proto/intersection",
     "array/proto/limit",
     "array/proto/remove",
@@ -69,6 +71,7 @@
     "array/compact",
     "array/difference",
     "array/find-by-key",
+    "array/gather",
     "array/intersection",
     "array/limit",
     "array/remove",

@@ -3,6 +3,7 @@ export * from '@telperion/js-utils/array/async-map';
 export * from '@telperion/js-utils/array/compact';
 export * from '@telperion/js-utils/array/difference';
 export * from '@telperion/js-utils/array/find-by-key';
+export * from '@telperion/js-utils/array/gather';
 export * from '@telperion/js-utils/array/intersection';
 export * from '@telperion/js-utils/array/limit';
 export * from '@telperion/js-utils/array/remove';

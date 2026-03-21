@@ -82,6 +82,25 @@ const array = [{a: 1}, {a: 2}, {a: 3}];
 findByKey(array, "a", 2); // {a: 2}
 ```
 
+#### [Gather](https://open-source.telperion.tr/js-utils/modules/_array_gather_.html)
+Groups array items by a specified key into a Map
+
+```typescript
+import { gather } from "@telperion/js-utils/array";
+
+const users = [
+  { role: "admin", name: "Alice" },
+  { role: "user", name: "Bob" },
+  { role: "admin", name: "Charlie" },
+];
+
+const grouped = gather(users, "role");
+// Map {
+//   "admin" => [{ role: "admin", name: "Alice" }, { role: "admin", name: "Charlie" }],
+//   "user" => [{ role: "user", name: "Bob" }]
+// }
+```
+
 #### [Intersection](https://open-source.telperion.tr/js-utils/modules/_array_intersection_.html)
 Gets the intersection of the two arrays or sets
 
