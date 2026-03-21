@@ -1,8 +1,7 @@
 import { inject, InjectionToken, Provider, Signal } from "@angular/core";
 import { ReactiveWebLocalStorage } from '@telperion/reactive-storage';
 
-import { storageSignal } from "./storage";
-import { StorageSignal } from "./storage-signal";
+import { storageSignal } from "./storage-signal";
 
 /**
  * Injection token for the ReactiveWebLocalStorage singleton.
@@ -142,8 +141,8 @@ export function provideLocalStorage(appName?: string): Provider {
  *
  * @public
  */
-export function localStorageSignal<T>(store: string, key: string | Signal<string>): StorageSignal<T> {
+export function localStorageSignal<T>(store: string, key: string | Signal<string>) {
   const storage = inject(LOCAL_STORAGE);
 
-  return storageSignal(storage, store, key);
+  return storageSignal<T>(storage, store, key);
 }
