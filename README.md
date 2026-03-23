@@ -125,9 +125,9 @@ React-specific utility hooks and components for modern React development. Simpli
 [![npm](https://img.shields.io/npm/dw/@thalesrc/hermes.svg)](https://www.npmjs.com/package/@thalesrc/hermes)
 [![codecov](https://codecov.io/gh/thalesrc/thalesrc/graph/badge.svg?token=dz46LY3onk&flag=hermes)](https://codecov.io/gh/thalesrc/thalesrc?flag=hermes)
 
-Cross-context messaging library for seamless communication across iframes, Chrome extensions, web workers, and broadcast channels. Built with RxJS for reactive message handling with decorators for clean, declarative APIs.
+Cross-context messaging library for seamless communication across iframes, Chrome extensions, web workers, broadcast channels, and WebRTC data channels. Built with RxJS for reactive message handling with decorators for clean, declarative APIs.
 
-**Highlights**: Iframe messaging, Chrome extension support, Web Workers, Broadcast API, RxJS-based, Decorator API
+**Highlights**: Iframe messaging, Chrome extension support, Web Workers, Broadcast API, WebRTC DataChannel, RxJS-based, Decorator API
 
 ---
 

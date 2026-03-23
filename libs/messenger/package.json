@@ -4,6 +4,8 @@
   "description": "Javascript messaging library",
   "keywords": [
     "javascript",
+    "typescript",
+    "decorators",
     "messaging",
     "send",
     "message",
@@ -13,7 +15,11 @@
     "nodejs",
     "child",
     "process",
-    "webworkers"
+    "webworkers",
+    "iframe",
+    "broadcast",
+    "rtc",
+    "webrtc"
   ],
   "homepage": "https://open-source.telperion.tr/messenger",
   "repository": {
@@ -45,6 +51,10 @@
     "worker/",
     "worker/message-client",
     "worker/message-host",
-    "worker/message-service"
+    "worker/message-service",
+    "rtc/",
+    "rtc/message-client",
+    "rtc/message-host",
+    "rtc/message-service"
   ]
 }

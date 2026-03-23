@@ -28,6 +28,7 @@ Messenger provides a unified, decorator-based API for cross-context messaging in
 - 🧩 **Chrome Extensions** - Background scripts, content scripts, and popups
 - 👷 **Web Workers** - Main thread and worker communication
 - 📡 **Broadcast Channel** - Tab-to-tab messaging
+- 🔗 **WebRTC DataChannel** - Peer-to-peer messaging over RTCDataChannel
 
 ## Core Concepts
 
@@ -379,6 +380,130 @@ const tab2 = new Tab2('my-app-channel');
 
 ---
 
+### WebRTC (RTCDataChannel)
+
+Communicate between peers over a negotiated RTCDataChannel. Both sides create the channel with the same name and a deterministic ID derived via FNV-1a hash, so there is no offer/answer asymmetry for the data channel itself — you only need to provide the `RTCPeerConnection`.
+
+![WebRTC Communication](docs/images/rtc-communication.svg)
+
+#### Peer A (Client)
+
+```typescript
+import { RTCMessageClient, Request } from '@telperion/messenger/rtc';
+import { Observable } from 'rxjs';
+
+class PeerA extends RTCMessageClient {
+  @Request('move')
+  sendMove(position: [number, number]): Observable<boolean> {
+    return null!; // Implementation handled by decorator
+  }
+}
+
+// Provide an RTCPeerConnection
+const client = new PeerA(peerConnection);
+
+// Optional: custom channel name
+const clientWithChannel = new PeerA(peerConnection, 'game-events');
+
+client.sendMove([3, 4]).subscribe(ok => {
+  console.log('Move accepted:', ok);
+});
+```
+
+#### Peer B (Host)
+
+```typescript
+import { RTCMessageHost, Listen } from '@telperion/messenger/rtc';
+import { of, Observable } from 'rxjs';
+
+class PeerB extends RTCMessageHost {
+  @Listen('move')
+  handleMove({ data }: { data: [number, number] }): Observable<boolean> {
+    console.log('Move received:', data);
+    return of(true);
+  }
+}
+
+const host = new PeerB(peerConnection);
+
+// Optional: custom channel name (must match the client)
+const hostWithChannel = new PeerB(peerConnection, 'game-events');
+```
+
+#### Bidirectional Communication (MessageService)
+
+```typescript
+import { RTCMessageService, Request, Listen } from '@telperion/messenger/rtc';
+import { of, Observable } from 'rxjs';
+
+class GamePeer extends RTCMessageService {
+  @Request('move')
+  sendMove(position: [number, number]): Observable<boolean> {
+    return null!;
+  }
+
+  @Listen('move')
+  handleMove({ data }: { data: [number, number] }): Observable<boolean> {
+    console.log('Opponent moved:', data);
+    return of(true);
+  }
+}
+
+// Both peers use the same class with their own RTCPeerConnection
+const peer = new GamePeer(peerConnection, 'game-events');
+```
+
+##### Flexible Connection Initialization
+
+The connection parameter supports multiple initialization patterns:
+
+```typescript
+// Direct RTCPeerConnection instance
+const service1 = new GamePeer(peerConnection);
+
+// Promise that resolves to an RTCPeerConnection
+const connPromise = establishConnection();
+const service2 = new GamePeer(connPromise);
+
+// Factory function (lazy initialization)
+const service3 = new GamePeer(() => createPeerConnection());
+
+// Async factory function
+const service4 = new GamePeer(async () => {
+  const conn = new RTCPeerConnection(config);
+  await negotiateOffer(conn);
+  return conn;
+});
+```
+
+##### Dynamic Connection Management with `initialize()`
+
+The `initialize()` method allows you to switch connections at runtime:
+
+```typescript
+class GamePeer extends RTCMessageService {
+  // ... decorators and methods
+}
+
+// Start without a connection
+const peer = new GamePeer();
+
+// Connect later when RTCPeerConnection is ready
+peer.initialize(peerConnection);
+
+// Switch to a different connection
+peer.initialize(newPeerConnection);
+
+// Re-establish after ICE failure
+peerConnection.oniceconnectionstatechange = () => {
+  if (peerConnection.iceConnectionState === 'failed') {
+    peer.initialize(createNewConnection());
+  }
+};
+```
+
+---
+
 ## Advanced Features
 
 ### Streaming Responses
@@ -511,6 +636,34 @@ constructor(connectionName?: string)
 const client = new ChromeMessageClient('extension-port');
 ```
 
+#### WebRTC
+
+**`RTCMessageClient` / `RTCMessageHost` / `RTCMessageService`**
+
+```typescript
+constructor(connection?: RTCConnectionArg, channelName?: string)
+```
+
+- **`connection`** (optional): RTCPeerConnection to use for the data channel. Can be:
+  - `RTCPeerConnection`: Direct instance
+  - `Promise<RTCPeerConnection>`: Async connection
+  - `() => RTCPeerConnection | Promise<RTCPeerConnection>`: Factory function
+  - Omit to initialize later via `initialize()`
+- **`channelName`** (optional): Name for the negotiated data channel. Default: `'MessengerRTCChannelDefault'`. A deterministic 16-bit channel ID is derived from this name via FNV-1a hash.
+
+**Examples:**
+```typescript
+// Direct connection
+const service = new RTCMessageService(peerConnection);
+
+// With custom channel name
+const service = new RTCMessageService(peerConnection, 'game-events');
+
+// Lazy initialization
+const service = new RTCMessageService();
+service.initialize(peerConnection);
+```
+
 ## API Reference
 
 ### Classes
@@ -526,6 +679,9 @@ const client = new ChromeMessageClient('extension-port');
 - **`BroadcastMessageClient`** - Broadcast channel client
 - **`BroadcastMessageHost`** - Broadcast channel host
 - **`BroadcastMessageService`** - Bidirectional broadcast communication
+- **`RTCMessageClient`** - WebRTC data channel client
+- **`RTCMessageHost`** - WebRTC data channel host
+- **`RTCMessageService`** - Bidirectional WebRTC data channel communication
 
 ### Decorators
 
@@ -560,6 +716,7 @@ pnpm nx run messenger:test/worker        # Web Worker tests (Browser)
 pnpm nx run messenger:test/chrome        # Chrome extension tests (Browser)
 pnpm nx run messenger:test/broadcast     # Broadcast Channel tests (Browser)
 pnpm nx run messenger:test/iframe        # Iframe communication tests (Browser)
+pnpm nx run messenger:test/rtc           # WebRTC DataChannel tests (Browser)
 
 # Run all tests with coverage and merge reports
 pnpm nx run messenger:test/coverage

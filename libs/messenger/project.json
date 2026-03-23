@@ -20,7 +20,8 @@
           "nx run messenger:test/worker",
           "nx run messenger:test/chrome",
           "nx run messenger:test/broadcast",
-          "nx run messenger:test/iframe"
+          "nx run messenger:test/iframe",
+          "nx run messenger:test/rtc"
         ],
         "parallel": true
       },
@@ -32,7 +33,8 @@
             "nx run messenger:test/worker:with-coverage",
             "nx run messenger:test/chrome:with-coverage",
             "nx run messenger:test/broadcast:with-coverage",
-            "nx run messenger:test/iframe:with-coverage"
+            "nx run messenger:test/iframe:with-coverage",
+            "nx run messenger:test/rtc:with-coverage"
           ]
         }
       }
@@ -107,6 +109,20 @@
       "executor": "@nx/vite:test",
       "options": {
         "configFile": "libs/messenger/config/vitest.iframe.config.ts",
+        "passWithNoTests": true,
+        "coverage": false
+      },
+      "dependsOn": ["test/prepare/browser"],
+      "configurations": {
+        "with-coverage": {
+          "coverage": true
+        }
+      }
+    },
+    "test/rtc": {
+      "executor": "@nx/vite:test",
+      "options": {
+        "configFile": "libs/messenger/config/vitest.rtc.config.ts",
         "passWithNoTests": true,
         "coverage": false
       },
