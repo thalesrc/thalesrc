@@ -31,7 +31,7 @@ export class RTCMessageService extends mixin(RTCMessageHost, RTCMessageClient) {
    * @param channelName - Name for the negotiated data channel.
    */
   constructor(connection?: RTCConnectionArg, channelName = DEFAULT_CHANNEL_NAME) {
-    super([connection, channelName], [connection, channelName]);
+    super([connection, `${channelName}H`], [connection, `${channelName}C`]);
   }
 
   public override initialize = (connection: RTCConnectionArg, channelName?: string): void => {

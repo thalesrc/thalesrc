@@ -649,7 +649,7 @@ constructor(connection?: RTCConnectionArg, channelName?: string)
   - `Promise<RTCPeerConnection>`: Async connection
   - `() => RTCPeerConnection | Promise<RTCPeerConnection>`: Factory function
   - Omit to initialize later via `initialize()`
-- **`channelName`** (optional): Name for the negotiated data channel. Default: `'MessengerRTCChannelDefault'`. A deterministic 16-bit channel ID is derived from this name via FNV-1a hash.
+- **`channelName`** (optional): Name for the negotiated data channel. Default: `'MessengerRTCChannelDefault'`. A deterministic channel ID in [0, 1023] is derived from this name via FNV-1a hash.
 
 **Examples:**
 ```typescript
