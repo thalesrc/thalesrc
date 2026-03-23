@@ -20,6 +20,7 @@ This library provides useful utilities for working with RxJS Observables:
 - **makeAsyncIterator**: Create an AsyncIterator from an Observable
 - **pluck**: RxJS operator that emits the value of a specified key from the source object
 - **shareLast**: RxJS operator that shares the last emitted value without reference counting
+- **fromCallback**: Convert callback-based functions into Observables
 - **Static extension**: Optionally extend Observable prototype with async iterator support
 
 ## API
@@ -113,6 +114,32 @@ setTimeout(() => {
 
 **Returns:**
 - `MonoTypeOperatorFunction<T>` - An operator function that shares the last emitted value
+
+### fromCallback
+
+Wraps a callback-based function into an RxJS Observable that emits once when the callback is invoked, then completes. An optional mapper function can transform the callback arguments before emission.
+
+```typescript
+import { fromCallback } from '@telperion/rx-utils/from-callback';
+
+// Basic usage — emits callback arguments as a tuple
+fromCallback<(value: string) => void>(cb => setTimeout(() => cb('hello'), 100))
+  .subscribe(([value]) => console.log(value)); // 'hello'
+
+// With a mapper to transform callback arguments
+fromCallback<(err: Error | null, data: string) => void>(
+  cb => someAsyncFn(cb),
+  (_err, data) => data
+).subscribe(content => console.log(content));
+```
+
+**Parameters:**
+- `fn: (callback: C) => any` - A function that receives an internally-created callback. Invoke the callback to emit a value.
+- `mapper?: M` *(optional)* - A function that transforms the callback arguments into the desired emission value. When omitted, the Observable emits the raw callback arguments as a tuple.
+
+**Returns:**
+- `Observable<Parameters<C>>` - When no mapper is provided, emits the callback arguments as a tuple.
+- `Observable<ReturnType<M>>` - When a mapper is provided, emits the mapper's return value.
 
 ### Static Extension (Optional)
 

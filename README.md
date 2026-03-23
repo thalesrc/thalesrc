@@ -6,7 +6,7 @@
 
 **A collection of high-quality, framework-independent utilities and tools for modern web development.**
 
-[Website](https://thalesrc.com) • [Documentation](https://open-source.thalesrc.com) • [npm](https://www.npmjs.com/org/thalesrc) • [GitHub](https://github.com/thalesrc/thalesrc)
+[Website](https://telperion.tr) • [Documentation](https://open-source.telperion.tr) • [npm](https://www.npmjs.com/org/telperion) • [GitHub](https://github.com/telperiontech)
 
 </div>
 
@@ -88,6 +88,7 @@ RxJS-based reactive wrapper for browser storage APIs (localStorage and sessionSt
 
 #### [@telperion/rx-utils](https://www.npmjs.com/package/@telperion/rx-utils)
 [![npm](https://img.shields.io/npm/v/@telperion/rx-utils.svg)](https://www.npmjs.com/package/@telperion/rx-utils)
+[![npm](https://img.shields.io/npm/dm/@telperion/rx-utils.svg)](https://www.npmjs.com/package/@telperion/rx-utils)
 
 Utility functions and operators for RxJS Observables. Features async iterable conversion, share operators, and Observable extensions.
 
@@ -349,6 +350,6 @@ If you find these libraries helpful, please consider:
 
 <div align="center">
 
-**Made with ❤️ by [Thalesrc](https://github.com/thalesrc)**
+**Made with ❤️ by [Telperion](https://github.com/telperiontech)**
 
 </div>

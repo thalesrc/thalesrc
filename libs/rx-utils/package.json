@@ -12,6 +12,7 @@
   "typings": "./index.d.ts",
   "_exports": [
     "to-async-iteratable",
+    "from-callback",
     "static/async-iterator",
     "operators/",
     "operators/pluck",
