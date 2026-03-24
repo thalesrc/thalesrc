@@ -10,7 +10,7 @@ import { Message } from '../message.interface';
 import { GET_NEW_ID, RESPONSES$, SEND } from '../selectors';
 import { RTCConnectionArg } from './rtc.type';
 import { DEFAULT_CHANNEL_NAME } from './default-channel-name';
-import { channelId } from './channel-id';
+import { CHANNEL_CONTROLLER } from './channel-controller';
 
 const CONNECTION = Symbol('RTCMessageClient Connection');
 const CHANNEL_NAME = Symbol('RTCMessageClient Channel Name');
@@ -76,8 +76,9 @@ export class RTCMessageClient extends MessageClient {
       .then(conn => {
         if (!conn) return;
 
-        const id = channelId(this[CHANNEL_NAME], conn.sctp?.maxChannels);
-        const dataChannel = conn.createDataChannel(this[CHANNEL_NAME], { negotiated: true, id, ordered: false });
+        const dataChannel = CHANNEL_CONTROLLER.getChannel(conn, this[CHANNEL_NAME]);
+
+        if (dataChannel.readyState === 'open') return dataChannel;
 
         return new Promise<RTCDataChannel>((resolve) => {
           dataChannel.addEventListener('open', () => resolve(dataChannel), { once: true });
@@ -87,7 +88,9 @@ export class RTCMessageClient extends MessageClient {
         if (!dataChannel) return [undefined, noop] as const;
 
         const listener = (event: MessageEvent) => {
-          const data: MessageResponse = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+          const data: MessageResponse & { type: 'response' } = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+
+          if (data.type !== 'response') return;
 
           this[RESPONSES$].next(data);
         };
@@ -96,7 +99,7 @@ export class RTCMessageClient extends MessageClient {
 
         return [dataChannel, () => {
           dataChannel.removeEventListener('message', listener);
-          dataChannel.close();
+          CHANNEL_CONTROLLER.close(dataChannel);
         }] as const;
       });
   }
@@ -106,7 +109,7 @@ export class RTCMessageClient extends MessageClient {
 
     if (dataChannel?.readyState !== 'open') return;
 
-    dataChannel.send(JSON.stringify(message));
+    dataChannel.send(JSON.stringify({...message, type: 'request' }));
   }
 
   protected [GET_NEW_ID](): string {

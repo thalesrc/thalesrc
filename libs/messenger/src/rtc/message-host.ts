@@ -9,7 +9,7 @@ import { Message } from '../message.interface';
 import { LISTEN, RESPONSE } from '../selectors';
 import { RTCConnectionArg } from './rtc.type';
 import { DEFAULT_CHANNEL_NAME } from './default-channel-name';
-import { channelId } from './channel-id';
+import { CHANNEL_CONTROLLER } from './channel-controller';
 
 const CONNECTION = Symbol('RTCMessageHost Connection');
 const REQUESTS = Symbol('RTCMessageHost Requests');
@@ -75,8 +75,9 @@ export class RTCMessageHost extends MessageHost {
       .then(conn => {
         if (!conn) return;
 
-        const id = channelId(this[CHANNEL_NAME], conn.sctp?.maxChannels);
-        const dataChannel = conn.createDataChannel(this[CHANNEL_NAME], { negotiated: true, id, ordered: false });
+        const dataChannel = CHANNEL_CONTROLLER.getChannel(conn, this[CHANNEL_NAME]);
+
+        if (dataChannel.readyState === 'open') return dataChannel;
 
         return new Promise<RTCDataChannel>((resolve) => {
           dataChannel.addEventListener('open', () => resolve(dataChannel), { once: true });
@@ -86,7 +87,9 @@ export class RTCMessageHost extends MessageHost {
         if (!dataChannel) return [undefined, noop] as const;
 
         const handler = (event: MessageEvent) => {
-          const data: Message = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+          const data: Message & { type: 'request' } = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+
+          if (data.type !== 'request') return;
 
           this[REQUESTS].next(data);
         };
@@ -95,7 +98,7 @@ export class RTCMessageHost extends MessageHost {
 
         return [dataChannel, () => {
           dataChannel.removeEventListener('message', handler);
-          dataChannel.close();
+          CHANNEL_CONTROLLER.close(dataChannel);
         }] as const;
       });
   }
@@ -110,6 +113,6 @@ export class RTCMessageHost extends MessageHost {
   protected async [RESPONSE](message: MessageResponse) {
     const [dataChannel] = await this[CONNECTION];
 
-    dataChannel?.send(JSON.stringify(message));
+    dataChannel?.send(JSON.stringify({...message, type: 'response' }));
   }
 }
