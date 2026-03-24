@@ -13,6 +13,7 @@ import { channelId } from './channel-id';
 
 const CONNECTION = Symbol('RTCMessageHost Connection');
 const REQUESTS = Symbol('RTCMessageHost Requests');
+const CHANNEL_NAME = Symbol('RTCMessageHost Channel Name');
 
 /**
  * Message host for WebRTC DataChannel communication.
@@ -36,6 +37,7 @@ const REQUESTS = Symbol('RTCMessageHost Requests');
 export class RTCMessageHost extends MessageHost {
   private [REQUESTS] = new Subject<Message>();
   private [CONNECTION] = Promise.resolve([undefined as RTCDataChannel | undefined, noop] as const);
+  private [CHANNEL_NAME]: string;
 
   /**
    * @param connection - RTCPeerConnection instance, promise, or factory function. Omit to initialize later via {@link initialize}.
@@ -43,12 +45,12 @@ export class RTCMessageHost extends MessageHost {
    */
   constructor(
     connection?: RTCConnectionArg,
-    private channelName = DEFAULT_CHANNEL_NAME
+    channelName = DEFAULT_CHANNEL_NAME
   ) {
     super();
 
-    RTCMessageHost.prototype.initialize.call(this, connection, channelName);
-
+    this[CHANNEL_NAME] = channelName;
+    RTCMessageHost.prototype.initialize.call(this, connection);
     this[LISTEN](this[REQUESTS]);
   }
 
@@ -57,11 +59,8 @@ export class RTCMessageHost extends MessageHost {
    * Cleans up the previous channel before establishing a new one.
    *
    * @param connection - RTCPeerConnection instance, promise, or factory function.
-   * @param channelName - Optional new channel name. Defaults to the current channel name.
    */
-  initialize(connection: RTCConnectionArg, channelName: string = this.channelName): void {
-    this.channelName = channelName;
-
+  initialize(connection: RTCConnectionArg): void {
     this[CONNECTION] = Promise.race([
       this[CONNECTION],
       timeout(5000, [null, noop] as const)
@@ -74,10 +73,17 @@ export class RTCMessageHost extends MessageHost {
         return promisify(_conn);
       })
       .then(conn => {
-        if (!conn) return [undefined, noop] as const;
+        if (!conn) return;
 
-        const id = channelId(channelName);
-        const dataChannel = conn.createDataChannel(channelName, { negotiated: true, id });
+        const id = channelId(this[CHANNEL_NAME], conn.sctp?.maxChannels);
+        const dataChannel = conn.createDataChannel(this[CHANNEL_NAME], { negotiated: true, id, ordered: false });
+
+        return new Promise<RTCDataChannel>((resolve) => {
+          dataChannel.addEventListener('open', () => resolve(dataChannel), { once: true });
+        });
+      })
+      .then(dataChannel => {
+        if (!dataChannel) return [undefined, noop] as const;
 
         const handler = (event: MessageEvent) => {
           const data: Message = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;

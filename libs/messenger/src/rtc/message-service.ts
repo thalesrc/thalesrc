@@ -31,11 +31,11 @@ export class RTCMessageService extends mixin(RTCMessageHost, RTCMessageClient) {
    * @param channelName - Name for the negotiated data channel.
    */
   constructor(connection?: RTCConnectionArg, channelName = DEFAULT_CHANNEL_NAME) {
-    super([connection, `${channelName}H`], [connection, `${channelName}C`]);
+    super([connection, `${channelName}/H`], [connection, `${channelName}/C`]);
   }
 
-  public override initialize = (connection: RTCConnectionArg, channelName?: string): void => {
-    RTCMessageHost.prototype.initialize.call(this, connection, channelName);
-    RTCMessageClient.prototype.initialize.call(this, connection, channelName);
+  public override initialize = (connection: RTCConnectionArg): void => {
+    RTCMessageHost.prototype.initialize.call(this, connection);
+    RTCMessageClient.prototype.initialize.call(this, connection);
   };
 }
