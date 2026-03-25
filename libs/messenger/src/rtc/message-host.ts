@@ -1,6 +1,7 @@
 import { noop } from '@telperion/js-utils/function/noop';
 import { promisify } from '@telperion/js-utils/promise/promisify';
 import { timeout } from '@telperion/js-utils/promise/timeout';
+import { NEVER } from '@telperion/js-utils/promise/never';
 import { Subject } from 'rxjs';
 
 import { MessageHost } from '../message-host';
@@ -14,6 +15,7 @@ import { CHANNEL_CONTROLLER } from './channel-controller';
 const CONNECTION = Symbol('RTCMessageHost Connection');
 const REQUESTS = Symbol('RTCMessageHost Requests');
 const CHANNEL_NAME = Symbol('RTCMessageHost Channel Name');
+export const READY = Symbol('RTCMessageHost Ready');
 
 /**
  * Message host for WebRTC DataChannel communication.
@@ -38,6 +40,14 @@ export class RTCMessageHost extends MessageHost {
   private [REQUESTS] = new Subject<Message>();
   private [CONNECTION] = Promise.resolve([undefined as RTCDataChannel | undefined, noop] as const);
   private [CHANNEL_NAME]: string;
+
+  private get [READY](): Promise<RTCDataChannel> {
+    return this[CONNECTION].then(([dataChannel]) => dataChannel ?? NEVER);
+  }
+
+  get ready(): Promise<RTCDataChannel> {
+    return this[READY];
+  }
 
   /**
    * @param connection - RTCPeerConnection instance, promise, or factory function. Omit to initialize later via {@link initialize}.

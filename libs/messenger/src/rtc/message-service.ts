@@ -1,6 +1,7 @@
 import { mixin } from "@telperion/js-utils/class/mixin";
-import { RTCMessageClient } from "./message-client";
-import { RTCMessageHost } from "./message-host";
+
+import { READY as CLIENT_READY, RTCMessageClient } from "./message-client";
+import { READY as HOST_READY, RTCMessageHost } from "./message-host";
 import { RTCConnectionArg } from "./rtc.type";
 import { DEFAULT_CHANNEL_NAME } from "./default-channel-name";
 
@@ -32,6 +33,16 @@ export class RTCMessageService extends mixin(RTCMessageHost, RTCMessageClient) {
    */
   constructor(connection?: RTCConnectionArg, channelName = DEFAULT_CHANNEL_NAME) {
     super([connection, channelName], [connection, channelName]);
+
+    Reflect.defineProperty(this, 'ready', {
+      get: () => {
+        return Promise.race([
+          this[CLIENT_READY],
+          (this as any)[HOST_READY]
+        ]);
+      },
+      configurable: false
+    })
   }
 
   public override initialize = (connection: RTCConnectionArg): void => {
