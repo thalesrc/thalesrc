@@ -73,7 +73,7 @@ export function mixin<T extends Constructor<any>, U extends Constructor<any>>(
   );
 
   for (const prop of mixinKeys) {
-    (Mixed.prototype as any)[prop] = (Mixin.prototype as any)[prop];
+    Object.defineProperty(Mixed.prototype, prop, Object.getOwnPropertyDescriptor(Mixin.prototype, prop)!);
   }
 
   return Mixed as any;

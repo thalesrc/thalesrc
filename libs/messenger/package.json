@@ -28,7 +28,7 @@
     "directory": "libs/messenger"
   },
   "dependencies": {
-    "@telperion/js-utils": "^3.5.0",
+    "@telperion/js-utils": "^3.7.1",
     "rxjs": "*",
     "tslib": "*"
   },
