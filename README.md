@@ -92,7 +92,7 @@ RxJS-based reactive wrapper for browser storage APIs (localStorage and sessionSt
 
 Utility functions and operators for RxJS Observables. Features async iterable conversion, share operators, and Observable extensions.
 
-**Highlights**: RxJS operators, AsyncIterable support, Observable utilities, Stream helpers
+**Highlights**: RxJS operators, AsyncIterable support, Observable utilities, Debounce buffering, Stream helpers
 
 ---
 

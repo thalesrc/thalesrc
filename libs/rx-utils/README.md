@@ -21,6 +21,7 @@ This library provides useful utilities for working with RxJS Observables:
 - **pluck**: RxJS operator that emits the value of a specified key from the source object
 - **shareLast**: RxJS operator that shares the last emitted value without reference counting
 - **fromCallback**: Convert callback-based functions into Observables
+- **debounceTimeBuffer**: RxJS operator that buffers values and emits them as an array after a silence period
 - **Static extension**: Optionally extend Observable prototype with async iterator support
 
 ## API
@@ -140,6 +141,32 @@ fromCallback<(err: Error | null, data: string) => void>(
 **Returns:**
 - `Observable<Parameters<C>>` - When no mapper is provided, emits the callback arguments as a tuple.
 - `Observable<ReturnType<M>>` - When a mapper is provided, emits the mapper's return value.
+
+### debounceTimeBuffer (Operator)
+
+An RxJS operator that buffers source Observable values and emits them as an array once a specified silence period (`dueTime`) has passed with no new emissions. Combines `buffer` and `debounceTime` internally.
+
+```typescript
+import { Subject } from 'rxjs';
+import { debounceTimeBuffer } from '@telperion/rx-utils/operators';
+
+const subject = new Subject<number>();
+
+subject.pipe(
+  debounceTimeBuffer(300)
+).subscribe(console.log);
+
+subject.next(1);
+subject.next(2);
+subject.next(3);
+// After 300ms of silence: [1, 2, 3]
+```
+
+**Parameters:**
+- `dueTime: number` - The timeout duration in milliseconds to wait for emission silence before emitting the buffered array.
+
+**Returns:**
+- `OperatorFunction<T, T[]>` - An operator function that emits arrays of buffered values from the source Observable.
 
 ### Static Extension (Optional)
 

@@ -15,6 +15,7 @@
     "from-callback",
     "static/async-iterator",
     "operators/",
+    "operators/debounce-time-buffer",
     "operators/pluck",
     "operators/share-last"
   ]
