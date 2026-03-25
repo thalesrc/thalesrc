@@ -1,7 +1,7 @@
 import { mixin } from "@telperion/js-utils/class/mixin";
 
-import { READY as CLIENT_READY, RTCMessageClient } from "./message-client";
-import { READY as HOST_READY, RTCMessageHost } from "./message-host";
+import { READY as CLIENT_READY, CREATED as CLIENT_CREATED, RTCMessageClient } from "./message-client";
+import { READY as HOST_READY, CREATED as HOST_CREATED, RTCMessageHost } from "./message-host";
 import { RTCConnectionArg } from "./rtc.type";
 import { DEFAULT_CHANNEL_NAME } from "./default-channel-name";
 
@@ -28,11 +28,12 @@ import { DEFAULT_CHANNEL_NAME } from "./default-channel-name";
  */
 export class RTCMessageService extends mixin(RTCMessageHost, RTCMessageClient) {
   /**
-   * @param connection - RTCPeerConnection instance, promise, or factory function.
+   * @param connection  - RTCPeerConnection instance, promise, or factory function.
    * @param channelName - Name for the negotiated data channel.
+   * @param channelId   - Explicit negotiated channel ID. Overrides the hash-derived default.
    */
-  constructor(connection?: RTCConnectionArg, channelName = DEFAULT_CHANNEL_NAME) {
-    super([connection, channelName], [connection, channelName]);
+  constructor(connection?: RTCConnectionArg, channelName = DEFAULT_CHANNEL_NAME, channelId?: number) {
+    super([connection, channelName, channelId], [connection, channelName, channelId]);
 
     Reflect.defineProperty(this, 'ready', {
       get: () => {
@@ -42,11 +43,21 @@ export class RTCMessageService extends mixin(RTCMessageHost, RTCMessageClient) {
         ]);
       },
       configurable: false
-    })
+    });
+
+    Reflect.defineProperty(this, 'created', {
+      get: () => {
+        return Promise.race([
+          this[CLIENT_CREATED],
+          (this as any)[HOST_CREATED]
+        ]);
+      },
+      configurable: false
+    });
   }
 
-  public override initialize = (connection: RTCConnectionArg): void => {
-    RTCMessageHost.prototype.initialize.call(this, connection);
-    RTCMessageClient.prototype.initialize.call(this, connection);
+  public override initialize = (connection: RTCConnectionArg, channelId?: number): void => {
+    RTCMessageHost.prototype.initialize.call(this, connection, channelId);
+    RTCMessageClient.prototype.initialize.call(this, connection, channelId);
   };
 }

@@ -4,8 +4,8 @@ class ChannelController {
   #connections = new WeakMap<RTCPeerConnection, Record<number, RTCDataChannel>>();
   #channels = new WeakMap<RTCDataChannel, number>();
 
-  getChannel(connection: RTCPeerConnection, channelName: string): RTCDataChannel {
-    const id = this.#getChannelId(channelName);
+  getChannel(connection: RTCPeerConnection, channelName: string, channelId?: number): [RTCDataChannel, Promise<RTCDataChannel>] {
+    const id = channelId ?? this.#getChannelId(channelName);
 
     let channels = this.#connections.get(connection);
 
@@ -24,7 +24,11 @@ class ChannelController {
 
     this.#channels.set(channel, (this.#channels.get(channel) ?? 0) + 1); // Increment reference count
 
-    return channel;
+    return [channel, new Promise<RTCDataChannel>((resolve) => {
+      if (channel.readyState === 'open') return resolve(channel);
+
+      channel.addEventListener('open', () => resolve(channel), { once: true });
+    })];
   }
 
   close(channel: RTCDataChannel): void {

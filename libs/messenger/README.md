@@ -405,9 +405,18 @@ const client = new PeerA(peerConnection);
 // Optional: custom channel name
 const clientWithChannel = new PeerA(peerConnection, 'game-events');
 
+// Optional: explicit negotiated channel ID (overrides hash-derived default)
+const clientWithId = new PeerA(peerConnection, 'game-events', 42);
+
 client.sendMove([3, 4]).subscribe(ok => {
   console.log('Move accepted:', ok);
 });
+
+// Wait for the channel to be created (not necessarily open yet)
+await client.created;
+
+// Wait for the channel to be open and ready
+await client.ready;
 ```
 
 #### Peer B (Host)
@@ -428,6 +437,12 @@ const host = new PeerB(peerConnection);
 
 // Optional: custom channel name (must match the client)
 const hostWithChannel = new PeerB(peerConnection, 'game-events');
+
+// Optional: explicit negotiated channel ID (must match the client)
+const hostWithId = new PeerB(peerConnection, 'game-events', 42);
+
+// Graceful teardown
+host.terminate();
 ```
 
 #### Bidirectional Communication (MessageService)
@@ -478,7 +493,7 @@ const service4 = new GamePeer(async () => {
 
 ##### Dynamic Connection Management with `initialize()`
 
-The `initialize()` method allows you to switch connections at runtime:
+The `initialize()` method allows you to switch connections at runtime. It waits for the previous channel to be cleaned up (with a 5 s timeout) before establishing the new one:
 
 ```typescript
 class GamePeer extends RTCMessageService {
@@ -491,8 +506,8 @@ const peer = new GamePeer();
 // Connect later when RTCPeerConnection is ready
 peer.initialize(peerConnection);
 
-// Switch to a different connection
-peer.initialize(newPeerConnection);
+// Switch to a different connection (optionally with a new channel ID)
+peer.initialize(newPeerConnection, 42);
 
 // Re-establish after ICE failure
 peerConnection.oniceconnectionstatechange = () => {
@@ -500,6 +515,10 @@ peerConnection.oniceconnectionstatechange = () => {
     peer.initialize(createNewConnection());
   }
 };
+
+// created and ready promises update after each initialize call
+await peer.created; // resolves when the new channel is created
+await peer.ready;   // resolves when the new channel is open
 ```
 
 ---
@@ -641,7 +660,7 @@ const client = new ChromeMessageClient('extension-port');
 **`RTCMessageClient` / `RTCMessageHost` / `RTCMessageService`**
 
 ```typescript
-constructor(connection?: RTCConnectionArg, channelName?: string)
+constructor(connection?: RTCConnectionArg, channelName?: string, channelId?: number)
 ```
 
 - **`connection`** (optional): RTCPeerConnection to use for the data channel. Can be:
@@ -650,6 +669,15 @@ constructor(connection?: RTCConnectionArg, channelName?: string)
   - `() => RTCPeerConnection | Promise<RTCPeerConnection>`: Factory function
   - Omit to initialize later via `initialize()`
 - **`channelName`** (optional): Name for the negotiated data channel. Default: `'MessengerRTCChannelDefault'`. A deterministic channel ID in [0, 1023] is derived from this name via FNV-1a hash.
+- **`channelId`** (optional): Explicit negotiated channel ID. Overrides the hash-derived default when provided.
+
+**Properties:**
+- **`created`**: `Promise<RTCDataChannel>` — resolves once the channel has been created (may not yet be open)
+- **`ready`**: `Promise<RTCDataChannel>` — resolves once the channel is open and ready to transmit
+
+**Methods:**
+- **`initialize(connection?, channelId?)`** — (re)initializes the data channel; cleans up the previous channel first
+- **`terminate()`** *(host/service only)* — closes the data channel and removes event listeners
 
 **Examples:**
 ```typescript
@@ -658,6 +686,9 @@ const service = new RTCMessageService(peerConnection);
 
 // With custom channel name
 const service = new RTCMessageService(peerConnection, 'game-events');
+
+// With explicit channel ID
+const service = new RTCMessageService(peerConnection, 'game-events', 42);
 
 // Lazy initialization
 const service = new RTCMessageService();

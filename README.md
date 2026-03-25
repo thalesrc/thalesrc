@@ -120,12 +120,19 @@ React-specific utility hooks and components for modern React development. Simpli
 
 ### Messaging & Communication
 
-#### [@thalesrc/hermes](https://www.npmjs.com/package/@thalesrc/hermes)
-[![npm](https://img.shields.io/npm/v/@thalesrc/hermes.svg)](https://www.npmjs.com/package/@thalesrc/hermes)
-[![npm](https://img.shields.io/npm/dw/@thalesrc/hermes.svg)](https://www.npmjs.com/package/@thalesrc/hermes)
-[![codecov](https://codecov.io/gh/thalesrc/thalesrc/graph/badge.svg?token=dz46LY3onk&flag=hermes)](https://codecov.io/gh/thalesrc/thalesrc?flag=hermes)
+#### [@telperion/messenger](https://www.npmjs.com/package/@telperion/messenger)
+[![npm](https://img.shields.io/npm/v/@telperion/messenger.svg)](https://www.npmjs.com/package/@telperion/messenger)
+[![npm](https://img.shields.io/npm/dw/@telperion/messenger.svg)](https://www.npmjs.com/package/@telperion/messenger)
+[![codecov](https://codecov.io/gh/telperiontech/telperion/graph/badge.svg?token=dz46LY3onk&flag=messenger)](https://app.codecov.io/gh/telperiontech/telperion/tree/main?flags%5B0%5D=messenger)
 
 Cross-context messaging library for seamless communication across iframes, Chrome extensions, web workers, broadcast channels, and WebRTC data channels. Built with RxJS for reactive message handling with decorators for clean, declarative APIs.
+
+**Sub-modules:**
+- **iframe**: Parent-child window messaging with `IframeMessageClient`, `IframeMessageHost`, and `IframeMessageService`
+- **chrome**: Chrome extension communication across background scripts, content scripts, and popups
+- **worker**: Main thread ↔ Web Worker communication
+- **broadcast**: Tab-to-tab messaging via the Broadcast Channel API
+- **rtc**: Peer-to-peer messaging over negotiated RTCDataChannels with automatic channel ID derivation
 
 **Highlights**: Iframe messaging, Chrome extension support, Web Workers, Broadcast API, WebRTC DataChannel, RxJS-based, Decorator API
 
@@ -185,6 +192,9 @@ npm install @telperion/rx-utils
 # Nx utilities (dev dependency)
 npm install -D @thalesrc/nx-utils
 
+# Messenger (cross-context messaging)
+npm install @telperion/messenger
+
 # Paint API worklets
 npm install @thalesrc/paintlet
 ```
@@ -228,15 +238,15 @@ for await (const value of toAsyncIteratable(observable)) {
 }
 ```
 
-**Hermes Messaging:**
+**Messenger:**
 ```typescript
-import { IframeMessageClient, Request } from '@thalesrc/hermes/iframe';
+import { IframeMessageClient, Request } from '@telperion/messenger/iframe';
 import { Observable } from 'rxjs';
 
 class MyClient extends IframeMessageClient {
   @Request('getData')
   fetchData(query: string): Observable<any> {
-    return null; // Implementation handled by decorator
+    return null!; // Implementation handled by decorator
   }
 }
 
@@ -261,7 +271,7 @@ thalesrc/
 │   ├── react-utils/           # React utilities
 │   ├── rx-utils/              # RxJS utilities
 │   ├── reactive-storage/      # Reactive storage
-│   ├── hermes/                # Messaging library
+│   ├── messenger/             # Messaging library
 │   ├── node-utils/            # Node.js utilities
 │   ├── nx-utils/              # Nx executors
 │   ├── auto-proxy/            # Auto proxy Docker image
