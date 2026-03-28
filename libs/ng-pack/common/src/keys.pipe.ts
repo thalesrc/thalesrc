@@ -16,7 +16,7 @@ export class KeysPipe implements PipeTransform {
     }
 
     if (typeof value === 'object') {
-      return Object.keys(value);
+      return Reflect.ownKeys(value);
     }
 
     return [];

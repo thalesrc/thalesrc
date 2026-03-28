@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class ValuesPipe implements PipeTransform {
   transform<K, V>(value: Map<K, V>): V[];
   transform<T>(value: Set<T>): T[];
-  transform<K extends string, V>(value: Record<K, V>): V[];
+  transform<K extends string | number | symbol, V>(value: Record<K, V>): V[];
   transform(value: null | undefined): never[];
   transform(value: Map<unknown, unknown> | Set<unknown> | Record<string, unknown> | null | undefined): unknown[] {
     if (value == null) {
@@ -16,7 +16,7 @@ export class ValuesPipe implements PipeTransform {
     }
 
     if (typeof value === 'object') {
-      return Object.values(value);
+      return Reflect.ownKeys(value).map(key => value[key as keyof typeof value]);
     }
 
     return [];

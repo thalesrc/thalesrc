@@ -5,10 +5,6 @@ export interface KeyValue<K, V> {
   value: V;
 }
 
-function entryMapper<K, V>([key, value]: [K, V]): KeyValue<K, V> {
-  return { key, value };
-}
-
 @Pipe({ name: 'entries', standalone: true })
 export class EntriesPipe implements PipeTransform {
   transform<K, V>(value: Map<K, V>): KeyValue<K, V>[];
@@ -21,11 +17,11 @@ export class EntriesPipe implements PipeTransform {
     }
 
     if (value instanceof Map || value instanceof Set) {
-      return [...value.entries()].map(entryMapper);
+      return [...value.entries()].map(([key, val]) => ({ key, value: val }));
     }
 
     if (typeof value === 'object') {
-      return Object.entries(value).map(entryMapper);
+      return Reflect.ownKeys(value).map(key => ({ key, value: value[key as keyof typeof value] }));
     }
 
     return [];
