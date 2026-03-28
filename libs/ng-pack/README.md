@@ -14,6 +14,46 @@ npm install @telperion/ng-pack
 
 ## Available Modules
 
+### Common
+
+**Import:** `@telperion/ng-pack/common`
+
+Common Angular pipes for working with key-value data structures (`Map`, `Set`, plain objects).
+
+#### Key Features
+
+- 🔑 `keys` pipe — extract keys from any key-value structure
+- 📦 `values` pipe — extract values from any key-value structure
+- 📋 `entries` pipe — extract entries as `{ key, value }` objects
+- 🗺️ Supports `Map`, `Set`, and plain objects
+- 🎯 Full type inference with overloaded signatures
+- 🛡️ Null-safe — returns `[]` for `null`/`undefined`
+
+#### Quick Start
+
+```typescript
+import { Component } from '@angular/core';
+import { EntriesPipe } from '@telperion/ng-pack/common';
+
+@Component({
+  selector: 'app-example',
+  standalone: true,
+  imports: [EntriesPipe],
+  template: `
+    @for (entry of user | entries; track entry.key) {
+      <div>{{ entry.key }}: {{ entry.value }}</div>
+    }
+  `
+})
+export class ExampleComponent {
+  user = { name: 'Alice', role: 'Admin' };
+}
+```
+
+[Full documentation →](./common/README.md)
+
+---
+
 ### Storage Signals
 
 **Import:** `@telperion/ng-pack/storage-signals`

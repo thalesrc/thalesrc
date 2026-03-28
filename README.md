@@ -86,7 +86,7 @@ RxJS-based reactive wrapper for browser storage APIs (localStorage and sessionSt
 
 **Highlights**: Reactive storage, Observable patterns, Nested property access, Type-safe, FIFO operations, Framework foundation
 
-#### [@telperion/rx-utils](https://www.npmjs.com/package/@telperion/rx-utils)
+#### [@telperion/rx-utils](libs/rx-utils)
 [![npm](https://img.shields.io/npm/v/@telperion/rx-utils.svg)](https://www.npmjs.com/package/@telperion/rx-utils)
 [![npm](https://img.shields.io/npm/dm/@telperion/rx-utils.svg)](https://www.npmjs.com/package/@telperion/rx-utils)
 
@@ -99,10 +99,13 @@ Utility functions and operators for RxJS Observables. Features async iterable co
 ### Framework-Specific Utilities
 
 #### [@telperion/ng-pack](libs/ng-pack)
+[![npm](https://img.shields.io/npm/v/@telperion/ng-pack.svg)](https://www.npmjs.com/package/@telperion/ng-pack)
+[![npm](https://img.shields.io/npm/dm/@telperion/ng-pack.svg)](https://www.npmjs.com/package/@telperion/ng-pack)
 
 Collection of Angular utilities and libraries organized as secondary entry points. Includes signal-based storage management, template-driven form utilities, and common Angular helpers.
 
 **Sub-modules:**
+- **common**: Pipes for extracting keys, values, and entries from Maps, Sets, and plain objects
 - **storage-signals**: Signal-based localStorage/sessionStorage/cookies with reactive updates, nested property access, and configurable cookie options
 - **sse-client**: HttpClient-inspired SSE client with Observable-based streaming, interceptor chain, and reactive real-time updates
 - **template-signal-forms**: Signal-based forms for template-driven forms _(under construction)_
