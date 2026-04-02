@@ -18,13 +18,14 @@ npm install @telperion/ng-pack
 
 **Import:** `@telperion/ng-pack/common`
 
-Common Angular pipes for working with key-value data structures (`Map`, `Set`, plain objects).
+Common Angular pipes for working with key-value data structures (`Map`, `Set`, plain objects) and template iteration.
 
 #### Key Features
 
 - 🔑 `keys` pipe — extract keys from any key-value structure
 - 📦 `values` pipe — extract values from any key-value structure
 - 📋 `entries` pipe — extract entries as `{ key, value }` objects
+- 🔁 `times` pipe — generate `[0, 1, ..., n-1]` array for repeating template blocks
 - 🗺️ Supports `Map`, `Set`, and plain objects
 - 🎯 Full type inference with overloaded signatures
 - 🛡️ Null-safe — returns `[]` for `null`/`undefined`

@@ -1,10 +1,10 @@
 # @telperion/ng-pack/common
 
-Common Angular pipes for working with key-value data structures
+Common Angular pipes for working with key-value data structures and template iteration
 
 ## Motivation
 
-Angular templates don't natively support iterating over `Map`, `Set`, or plain object entries. These pipes provide a unified, type-safe way to extract keys, values, or entries from any key-value data structure directly in templates.
+Angular templates don't natively support iterating over `Map`, `Set`, or plain object entries, nor do they have a built-in way to repeat a block a specific number of times. These pipes provide a unified, type-safe way to extract keys, values, or entries from any key-value data structure and to generate index arrays for repetition directly in templates.
 
 ## Goals
 
@@ -177,6 +177,62 @@ export class PermissionsComponent {
 }
 ```
 
+---
+
+### `times`
+
+Generates an array of sequential integers `[0, 1, ..., n-1]` from a given number, useful for repeating template blocks.
+
+| Input Type | Output |
+|---|---|
+| `number` | `number[]` (`[0, 1, ..., n-1]`) |
+| Negative / `NaN` | `[]` |
+| `null \| undefined` | `[]` |
+
+#### Usage
+
+```typescript
+import { Component } from '@angular/core';
+import { TimesPipe } from '@telperion/ng-pack/common';
+
+@Component({
+  selector: 'app-example',
+  standalone: true,
+  imports: [TimesPipe],
+  template: `
+    @for (i of 5 | times; track i) {
+      <span>⭐</span>
+    }
+  `
+})
+export class ExampleComponent {}
+```
+
+**Dynamic count:**
+
+```typescript
+import { Component } from '@angular/core';
+import { TimesPipe } from '@telperion/ng-pack/common';
+
+@Component({
+  selector: 'app-rating',
+  standalone: true,
+  imports: [TimesPipe],
+  template: `
+    @for (i of rating | times; track i) {
+      <app-star [filled]="true" />
+    }
+    @for (i of (maxRating - rating) | times; track i) {
+      <app-star [filled]="false" />
+    }
+  `
+})
+export class RatingComponent {
+  rating = 3;
+  maxRating = 5;
+}
+```
+
 ## API Reference
 
 | Export | Type | Description |
@@ -184,4 +240,5 @@ export class PermissionsComponent {
 | `KeysPipe` | Pipe (`keys`) | Extracts keys from Map, Set, or object |
 | `ValuesPipe` | Pipe (`values`) | Extracts values from Map, Set, or object |
 | `EntriesPipe` | Pipe (`entries`) | Extracts entries as `{ key, value }` objects |
+| `TimesPipe` | Pipe (`times`) | Generates `[0, 1, ..., n-1]` array from a number |
 | `KeyValue<K, V>` | Interface | Shape of entries pipe output items |

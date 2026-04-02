@@ -1,8 +1,8 @@
 # Telperion Technology Open Source Libraries
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub](https://img.shields.io/github/stars/thalesrc/thalesrc?style=social)](https://github.com/thalesrc/thalesrc)
-[![Twitter Follow](https://img.shields.io/twitter/follow/thalesrc?style=social)](https://twitter.com/thalesrc)
+[![GitHub](https://img.shields.io/github/stars/telperiontech/telperion?style=social)](https://github.com/telperiontech/telperion)
+[![Twitter Follow](https://img.shields.io/twitter/follow/telperion?style=social)](https://twitter.com/telperion)
 
 **A collection of high-quality, framework-independent utilities and tools for modern web development.**
 
@@ -14,7 +14,7 @@
 
 ## 📦 Overview
 
-Thalesrc is a comprehensive monorepo containing battle-tested libraries, utilities, and tools designed to simplify modern web development. From JavaScript utilities to Docker-based infrastructure tools, each package is crafted with performance, type safety, and developer experience in mind.
+Telperion is a comprehensive monorepo containing battle-tested libraries, utilities, and tools designed to simplify modern web development. From JavaScript utilities to Docker-based infrastructure tools, each package is crafted with performance, type safety, and developer experience in mind.
 
 ## 🎯 Key Features
 
@@ -30,9 +30,10 @@ Thalesrc is a comprehensive monorepo containing battle-tested libraries, utiliti
 
 ### JavaScript & TypeScript Utilities
 
-#### [@thalesrc/js-utils](https://www.npmjs.com/package/@thalesrc/js-utils)
-[![npm](https://img.shields.io/npm/v/@thalesrc/js-utils.svg)](https://www.npmjs.com/package/@thalesrc/js-utils)
-[![npm](https://img.shields.io/npm/dw/@thalesrc/js-utils.svg)](https://www.npmjs.com/package/@thalesrc/js-utils)
+#### [@telperion/js-utils](https://github.com/telperiontech/telperion/tree/main/libs/js-utils)
+[![npm](https://img.shields.io/npm/v/@telperion/js-utils.svg)](https://www.npmjs.com/package/@telperion/js-utils)
+[![npm](https://img.shields.io/npm/dm/@telperion/js-utils.svg)](https://www.npmjs.com/package/@telperion/js-utils)
+[![codecov](https://codecov.io/gh/telperiontech/telperion/graph/badge.svg?token=dz46LY3onk&flag=js-utils)](https://app.codecov.io/gh/telperiontech/telperion/tree/main?flags%5B0%5D=js-utils)
 
 The swiss army knife of JavaScript utilities. A comprehensive collection of 50+ utility functions for arrays, objects, promises, strings, and more. Features include array manipulation, deep cloning, promise chains, debouncing, and smart type guards.
 
@@ -105,7 +106,7 @@ Utility functions and operators for RxJS Observables. Features async iterable co
 Collection of Angular utilities and libraries organized as secondary entry points. Includes signal-based storage management, template-driven form utilities, and common Angular helpers.
 
 **Sub-modules:**
-- **common**: Pipes for extracting keys, values, and entries from Maps, Sets, and plain objects
+- **common**: Pipes for extracting keys, values, and entries from Maps, Sets, and plain objects, plus a `times` pipe for repeating template blocks
 - **storage-signals**: Signal-based localStorage/sessionStorage/cookies with reactive updates, nested property access, and configurable cookie options
 - **sse-client**: HttpClient-inspired SSE client with Observable-based streaming, interceptor chain, and reactive real-time updates
 - **template-signal-forms**: Signal-based forms for template-driven forms _(under construction)_
