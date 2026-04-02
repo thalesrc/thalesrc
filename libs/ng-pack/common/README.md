@@ -1,17 +1,18 @@
 # @telperion/ng-pack/common
 
-Common Angular pipes for working with key-value data structures and template iteration
+Common Angular pipes and directives for template iteration, key-value data structures, and element observation
 
 ## Motivation
 
-Angular templates don't natively support iterating over `Map`, `Set`, or plain object entries, nor do they have a built-in way to repeat a block a specific number of times. These pipes provide a unified, type-safe way to extract keys, values, or entries from any key-value data structure and to generate index arrays for repetition directly in templates.
+Angular templates don't natively support iterating over `Map`, `Set`, or plain object entries, nor do they have a built-in way to repeat a block a specific number of times. Additionally, observing element size changes requires verbose `ResizeObserver` boilerplate. This module provides standalone, tree-shakeable pipes and directives that fill these gaps with a unified, type-safe API.
 
 ## Goals
 
 * TypeScript support with full type inference
-* Standalone pipes — no module imports needed
+* Standalone pipes and directives — no module imports needed
 * Unified API across `Map`, `Set`, and plain objects
 * Null-safe — returns empty array for `null`/`undefined`
+* Signal-based reactive APIs for directives
 * Tree-shaking
 
 ## Installation
@@ -233,6 +234,68 @@ export class RatingComponent {
 }
 ```
 
+## Directives
+
+### `tngObserveSize`
+
+Observes the size of its host element using `ResizeObserver` and exposes dimensions as Angular signals and outputs. Uses `borderBoxSize` and reports in logical (inline/block) axes, making it writing-mode aware.
+
+#### Signals (via `exportAs`)
+
+| Signal | Type | Description |
+|---|---|---|
+| `inlineSize()` | `Signal<number>` | Current inline size (width in horizontal writing modes) |
+| `blockSize()` | `Signal<number>` | Current block size (height in horizontal writing modes) |
+| `size()` | `Signal<{ inline: number; block: number }>` | Combined dimensions |
+
+#### Outputs
+
+| Output | Type | Description |
+|---|---|---|
+| `tngObserveSize` | `{ inline: number; block: number }` | Emits both dimensions on any size change |
+| `inlineChange` | `number` | Emits the new inline size |
+| `blockChange` | `number` | Emits the new block size |
+
+#### Usage
+
+**As an event emitter:**
+
+```html
+<div (tngObserveSize)="onResize($event)">
+  Responsive content
+</div>
+```
+
+**As a template reference (signal access):**
+
+```typescript
+import { Component } from '@angular/core';
+import { ObserveSizeDirective } from '@telperion/ng-pack/common';
+
+@Component({
+  selector: 'app-example',
+  standalone: true,
+  imports: [ObserveSizeDirective],
+  template: `
+    <div tngObserveSize #sizeRef="tngObserveSize">
+      Inline: {{ sizeRef.inlineSize() }}px,
+      Block: {{ sizeRef.blockSize() }}px
+    </div>
+  `
+})
+export class ExampleComponent {}
+```
+
+**Individual axis change events:**
+
+```html
+<div tngObserveSize
+     (inlineChange)="onWidthChange($event)"
+     (blockChange)="onHeightChange($event)">
+  Responsive content
+</div>
+```
+
 ## API Reference
 
 | Export | Type | Description |
@@ -241,4 +304,5 @@ export class RatingComponent {
 | `ValuesPipe` | Pipe (`values`) | Extracts values from Map, Set, or object |
 | `EntriesPipe` | Pipe (`entries`) | Extracts entries as `{ key, value }` objects |
 | `TimesPipe` | Pipe (`times`) | Generates `[0, 1, ..., n-1]` array from a number |
+| `ObserveSizeDirective` | Directive (`tngObserveSize`) | Observes element size via `ResizeObserver` with signal-based API |
 | `KeyValue<K, V>` | Interface | Shape of entries pipe output items |

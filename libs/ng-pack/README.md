@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/@telperion/ng-pack.svg)](https://www.npmjs.com/package/@telperion/ng-pack)
 [![npm downloads](https://img.shields.io/npm/dm/@telperion/ng-pack.svg)](https://www.npmjs.com/package/@telperion/ng-pack)
-[![License](https://img.shields.io/npm/l/@telperion/ng-pack.svg)](https://github.com/telperiontech/telperion/blob/main/libs/ng-pack/LICENSE)
+[![License](https://img.shields.io/npm/l/@telperion/ng-pack.svg)](https://github.com/telperiontech/telperion/blob/main/LICENSE)
 
 A collection of Angular utilities and libraries
 
@@ -18,7 +18,7 @@ npm install @telperion/ng-pack
 
 **Import:** `@telperion/ng-pack/common`
 
-Common Angular pipes for working with key-value data structures (`Map`, `Set`, plain objects) and template iteration.
+Common Angular pipes and directives for key-value data structures (`Map`, `Set`, plain objects), template iteration, and element observation.
 
 #### Key Features
 
@@ -26,6 +26,7 @@ Common Angular pipes for working with key-value data structures (`Map`, `Set`, p
 - 📦 `values` pipe — extract values from any key-value structure
 - 📋 `entries` pipe — extract entries as `{ key, value }` objects
 - 🔁 `times` pipe — generate `[0, 1, ..., n-1]` array for repeating template blocks
+- 📐 `tngObserveSize` directive — observe element size via `ResizeObserver` with signal-based API
 - 🗺️ Supports `Map`, `Set`, and plain objects
 - 🎯 Full type inference with overloaded signatures
 - 🛡️ Null-safe — returns `[]` for `null`/`undefined`
