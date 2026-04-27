@@ -1,5 +1,5 @@
 /**
- * @thalesrc/elements
+ * @telperion/elements
  * A collection of custom web components built with Lit Elements
  */
 

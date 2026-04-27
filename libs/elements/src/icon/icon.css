@@ -1,0 +1,27 @@
+/*
+ * Default visual baseline for `<tp-icon>`.
+ *
+ * Mirrors the Tailwind utility classes the element applies to itself
+ * (font-normal, not-italic, text-2xl, leading-none, normal-case,
+ * tracking-normal, inline-block, whitespace-nowrap, select-none) so that
+ * consumers who don't use Tailwind get the same defaults out of the box.
+ *
+ * Loaded by the consumer (this file is NOT auto-imported by the element):
+ *   import "@telperion/elements/icon/icon.css";
+ *
+ * Tailwind v4 consumers can skip this file and instead register the
+ * package as a Tailwind source &mdash; see the icon module README.
+ */
+
+tp-icon {
+  display: inline-block;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+}

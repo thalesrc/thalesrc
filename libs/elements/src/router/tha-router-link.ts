@@ -1,8 +1,8 @@
 import { css, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { computed, signal } from "@lit-labs/signals";
-import { compact } from '@thalesrc/js-utils/array/compact';
-import { noop } from "@thalesrc/js-utils/function/noop";
+import { compact } from '@telperion/js-utils/array/compact';
+import { noop } from "@telperion/js-utils/function/noop";
 import { HISTORY, HISTORY_TYPE, HistoryManaged } from "./history-managed";
 import { SignalWatcherLitElement } from "./signal-watcher-lit-element";
 

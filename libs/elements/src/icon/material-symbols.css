@@ -1,0 +1,22 @@
+/*
+ * Material Symbols font loader for `<tp-icon>`.
+ *
+ * Imports the three Material Symbols variable fonts via the Google Fonts CSS API
+ * (https://fonts.googleapis.com/css2). The API resolves to the latest revisioned
+ * woff2 URL on each request, so we never have to chase Google's periodic hash
+ * rotations on `fonts.gstatic.com`.
+ *
+ * Loaded by the consumer (this file is NOT auto-imported by the element):
+ *   import "@telperion/elements/icon/material-symbols.css";
+ *
+ * Self-host alternative (zero runtime dependency on Google):
+ *   1. Download the variable fonts from
+ *      https://github.com/google/material-design-icons/tree/master/variablefont
+ *   2. Replace the @import lines below with @font-face declarations whose
+ *      `font-family` matches `Material Symbols Outlined`, `Material Symbols Rounded`,
+ *      and `Material Symbols Sharp` and whose `src` points at your hosted files.
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200");

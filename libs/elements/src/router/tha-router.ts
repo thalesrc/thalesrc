@@ -3,9 +3,9 @@ import { customElement } from "lit/decorators.js";
 import { PATH_PATTERN, ThaRoute } from "./tha-route";
 import { signal } from '@lit-labs/signals';
 import { RENDER_ROUTE, ThaRouterOutlet } from "./tha-router-outlet";
-import { noop } from "@thalesrc/js-utils/function/noop";
+import { noop } from "@telperion/js-utils/function/noop";
 import { Update } from 'history';
-import { defer } from "@thalesrc/js-utils/function/defer";
+import { defer } from "@telperion/js-utils/function/defer";
 import { SignalWatcherLitElement } from "./signal-watcher-lit-element";
 import { HISTORY, HistoryManaged } from "./history-managed";
 

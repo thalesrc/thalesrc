@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+/*
+ * Scan the elements library source for Tailwind utility classes.
+ * Includes future entries automatically — no per-entry edits needed.
+ */
+@source "../src/**/*.{ts,html}";

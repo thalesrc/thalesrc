@@ -1,7 +1,7 @@
-# @thalesrc/elements
+# @telperion/elements
 
-[![npm version](https://badge.fury.io/js/@thalesrc%2Felements.svg)](https://badge.fury.io/js/@thalesrc%2Felements)
-[![npm](https://img.shields.io/npm/dm/@thalesrc/elements.svg)](https://www.npmjs.com/package/@thalesrc/elements)
+[![npm version](https://badge.fury.io/js/@telperion%2Felements.svg)](https://badge.fury.io/js/@telperion%2Felements)
+[![npm](https://img.shields.io/npm/dm/@telperion/elements.svg)](https://www.npmjs.com/package/@telperion/elements)
 
 A collection of custom web components built with [Lit Elements](https://lit.dev/). This library provides a suite of reusable, framework-independent web components for modern web applications.
 
@@ -17,26 +17,56 @@ A collection of custom web components built with [Lit Elements](https://lit.dev/
 ## 📦 Installation
 
 ```bash
-npm install @thalesrc/elements
+npm install @telperion/elements
 ```
 
 ```bash
-yarn add @thalesrc/elements
+yarn add @telperion/elements
 ```
 
 ```bash
-pnpm add @thalesrc/elements
+pnpm add @telperion/elements
 ```
+
+> **Tailwind v4 consumers:** some elements (e.g. `<tp-icon>`) render Tailwind utility classes from inside the published package. Add `@source "../node_modules/@telperion/elements";` to your Tailwind entry CSS so the JIT scanner picks them up. See each module's README for details.
 
 ## 🚀 Usage
 
 ```typescript
-import '@thalesrc/elements';
+import '@telperion/elements';
 
 // Use the components in your HTML
 ```
 
 ## 📚 Components
+
+### Icon
+
+A framework-agnostic Material Symbols icon element.
+
+**Includes:**
+- `<tp-icon>` &mdash; renders a single Material Symbols glyph
+
+**Features:**
+- Three variants: `outlined` (default), `round`, `sharp`
+- All four Material variable-font axes exposed as attributes (`filled`, `grade`, `weight`, `optical-size`)
+- Light-DOM rendering so consumer styling (Tailwind, CSS variables, color/size) "just works"
+- Loads fonts via the Google Fonts CSS API &mdash; no broken hash URLs when Google rotates them
+- Self-host friendly &mdash; swap one CSS file to ship the fonts yourself
+
+```ts
+import "@telperion/elements/icon";
+import "@telperion/elements/icon/material-symbols.css";
+```
+
+```html
+<tp-icon>home</tp-icon>
+<tp-icon variant="round" filled weight="700">favorite</tp-icon>
+```
+
+[Icon Documentation →](./src/icon/README.md)
+
+---
 
 ### Router Components
 

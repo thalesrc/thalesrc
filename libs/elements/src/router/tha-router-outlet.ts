@@ -2,10 +2,10 @@ import { customElement, property, state } from "lit/decorators.js";
 import type { ThaRouter } from "./tha-router";
 import { FRAGMENT, PATH_PATTERN, ThaRoute } from "./tha-route";
 import { computed, signal } from "@lit-labs/signals";
-import { noop } from "@thalesrc/js-utils/function/noop";
+import { noop } from "@telperion/js-utils/function/noop";
 import { SignalWatcherLitElement } from "./signal-watcher-lit-element";
 import { HISTORY } from "./history-managed";
-import { defer } from "@thalesrc/js-utils/function/defer";
+import { defer } from "@telperion/js-utils/function/defer";
 
 declare global {
   interface HTMLElementTagNameMap {

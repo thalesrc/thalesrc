@@ -62,17 +62,18 @@ Utility functions for DOM manipulation and browser APIs. Simplifies common DOM o
 
 **Highlights**: DOM manipulation, Browser API helpers, Event handling
 
-#### [@thalesrc/elements](https://www.npmjs.com/package/@thalesrc/elements)
-[![npm](https://img.shields.io/npm/v/@thalesrc/elements.svg)](https://www.npmjs.com/package/@thalesrc/elements)
-[![npm](https://img.shields.io/npm/dm/@thalesrc/elements.svg)](https://www.npmjs.com/package/@thalesrc/elements)
+#### [@telperion/elements](https://www.npmjs.com/package/@telperion/elements)
+[![npm](https://img.shields.io/npm/v/@telperion/elements.svg)](https://www.npmjs.com/package/@telperion/elements)
+[![npm](https://img.shields.io/npm/dm/@telperion/elements.svg)](https://www.npmjs.com/package/@telperion/elements)
 
-Collection of custom web components built with Lit. Features a complete client-side routing solution with declarative components for SPAs and a framework-independent drag-and-drop system with extended events, smart drop zones, drag handles, and multiple dragging strategies.
+Collection of custom web components built with Lit. Features a Material Symbols icon element, a complete client-side routing solution with declarative components for SPAs, and a framework-independent drag-and-drop system with extended events, smart drop zones, drag handles, and multiple dragging strategies.
 
 **Sub-modules:**
+- **icon**: `<tp-icon>` Material Symbols element with all four variable-font axes (`filled`, `grade`, `weight`, `optical-size`), three variants (outlined/round/sharp), light-DOM rendering, and auto-rotating Google Fonts CSS API URLs (self-host friendly)
 - **router**: Client-side routing with router, route definitions, outlets, navigation links, and global configuration with support for multiple history strategies and reactive updates
 - **drag-drop**: Drag-and-drop web components with extended drag-drop events, smart drop zones, drag handles, and multiple dragging strategies
 
-**Highlights**: Router components, Client-side routing, URLPattern matching, Signal-based reactivity, Drag & drop, Web Components, Drop zone validation, Cross-framework compatibility
+**Highlights**: Material Symbols icons, Variable-font axes, Router components, Client-side routing, URLPattern matching, Signal-based reactivity, Drag & drop, Web Components, Drop zone validation, Cross-framework compatibility
 
 #### [@thalesrc/paintlet](https://www.npmjs.com/package/@thalesrc/paintlet)
 
@@ -216,10 +217,10 @@ uniquify(arr);   // [1, 2, 3, null, undefined, 4]
 debounce(() => console.log('Debounced!'), 300);
 ```
 
-**Drag & Drop (via @thalesrc/elements):**
+**Drag & Drop (via @telperion/elements):**
 ```html
 <script type="module">
-import '@thalesrc/elements/drag-drop';
+import '@telperion/elements/drag-drop';
 </script>
 
 <tha-drag name="item" draggingStrategy="move">

@@ -2,7 +2,7 @@ import { customElement } from "lit/decorators.js";
 import { html, signal, watch } from "@lit-labs/signals";
 import { HISTORY, HistoryManaged } from "../src/router/history-managed";
 import { SignalWatcherLitElement } from "../src/router/signal-watcher-lit-element";
-import { noop } from "@thalesrc/js-utils/function/noop";
+import { noop } from "@telperion/js-utils/function/noop";
 
 declare global {
   interface HTMLElementTagNameMap {

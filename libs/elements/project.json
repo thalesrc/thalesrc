@@ -58,7 +58,14 @@
     "publish/prepare/copy": {
       "executor": "@thalesrc/nx-utils:copy",
       "options": {
-        "input": ["libs/elements/README.md", "libs/elements/LICENSE"],
+        "input": [
+          "libs/elements/README.md",
+          "libs/elements/LICENSE",
+          {
+            "path": "libs/elements/src/icon/material-symbols.css",
+            "output": "dist/libs/elements/icon"
+          }
+        ],
         "output": "dist/libs/elements"
       }
     },

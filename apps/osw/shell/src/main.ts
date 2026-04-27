@@ -18,6 +18,6 @@ fetch('/assets/module-federation.manifest.json')
     document.head.appendChild(gtagScript);
   })
   .then(() => Promise.all([
-    import('@thalesrc/elements/router')
+    import('@telperion/elements/router')
   ]))
   .then(() => import('./bootstrap').catch((err) => console.error(err)));
