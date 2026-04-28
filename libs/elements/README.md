@@ -28,7 +28,7 @@ yarn add @telperion/elements
 pnpm add @telperion/elements
 ```
 
-> **Tailwind v4 consumers:** some elements (e.g. `<tp-icon>`) render Tailwind utility classes from inside the published package. Add `@source "../node_modules/@telperion/elements";` to your Tailwind entry CSS so the JIT scanner picks them up. See each module's README for details.
+> **Tailwind v4 consumers:** some elements (e.g. `<tp-icon>`) render Tailwind utility classes from inside the published package. Add `@source "@telperion/elements";` to your Tailwind entry CSS so the JIT scanner picks them up. See each module's README for details.
 
 ## 🚀 Usage
 
@@ -54,11 +54,17 @@ A framework-agnostic Material Symbols icon element.
 - Loads fonts via the Google Fonts CSS API &mdash; no broken hash URLs when Google rotates them
 - Self-host friendly &mdash; swap one CSS file to ship the fonts yourself
 
+#### JS/TS
 ```ts
 import "@telperion/elements/icon";
-import "@telperion/elements/icon/material-symbols.css";
 ```
 
+#### CSS
+```css
+@import "@telperion/elements/icon/material-symbols.css";
+```
+
+#### HTML
 ```html
 <tp-icon>home</tp-icon>
 <tp-icon variant="round" filled weight="700">favorite</tp-icon>
