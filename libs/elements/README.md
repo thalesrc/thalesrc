@@ -40,23 +40,27 @@ import '@telperion/elements';
 
 ### Loading via `<script>` tag (no bundler)
 
-Every component module ships a self-contained IIFE bundle that you can load directly from a CDN with a classic `<script>` tag &mdash; no bundler, no `import`, no npm install.
+Every component module ships a self-contained, minified IIFE bundle that you can load directly from a CDN with a classic `<script>` tag &mdash; no bundler, no `import`, no npm install.
+
+Use the **explicit `/iife/...` path** so the CDN serves the standalone bundle (subpath shorthand like `/icon` resolves to the ESM build via the package `exports` map and will not run as a classic script):
 
 ```html
 <!-- All elements registered (TelperionElements global) -->
-<script src="https://unpkg.com/@telperion/elements"></script>
+<script src="https://unpkg.com/@telperion/elements/iife/elements.js"></script>
 
 <!-- Or just the icon module (TelperionElements.Icon) -->
-<script src="https://unpkg.com/@telperion/elements/icon"></script>
+<script src="https://unpkg.com/@telperion/elements/iife/icon/index.js"></script>
 
 <!-- Or just the router module (TelperionElements.Router) -->
-<script src="https://unpkg.com/@telperion/elements/router"></script>
+<script src="https://unpkg.com/@telperion/elements/iife/router/index.js"></script>
 
 <!-- Or just the drag-and-drop module (TelperionElements.DragDrop) -->
-<script src="https://unpkg.com/@telperion/elements/drag-drop"></script>
+<script src="https://unpkg.com/@telperion/elements/iife/drag-drop/index.js"></script>
 ```
 
-Each per-module bundle is fully self-contained: side-effect imports register the custom elements as soon as the script is evaluated.
+Each per-module bundle is fully self-contained: side-effect imports register the custom elements as soon as the script is evaluated. jsDelivr (`https://cdn.jsdelivr.net/npm/@telperion/elements/iife/...`) and other npm CDNs work the same way.
+
+> The package also declares a non-standard `"script"` export condition pointing at these files for tooling that wants to discover them programmatically, but no browser or major CDN currently resolves it &mdash; always use the full `/iife/...` path in `<script src>`.
 
 ## 📚 Components
 
