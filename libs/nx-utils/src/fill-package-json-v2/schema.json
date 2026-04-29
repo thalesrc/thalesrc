@@ -67,7 +67,7 @@
               "description": "Conditional export keys to emit, in spec order. 'types' must be first, 'default' must be last; the executor enforces this regardless of input order.",
               "items": {
                 "type": "string",
-                "enum": ["types", "node", "import", "require", "default", "browser"]
+                "enum": ["types", "node", "import", "require", "default", "browser", "script"]
               },
               "default": ["types", "node", "import", "require", "default"]
             },
@@ -105,7 +105,8 @@
                 "import": { "type": "string", "default": "<path>.js" },
                 "require": { "type": "string", "default": "<path>.cjs" },
                 "default": { "type": "string", "default": "<path>.js" },
-                "browser": { "type": "string", "default": "<path>.js" }
+                "browser": { "type": "string", "default": "<path>.js" },
+                "script": { "type": "string", "default": "iife/<path>.js" }
               }
             }
           }

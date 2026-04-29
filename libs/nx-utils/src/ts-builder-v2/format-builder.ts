@@ -54,9 +54,32 @@ export type FormatTaskKind =
 export interface FormatTask {
   kind: FormatTaskKind;
   label: string;
-  /** Format-specific options (iife/umd carry name/globals/etc). */
-  iife?: IifeFormatOptions;
-  umd?: UmdFormatOptions;
+  /**
+   * Resolved IIFE bundle spec. Present only when `kind === 'iife'`. Each task
+   * targets a single entry; multi-entry IIFE configurations expand into
+   * multiple tasks during {@link planFormatTasks}.
+   */
+  iife?: ResolvedBundleSpec;
+  /** Resolved UMD bundle spec. Same semantics as `iife`. */
+  umd?: ResolvedBundleSpec;
+}
+
+/**
+ * Fully-resolved per-bundle config used by the IIFE/UMD `buildConfig` arms.
+ * The planner pre-resolves these so the builder doesn't have to know about
+ * `entries` maps, derived global names, or root-vs-per-entry fallback rules.
+ */
+export interface ResolvedBundleSpec {
+  /** Entry name (key in `BuildContext.entryMap`). */
+  entryName: string;
+  /** Global variable name (may be dotted, e.g. `TelperionElements.Icon`). */
+  name: string;
+  /** Output filename without extension, relative to `<outputPath>/<format>/`. */
+  fileName: string;
+  /** Whether to minify this bundle. */
+  minify: boolean;
+  /** Externals -> global variable names. */
+  globals: Record<string, string>;
 }
 
 export interface FormatBuildResult {
@@ -177,6 +200,36 @@ function primaryInput(ctx: BuildContext): string {
   return resolve(ctx.workspaceRoot, ctx.projectRoot, ctx.entryMap[ctx.primaryEntryName]);
 }
 
+function entryInput(ctx: BuildContext, entryName: string): string {
+  const file = ctx.entryMap[entryName];
+  if (!file) {
+    throw new Error(
+      `[ts-builder-v2] iife/umd entry '${entryName}' not found in entry map. Known entries: ${Object.keys(ctx.entryMap).join(', ')}`,
+    );
+  }
+  return resolve(ctx.workspaceRoot, ctx.projectRoot, file);
+}
+
+/**
+ * Convert an entry name like `drag-drop/index` or `icon` into a PascalCase
+ * suffix usable in a JS identifier (`DragDrop`, `Icon`). Strips a trailing
+ * `/index` segment and PascalCases each remaining `kebab-` or `snake_` word.
+ */
+export function deriveNestedGlobal(rootName: string, entryName: string): string {
+  const stripped = entryName.replace(/\/index$/i, '');
+  const segments = stripped.split('/').filter(Boolean);
+  const pascal = segments
+    .map((seg) =>
+      seg
+        .split(/[-_]/)
+        .filter(Boolean)
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(''),
+    )
+    .join('');
+  return pascal ? `${rootName}.${pascal}` : rootName;
+}
+
 function preserveModulesRoot(ctx: BuildContext): string {
   return resolve(ctx.workspaceRoot, ctx.projectRoot, 'src');
 }
@@ -274,23 +327,22 @@ async function buildConfig(
       };
 
     case 'iife': {
-      const iife = task.iife as IifeFormatOptions;
-      const externals = Object.keys(iife.globals ?? {});
-      const fileBase = iife.fileName ?? ctx.name;
-      const minify = iife.minify ?? ctx.minify.iife;
+      const spec = task.iife as ResolvedBundleSpec;
+      const externals = Object.keys(spec.globals);
       return {
         inputOptions: {
-          input: primaryInput(ctx),
+          input: entryInput(ctx, spec.entryName),
           external: buildExternalFn(externals),
           treeshake: ctx.treeshake,
-          plugins: buildPlugins({ ...ctx, minify: { ...ctx.minify, iife: minify } }, 'iife', aliases),
+          plugins: buildPlugins({ ...ctx, minify: { ...ctx.minify, iife: spec.minify } }, 'iife', aliases),
         },
         outputs: [
           {
-            file: resolve(ctx.outputPath, 'iife', `${fileBase}.js`),
+            file: resolve(ctx.outputPath, 'iife', `${spec.fileName}.js`),
             format: 'iife',
-            name: iife.name,
-            globals: iife.globals,
+            name: spec.name,
+            extend: spec.name.includes('.'),
+            globals: spec.globals,
             sourcemap: ctx.sourcemap,
             exports: 'auto',
             inlineDynamicImports: true,
@@ -300,23 +352,22 @@ async function buildConfig(
     }
 
     case 'umd': {
-      const umd = task.umd as UmdFormatOptions;
-      const externals = Object.keys(umd.globals ?? {});
-      const fileBase = umd.fileName ?? ctx.name;
-      const minify = umd.minify ?? ctx.minify.umd;
+      const spec = task.umd as ResolvedBundleSpec;
+      const externals = Object.keys(spec.globals);
       return {
         inputOptions: {
-          input: primaryInput(ctx),
+          input: entryInput(ctx, spec.entryName),
           external: buildExternalFn(externals),
           treeshake: ctx.treeshake,
-          plugins: buildPlugins({ ...ctx, minify: { ...ctx.minify, umd: minify } }, 'umd', aliases),
+          plugins: buildPlugins({ ...ctx, minify: { ...ctx.minify, umd: spec.minify } }, 'umd', aliases),
         },
         outputs: [
           {
-            file: resolve(ctx.outputPath, 'umd', `${fileBase}.js`),
+            file: resolve(ctx.outputPath, 'umd', `${spec.fileName}.js`),
             format: 'umd',
-            name: umd.name,
-            globals: umd.globals,
+            name: spec.name,
+            extend: spec.name.includes('.'),
+            globals: spec.globals,
             sourcemap: ctx.sourcemap,
             exports: 'auto',
             inlineDynamicImports: true,
@@ -365,28 +416,117 @@ export async function runFormatBuild(
 ): Promise<FormatBuildResult> {
   const { inputOptions, outputs } = await buildConfig(ctx, task, externalIds, aliases);
   const { files, entries } = await runOnce(inputOptions, outputs);
+  // For iife/umd, Rollup labels the entry by its source basename (e.g.
+  // `index`), which collides across multiple per-entry bundles. Re-key the
+  // result to the planner-resolved entry name so the manifest aggregator
+  // attaches each output to the right manifest entry.
+  if ((task.kind === 'iife' && task.iife) || (task.kind === 'umd' && task.umd)) {
+    const spec = (task.iife ?? task.umd) as ResolvedBundleSpec;
+    const file = files[0];
+    return { task, files, entries: file ? { [spec.entryName]: file } : {} };
+  }
   return { task, files, entries };
+}
+
+/**
+ * Expand a `formats.iife` (or `formats.umd`) configuration into one resolved
+ * bundle spec per emitted bundle. The root bundle is included only when the
+ * top-level `name` is set; per-entry bundles fall back to a derived nested
+ * name (`<RootName>.<PascalEntry>`) when omitted.
+ */
+function expandBundleSpecs(
+  format: IifeFormatOptions | UmdFormatOptions,
+  ctx: { libName: string; primaryEntryName: string; defaultMinify: boolean },
+): ResolvedBundleSpec[] {
+  const out: ResolvedBundleSpec[] = [];
+  const rootName = format.name;
+  const rootMinify = format.minify ?? ctx.defaultMinify;
+  const rootGlobals = format.globals ?? {};
+
+  if (rootName) {
+    out.push({
+      entryName: ctx.primaryEntryName,
+      name: rootName,
+      fileName: format.fileName ?? ctx.libName,
+      minify: rootMinify,
+      globals: rootGlobals,
+    });
+  }
+
+  for (const [entryName, perEntry] of Object.entries(format.entries ?? {})) {
+    if (entryName === ctx.primaryEntryName && rootName) continue; // already emitted as root
+    const derivedName = perEntry.name
+      ?? (rootName ? deriveNestedGlobal(rootName, entryName) : undefined);
+    if (!derivedName) {
+      throw new Error(
+        `[ts-builder-v2] iife/umd entry '${entryName}' has no name. Set either the top-level 'name' or 'entries.${entryName}.name'.`,
+      );
+    }
+    out.push({
+      entryName,
+      name: derivedName,
+      fileName: perEntry.fileName ?? entryName,
+      minify: perEntry.minify ?? rootMinify,
+      globals: perEntry.globals ?? rootGlobals,
+    });
+  }
+
+  // Detect colliding output paths (root vs an entry override).
+  const seen = new Map<string, string>();
+  for (const spec of out) {
+    const prev = seen.get(spec.fileName);
+    if (prev) {
+      throw new Error(
+        `[ts-builder-v2] iife/umd file name collision: entries '${prev}' and '${spec.entryName}' both resolve to '${spec.fileName}.js'`,
+      );
+    }
+    seen.set(spec.fileName, spec.entryName);
+  }
+
+  return out;
 }
 
 /**
  * Enumerate the format tasks selected by a fully-resolved set of options.
  * Order matches the sequence used by the legacy executor so logs and outputs
- * are bit-for-bit reproducible.
+ * are bit-for-bit reproducible. Multi-entry IIFE/UMD configurations expand
+ * into one task per emitted bundle.
  */
-export function planFormatTasks(formats: {
-  esm: { perFile: boolean; flat: boolean };
-  cjs: { perFile: boolean; flat: boolean };
-  iife: IifeFormatOptions | null;
-  umd: UmdFormatOptions | null;
-  types: { dts: boolean; dcts: boolean };
-}): FormatTask[] {
+export function planFormatTasks(
+  formats: {
+    esm: { perFile: boolean; flat: boolean };
+    cjs: { perFile: boolean; flat: boolean };
+    iife: IifeFormatOptions | null;
+    umd: UmdFormatOptions | null;
+    types: { dts: boolean; dcts: boolean };
+  },
+  ctx: { libName: string; primaryEntryName: string; defaultMinify: { iife: boolean; umd: boolean } },
+): FormatTask[] {
   const tasks: FormatTask[] = [];
   if (formats.esm.perFile) tasks.push({ kind: 'esm-per-file', label: 'esm (per-file)' });
   if (formats.esm.flat) tasks.push({ kind: 'esm-flat', label: 'esm (flat)' });
   if (formats.cjs.perFile) tasks.push({ kind: 'cjs-per-file', label: 'cjs (per-file)' });
   if (formats.cjs.flat) tasks.push({ kind: 'cjs-flat', label: 'cjs (flat)' });
-  if (formats.iife) tasks.push({ kind: 'iife', label: 'iife', iife: formats.iife });
-  if (formats.umd) tasks.push({ kind: 'umd', label: 'umd', umd: formats.umd });
+  if (formats.iife) {
+    const specs = expandBundleSpecs(formats.iife, {
+      libName: ctx.libName,
+      primaryEntryName: ctx.primaryEntryName,
+      defaultMinify: ctx.defaultMinify.iife,
+    });
+    for (const spec of specs) {
+      tasks.push({ kind: 'iife', label: `iife (${spec.entryName})`, iife: spec });
+    }
+  }
+  if (formats.umd) {
+    const specs = expandBundleSpecs(formats.umd, {
+      libName: ctx.libName,
+      primaryEntryName: ctx.primaryEntryName,
+      defaultMinify: ctx.defaultMinify.umd,
+    });
+    for (const spec of specs) {
+      tasks.push({ kind: 'umd', label: `umd (${spec.entryName})`, umd: spec });
+    }
+  }
   if (formats.types.dts) tasks.push({ kind: 'dts', label: 'd.ts' });
   if (formats.types.dcts) tasks.push({ kind: 'dcts', label: 'd.cts' });
   return tasks;

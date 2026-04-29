@@ -1,22 +1,47 @@
 export type EsmFormatOptions = boolean | { perFile?: boolean; flat?: boolean };
 export type CjsFormatOptions = boolean | { perFile?: boolean; flat?: boolean };
 
+export interface IifePerEntryOptions {
+  /** Override the derived nested global name for this entry (`<RootName>.<PascalEntry>`). */
+  name?: string;
+  /** Override the output filename without extension. Defaults to the entry name. */
+  fileName?: string;
+  /** Minify this bundle. Falls back to the root `IifeFormatOptions.minify`. */
+  minify?: boolean;
+  /** Map external module name -> global variable name. */
+  globals?: Record<string, string>;
+}
+
 export interface IifeFormatOptions {
-  /** Global variable name to expose. */
-  name: string;
+  /** Global variable name for the root bundle. Required when emitting the root bundle. */
+  name?: string;
   /** Output filename without extension. Defaults to the library name. */
   fileName?: string;
   /** Minify the bundle. Defaults to true. */
   minify?: boolean;
   /** Map external module name -> global variable name. */
   globals?: Record<string, string>;
+  /**
+   * Per-entry IIFE bundle overrides keyed by entry name. Each entry produces a
+   * self-contained IIFE at `<outputPath>/iife/<entry>.js` with a global derived
+   * from the root name (e.g. `TelperionElements.Icon`).
+   */
+  entries?: Record<string, IifePerEntryOptions>;
 }
 
-export interface UmdFormatOptions {
-  name: string;
+export interface UmdPerEntryOptions {
+  name?: string;
   fileName?: string;
   minify?: boolean;
   globals?: Record<string, string>;
+}
+
+export interface UmdFormatOptions {
+  name?: string;
+  fileName?: string;
+  minify?: boolean;
+  globals?: Record<string, string>;
+  entries?: Record<string, UmdPerEntryOptions>;
 }
 
 export type TypesFormatOptions = boolean | { dts?: boolean; dcts?: boolean };

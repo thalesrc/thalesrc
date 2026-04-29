@@ -69,36 +69,51 @@
           ]
         },
         "iife": {
-          "description": "Self-contained IIFE bundle for use via CDN <script> tags. Requires a name.",
+          "description": "Self-contained IIFE bundle(s) for use via CDN <script> tags. Top-level options describe the root bundle (built from the primary entry); the optional `entries` map adds one self-contained IIFE per listed entry, each at `iife/<entry>.js` with a global derived from the root name (e.g. `TelperionElements.Icon`).",
           "default": false,
           "oneOf": [
             { "type": "boolean", "enum": [false] },
             {
               "type": "object",
               "additionalProperties": false,
-              "required": ["name"],
               "properties": {
-                "name": { "type": "string", "description": "Global variable name to expose." },
-                "fileName": { "type": "string", "description": "Output filename (without extension). Defaults to the library name." },
+                "name": { "type": "string", "description": "Global variable name for the root bundle. Required when emitting the root bundle; per-entry bundles fall back to a nested name when omitted." },
+                "fileName": { "type": "string", "description": "Output filename for the root bundle (without extension). Defaults to the library name." },
                 "minify": { "type": "boolean", "default": true },
                 "globals": {
                   "type": "object",
                   "description": "Map of external module name to global variable name. Used only for entries that remain external.",
                   "additionalProperties": { "type": "string" }
+                },
+                "entries": {
+                  "type": "object",
+                  "description": "Per-entry IIFE bundle overrides keyed by entry name (matches keys in `entry`). An empty object enables the entry with derived defaults.",
+                  "additionalProperties": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "name": { "type": "string", "description": "Override the derived nested global name for this entry." },
+                      "fileName": { "type": "string", "description": "Override the output filename (without extension). Defaults to the entry name." },
+                      "minify": { "type": "boolean" },
+                      "globals": {
+                        "type": "object",
+                        "additionalProperties": { "type": "string" }
+                      }
+                    }
+                  }
                 }
               }
             }
           ]
         },
         "umd": {
-          "description": "UMD bundle for legacy script-tag consumers and AMD loaders.",
+          "description": "UMD bundle(s) for legacy script-tag consumers and AMD loaders. Same multi-entry semantics as `iife`.",
           "default": false,
           "oneOf": [
             { "type": "boolean", "enum": [false] },
             {
               "type": "object",
               "additionalProperties": false,
-              "required": ["name"],
               "properties": {
                 "name": { "type": "string" },
                 "fileName": { "type": "string" },
@@ -106,6 +121,22 @@
                 "globals": {
                   "type": "object",
                   "additionalProperties": { "type": "string" }
+                },
+                "entries": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "name": { "type": "string" },
+                      "fileName": { "type": "string" },
+                      "minify": { "type": "boolean" },
+                      "globals": {
+                        "type": "object",
+                        "additionalProperties": { "type": "string" }
+                      }
+                    }
+                  }
                 }
               }
             }

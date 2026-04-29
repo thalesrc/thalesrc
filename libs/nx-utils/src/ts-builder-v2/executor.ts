@@ -332,7 +332,11 @@ const runExecutor: PromiseExecutor<TsBuilderV2ExecutorSchema> = async (rawOption
       return await runWatch(opts, externalIds, aliases);
     }
 
-    const tasks = planFormatTasks(opts.formats);
+    const tasks = planFormatTasks(opts.formats, {
+      libName: opts.name,
+      primaryEntryName: opts.primaryEntryName,
+      defaultMinify: { iife: opts.minify.iife, umd: opts.minify.umd },
+    });
     if (tasks.length === 0) {
       console.warn('[ts-builder-v2] no output formats enabled.');
       return { success: true };

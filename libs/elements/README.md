@@ -38,6 +38,26 @@ import '@telperion/elements';
 // Use the components in your HTML
 ```
 
+### Loading via `<script>` tag (no bundler)
+
+Every component module ships a self-contained IIFE bundle that you can load directly from a CDN with a classic `<script>` tag &mdash; no bundler, no `import`, no npm install.
+
+```html
+<!-- All elements registered (TelperionElements global) -->
+<script src="https://unpkg.com/@telperion/elements"></script>
+
+<!-- Or just the icon module (TelperionElements.Icon) -->
+<script src="https://unpkg.com/@telperion/elements/icon"></script>
+
+<!-- Or just the router module (TelperionElements.Router) -->
+<script src="https://unpkg.com/@telperion/elements/router"></script>
+
+<!-- Or just the drag-and-drop module (TelperionElements.DragDrop) -->
+<script src="https://unpkg.com/@telperion/elements/drag-drop"></script>
+```
+
+Each per-module bundle is fully self-contained: side-effect imports register the custom elements as soon as the script is evaluated.
+
 ## 📚 Components
 
 ### Icon

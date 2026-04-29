@@ -19,7 +19,7 @@ import type {
 
 // Spec-correct condition ordering. Node resolves the first matching condition,
 // `types` must come first for TypeScript, `default` must come last as the fallback.
-const CONDITION_ORDER: ExportCondition[] = ['types', 'node', 'browser', 'import', 'require', 'default'];
+const CONDITION_ORDER: ExportCondition[] = ['types', 'node', 'browser', 'import', 'require', 'script', 'default'];
 
 const DEFAULT_TEMPLATES: Required<PopulateExportsTemplates> = {
   types: '<path>.d.ts',
@@ -29,6 +29,7 @@ const DEFAULT_TEMPLATES: Required<PopulateExportsTemplates> = {
   require: '<path>.cjs',
   default: '<path>.js',
   browser: '<path>.js',
+  script: 'iife/<path>.js',
 };
 
 const DEFAULT_EXPORTS: ExportCondition[] = ['types', 'node', 'import', 'require', 'default'];
@@ -170,6 +171,11 @@ function buildExportsFromManifest(
         result.node = makeExportPath(requirePath);
       } else if (cond === 'browser' && importPath) {
         result.browser = makeExportPath(importPath);
+      } else if (cond === 'script' && o.iife) {
+        // Self-contained classic <script> bundle for direct CDN loading
+        // (e.g. https://unpkg.com/<pkg>/iife/<entry>.js). Non-standard but
+        // ignored by bundlers that don't recognize it.
+        result.script = makeExportPath(o.iife);
       }
     }
     return result;

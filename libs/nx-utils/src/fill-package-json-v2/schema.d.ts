@@ -1,4 +1,4 @@
-export type ExportCondition = 'types' | 'node' | 'import' | 'require' | 'default' | 'browser';
+export type ExportCondition = 'types' | 'node' | 'import' | 'require' | 'default' | 'browser' | 'script';
 
 export interface PopulateExportsTemplates {
   /** Template for the `types` condition. Default: `<path>.d.ts`. */
@@ -15,6 +15,8 @@ export interface PopulateExportsTemplates {
   default?: string;
   /** Template for the `browser` condition. Default: `<path>.js`. */
   browser?: string;
+  /** Template for the `script` condition. Default: `iife/<path>.js`. */
+  script?: string;
 }
 
 export interface PopulateExportsOptions {

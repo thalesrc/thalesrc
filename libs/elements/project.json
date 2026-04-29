@@ -24,7 +24,12 @@
           "iife": {
             "name": "TelperionElements",
             "fileName": "elements",
-            "minify": true
+            "minify": true,
+            "entries": {
+              "icon/index": {},
+              "drag-drop/index": {},
+              "router/index": {}
+            }
           },
           "types": { "dts": true, "dcts": true }
         }
@@ -71,7 +76,9 @@
         "outputPath": "dist/libs/elements",
         "cdn": "iife/elements.js",
         "sideEffects": ["**/*-element.js", "**/*-element.cjs", "**/*.css"],
-        "populateExports": {}
+        "populateExports": {
+          "exports": ["types", "node", "import", "require", "script", "default"]
+        }
       }
     },
     "publish/to-npm": {
