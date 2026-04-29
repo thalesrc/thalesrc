@@ -4,3 +4,4 @@ export { EntriesPipe, KeyValue } from './entries.pipe';
 export { TimesPipe } from './times.pipe';
 
 export { ObserveSizeDirective } from './observe-size.directive';
+export { UnlessDirective, UnlessContext } from './unless.directive';

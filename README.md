@@ -107,7 +107,7 @@ Utility functions and operators for RxJS Observables. Features async iterable co
 Collection of Angular utilities and libraries organized as secondary entry points. Includes signal-based storage management, template-driven form utilities, and common Angular helpers.
 
 **Sub-modules:**
-- **common**: Pipes for extracting keys, values, and entries from Maps, Sets, and plain objects, a `times` pipe for repeating template blocks, and an `ObserveSizeDirective` for reactive element size observation
+- **common**: Pipes for extracting keys, values, and entries from Maps, Sets, and plain objects, a `times` pipe for repeating template blocks, an `ObserveSizeDirective` for reactive element size observation, and an `*tngUnless` structural directive (inverse of `*ngIf`)
 - **storage-signals**: Signal-based localStorage/sessionStorage/cookies with reactive updates, nested property access, and configurable cookie options
 - **sse-client**: HttpClient-inspired SSE client with Observable-based streaming, interceptor chain, and reactive real-time updates
 - **template-signal-forms**: Signal-based forms for template-driven forms _(under construction)_

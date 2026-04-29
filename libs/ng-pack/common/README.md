@@ -296,6 +296,53 @@ export class ExampleComponent {}
 </div>
 ```
 
+---
+
+### `tngUnless`
+
+Structural directive that renders its template when the bound expression is **falsy** — the inverse of `*ngIf`. Optionally accepts an `else` template that is rendered when the expression is truthy.
+
+#### Inputs
+
+| Input | Type | Description |
+|---|---|---|
+| `tngUnless` | `T` | Condition to evaluate. Template renders when the value is falsy. |
+| `tngUnlessElse` | `TemplateRef<UnlessContext<T>> \| null` | Optional template to render when the condition is truthy. |
+
+#### Usage
+
+**Basic:**
+
+```typescript
+import { Component } from '@angular/core';
+import { UnlessDirective } from '@telperion/ng-pack/common';
+
+@Component({
+  selector: 'app-example',
+  standalone: true,
+  imports: [UnlessDirective],
+  template: `
+    <p *tngUnless="loading">Content is ready</p>
+  `
+})
+export class ExampleComponent {
+  loading = false;
+}
+```
+
+**With an `else` template:**
+
+```html
+<p *tngUnless="loading; else loadingTpl">Content is ready</p>
+<ng-template #loadingTpl><p>Loading…</p></ng-template>
+```
+
+**Capturing the bound value:**
+
+```html
+<p *tngUnless="errorMessage; let err">No errors</p>
+```
+
 ## API Reference
 
 | Export | Type | Description |
@@ -305,4 +352,6 @@ export class ExampleComponent {}
 | `EntriesPipe` | Pipe (`entries`) | Extracts entries as `{ key, value }` objects |
 | `TimesPipe` | Pipe (`times`) | Generates `[0, 1, ..., n-1]` array from a number |
 | `ObserveSizeDirective` | Directive (`tngObserveSize`) | Observes element size via `ResizeObserver` with signal-based API |
+| `UnlessDirective` | Directive (`*tngUnless`) | Structural directive that renders when the expression is falsy (inverse of `*ngIf`) |
 | `KeyValue<K, V>` | Interface | Shape of entries pipe output items |
+| `UnlessContext<T>` | Interface | Shape of the template context for `*tngUnless` |

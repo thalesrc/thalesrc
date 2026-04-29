@@ -27,7 +27,8 @@ Common Angular pipes and directives for key-value data structures (`Map`, `Set`,
 - 📋 `entries` pipe — extract entries as `{ key, value }` objects
 - 🔁 `times` pipe — generate `[0, 1, ..., n-1]` array for repeating template blocks
 - 📐 `tngObserveSize` directive — observe element size via `ResizeObserver` with signal-based API
-- 🗺️ Supports `Map`, `Set`, and plain objects
+- � `*tngUnless` structural directive — render a template when the expression is falsy (inverse of `*ngIf`)
+- �🗺️ Supports `Map`, `Set`, and plain objects
 - 🎯 Full type inference with overloaded signatures
 - 🛡️ Null-safe — returns `[]` for `null`/`undefined`
 
