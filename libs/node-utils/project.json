@@ -6,13 +6,17 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "@thalesrc/nx-utils:ts-builder-v2",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "tsConfigPath": "libs/node-utils/tsconfig.lib.json",
         "outputPath": "dist/libs/node-utils",
-        "main": "libs/node-utils/src/index.ts",
-        "tsConfig": "libs/node-utils/tsconfig.lib.json",
-        "assets": ["libs/node-utils/*.md", "libs/node-utils/LICENSE", "libs/node-utils/cli.js"]
+        "name": "node-utils",
+        "formats": {
+          "esm": { "perFile": true, "flat": true },
+          "cjs": { "perFile": true, "flat": false },
+          "types": { "dts": true, "dcts": true }
+        }
       }
     },
     "test": {
@@ -27,7 +31,6 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "nx run node-utils:build",
           "nx run node-utils:publish/prepare --packageVersion=$PACKAGE_VERSION",
           "nx run node-utils:publish/to-npm"
         ],
@@ -35,9 +38,28 @@
       }
     },
     "publish/prepare": {
-      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "executor": "nx:run-commands",
       "options": {
-        "outputPath": "dist/libs/node-utils"
+        "commands": [
+          "nx run node-utils:build",
+          "nx run node-utils:publish/prepare/copy",
+          "nx run node-utils:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
+        ],
+        "parallel": false
+      }
+    },
+    "publish/prepare/copy": {
+      "executor": "@thalesrc/nx-utils:copy",
+      "options": {
+        "input": ["libs/node-utils/README.md", "libs/node-utils/LICENSE", "libs/node-utils/cli.cjs"],
+        "output": "dist/libs/node-utils"
+      }
+    },
+    "publish/prepare/fill-package-json": {
+      "executor": "@thalesrc/nx-utils:fill-package-json-v2",
+      "options": {
+        "outputPath": "dist/libs/node-utils",
+        "populateExports": {}
       }
     },
     "publish/to-npm": {

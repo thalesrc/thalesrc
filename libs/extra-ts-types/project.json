@@ -6,12 +6,17 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "@thalesrc/nx-utils:ts-builder-v2",
+      "outputs": ["{options.outputPath}"],
       "options": {
-        "tsConfig": "libs/extra-ts-types/tsconfig.lib.json",
-        "main": "libs/extra-ts-types/src/index.ts",
+        "tsConfigPath": "libs/extra-ts-types/tsconfig.lib.json",
         "outputPath": "dist/libs/extra-ts-types",
-        "generateExportsField": true
+        "name": "extra-ts-types",
+        "formats": {
+          "esm": { "perFile": true, "flat": true },
+          "cjs": { "perFile": true, "flat": false },
+          "types": { "dts": true, "dcts": true }
+        }
       }
     },
     "publish": {
@@ -31,7 +36,8 @@
         "commands": [
           "nx run extra-ts-types:publish/prepare/copy",
           "nx run extra-ts-types:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
-        ]
+        ],
+        "parallel": false
       }
     },
     "publish/prepare/copy": {
@@ -42,9 +48,10 @@
       }
     },
     "publish/prepare/fill-package-json": {
-      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "executor": "@thalesrc/nx-utils:fill-package-json-v2",
       "options": {
-        "outputPath": "dist/libs/extra-ts-types"
+        "outputPath": "dist/libs/extra-ts-types",
+        "populateExports": {}
       }
     },
     "publish/to-npm": {

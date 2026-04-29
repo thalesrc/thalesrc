@@ -10,12 +10,14 @@
     "directory": "libs/node-utils"
   },
   "bin": {
-    "nu": "./cli.js"
+    "nu": "./cli.cjs"
   },
   "dependencies": {
     "tslib": "*",
     "yargs": "*"
   },
-  "main": "./src/index.js",
-  "typings": "./src/index.d.ts"
+  "type": "module",
+  "main": "./index.cjs",
+  "module": "./index.js",
+  "typings": "./index.d.ts"
 }

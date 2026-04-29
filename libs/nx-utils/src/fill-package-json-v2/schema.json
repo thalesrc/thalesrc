@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "FillPackageJsonV2 executor",
+  "description": "Generate a spec-correct package.json with modern exports map (types first, default last), sideEffects, top-level fallback fields and CDN fields (unpkg, jsdelivr).",
+  "type": "object",
+  "properties": {
+    "outputPath": {
+      "type": "string",
+      "description": "Directory where the package.json will be written (relative to workspace root)."
+    },
+    "packageVersion": {
+      "type": "string",
+      "description": "Package version. Overrides whatever is in the project package.json.",
+      "nullable": true
+    },
+    "sideEffects": {
+      "description": "Value for the sideEffects field. If omitted, the project package.json's value is used; if missing there, defaults to false.",
+      "oneOf": [
+        { "type": "boolean" },
+        { "type": "array", "items": { "type": "string" } }
+      ]
+    },
+    "topLevelFields": {
+      "type": "boolean",
+      "description": "Auto-synthesize top-level main / module / types fields from the '.' export.",
+      "default": true
+    },
+    "cdn": {
+      "description": "CDN script-tag entry. Set to a path string (relative to outputPath) to populate `unpkg` and `jsdelivr` fields.",
+      "oneOf": [
+        { "type": "string" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "unpkg": { "type": "string" },
+            "jsdelivr": { "type": "string" },
+            "browser": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "populateExports": {
+      "oneOf": [
+        { "const": false },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "exports": {
+              "type": "array",
+              "description": "Conditional export keys to emit, in spec order. 'types' must be first, 'default' must be last; the executor enforces this regardless of input order.",
+              "items": {
+                "type": "string",
+                "enum": ["types", "node", "import", "require", "default", "browser"]
+              },
+              "default": ["types", "node", "import", "require", "default"]
+            },
+            "entries": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Subpath entries to emit (in addition to '.'). Trailing slash means a barrel directory."
+            },
+            "entriesTemplateProperty": {
+              "type": "string",
+              "default": "_exports",
+              "description": "Property name in the project package.json to read entries from when `entries` is not provided. Removed from the final output."
+            },
+            "barrelFileName": {
+              "type": "string",
+              "default": "index"
+            },
+            "useFesm": {
+              "type": "boolean",
+              "default": false,
+              "description": "Use the FESM flat ESM bundle for `import`/`default` conditions instead of the per-file ESM build. Only valid when there is a single '.' entry."
+            },
+            "dcts": {
+              "type": "boolean",
+              "default": true,
+              "description": "Include a `.d.cts` types entry alongside `.d.ts` for the `require` condition."
+            },
+            "templates": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "types": { "type": "string", "default": "<path>.d.ts" },
+                "typesRequire": { "type": "string", "default": "<path>.d.cts" },
+                "node": { "type": "string", "default": "<path>.cjs" },
+                "import": { "type": "string", "default": "<path>.js" },
+                "require": { "type": "string", "default": "<path>.cjs" },
+                "default": { "type": "string", "default": "<path>.js" },
+                "browser": { "type": "string", "default": "<path>.js" }
+              }
+            }
+          }
+        }
+      ],
+      "default": false
+    }
+  },
+  "required": ["outputPath"]
+}

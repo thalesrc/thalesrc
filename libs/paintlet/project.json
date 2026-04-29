@@ -6,32 +6,17 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "nx run paintlet:build/ts",
-          "nx run paintlet:build/bundle"
-        ],
-        "parallel": true
-      }
-    },
-    "build/bundle": {
-      "executor": "@nx/vite:build",
-      "outputs": [
-        "{options.outputPath}"
-      ],
-      "options": {
-        "configFile": "libs/paintlet/vite.config.ts",
-        "tsConfig": "libs/paintlet/tsconfig.lib.json",
-        "outputPath": "dist/libs/paintlet"
-      },
-      "dependsOn": []
-    },
-    "build/ts": {
-      "executor": "@thalesrc/nx-utils:ts-builder",
+      "executor": "@thalesrc/nx-utils:ts-builder-v2",
+      "outputs": ["{options.outputPath}"],
       "options": {
         "tsConfigPath": "libs/paintlet/tsconfig.lib.json",
-        "outputPath": "dist/libs/paintlet"
+        "outputPath": "dist/libs/paintlet",
+        "name": "paintlet",
+        "formats": {
+          "esm": { "perFile": true, "flat": true },
+          "cjs": { "perFile": true, "flat": false },
+          "types": { "dts": true, "dcts": true }
+        }
       }
     },
     "publish": {
@@ -63,7 +48,7 @@
       }
     },
     "publish/prepare/fill-package-json": {
-      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "executor": "@thalesrc/nx-utils:fill-package-json-v2",
       "options": {
         "outputPath": "dist/libs/paintlet",
         "populateExports": {}

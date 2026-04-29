@@ -1,0 +1,199 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": 2,
+  "title": "TsBuilderV2ExecutorSchema",
+  "type": "object",
+  "description": "Modern Rollup-based TypeScript library builder. Produces ESM, CJS, IIFE/UMD bundles and type declarations with tree-shaking. Equivalent to ng-packagr for plain TypeScript / web libraries.",
+  "properties": {
+    "tsConfigPath": {
+      "type": "string",
+      "description": "Path to the tsconfig file. Relative to project root if it starts with './' or '../', otherwise resolved against the workspace root.",
+      "default": "tsconfig.lib.json"
+    },
+    "outputPath": {
+      "type": "string",
+      "description": "Destination directory relative to the workspace root.",
+      "default": "dist"
+    },
+    "entry": {
+      "description": "Library entry point(s). 'auto' compiles every .ts file under the source root (excluding *.spec.ts and *.d.ts). Single string, array of file paths, or a name->path map for multi-entry libs. Paths are relative to the project root.",
+      "default": "auto",
+      "oneOf": [
+        { "type": "string" },
+        { "type": "array", "items": { "type": "string" } },
+        { "type": "object", "additionalProperties": { "type": "string" } }
+      ]
+    },
+    "sourceRoot": {
+      "type": "string",
+      "description": "Source root used when entry is 'auto'. Relative to the project root. Defaults to 'src'.",
+      "default": "src"
+    },
+    "name": {
+      "type": "string",
+      "description": "Logical name used for flat bundle filenames (FESM, IIFE, UMD). Defaults to the project name."
+    },
+    "formats": {
+      "type": "object",
+      "description": "Which output formats to produce. Set a value to false to disable.",
+      "additionalProperties": false,
+      "properties": {
+        "esm": {
+          "description": "ESM output. Boolean enables defaults; object configures per-file vs flat bundle.",
+          "default": { "perFile": true, "flat": true },
+          "oneOf": [
+            { "type": "boolean" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "perFile": { "type": "boolean", "default": true },
+                "flat": { "type": "boolean", "default": true }
+              }
+            }
+          ]
+        },
+        "cjs": {
+          "description": "CommonJS output for legacy Node consumers.",
+          "default": { "perFile": true, "flat": false },
+          "oneOf": [
+            { "type": "boolean" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "perFile": { "type": "boolean", "default": true },
+                "flat": { "type": "boolean", "default": false }
+              }
+            }
+          ]
+        },
+        "iife": {
+          "description": "Self-contained IIFE bundle for use via CDN <script> tags. Requires a name.",
+          "default": false,
+          "oneOf": [
+            { "type": "boolean", "enum": [false] },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name"],
+              "properties": {
+                "name": { "type": "string", "description": "Global variable name to expose." },
+                "fileName": { "type": "string", "description": "Output filename (without extension). Defaults to the library name." },
+                "minify": { "type": "boolean", "default": true },
+                "globals": {
+                  "type": "object",
+                  "description": "Map of external module name to global variable name. Used only for entries that remain external.",
+                  "additionalProperties": { "type": "string" }
+                }
+              }
+            }
+          ]
+        },
+        "umd": {
+          "description": "UMD bundle for legacy script-tag consumers and AMD loaders.",
+          "default": false,
+          "oneOf": [
+            { "type": "boolean", "enum": [false] },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name"],
+              "properties": {
+                "name": { "type": "string" },
+                "fileName": { "type": "string" },
+                "minify": { "type": "boolean", "default": false },
+                "globals": {
+                  "type": "object",
+                  "additionalProperties": { "type": "string" }
+                }
+              }
+            }
+          ]
+        },
+        "types": {
+          "description": "Type declaration outputs.",
+          "default": { "dts": true, "dcts": true },
+          "oneOf": [
+            { "type": "boolean" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "dts": { "type": "boolean", "default": true, "description": "Emit .d.ts (for ESM/import resolution)." },
+                "dcts": { "type": "boolean", "default": true, "description": "Emit .d.cts (for CJS/require resolution)." }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "external": {
+      "description": "Modules to treat as external (not bundled). 'auto' derives the list from the project's package.json (dependencies + peerDependencies + Node builtins).",
+      "default": "auto",
+      "oneOf": [
+        { "type": "string", "enum": ["auto"] },
+        { "type": "array", "items": { "type": "string" } }
+      ]
+    },
+    "bundleDependencies": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Dependencies that should be force-bundled even when 'external' would otherwise mark them external. Useful for IIFE/CDN builds.",
+      "default": []
+    },
+    "sourcemap": {
+      "description": "Source map mode.",
+      "default": true,
+      "oneOf": [
+        { "type": "boolean" },
+        { "type": "string", "enum": ["inline", "hidden"] }
+      ]
+    },
+    "treeshake": {
+      "type": "boolean",
+      "description": "Enable Rollup tree-shaking.",
+      "default": true
+    },
+    "minify": {
+      "description": "Minification settings. Boolean toggles all output, object enables per format.",
+      "default": { "iife": true, "umd": false, "esm": false, "cjs": false },
+      "oneOf": [
+        { "type": "boolean" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "esm": { "type": "boolean", "default": false },
+            "cjs": { "type": "boolean", "default": false },
+            "iife": { "type": "boolean", "default": true },
+            "umd": { "type": "boolean", "default": false }
+          }
+        }
+      ]
+    },
+    "clean": {
+      "type": "boolean",
+      "description": "Remove the output directory before building.",
+      "default": true
+    },
+    "watch": {
+      "type": "boolean",
+      "description": "Run rollup in watch mode.",
+      "default": false
+    },
+    "replace": {
+      "type": "object",
+      "description": "Compile-time string replacements (passed to @rollup/plugin-replace).",
+      "additionalProperties": { "type": "string" },
+      "default": {}
+    },
+    "tsconfigPaths": {
+      "type": "boolean",
+      "description": "Resolve path aliases declared in the workspace tsconfig.base.json so workspace imports get inlined into the build.",
+      "default": true
+    }
+  },
+  "additionalProperties": false,
+  "required": []
+}

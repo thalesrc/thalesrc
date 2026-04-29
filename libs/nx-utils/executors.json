@@ -20,6 +20,16 @@
       "schema": "./src/ts-builder/schema.json",
       "description": "Build TypeScript files with custom configurations and output paths"
     },
+    "ts-builder-v2": {
+      "implementation": "./src/ts-builder-v2/executor",
+      "schema": "./src/ts-builder-v2/schema.json",
+      "description": "Modern Rollup-based TypeScript library builder with selectable outputs (ESM, FESM, CJS, IIFE/UMD, types) and tree-shaking"
+    },
+    "fill-package-json-v2": {
+      "implementation": "./src/fill-package-json-v2/executor",
+      "schema": "./src/fill-package-json-v2/schema.json",
+      "description": "Generate spec-correct package.json files with modern exports field, sideEffects, CDN fields and dual ESM/CJS types"
+    },
     "watch": {
       "implementation": "./src/watch/executor",
       "schema": "./src/watch/schema.json",

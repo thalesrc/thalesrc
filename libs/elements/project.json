@@ -6,32 +6,28 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "nx run elements:build/ts",
-          "nx run elements:build/bundle"
-        ],
-        "parallel": true
-      }
-    },
-    "build/bundle": {
-      "executor": "@nx/vite:build",
-      "outputs": [
-        "{options.outputPath}"
-      ],
-      "options": {
-        "configFile": "libs/elements/vite.config.ts",
-        "tsConfig": "libs/elements/tsconfig.lib.json",
-        "outputPath": "dist/libs/elements"
-      },
-      "dependsOn": []
-    },
-    "build/ts": {
-      "executor": "@thalesrc/nx-utils:ts-builder",
+      "executor": "@thalesrc/nx-utils:ts-builder-v2",
+      "outputs": ["{options.outputPath}"],
       "options": {
         "tsConfigPath": "libs/elements/tsconfig.lib.json",
-        "outputPath": "dist/libs/elements"
+        "outputPath": "dist/libs/elements",
+        "name": "elements",
+        "entry": {
+          "index": "src/index.ts",
+          "router/index": "src/router/index.ts",
+          "drag-drop/index": "src/drag-drop/index.ts",
+          "icon/index": "src/icon/index.ts"
+        },
+        "formats": {
+          "esm": { "perFile": true, "flat": true },
+          "cjs": { "perFile": true, "flat": false },
+          "iife": {
+            "name": "TelperionElements",
+            "fileName": "elements",
+            "minify": true
+          },
+          "types": { "dts": true, "dcts": true }
+        }
       }
     },
     "publish": {
@@ -70,9 +66,11 @@
       }
     },
     "publish/prepare/fill-package-json": {
-      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "executor": "@thalesrc/nx-utils:fill-package-json-v2",
       "options": {
         "outputPath": "dist/libs/elements",
+        "cdn": "iife/elements.js",
+        "sideEffects": ["**/*-element.js", "**/*-element.cjs", "**/*.css"],
         "populateExports": {}
       }
     },

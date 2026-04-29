@@ -6,10 +6,12 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@thalesrc/nx-utils:ts-builder",
+      "executor": "@thalesrc/nx-utils:ts-builder-v2",
+      "outputs": ["{options.outputPath}"],
       "options": {
         "tsConfigPath": "libs/ts-utils/tsconfig.lib.json",
-        "outputPath": "dist/libs/ts-utils"
+        "outputPath": "dist/libs/ts-utils",
+        "entry": "src/index.ts"
       }
     },
     "test": {
@@ -36,7 +38,8 @@
           "nx run ts-utils:build",
           "nx run ts-utils:publish/prepare/copy",
           "nx run ts-utils:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
-        ]
+        ],
+        "parallel": false
       }
     },
     "publish/prepare/copy": {
@@ -47,7 +50,7 @@
       }
     },
     "publish/prepare/fill-package-json": {
-      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "executor": "@thalesrc/nx-utils:fill-package-json-v2",
       "options": {
         "outputPath": "dist/libs/ts-utils",
         "populateExports": {}

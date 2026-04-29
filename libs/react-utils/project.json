@@ -13,9 +13,17 @@
       }
     },
     "build": {
-      "executor": "nx:run-commands",
+      "executor": "@thalesrc/nx-utils:ts-builder-v2",
+      "outputs": ["{options.outputPath}"],
       "options": {
-        "commands": ["tsc -p libs/react-utils/tsconfig.lib.json"]
+        "tsConfigPath": "libs/react-utils/tsconfig.lib.json",
+        "outputPath": "dist/libs/react-utils",
+        "name": "react-utils",
+        "formats": {
+          "esm": { "perFile": true, "flat": true },
+          "cjs": { "perFile": true, "flat": false },
+          "types": { "dts": true, "dcts": true }
+        }
       }
     },
     "publish": {
@@ -35,7 +43,8 @@
           "nx run react-utils:build",
           "nx run react-utils:publish/prepare/copy",
           "nx run react-utils:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
-        ]
+        ],
+        "parallel": false
       }
     },
     "publish/prepare/copy": {
@@ -46,21 +55,10 @@
       }
     },
     "publish/prepare/fill-package-json": {
-      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "executor": "@thalesrc/nx-utils:fill-package-json-v2",
       "options": {
         "outputPath": "dist/libs/react-utils",
-        "populateExports": {
-          "exports": [
-            "default",
-            "import",
-            "types"
-          ],
-          "templates": {
-            "types": "src/<path>.d.ts",
-            "default": "src/<path>.js",
-            "import": "src/<path>.js"
-          }
-        }
+        "populateExports": {}
       }
     },
     "publish/to-npm": {

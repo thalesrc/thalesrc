@@ -6,10 +6,17 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@thalesrc/nx-utils:ts-builder",
+      "executor": "@thalesrc/nx-utils:ts-builder-v2",
+      "outputs": ["{options.outputPath}"],
       "options": {
         "tsConfigPath": "libs/js-utils/tsconfig.lib.json",
-        "outputPath": "dist/libs/js-utils"
+        "outputPath": "dist/libs/js-utils",
+        "name": "js-utils",
+        "formats": {
+          "esm": { "perFile": true, "flat": true },
+          "cjs": { "perFile": true, "flat": false },
+          "types": { "dts": true, "dcts": true }
+        }
       }
     },
     "test": {
@@ -44,7 +51,8 @@
           "nx run js-utils:build",
           "nx run js-utils:publish/prepare/copy",
           "nx run js-utils:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
-        ]
+        ],
+        "parallel": false
       }
     },
     "publish/prepare/copy": {
@@ -55,7 +63,7 @@
       }
     },
     "publish/prepare/fill-package-json": {
-      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "executor": "@thalesrc/nx-utils:fill-package-json-v2",
       "options": {
         "outputPath": "dist/libs/js-utils",
         "populateExports": {}

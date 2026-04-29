@@ -13,7 +13,8 @@
     "@thalesrc/dom-utils": "^1.0.0",
     "@telperion/js-utils": "^3.7.1",
     "history": "*",
-    "lit": "*"
+    "lit": "*",
+    "tslib": "*"
   },
   "main": "./index.js",
   "module": "./index.cjs",

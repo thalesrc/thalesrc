@@ -7,10 +7,17 @@
   "// targets": "to see all targets run: nx show project dom-utils --web",
   "targets": {
     "build": {
-      "executor": "@thalesrc/nx-utils:ts-builder",
+      "executor": "@thalesrc/nx-utils:ts-builder-v2",
+      "outputs": ["{options.outputPath}"],
       "options": {
         "tsConfigPath": "libs/dom-utils/tsconfig.lib.json",
-        "outputPath": "dist/libs/dom-utils"
+        "outputPath": "dist/libs/dom-utils",
+        "name": "dom-utils",
+        "formats": {
+          "esm": { "perFile": true, "flat": true },
+          "cjs": { "perFile": true, "flat": false },
+          "types": { "dts": true, "dcts": true }
+        }
       }
     },
     "publish": {
@@ -30,7 +37,8 @@
           "nx run dom-utils:build",
           "nx run dom-utils:publish/prepare/copy",
           "nx run dom-utils:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
-        ]
+        ],
+        "parallel": false
       }
     },
     "publish/prepare/copy": {
@@ -41,7 +49,7 @@
       }
     },
     "publish/prepare/fill-package-json": {
-      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "executor": "@thalesrc/nx-utils:fill-package-json-v2",
       "options": {
         "outputPath": "dist/libs/dom-utils",
         "populateExports": {}

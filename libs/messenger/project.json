@@ -6,10 +6,17 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@thalesrc/nx-utils:ts-builder",
+      "executor": "@thalesrc/nx-utils:ts-builder-v2",
+      "outputs": ["{options.outputPath}"],
       "options": {
         "tsConfigPath": "libs/messenger/tsconfig.lib.json",
-        "outputPath": "dist/libs/messenger"
+        "outputPath": "dist/libs/messenger",
+        "name": "messenger",
+        "formats": {
+          "esm": { "perFile": true, "flat": true },
+          "cjs": { "perFile": true, "flat": false },
+          "types": { "dts": true, "dcts": true }
+        }
       }
     },
     "test": {
@@ -164,7 +171,8 @@
           "nx run messenger:build",
           "nx run messenger:publish/prepare/copy",
           "nx run messenger:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
-        ]
+        ],
+        "parallel": false
       }
     },
     "publish/prepare/copy": {
@@ -182,7 +190,7 @@
       }
     },
     "publish/prepare/fill-package-json": {
-      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "executor": "@thalesrc/nx-utils:fill-package-json-v2",
       "options": {
         "outputPath": "dist/libs/messenger",
         "populateExports": {}

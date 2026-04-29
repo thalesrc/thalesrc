@@ -6,10 +6,17 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@thalesrc/nx-utils:ts-builder",
+      "executor": "@thalesrc/nx-utils:ts-builder-v2",
+      "outputs": ["{options.outputPath}"],
       "options": {
         "tsConfigPath": "libs/reactive-storage/tsconfig.lib.json",
-        "outputPath": "dist/libs/reactive-storage"
+        "outputPath": "dist/libs/reactive-storage",
+        "name": "reactive-storage",
+        "formats": {
+          "esm": { "perFile": true, "flat": true },
+          "cjs": { "perFile": true, "flat": false },
+          "types": { "dts": true, "dcts": true }
+        }
       }
     },
     "test": {
@@ -36,7 +43,8 @@
           "nx run reactive-storage:build",
           "nx run reactive-storage:publish/prepare/copy",
           "nx run reactive-storage:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION"
-        ]
+        ],
+        "parallel": false
       }
     },
     "publish/prepare/copy": {
@@ -47,7 +55,7 @@
       }
     },
     "publish/prepare/fill-package-json": {
-      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "executor": "@thalesrc/nx-utils:fill-package-json-v2",
       "options": {
         "outputPath": "dist/libs/reactive-storage",
         "populateExports": {}

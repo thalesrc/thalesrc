@@ -66,9 +66,10 @@
       }
     },
     "publish/prepare/fill-package-json": {
-      "executor": "@thalesrc/nx-utils:fill-package-json",
+      "executor": "@thalesrc/nx-utils:fill-package-json-v2",
       "options": {
-        "outputPath": "dist/libs/nx-utils"
+        "outputPath": "dist/libs/nx-utils",
+        "populateExports": false
       }
     },
     "publish/to-npm": {
