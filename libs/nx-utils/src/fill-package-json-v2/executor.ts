@@ -187,7 +187,16 @@ function buildExportsFromManifest(
   for (const entry of manifest.entries) {
     if (entry === indexEntry) continue;
     if (entry.name.startsWith('_chunks/')) continue;
-    map[`./${entry.name}`] = entryToExport(entry, false);
+    const exported = entryToExport(entry, false);
+    map[`./${entry.name}`] = exported;
+    // Conventional aliases: `foo/index` is normally imported as `foo`.
+    // Emit both forms so consumers can use either path.
+    if (entry.name.endsWith('/index')) {
+      const short = entry.name.slice(0, -'/index'.length);
+      if (short && !(`./${short}` in map)) {
+        map[`./${short}`] = exported;
+      }
+    }
   }
 
   return map;
