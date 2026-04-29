@@ -41,12 +41,27 @@
       ]
     },
     "populateExports": {
+      "description": "Controls how the `exports` map is populated. Use `'auto'` (default) to read the build manifest when present and fall back to the `_exports` template flow; `'skip'`/`false` leaves the field untouched; an object provides explicit configuration.",
+      "default": "auto",
       "oneOf": [
         { "const": false },
+        { "const": "auto" },
+        { "const": "skip" },
         {
           "type": "object",
           "additionalProperties": false,
           "properties": {
+            "source": {
+              "type": "string",
+              "enum": ["manifest", "exports", "auto"],
+              "default": "auto",
+              "description": "Where to source the entry list and output paths from. 'manifest' = read .build-manifest.json; 'exports' = use entries+templates; 'auto' picks manifest if present."
+            },
+            "manifestFile": {
+              "type": "string",
+              "default": ".build-manifest.json",
+              "description": "Manifest file name (relative to outputPath). Only consulted when source resolves to 'manifest'."
+            },
             "exports": {
               "type": "array",
               "description": "Conditional export keys to emit, in spec order. 'types' must be first, 'default' must be last; the executor enforces this regardless of input order.",
@@ -95,8 +110,7 @@
             }
           }
         }
-      ],
-      "default": false
+      ]
     }
   },
   "required": ["outputPath"]

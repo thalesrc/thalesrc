@@ -115,4 +115,17 @@ export interface TsBuilderV2ExecutorSchema {
 
   /** Resolve workspace tsconfig.base.json `paths` aliases. */
   tsconfigPaths?: boolean;
+
+  /**
+   * Emit a `.build-manifest.json` file describing every entry and its produced
+   * output files. Consumed by `fill-package-json-v2`. `true` writes the default
+   * name; a string is used as the file name (relative to `outputPath`).
+   */
+  outputManifest?: boolean | string;
+
+  /**
+   * Maximum number of format builds to run in parallel. Defaults to half the
+   * available CPU cores (clamped to 1..6).
+   */
+  concurrency?: number;
 }

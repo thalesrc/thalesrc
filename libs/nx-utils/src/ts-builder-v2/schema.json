@@ -192,6 +192,19 @@
       "type": "boolean",
       "description": "Resolve path aliases declared in the workspace tsconfig.base.json so workspace imports get inlined into the build.",
       "default": true
+    },
+    "outputManifest": {
+      "description": "Emit a `.build-manifest.json` file at the dist root that lists every entry and its produced output files. Consumed by `fill-package-json-v2` to derive the exports map without re-walking the dist tree. `true` writes the default name; a string is used as the file name (relative to `outputPath`).",
+      "default": true,
+      "oneOf": [
+        { "type": "boolean" },
+        { "type": "string" }
+      ]
+    },
+    "concurrency": {
+      "type": "integer",
+      "description": "Maximum number of format builds to run in parallel. Defaults to half the available CPU cores (clamped to 1..6) which keeps memory usage bounded for libraries with many entries.",
+      "minimum": 1
     }
   },
   "additionalProperties": false,

@@ -19,6 +19,27 @@ export interface PopulateExportsTemplates {
 
 export interface PopulateExportsOptions {
   /**
+   * Where to source the entry list and output paths from.
+   *
+   * - `'manifest'`: read `.build-manifest.json` written by `ts-builder-v2` and
+   *   derive the exports map directly from emitted output paths. `templates`,
+   *   `entriesTemplateProperty`, and `dcts` overrides are ignored — the
+   *   manifest already records exactly which formats were emitted.
+   * - `'exports'`: legacy/manual flow. Read `entries` (or `entriesTemplateProperty`)
+   *   and apply `templates` to derive each path.
+   * - `'auto'` (default): use `'manifest'` when the manifest file exists, fall
+   *   back to `'exports'` otherwise.
+   */
+  source?: 'manifest' | 'exports' | 'auto';
+
+  /**
+   * File name of the build manifest (relative to outputPath). Default
+   * `'.build-manifest.json'`. Only consulted when `source` resolves to
+   * `'manifest'`.
+   */
+  manifestFile?: string;
+
+  /**
    * Conditional export keys to emit. The executor reorders to spec order
    * (`types` first, `default` last) regardless of input.
    *
@@ -79,5 +100,12 @@ export interface FillPackageJsonV2ExecutorSchema {
    */
   cdn?: string | { unpkg?: string; jsdelivr?: string; browser?: string };
 
-  populateExports?: false | PopulateExportsOptions;
+  /**
+   * Controls how the `exports` map is populated.
+   * - `'auto'` (or `{}` / omitted): use the build manifest if present, else fall
+   *   back to template-based generation from `_exports`.
+   * - `'skip'` (or `false`): leave the existing `exports` field untouched.
+   * - object: explicit configuration; see {@link PopulateExportsOptions}.
+   */
+  populateExports?: 'auto' | 'skip' | false | PopulateExportsOptions;
 }
