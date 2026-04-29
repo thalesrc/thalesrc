@@ -48,7 +48,7 @@ Add a single `@source` directive next to your `@import "tailwindcss"`:
 
 ```css
 @import "tailwindcss";
-@source "../node_modules/@telperion/elements";
+@source "@telperion/elements/icon";
 ```
 
 Adjust the relative path so it points at `node_modules/@telperion/elements` from the file containing your Tailwind entry. Tailwind will then pick up every utility class the package emits &mdash; not just the icon element's defaults, but anything else any `@telperion/elements` module renders into the light DOM.
@@ -115,12 +115,15 @@ Renders a single glyph from the Material Symbols font family.
 
 | Attribute       | Type                                  | Default      | Description |
 | --------------- | ------------------------------------- | ------------ | ----------- |
-| `family`        | `"material"`                          | `"material"` | Icon family. Currently only Material Symbols is supported. Reflected. |
+| `family`        | `"material" \| "simple-icons"`        | `"material"` | Icon family. Reflected. |
 | `variant`       | `"outlined" \| "round" \| "sharp"`    | `"outlined"` | Material Symbols variant. Reflected. |
 | `filled`        | boolean                               | `false`      | Sets the `FILL` axis to `1`. Reflected. |
 | `grade`         | number (-25..200)                     | `0`          | Material Symbols `GRAD` axis. Reflected. |
 | `weight`        | number (100..700)                     | `400`        | Material Symbols `wght` axis. Reflected. |
 | `optical-size`  | number (20..48)                       | `24`         | Material Symbols `opsz` axis. Reflected. Property name: `opticalSize`. |
+| `slug`          | string                                | &mdash;      | Simple Icons slug (only used when `family="simple-icons"`). Reflected. |
+| `loading`       | boolean                               | `false`      | Reflected while a Simple Icons fetch is in flight. |
+| `errored`       | boolean                               | `false`      | Reflected after a failed Simple Icons fetch. |
 
 #### Slot
 
@@ -155,6 +158,90 @@ If you don't want a runtime dependency on `fonts.googleapis.com`:
    - `Material Symbols Sharp`
 
 The element references those names directly, so no other code changes are required.
+
+## Simple Icons (brand icons)
+
+`<tp-icon>` ships a second family backed by [Simple Icons](https://simpleicons.org), the canonical brand-icon set (YouTube, LinkedIn, GitHub, Facebook, …). Switch via `family="simple-icons"` and pick an icon by its Simple Icons slug:
+
+```html
+<tp-icon family="simple-icons" slug="facebook" style="color: #1877F2; font-size: 64px"></tp-icon>
+<tp-icon family="simple-icons" slug="youtube"  style="color: #FF0000; font-size: 64px"></tp-icon>
+<tp-icon family="simple-icons" slug="linkedin" style="color: #0A66C2; font-size: 64px"></tp-icon>
+```
+
+Browse slugs at [simpleicons.org](https://simpleicons.org).
+
+### How it works
+
+The element keeps a single hidden `<svg>` sprite at the bottom of `document.body`. The first time a slug is seen, it fetches `https://cdn.simpleicons.org/<slug>`, extracts the path and the brand title, and appends a new `<symbol id="tp-si-<slug>">` to the sprite. Every `<tp-icon>` for that slug then renders as `<svg><use href="#tp-si-<slug>"/></svg>` &mdash; one DOM node per instance, one HTTP request per slug, ever.
+
+### Coloring
+
+Simple Icons SVGs render via `currentColor`, so set `color` on the element (or any ancestor) and the icon follows:
+
+```html
+<tp-icon family="simple-icons" slug="github" style="color: #181717"></tp-icon>
+<button class="text-rose-600">
+  <tp-icon family="simple-icons" slug="heart"></tp-icon>
+</button>
+```
+
+### Sizing
+
+Injected SVGs are constrained to `1em × 1em` so they behave like glyphs. Set `font-size` on the host (or any ancestor) to scale.
+
+### Accessibility
+
+When you don't set `aria-label` explicitly, the element auto-applies the brand title from the CDN response (e.g. `"Facebook"`). An explicit `aria-label` always wins:
+
+```html
+<!-- Reads as "Facebook" -->
+<tp-icon family="simple-icons" slug="facebook"></tp-icon>
+
+<!-- Reads as "Like us on Facebook" -->
+<tp-icon family="simple-icons" slug="facebook" aria-label="Like us on Facebook"></tp-icon>
+```
+
+### Lifecycle
+
+| Reflected attribute | Meaning |
+| ------------------- | ------- |
+| `loading`           | Set while a slug is being fetched. |
+| `errored`           | Set after the most recent fetch failed (network, 404, parse). |
+
+```css
+tp-icon[loading]  { opacity: 0.5; }
+tp-icon[errored]  { display: none; }
+```
+
+| Event             | `detail`                     | When |
+| ----------------- | ---------------------------- | ---- |
+| `tp-icon-load`    | `{ slug, title }`            | Sprite symbol is in place. |
+| `tp-icon-error`   | `{ slug, error }`            | Fetch / parse failed. |
+
+Both events bubble and cross shadow boundaries.
+
+### Self-hosting the CDN
+
+If you don't want a runtime dependency on `cdn.simpleicons.org`, mirror the asset path locally and point the element at it once at startup:
+
+```ts
+import { setSimpleIconsBaseUrl } from "@telperion/elements/icon";
+
+setSimpleIconsBaseUrl("/assets/simple-icons");
+```
+
+The element then issues `GET /assets/simple-icons/<slug>`. The response must be the same single-path, `viewBox="0 0 24 24"` SVG that simpleicons.org serves &mdash; the [`simple-icons`](https://www.npmjs.com/package/simple-icons) npm package ships exactly that under `node_modules/simple-icons/icons/<slug>.svg`.
+
+### Preloading
+
+For above-the-fold icons, kick off the fetch before the element mounts:
+
+```ts
+import { loadSimpleIcon } from "@telperion/elements/icon";
+
+await Promise.all(["facebook", "youtube", "linkedin"].map(loadSimpleIcon));
+```
 
 ## TypeScript
 

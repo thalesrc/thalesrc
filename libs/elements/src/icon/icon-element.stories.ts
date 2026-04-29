@@ -87,3 +87,44 @@ export const AxisShowcase: Story = {
     </div>
   `,
 };
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+type SimpleIconArgs = {
+  slug: string;
+  color: string;
+  size: number;
+};
+
+export const SimpleIcons: StoryObj<SimpleIconArgs> = {
+  name: "Simple Icons / Single",
+  argTypes: {
+    slug: { control: "text" },
+    color: { control: "color" },
+    size: { control: { type: "range", min: 16, max: 128, step: 4 } },
+  },
+  args: {
+    slug: "facebook",
+    color: "#1877F2",
+    size: 64,
+  },
+  render: (args) => html`
+    <tp-icon
+      family="simple-icons"
+      slug=${args.slug}
+      style=${`color: ${args.color}; font-size: ${args.size}px`}
+    ></tp-icon>
+  `,
+};
+
+export const SimpleIconsGallery: StoryObj = {
+  name: "Simple Icons / Gallery",
+  render: () => html`
+    <div style="display: flex; gap: 24px; font-size: 64px; align-items: center;">
+      <tp-icon family="simple-icons" slug="facebook" style="color: #1877F2"></tp-icon>
+      <tp-icon family="simple-icons" slug="youtube" style="color: #FF0000"></tp-icon>
+      <tp-icon family="simple-icons" slug="instagram" style="color: #0A66C2"></tp-icon>
+      <tp-icon family="simple-icons" slug="github" style="color: #181717"></tp-icon>
+      <tp-icon family="simple-icons" slug="x" style="color: #000000"></tp-icon>
+    </div>
+  `,
+};
