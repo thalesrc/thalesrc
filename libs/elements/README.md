@@ -42,17 +42,16 @@ import '@telperion/elements';
 
 ### Icon
 
-A framework-agnostic Material Symbols icon element.
+A framework-agnostic icon element with two families: Material Symbols and Simple Icons (brand icons).
 
 **Includes:**
-- `<tp-icon>` &mdash; renders a single Material Symbols glyph
+- `<tp-icon>` &mdash; renders a single glyph from the chosen family
 
 **Features:**
-- Three variants: `outlined` (default), `round`, `sharp`
-- All four Material variable-font axes exposed as attributes (`filled`, `grade`, `weight`, `optical-size`)
+- **Material Symbols**: three variants (`outlined`, `round`, `sharp`) and all four variable-font axes exposed as attributes (`filled`, `grade`, `weight`, `optical-size`)
+- **Simple Icons** (`family="simple-icons"`): brand icons (YouTube, LinkedIn, GitHub, …) loaded on demand from `cdn.simpleicons.org` into a single shared `<svg>` sprite &mdash; one HTTP request per slug, ever; auto `aria-label` from the brand title; `tp-icon-load` / `tp-icon-error` events; configurable base URL for self-hosting
 - Light-DOM rendering so consumer styling (Tailwind, CSS variables, color/size) "just works"
-- Loads fonts via the Google Fonts CSS API &mdash; no broken hash URLs when Google rotates them
-- Self-host friendly &mdash; swap one CSS file to ship the fonts yourself
+- Material Symbols fonts loaded via the Google Fonts CSS API &mdash; no broken hash URLs when Google rotates them; self-host friendly
 
 #### JS/TS
 ```ts
@@ -68,6 +67,7 @@ import "@telperion/elements/icon";
 ```html
 <tp-icon>home</tp-icon>
 <tp-icon variant="round" filled weight="700">favorite</tp-icon>
+<tp-icon family="simple-icons" slug="facebook" style="color:#1877F2"></tp-icon>
 ```
 
 [Icon Documentation →](./src/icon/README.md)
