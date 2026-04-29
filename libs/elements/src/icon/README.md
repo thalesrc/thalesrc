@@ -113,17 +113,17 @@ Renders a single glyph from the Material Symbols font family.
 
 #### Attributes
 
-| Attribute       | Type                                  | Default      | Description |
-| --------------- | ------------------------------------- | ------------ | ----------- |
-| `family`        | `"material" \| "simple-icons"`        | `"material"` | Icon family. Reflected. |
-| `variant`       | `"outlined" \| "round" \| "sharp"`    | `"outlined"` | Material Symbols variant. Reflected. |
-| `filled`        | boolean                               | `false`      | Sets the `FILL` axis to `1`. Reflected. |
-| `grade`         | number (-25..200)                     | `0`          | Material Symbols `GRAD` axis. Reflected. |
-| `weight`        | number (100..700)                     | `400`        | Material Symbols `wght` axis. Reflected. |
-| `optical-size`  | number (20..48)                       | `24`         | Material Symbols `opsz` axis. Reflected. Property name: `opticalSize`. |
-| `slug`          | string                                | &mdash;      | Simple Icons slug (only used when `family="simple-icons"`). Reflected. |
-| `loading`       | boolean                               | `false`      | Reflected while a Simple Icons fetch is in flight. |
-| `errored`       | boolean                               | `false`      | Reflected after a failed Simple Icons fetch. |
+| Attribute       | Type                                                  | Default      | Description |
+| --------------- | ----------------------------------------------------- | ------------ | ----------- |
+| `family`        | `"material" \| "simple-icons" \| "thesvg"`             | `"material"` | Icon family. Reflected. |
+| `variant`       | `string`                                              | `"outlined"` | Per-family variant: Material `"outlined"` / `"round"` / `"sharp"`; theSVG e.g. `"default"`, `"mono"`, `"wordmark"` (defaults to `"default"` when no `variant` attribute is set). Reflected. |
+| `filled`        | boolean                                               | `false`      | Sets the `FILL` axis to `1`. Reflected. |
+| `grade`         | number (-25..200)                                     | `0`          | Material Symbols `GRAD` axis. Reflected. |
+| `weight`        | number (100..700)                                     | `400`        | Material Symbols `wght` axis. Reflected. |
+| `optical-size`  | number (20..48)                                       | `24`         | Material Symbols `opsz` axis. Reflected. Property name: `opticalSize`. |
+| `slug`          | string                                                | &mdash;      | Slug for `simple-icons` and `thesvg` families. Reflected. |
+| `loading`       | boolean                                               | `false`      | Reflected while a remote-icon (Simple Icons / theSVG) fetch is in flight. |
+| `errored`       | boolean                                               | `false`      | Reflected after a failed remote-icon fetch. |
 
 #### Slot
 
@@ -242,6 +242,102 @@ import { loadSimpleIcon } from "@telperion/elements/icon";
 
 await Promise.all(["facebook", "youtube", "linkedin"].map(loadSimpleIcon));
 ```
+
+## theSVG (multi-color brand library)
+
+`<tp-icon>` ships a third family backed by [theSVG](https://thesvg.org), the GLINCKER open brand library (~5,600 multi-color, multi-variant brand SVGs). Switch via `family="thesvg"` and pick an icon by slug + variant:
+
+```html
+<tp-icon family="thesvg" slug="google"                       style="font-size: 64px"></tp-icon>
+<tp-icon family="thesvg" slug="google"   variant="mono"      style="font-size: 64px"></tp-icon>
+<tp-icon family="thesvg" slug="google"   variant="wordmark"  style="font-size: 64px"></tp-icon>
+<tp-icon family="thesvg" slug="microsoft"                    style="font-size: 64px"></tp-icon>
+```
+
+Browse icons and variants at [thesvg.org](https://thesvg.org).
+
+### How it works
+
+Like the Simple Icons family, theSVG uses one hidden `<svg data-tp-thesvg>` sprite at the bottom of `document.body`. The first time a `(slug, variant)` pair is seen, the element fetches `https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/<slug>/<variant>.svg`, clones the entire SVG body into a `<symbol id="tp-thesvg-<slug>-<variant>">`, **namespaces every internal `id`** (and rewrites the matching `url(#…)` / `href="#…"` / `xlink:href="#…"` references) so multi-gradient icons can coexist without colliding, and appends the symbol to the sprite. Every subsequent `<tp-icon>` for the same pair renders as `<svg><use href="#tp-thesvg-<slug>-<variant>"/></svg>` &mdash; one DOM node per instance, one HTTP request per pair.
+
+### Differences vs. Simple Icons
+
+- **Multi-color**: Colors are baked into the SVG. The element does **not** force `currentColor`; the icon's own paint wins.
+- **Multi-variant**: Most icons ship multiple variants (`default`, `mono`, `wordmark`, …). Pick via the `variant` attribute. When no `variant` attribute is set the element defaults to `"default"`.
+- **Aspect-aware sizing**: Wordmark variants aren't square. Injected SVGs use `height: 1em; width: auto` instead of `1em × 1em`, so wordmarks aren't squished. Set `font-size` to scale.
+- **No auto `aria-label`**: theSVG responses don't ship a `<title>` element. The element does not invent one &mdash; supply your own `aria-label` (or `role="img"` + visible label) when the icon is meaningful.
+
+### Sizing
+
+Injected SVGs are constrained to `height: 1em; width: auto`. For wordmarks, bump `font-size`:
+
+```html
+<tp-icon family="thesvg" slug="google" variant="wordmark" style="font-size: 96px"></tp-icon>
+```
+
+### Accessibility
+
+Add your own label whenever the icon conveys meaning:
+
+```html
+<a href="https://google.com" aria-label="Sign in with Google">
+  <tp-icon family="thesvg" slug="google"></tp-icon>
+</a>
+```
+
+Decorative icons can stay unlabeled; the injected `<svg aria-hidden="true">` keeps assistive tech quiet.
+
+### Lifecycle
+
+Reuses the Simple Icons reflected attributes (`loading`, `errored`) and CSS event hooks. Events:
+
+| Event             | `detail`                              | When |
+| ----------------- | ------------------------------------- | ---- |
+| `tp-icon-load`    | `{ slug, variant, viewBox }`          | Sprite symbol is in place. |
+| `tp-icon-error`   | `{ slug, variant, error }`            | Fetch / parse failed. |
+
+### Self-hosting the CDN
+
+Mirror the asset tree locally and point the element at it once at startup:
+
+```ts
+import { setTheSvgBaseUrl } from "@telperion/elements/icon";
+
+// jsDelivr by default; switch to the canonical site, a private mirror, or your CDN.
+setTheSvgBaseUrl("https://thesvg.org/icons");
+// or
+setTheSvgBaseUrl("/assets/thesvg");
+```
+
+The element then issues `GET <baseUrl>/<slug>/<variant>.svg`. The response must be a standalone SVG with a `viewBox` attribute on the root element &mdash; identical to the upstream `glincker/thesvg` repo's `public/icons/<slug>/<variant>.svg` files.
+
+### Preloading
+
+Kick off the fetch for above-the-fold icons before they mount:
+
+```ts
+import { loadTheSvgIcon } from "@telperion/elements/icon";
+
+await Promise.all([
+  loadTheSvgIcon("google"),
+  loadTheSvgIcon("google", "mono"),
+  loadTheSvgIcon("microsoft"),
+]);
+```
+
+### Discovering loaded variants
+
+`listLoadedTheSvgVariants(slug)` returns the variants currently materialised in the sprite (i.e. ones the page has already requested). It is a **DOM read, not a network call** &mdash; it does not enumerate the full upstream catalog.
+
+```ts
+import { listLoadedTheSvgVariants } from "@telperion/elements/icon";
+
+listLoadedTheSvgVariants("google"); // → ["default", "mono"] (after both have loaded)
+```
+
+### Trademark & license
+
+The theSVG markup is released under [CC0-1.0](https://github.com/glincker/thesvg/blob/main/LICENSE), but the **logos themselves remain trademarks of their respective owners**. Make sure your usage complies with each brand's trademark guidelines &mdash; see [glincker/thesvg › TRADEMARK.md](https://github.com/glincker/thesvg/blob/main/TRADEMARK.md) for the project's own notice.
 
 ## TypeScript
 

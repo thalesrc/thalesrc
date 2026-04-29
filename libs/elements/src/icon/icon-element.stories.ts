@@ -128,3 +128,57 @@ export const SimpleIconsGallery: StoryObj = {
     </div>
   `,
 };
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+type TheSvgArgs = {
+  slug: string;
+  variant: string;
+  size: number;
+};
+
+export const TheSvg: StoryObj<TheSvgArgs> = {
+  name: "theSVG / Single",
+  argTypes: {
+    slug: { control: "text" },
+    variant: { control: "text" },
+    size: { control: { type: "range", min: 16, max: 128, step: 4 } },
+  },
+  args: {
+    slug: "google",
+    variant: "default",
+    size: 64,
+  },
+  render: (args) => html`
+    <tp-icon
+      family="thesvg"
+      slug=${args.slug}
+      variant=${args.variant}
+      style=${`font-size: ${args.size}px`}
+    ></tp-icon>
+  `,
+};
+
+export const TheSvgVariants: StoryObj = {
+  name: "theSVG / Variants",
+  render: () => html`
+    <div style="display: flex; gap: 24px; font-size: 64px; align-items: center;">
+      <tp-icon family="thesvg" slug="google" variant="default"></tp-icon>
+      <tp-icon family="thesvg" slug="google" variant="mono"></tp-icon>
+      <tp-icon family="thesvg" slug="google" variant="wordmark"></tp-icon>
+    </div>
+  `,
+};
+
+export const TheSvgGallery: StoryObj = {
+  name: "theSVG / Gallery",
+  render: () => html`
+    <div style="display: flex; gap: 24px; font-size: 64px; align-items: center;">
+      <tp-icon family="thesvg" slug="google"></tp-icon>
+      <tp-icon family="thesvg" slug="claude"></tp-icon>
+      <tp-icon family="thesvg" slug="npm"></tp-icon>
+      <tp-icon family="thesvg" slug="microsoft"></tp-icon>
+      <tp-icon family="thesvg" slug="netflix"></tp-icon>
+      <tp-icon family="thesvg" slug="spotify"></tp-icon>
+    </div>
+  `,
+};

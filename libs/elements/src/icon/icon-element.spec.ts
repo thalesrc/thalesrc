@@ -6,6 +6,11 @@ import {
   getSimpleIconSymbolId,
   setSimpleIconsBaseUrl,
 } from "./simple-icons-sprite";
+import {
+  clearTheSvgCache,
+  getTheSvgSymbolId,
+  setTheSvgBaseUrl,
+} from "./thesvg-sprite";
 
 const SAMPLE_SVG = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -156,6 +161,130 @@ describe("<tp-icon> simple-icons family", () => {
     const el = document.createElement("tp-icon");
     el.setAttribute("family", "simple-icons");
     el.setAttribute("slug", "facebook");
+    document.body.appendChild(el);
+    await nextLoadEvent(el);
+
+    el.setAttribute("family", "material");
+    await el.updateComplete;
+
+    expect(el.querySelector("svg")).toBeNull();
+  });
+});
+
+const THESVG_GOOGLE_DEFAULT = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <path d="M0 0h48v48H0z" fill="#4285F4" />
+</svg>`;
+
+const THESVG_GOOGLE_MONO = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <path d="M0 0h24v24H0z" />
+</svg>`;
+
+function thesvgOk(text: string): Response {
+  return {
+    ok: true,
+    status: 200,
+    statusText: "OK",
+    text: () => Promise.resolve(text),
+  } as unknown as Response;
+}
+
+describe("<tp-icon> thesvg family", () => {
+  let fetchSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    setTheSvgBaseUrl("https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons");
+    fetchSpy = vi.spyOn(globalThis, "fetch");
+  });
+
+  afterEach(() => {
+    clearTheSvgCache();
+    fetchSpy.mockRestore();
+    document.body.innerHTML = "";
+  });
+
+  it("injects a <use> reference and fires tp-icon-load with viewBox", async () => {
+    fetchSpy.mockResolvedValueOnce(thesvgOk(THESVG_GOOGLE_DEFAULT));
+
+    const el = document.createElement("tp-icon");
+    el.setAttribute("family", "thesvg");
+    el.setAttribute("slug", "google");
+    document.body.appendChild(el);
+
+    const event = await nextLoadEvent(el);
+
+    expect(event.detail).toMatchObject({
+      slug: "google",
+      variant: "default",
+      viewBox: "0 0 48 48",
+    });
+    const use = el.querySelector("use");
+    expect(use?.getAttribute("href")).toBe(`#${getTheSvgSymbolId("google", "default")}`);
+  });
+
+  it("does not auto-apply aria-label", async () => {
+    fetchSpy.mockResolvedValueOnce(thesvgOk(THESVG_GOOGLE_DEFAULT));
+
+    const el = document.createElement("tp-icon");
+    el.setAttribute("family", "thesvg");
+    el.setAttribute("slug", "google");
+    document.body.appendChild(el);
+
+    await nextLoadEvent(el);
+
+    expect(el.hasAttribute("aria-label")).toBe(false);
+  });
+
+  it("re-renders with the new symbol id when variant changes", async () => {
+    fetchSpy
+      .mockResolvedValueOnce(thesvgOk(THESVG_GOOGLE_DEFAULT))
+      .mockResolvedValueOnce(thesvgOk(THESVG_GOOGLE_MONO));
+
+    const el = document.createElement("tp-icon");
+    el.setAttribute("family", "thesvg");
+    el.setAttribute("slug", "google");
+    document.body.appendChild(el);
+    await nextLoadEvent(el);
+
+    el.setAttribute("variant", "mono");
+    const second = nextLoadEvent(el);
+    const event = await second;
+
+    expect(event.detail.variant).toBe("mono");
+    expect(el.querySelector("use")?.getAttribute("href")).toBe(
+      `#${getTheSvgSymbolId("google", "mono")}`,
+    );
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+  });
+
+  it("flips errored=true and dispatches tp-icon-error on a failed fetch", async () => {
+    fetchSpy.mockResolvedValueOnce({
+      ok: false,
+      status: 404,
+      statusText: "Not Found",
+      text: () => Promise.resolve(""),
+    } as unknown as Response);
+
+    const el = document.createElement("tp-icon");
+    el.setAttribute("family", "thesvg");
+    el.setAttribute("slug", "missing");
+    document.body.appendChild(el);
+
+    const event = await nextErrorEvent(el);
+
+    expect(event.detail.slug).toBe("missing");
+    expect(event.detail.variant).toBe("default");
+    expect(el.errored).toBe(true);
+    expect(el.loading).toBe(false);
+    expect(el.querySelector("svg")).toBeNull();
+  });
+
+  it("clears injected children when family switches away from thesvg", async () => {
+    fetchSpy.mockResolvedValueOnce(thesvgOk(THESVG_GOOGLE_DEFAULT));
+
+    const el = document.createElement("tp-icon");
+    el.setAttribute("family", "thesvg");
+    el.setAttribute("slug", "google");
     document.body.appendChild(el);
     await nextLoadEvent(el);
 

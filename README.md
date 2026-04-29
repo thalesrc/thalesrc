@@ -69,7 +69,7 @@ Utility functions for DOM manipulation and browser APIs. Simplifies common DOM o
 Collection of custom web components built with Lit. Features a Material Symbols icon element, a complete client-side routing solution with declarative components for SPAs, and a framework-independent drag-and-drop system with extended events, smart drop zones, drag handles, and multiple dragging strategies.
 
 **Sub-modules:**
-- **icon**: `<tp-icon>` icon element supporting two families &mdash; Material Symbols (all four variable-font axes: `filled`, `grade`, `weight`, `optical-size`; three variants: outlined/round/sharp) and Simple Icons brand icons (`family="simple-icons" slug="facebook"`) loaded on demand from `cdn.simpleicons.org` into a shared sprite. Light-DOM rendering and auto-rotating Google Fonts CSS API URLs (self-host friendly)
+- **icon**: `<tp-icon>` icon element supporting three families &mdash; Material Symbols (all four variable-font axes: `filled`, `grade`, `weight`, `optical-size`; three variants: outlined/round/sharp), Simple Icons brand icons (`family="simple-icons" slug="facebook"`) loaded on demand from `cdn.simpleicons.org`, and theSVG (`family="thesvg" slug="google" variant="wordmark"`) multi-color brand icons from `thesvg.org`. Each remote family lives in its own shared `<svg>` sprite. Light-DOM rendering and auto-rotating Google Fonts CSS API URLs (self-host friendly)
 - **router**: Client-side routing with router, route definitions, outlets, navigation links, and global configuration with support for multiple history strategies and reactive updates
 - **drag-drop**: Drag-and-drop web components with extended drag-drop events, smart drop zones, drag handles, and multiple dragging strategies
 
