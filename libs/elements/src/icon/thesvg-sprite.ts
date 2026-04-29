@@ -122,13 +122,19 @@ export function loadTheSvgIcon(slug: string, variant: string = "default"): Promi
       throw new Error(`[tp-icon] No <svg> root in response for "${slug}/${variant}"`);
     }
 
-    const viewBox = root.getAttribute("viewBox") ?? "0 0 24 24";
+    const viewBox = resolveViewBox(root);
     const symbolId = getTheSvgSymbolId(slug, variant);
 
     const target = ensureSprite();
     const symbol = document.createElementNS(SVG_NS, "symbol");
     symbol.setAttribute("id", symbolId);
     symbol.setAttribute("viewBox", viewBox);
+
+    // Forward presentation attributes from the source <svg> root onto the
+    // <symbol> so children that rely on inheritance (e.g. theSVG icons that
+    // declare `fill="#4285F4"` on the root and leave `<path>` elements
+    // unpainted) keep their colors when rendered via <use>.
+    forwardPresentationAttrs(root, symbol);
 
     // Import children first so we own the cloned nodes, then namespace ids
     // and rewrite intra-document references to those ids.
@@ -177,6 +183,66 @@ function ensureSprite(): SVGSVGElement {
 
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * Pick the most accurate `viewBox` for the source `<svg>` root.
+ *
+ * 1. Use the explicit `viewBox` attribute if present.
+ * 2. Otherwise, synthesise one from the root's `width` / `height` (some
+ *    theSVG icons &mdash; e.g. `amazon` &mdash; ship `width="603" height="182"`
+ *    with no `viewBox`).
+ * 3. Fall back to `0 0 24 24` only as a last resort.
+ *
+ * Width/height values may carry units (`px`, `pt`, etc.); we strip those
+ * since `viewBox` is unitless.
+ */
+function resolveViewBox(root: Element): string {
+  const explicit = root.getAttribute("viewBox");
+  if (explicit) return explicit;
+
+  const width = parseDimension(root.getAttribute("width"));
+  const height = parseDimension(root.getAttribute("height"));
+  if (width !== null && height !== null) return `0 0 ${width} ${height}`;
+
+  return "0 0 24 24";
+}
+
+function parseDimension(value: string | null): number | null {
+  if (value === null) return null;
+  const match = /^([\d.]+)/.exec(value.trim());
+  if (!match) return null;
+  const num = Number(match[1]);
+  return Number.isFinite(num) && num > 0 ? num : null;
+}
+
+/**
+ * SVG presentation attributes that cascade to children. We forward whatever
+ * subset is set on the source `<svg>` root onto the `<symbol>` so any
+ * unstyled descendant element keeps its inherited paint / stroke / opacity
+ * when the icon is rendered via `<use>`.
+ */
+const PRESENTATION_ATTRS = [
+  "fill",
+  "fill-opacity",
+  "fill-rule",
+  "stroke",
+  "stroke-opacity",
+  "stroke-width",
+  "stroke-linecap",
+  "stroke-linejoin",
+  "stroke-miterlimit",
+  "stroke-dasharray",
+  "stroke-dashoffset",
+  "color",
+  "opacity",
+] as const;
+
+function forwardPresentationAttrs(source: Element, target: Element): void {
+  for (const name of PRESENTATION_ATTRS) {
+    const value = source.getAttribute(name);
+    if (value !== null) target.setAttribute(name, value);
+  }
 }
 
 /**
