@@ -56,6 +56,9 @@ Use the **explicit `/iife/...` path** so the CDN serves the standalone bundle (s
 
 <!-- Or just the drag-and-drop module (TelperionElements.DragDrop) -->
 <script src="https://unpkg.com/@telperion/elements/iife/drag-drop/index.js"></script>
+
+<!-- Or just the details-set module (TelperionElements.DetailsSet) -->
+<script src="https://unpkg.com/@telperion/elements/iife/details-set/index.js"></script>
 ```
 
 Each per-module bundle is fully self-contained: side-effect imports register the custom elements as soon as the script is evaluated. jsDelivr (`https://cdn.jsdelivr.net/npm/@telperion/elements/iife/...`) and other npm CDNs work the same way.
@@ -120,6 +123,40 @@ A complete client-side routing solution for single-page applications, built with
 - Signal-based reactive updates
 
 [Router Documentation →](./src/router/README.md)
+
+---
+
+### Details Set
+
+A grouping element for native `<details>` that caps how many can be open at
+once, supports cloned summary markers, and offers marker-only toggling.
+
+**Includes:**
+- `<tp-details-set>` &mdash; manages direct-child `<details>` elements
+
+**Features:**
+- `max-open-items` attribute &mdash; FIFO eviction when the cap is exceeded (`0` = unlimited)
+- Declarative summary markers via `<template summary-marker index="…">` direct children &mdash; cloned into every direct-child `<summary>` at the requested splice index; multiple templates and dynamic add/remove supported
+- Cloned marker elements are auto-tagged with `tp-summary-marker` so the native disclosure triangle is hidden and CSS can style markers state-aware (`details[open] > summary > [tp-summary-marker]`)
+- `toggle-on="summary" | "marker"` (set-level + per-`<details>` override) &mdash; restrict toggling to clicks on the marker (keyboard activation always works; falls back to summary-toggle when no marker is present)
+- `tp-details-set-change` event with `{ opened, closed }` arrays
+- Light-DOM rendering; modern CSS (`::details-content`, `interpolate-size`) opt-in for animated open/close
+
+#### JS/TS
+```ts
+import "@telperion/elements/details-set";
+```
+
+#### HTML
+```html
+<tp-details-set max-open-items="1" toggle-on="marker">
+  <template summary-marker index="0"><span class="chev">▸</span></template>
+  <details><summary>One</summary>...</details>
+  <details><summary>Two</summary>...</details>
+</tp-details-set>
+```
+
+[Details Set Documentation →](./src/details-set/README.md)
 
 ---
 

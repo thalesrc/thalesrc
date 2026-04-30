@@ -16,7 +16,8 @@
           "index": "src/index.ts",
           "router/index": "src/router/index.ts",
           "drag-drop/index": "src/drag-drop/index.ts",
-          "icon/index": "src/icon/index.ts"
+          "icon/index": "src/icon/index.ts",
+          "details-set/index": "src/details-set/index.ts"
         },
         "formats": {
           "esm": { "perFile": true, "flat": true },
@@ -28,7 +29,8 @@
             "entries": {
               "icon/index": {},
               "drag-drop/index": {},
-              "router/index": {}
+              "router/index": {},
+              "details-set/index": {}
             }
           },
           "types": { "dts": true, "dcts": true }

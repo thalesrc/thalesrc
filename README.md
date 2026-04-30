@@ -66,14 +66,15 @@ Utility functions for DOM manipulation and browser APIs. Simplifies common DOM o
 [![npm](https://img.shields.io/npm/v/@telperion/elements.svg)](https://www.npmjs.com/package/@telperion/elements)
 [![npm](https://img.shields.io/npm/dm/@telperion/elements.svg)](https://www.npmjs.com/package/@telperion/elements)
 
-Collection of custom web components built with Lit. Features a Material Symbols icon element, a complete client-side routing solution with declarative components for SPAs, and a framework-independent drag-and-drop system with extended events, smart drop zones, drag handles, and multiple dragging strategies.
+Collection of custom web components built with Lit. Features a Material Symbols icon element, a complete client-side routing solution with declarative components for SPAs, a framework-independent drag-and-drop system with extended events, smart drop zones, drag handles, and multiple dragging strategies, and a `<details>` grouping element with FIFO open caps, declarative summary markers, and marker-only toggling.
 
 **Sub-modules:**
 - **icon**: `<tp-icon>` icon element supporting three families &mdash; Material Symbols (all four variable-font axes: `filled`, `grade`, `weight`, `optical-size`; three variants: outlined/round/sharp), Simple Icons brand icons (`family="simple-icons" slug="facebook"`) loaded on demand from `cdn.simpleicons.org`, and theSVG (`family="thesvg" slug="google" variant="wordmark"`) multi-color brand icons from `thesvg.org`. Each remote family lives in its own shared `<svg>` sprite. Light-DOM rendering and auto-rotating Google Fonts CSS API URLs (self-host friendly)
 - **router**: Client-side routing with router, route definitions, outlets, navigation links, and global configuration with support for multiple history strategies and reactive updates
 - **drag-drop**: Drag-and-drop web components with extended drag-drop events, smart drop zones, drag handles, and multiple dragging strategies
+- **details-set**: `<tp-details-set>` groups native `<details>` elements with a `max-open-items` FIFO cap, declarative `<template summary-marker index="…">` markers cloned into every summary, and a `toggle-on="summary" | "marker"` attribute (per-element overridable) for marker-only disclosure
 
-**Highlights**: Material Symbols icons, Variable-font axes, Router components, Client-side routing, URLPattern matching, Signal-based reactivity, Drag & drop, Web Components, Drop zone validation, Cross-framework compatibility
+**Highlights**: Material Symbols icons, Variable-font axes, Router components, Client-side routing, URLPattern matching, Signal-based reactivity, Drag & drop, Web Components, Drop zone validation, Details accordion, Summary markers, Cross-framework compatibility
 
 #### [@thalesrc/paintlet](https://www.npmjs.com/package/@thalesrc/paintlet)
 

@@ -9,3 +9,6 @@ export * from './router';
 // Drag & drop components
 export * from './drag-drop';
 
+// Details-set components
+export * from './details-set';
+
