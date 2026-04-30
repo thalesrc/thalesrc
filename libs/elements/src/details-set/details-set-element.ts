@@ -3,11 +3,12 @@ import type { TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 /**
- * Splice-style index resolution for `<template summary-marker index="…">`.
+ * Index resolution for `<template summary-marker index="…">`.
  * - Missing / non-finite ⇒ `0` (prepend).
  * - `>= 0` ⇒ clamped to `[0, length]`.
- * - `< 0` ⇒ `length + raw`, clamped to `[0, length]` (so `-1` inserts
- *   before the last child).
+ * - `< 0` ⇒ counts from the end where `-1` is the end (append),
+ *   `-2` is before the last child, etc. Computed as `length + raw + 1`,
+ *   clamped to `[0, length]` (so over-negative values prepend).
  */
 function resolveMarkerIndex(raw: string | null, length: number): number {
   if (raw === null || raw === "") return 0;
@@ -15,7 +16,7 @@ function resolveMarkerIndex(raw: string | null, length: number): number {
   if (!Number.isFinite(n)) return 0;
   const i = Math.trunc(n);
   if (i >= 0) return Math.min(i, length);
-  return Math.max(0, length + i);
+  return Math.max(0, length + i + 1);
 }
 
 declare global {
@@ -71,12 +72,12 @@ declare global {
      * @example Summary markers
      * Direct-child `<template summary-marker index="…">` elements are cloned
      * into every direct-child `<details>`'s `<summary>` at the position given
-     * by `index`. The index is splice-style: non-negative counts from the
-     * start (clamped to `[0, length]`), negative counts from the end (so
-     * `-1` inserts before the last child). Missing/invalid index defaults
-     * to `0`. Multiple marker templates apply in document order; each later
-     * marker sees the summary's current state (including markers already
-     * inserted by earlier templates) when computing its index.
+     * by `index`. Non-negative counts from the start (clamped to
+     * `[0, length]`); negative counts from the end where `-1` is the end
+     * (append), `-2` is before the last child, etc. Missing/invalid index
+     * defaults to `0`. Multiple marker templates apply in document order;
+     * each later marker sees the summary's current state (including markers
+     * already inserted by earlier templates) when computing its index.
      * ```html
      * <tp-details-set>
      *   <template summary-marker index="0"><span class="chev">▸</span></template>

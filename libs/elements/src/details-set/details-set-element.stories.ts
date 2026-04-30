@@ -153,7 +153,7 @@ export const WithChevronMarker: Story = {
     </style>
     <div style="max-width: 32rem; font-family: system-ui, sans-serif;">
       <tp-details-set class="marker-demo" max-open-items=${maxOpenItems}>
-        <template summary-marker index="0"><span class="chev">▸</span></template>
+        <template summary-marker index="-1"><span class="chev">▸</span></template>
         <details>
           <summary>Section A</summary>
           <div>Content A.</div>
@@ -204,7 +204,7 @@ export const WithLeadingAndTrailingMarkers: Story = {
     <div style="max-width: 32rem; font-family: system-ui, sans-serif;">
       <tp-details-set class="marker-demo-2" max-open-items=${maxOpenItems}>
         <template summary-marker index="0"><span>▸</span></template>
-        <template summary-marker index="999"><span class="badge">new</span></template>
+        <template summary-marker index="-1"><span class="badge">new</span></template>
         <details>
           <summary>Profile</summary>
           <div>Profile content.</div>

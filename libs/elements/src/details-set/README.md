@@ -109,25 +109,26 @@ clone consumer-authored DOM into every direct-child `<details>`'s `<summary>`.
 </tp-details-set>
 ```
 
-### `index` semantics (splice-style)
+### `index` semantics
 
 Resolved against `summary.childNodes.length` (so text nodes count too):
 
-| `index`        | Behavior                                                      |
-| -------------- | ------------------------------------------------------------- |
-| missing / `""` | `0` (prepend)                                                 |
-| `0`            | Prepend                                                       |
-| `n >= 0`       | Insert at position `n`, clamped to `length` (overflow appends) |
-| `-1`           | Insert before the last child                                  |
-| `-n`           | `length - n`, clamped to `0` (over-negative prepends)         |
+| `index`        | Behavior                                                          |
+| -------------- | ----------------------------------------------------------------- |
+| missing / `""` | `0` (prepend)                                                     |
+| `0`            | Prepend                                                           |
+| `n >= 0`       | Insert at position `n`, clamped to `length` (overflow appends)    |
+| `-1`           | Append at the end                                                 |
+| `-2`           | Insert before the last child                                      |
+| `-n`           | `length - n + 1`, clamped to `0` (over-negative prepends)         |
 
 ### Multiple markers
 
 When more than one marker template is present, they are applied in **document
 order**. Each later marker sees the summary's current state &mdash; including
 markers inserted by earlier templates &mdash; when computing its index. To
-guarantee a marker stays at the very end regardless of earlier markers, use a
-sufficiently large positive index (e.g. `index="999"`).
+guarantee a marker stays at the very end regardless of earlier markers, use
+`index="-1"` (which always resolves to the current end).
 
 ### Dynamic updates
 

@@ -237,7 +237,7 @@ describe("<tp-details-set> summary markers", () => {
     expect(summaryMarkup(set, 1)).toBe('<span class="m">M</span>Two');
   });
 
-  it('inserts at index="-1" before the last child', async () => {
+  it('inserts at index="-1" at the end (append)', async () => {
     document.body.innerHTML = `
       <tp-details-set>
         <template summary-marker index="-1"><span class="m">M</span></template>
@@ -247,7 +247,20 @@ describe("<tp-details-set> summary markers", () => {
     const set = document.body.querySelector("tp-details-set") as DetailsSetElement;
     await flush();
 
-    expect(summaryMarkup(set, 0)).toBe('<span class="m">M</span><b>label</b>');
+    expect(summaryMarkup(set, 0)).toBe('<b>label</b><span class="m">M</span>');
+  });
+
+  it('inserts at index="-2" before the last child', async () => {
+    document.body.innerHTML = `
+      <tp-details-set>
+        <template summary-marker index="-2"><span class="m">M</span></template>
+        <details><summary>X<i>Y</i></summary></details>
+      </tp-details-set>
+    `;
+    const set = document.body.querySelector("tp-details-set") as DetailsSetElement;
+    await flush();
+
+    expect(summaryMarkup(set, 0)).toBe('X<span class="m">M</span><i>Y</i>');
   });
 
   it("clamps a too-negative index to the start", async () => {
@@ -360,7 +373,7 @@ describe("<tp-details-set> summary markers", () => {
     expect(summaryMarkup(set, 0)).toBe('<span class="m">M</span>X<i>Y</i>');
 
     const template = set.querySelector("template") as HTMLTemplateElement;
-    template.setAttribute("index", "-1");
+    template.setAttribute("index", "-2");
     await flush();
 
     expect(summaryMarkup(set, 0)).toBe('X<span class="m">M</span><i>Y</i>');
