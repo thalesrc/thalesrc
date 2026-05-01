@@ -59,6 +59,9 @@ Use the **explicit `/iife/...` path** so the CDN serves the standalone bundle (s
 
 <!-- Or just the details-set module (TelperionElements.DetailsSet) -->
 <script src="https://unpkg.com/@telperion/elements/iife/details-set/index.js"></script>
+
+<!-- Or just the popover module (TelperionElements.Popover) -->
+<script src="https://unpkg.com/@telperion/elements/iife/popover/index.js"></script>
 ```
 
 Each per-module bundle is fully self-contained: side-effect imports register the custom elements as soon as the script is evaluated. jsDelivr (`https://cdn.jsdelivr.net/npm/@telperion/elements/iife/...`) and other npm CDNs work the same way.
@@ -160,6 +163,48 @@ import "@telperion/elements/details-set";
 
 ---
 
+### Popover
+
+Framework-agnostic popover element built on the native [Popover API](https://developer.mozilla.org/docs/Web/API/Popover_API) and [CSS Anchor Positioning](https://developer.mozilla.org/docs/Web/CSS/CSS_anchor_positioning). Placement is **pure CSS** — JavaScript only parses attributes, resolves the anchor, and (optionally) wires triggers.
+
+**Includes:**
+- `<tp-popover>` &mdash; auto-applies the native `popover` attribute and anchors itself via CSS
+
+**Features:**
+- Auto `popover` attribute (`auto` by default; switch with `mode="manual"`)
+- Anchor resolved from a `target` querySelector string, falling back to `parentElement`
+- Declarative `position` syntax with three forms:
+  - Full: `<pop-inline> to <target-inline> / <pop-block> to <target-block>`
+  - Two-keyword: `<inline> / <block>` (e.g. `center / top`)
+  - Single axis or single keyword (e.g. `top to bottom`, `start`, `bottom`)
+- Inline keywords: `start | center | end`; block keywords: `top | middle | bottom`
+- Optional `trigger="click" | "hover"` (hover also opens on focus)
+- Use plain CSS `margin` on the popover for a gap from its anchor
+- Automatic edge-flipping via the default `position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline` (override with `position-try-fallbacks: none`)
+- Light-DOM rendering; no JS positioning loop
+
+#### JS/TS
+```ts
+import "@telperion/elements/popover";
+```
+
+#### HTML
+```html
+<div>
+  <button>Anchor</button>
+  <tp-popover position="top">Above the parent.</tp-popover>
+</div>
+
+<button id="trigger">Click me</button>
+<tp-popover target="#trigger" position="start / bottom" trigger="click">
+  Anchored via target="#trigger".
+</tp-popover>
+```
+
+[Popover Documentation →](./src/popover/README.md)
+
+---
+
 This library is actively being developed. More components will be added over time.
 
 ## 🤝 Contributing
@@ -168,4 +213,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📄 License
 
-MIT © [Thales RC](https://github.com/thalesrc)
+MIT © [Telperion Technology](https://github.com/telperiontech)

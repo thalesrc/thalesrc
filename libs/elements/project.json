@@ -17,7 +17,8 @@
           "router/index": "src/router/index.ts",
           "drag-drop/index": "src/drag-drop/index.ts",
           "icon/index": "src/icon/index.ts",
-          "details-set/index": "src/details-set/index.ts"
+          "details-set/index": "src/details-set/index.ts",
+          "popover/index": "src/popover/index.ts"
         },
         "formats": {
           "esm": { "perFile": true, "flat": true },
@@ -30,7 +31,8 @@
               "icon/index": {},
               "drag-drop/index": {},
               "router/index": {},
-              "details-set/index": {}
+              "details-set/index": {},
+              "popover/index": {}
             }
           },
           "types": { "dts": true, "dcts": true }

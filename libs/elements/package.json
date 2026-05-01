@@ -1,12 +1,36 @@
 {
   "name": "@telperion/elements",
   "version": "0.0.0",
-  "homepage": "https://elements.thalesrc.com",
+  "description": "Framework-agnostic web components built with Lit: Material Symbols / Simple Icons / theSVG icons, declarative client-side router, drag-and-drop primitives, details accordion with FIFO open caps, and a CSS-anchored popover.",
+  "keywords": [
+    "web-components",
+    "custom-elements",
+    "lit",
+    "lit-element",
+    "framework-agnostic",
+    "icon",
+    "material-symbols",
+    "simple-icons",
+    "thesvg",
+    "router",
+    "spa",
+    "client-side-routing",
+    "url-pattern",
+    "drag-and-drop",
+    "drag-drop",
+    "details",
+    "accordion",
+    "popover",
+    "popover-api",
+    "css-anchor-positioning"
+  ],
+  "homepage": "https://open-source.telperion.tr/elements",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thalesrc/thalesrc.git",
+    "url": "https://github.com/telperiontech/telperion.git",
     "directory": "libs/elements"
   },
+  "type": "module",
   "dependencies": {
     "@lit-labs/signals": "*",
     "@telperion/extra-ts-types": "^1.5.0",
@@ -16,24 +40,6 @@
     "lit": "*",
     "tslib": "*"
   },
-  "main": "./index.js",
-  "module": "./index.cjs",
-  "typings": "./index.d.ts",
-  "private": false,
-  "_exports": [
-    "router/",
-    "router/tha-router",
-    "router/tha-route",
-    "router/tha-router-link",
-    "router/tha-router-outlet",
-    "router/tha-router-config",
-    "drag-drop/",
-    "drag-drop/drag-element",
-    "drag-drop/drag-handle-element",
-    "drag-drop/dropzone-element",
-    "icon/",
-    "icon/icon-element"
-  ],
   "exports": {
     "./icon/material-symbols.css": "./icon/material-symbols.css"
   }

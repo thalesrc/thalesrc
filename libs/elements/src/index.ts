@@ -12,3 +12,6 @@ export * from './drag-drop';
 // Details-set components
 export * from './details-set';
 
+// Popover components
+export * from './popover';
+
