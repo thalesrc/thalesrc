@@ -74,6 +74,7 @@ Collection of custom web components built with Lit. Features a Material Symbols 
 - **drag-drop**: Drag-and-drop web components with extended drag-drop events, smart drop zones, drag handles, and multiple dragging strategies
 - **details-set**: `<tp-details-set>` groups native `<details>` elements with a `max-open-items` FIFO cap, declarative `<template summary-marker index="…">` markers cloned into every summary, and a `toggle-on="summary" | "marker"` attribute (per-element overridable) for marker-only disclosure
 - **popover**: `<tp-popover>` framework-agnostic popover built on the native Popover API and CSS Anchor Positioning. Auto-applies the `popover` attribute, resolves its anchor from a `target` querySelector (or `parentElement`), and is positioned **entirely in CSS** via `anchor()`. Declarative `position` syntax with shorthands (`center / top`, `start`, `top to bottom`, …) and automatic edge-flipping via `position-try-fallbacks` &mdash; no JS positioning loop. Optional `click` / `hover` triggers
+
 **Highlights**: Material Symbols icons, Variable-font axes, Router components, Client-side routing, URLPattern matching, Signal-based reactivity, Drag & drop, Web Components, Drop zone validation, Details accordion, Summary markers, Popover API, CSS Anchor Positioning, Cross-framework compatibility
 
 #### [@thalesrc/paintlet](https://www.npmjs.com/package/@thalesrc/paintlet)
