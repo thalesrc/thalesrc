@@ -18,7 +18,7 @@ Framework-agnostic popover element built on the native [Popover API](https://dev
 | `mode`          | `auto` \| `manual`                                | `auto`                             | Mirrored to the native `popover` attribute.                                |
 | `target`        | querySelector string                              | _(parent element)_                 | Anchor element. Falls back to `parentElement` if missing/unresolved.       |
 | `position`      | `<p-inl> to <t-inl> / <p-blk> to <t-blk>`         | `center to center / bottom to top` | Placement spec. See grammar below.                                         |
-| `trigger`       | `manual` \| `click` \| `hover`                    | `manual`                           | How the resolved target opens the popover. `hover` also opens on focus.    |
+| `trigger`       | `manual` \| `click` \| `hover`                    | `click`                            | How the resolved target opens the popover. `hover` also opens on focus.    |
 
 ### Position grammar
 

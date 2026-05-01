@@ -72,7 +72,7 @@ declare global {
      *   `auto` (default) gives light-dismiss + only-one-open semantics;
      *   `manual` opts out.
      * @attr trigger - How the resolved target opens the popover.
-     *   `manual` (default), `click`, or `hover` (also opens on focus).
+     *   `click` (default), `manual`, or `hover` (also opens on focus).
      */
     "tp-popover": PopoverElement;
   }
@@ -152,7 +152,7 @@ export class PopoverElement extends LitElement {
 
   /** How the resolved target opens the popover. */
   @property({ reflect: true })
-  trigger: "manual" | "click" | "hover" = "manual";
+  trigger: "manual" | "click" | "hover" = "click";
 
   /** Per-instance anchor id (without the leading `--`). */
   readonly #anchorId = uniqueId("tp-popover");
