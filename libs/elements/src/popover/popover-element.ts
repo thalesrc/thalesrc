@@ -300,7 +300,12 @@ export class PopoverElement extends LitElement {
     if (!anchor) return;
 
     if (this.trigger === "click") {
-      const onClick = (): void => {
+      const onClick = (event: MouseEvent): void => {
+        // If the click bubbled up from inside the popover itself (which
+        // happens when the anchor is an ancestor of the popover), ignore
+        // it — otherwise the popover would close immediately on every
+        // interaction with its own content.
+        if (event.composedPath().includes(this)) return;
         try {
           this.togglePopover();
         } catch {
