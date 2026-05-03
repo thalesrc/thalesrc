@@ -4,7 +4,7 @@ import { computed, signal } from "@lit-labs/signals";
 import { compact } from '@telperion/js-utils/array/compact';
 import { noop } from "@telperion/js-utils/function/noop";
 import { HISTORY, HISTORY_TYPE, HistoryManaged } from "./history-managed";
-import { SignalWatcherLitElement } from "./signal-watcher-lit-element";
+import { SignalWatcherLitElement } from "../utils/signal-watcher-lit-element";
 
 declare global {
   interface HTMLElementTagNameMap {

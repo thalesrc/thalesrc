@@ -1,9 +1,10 @@
 import { LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
+import { noop } from "@telperion/js-utils/function/noop";
+
+import { SignalWatcherLitElement } from "../utils/signal-watcher-lit-element";
 import { GLOBAL_HISTORY_TYPE } from "./history";
 import { HISTORY_TYPE, HistoryManaged } from "./history-managed";
-import { SignalWatcherLitElement } from "./signal-watcher-lit-element";
-import { noop } from "@telperion/js-utils/function/noop";
 
 declare global {
   interface HTMLElementTagNameMap {

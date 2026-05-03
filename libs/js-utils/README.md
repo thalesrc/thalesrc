@@ -155,6 +155,30 @@ replace(array, {itemsToReplace: config}); // ["x", "y", "c", "a", "b", "c"];
 replace(array, {itemsToReplace: config, multi: true}); // ["x", "y", "c", "x", "y", "c"];
 ```
 
+#### [Slice After](https://open-source.telperion.tr/js-utils/modules/_array_slice_after_.html)
+Returns the items located after the first occurrence of the given item
+
+```typescript
+import { sliceAfter } from "@telperion/js-utils/array";
+
+const fruits = ["apple", "grapes", "banana", "melon", "orange"];
+
+sliceAfter(fruits, "banana"); // ["melon", "orange"]
+sliceAfter(fruits, "kiwi"); // []
+```
+
+#### [Slice Before](https://open-source.telperion.tr/js-utils/modules/_array_slice_before_.html)
+Returns the items located before the first occurrence of the given item
+
+```typescript
+import { sliceBefore } from "@telperion/js-utils/array";
+
+const fruits = ["apple", "grapes", "banana", "melon", "orange"];
+
+sliceBefore(fruits, "melon"); // ["apple", "grapes", "banana"]
+sliceBefore(fruits, "kiwi"); // []
+```
+
 #### [Uniquify](https://open-source.telperion.tr/js-utils/modules/_array_uniquify_.html)
 Removes repeated items from the array
 

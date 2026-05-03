@@ -1,4 +1,4 @@
-import { LitElement, html } from "lit";
+import { LitElement, css, html } from "lit";
 import type { TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { uniqueId } from "@telperion/js-utils/unique-id";
@@ -80,23 +80,19 @@ declare global {
 
 @customElement("tp-popover")
 export class PopoverElement extends LitElement {
-  declare private static GLOBAL_STYLE: HTMLStyleElement;
-
-  static {
-    const style = (this.GLOBAL_STYLE = document.createElement("style"));
-
-    // Pre-baked rules. Each instance gets:
-    //   - data-pi/data-ti/data-pb/data-tb attributes set by JS,
-    //   - inline `position-anchor: --tp-popover-N`,
-    //   - inline `anchor-name: --tp-popover-N` on the resolved target.
-    //
-    // Use `margin` on the popover to add gap between the popover and its
-    // anchor target. The default `position-try-fallbacks` flips the popover
-    // off-axis when there is no room — the engine swaps `inset-*-start` with
-    // `inset-*-end` and the `start`/`end` keywords inside `anchor()` for us,
-    // and our translate-vars are symmetric so they remain correct after a
-    // flip.
-    style.textContent = `
+  // Pre-baked rules. Each instance gets:
+  //   - data-pi/data-ti/data-pb/data-tb attributes set by JS,
+  //   - inline `position-anchor: --tp-popover-N`,
+  //   - inline `anchor-name: --tp-popover-N` on the resolved target.
+  //
+  // Use `margin` on the popover to add gap between the popover and its
+  // anchor target. The default `position-try-fallbacks` flips the popover
+  // off-axis when there is no room — the engine swaps `inset-*-start` with
+  // `inset-*-end` and the `start`/`end` keywords inside `anchor()` for us,
+  // and our translate-vars are symmetric so they remain correct after a
+  // flip.
+  static override styles = (() => {
+    const style = css`
       tp-popover {
         --tp-popover-inline-position: attr(data-ti type(*));
         --tp-popover-block-position: attr(data-tb type(*));
@@ -135,8 +131,11 @@ export class PopoverElement extends LitElement {
         }
       }
     `;
-    document.head.appendChild(style);
-  }
+
+    document.adoptedStyleSheets = [...document.adoptedStyleSheets, style.styleSheet!];
+
+    return style;
+  })();
 
   /** Mirrored to the native `popover` attribute. */
   @property({ reflect: true })
@@ -223,7 +222,9 @@ export class PopoverElement extends LitElement {
     const selector = this.target;
     if (selector) {
       try {
-        const el = document.querySelector(selector);
+        const root = this.getRootNode() as Document | ShadowRoot;
+        const el = root.querySelector(selector);
+
         if (el instanceof HTMLElement) return el;
         console.warn(`<tp-popover>: target "${selector}" did not resolve to an HTMLElement; using parentElement.`);
       } catch {
@@ -231,7 +232,15 @@ export class PopoverElement extends LitElement {
       }
     }
     const parent = this.parentElement;
-    return parent instanceof HTMLElement ? parent : null;
+    if (parent instanceof HTMLElement) return parent;
+    // No parent element — likely placed directly inside a ShadowRoot.
+    // Climb out to the shadow host so the popover anchors to the component
+    // that contains it (e.g. a Lit element using shadow DOM).
+    const root = this.getRootNode();
+    if (root instanceof ShadowRoot && root.host instanceof HTMLElement) {
+      return root.host;
+    }
+    return null;
   }
 
   #syncAnchor(): void {

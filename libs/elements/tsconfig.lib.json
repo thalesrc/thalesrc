@@ -5,7 +5,7 @@
     "declaration": true,
     "types": ["node", "vite/client"]
   },
-  "include": ["src/**/*.ts", ".storybook/tha-url-output.ts"],
+  "include": ["src/**/*.ts", ".storybook/tha-url-output.ts", "src/select/agent/index.ts", "src/select/agent/select-element.spec.ts", "src/select/agent/select-element.stories.ts", "src/select/agent/select-element.ts", "src/select/agent/select-internals.ts", "src/select/agent/select-keyboard.ts", "src/select/agent/select-options.ts", "src/select/agent/select-styles.ts", "src/select/agent/types.ts"],
   "exclude": [
     "vite.config.ts",
     "src/**/*.spec.ts",

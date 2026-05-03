@@ -18,7 +18,8 @@
           "drag-drop/index": "src/drag-drop/index.ts",
           "icon/index": "src/icon/index.ts",
           "details-set/index": "src/details-set/index.ts",
-          "popover/index": "src/popover/index.ts"
+          "popover/index": "src/popover/index.ts",
+          "select/index": "src/select/index.ts"
         },
         "formats": {
           "esm": { "perFile": true, "flat": true },
@@ -32,7 +33,8 @@
               "drag-drop/index": {},
               "router/index": {},
               "details-set/index": {},
-              "popover/index": {}
+              "popover/index": {},
+              "select/index": {}
             }
           },
           "types": { "dts": true, "dcts": true }

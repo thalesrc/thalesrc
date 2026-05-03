@@ -23,5 +23,5 @@
     "src/**/*.stories.mdx",
     ".storybook/*.js",
     ".storybook/*.ts"
-  ]
+, "src/select/agent/select-element.stories.ts"  ]
 }

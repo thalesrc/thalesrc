@@ -8,7 +8,7 @@
  */
 
 import { customElement, property } from "lit/decorators.js";
-import { SignalWatcherLitElement } from "./signal-watcher-lit-element";
+import { SignalWatcherLitElement } from "../utils/signal-watcher-lit-element";
 import { computed, html, signal } from "@lit-labs/signals";
 import { PARAMS, type ThaRouterOutlet } from "./tha-router-outlet";
 

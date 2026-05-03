@@ -8,5 +8,7 @@ export * from '@telperion/js-utils/array/intersection';
 export * from '@telperion/js-utils/array/limit';
 export * from '@telperion/js-utils/array/remove';
 export * from '@telperion/js-utils/array/replace';
+export * from '@telperion/js-utils/array/slice-after';
+export * from '@telperion/js-utils/array/slice-before';
 export * from '@telperion/js-utils/array/uniquify';
 export * from '@telperion/js-utils/array/uniquify-by-key';

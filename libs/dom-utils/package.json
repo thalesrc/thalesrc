@@ -37,6 +37,7 @@
     "tslib": "*"
   },
   "_exports": [
-    "get-parents"
+    "get-parents",
+    "dom-clone"
   ]
 }

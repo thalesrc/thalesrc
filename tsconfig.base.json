@@ -26,6 +26,7 @@
       "@thalesrc/elements/router": ["libs/elements/src/router/index.ts"],
       "@telperion/elements": ["libs/elements/src/index.ts"],
       "@telperion/elements/drag-drop": ["libs/elements/src/drag-drop/index.ts"],
+      "@telperion/elements/popover": ["libs/elements/src/popover/index.ts"],
       "@telperion/elements/router": ["libs/elements/src/router/index.ts"],
       "@telperion/elements/icon": ["libs/elements/src/icon/index.ts"],
       "@telperion/elements/icon/icon.css": ["libs/elements/src/icon/icon.css"],
