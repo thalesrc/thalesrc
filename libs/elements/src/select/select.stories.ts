@@ -2,6 +2,10 @@ import type { Meta, StoryObj } from "@storybook/web-components";
 import { html } from "lit";
 
 import "./select.element";
+import "./option.element";
+import "./selected-content.element";
+import type { SelectElement } from "./select.element";
+import type { OptionElement } from "./option.element";
 
 const meta: Meta = {
   title: "Elements/Select",
@@ -16,50 +20,238 @@ export default meta;
 
 type Story = StoryObj;
 
-export const Default: Story = {
+/** Shared style block for the demos so stories stay readable. */
+const demoStyles = html`
+  <style>
+    tp-select {
+      font-family: system-ui, sans-serif;
+      min-width: 12rem;
+    }
+    tp-select::part(button) {
+      padding: 0.4rem 0.75rem;
+      border: 1px solid #d4d4d8;
+      border-radius: 6px;
+      background: #fafafa;
+      min-width: 12rem;
+    }
+    tp-select::part(popover) {
+      border: 1px solid #d4d4d8;
+      border-radius: 6px;
+      background: white;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      min-width: 12rem;
+      margin-top: 4px;
+    }
+    tp-option {
+      padding: 0.4rem 0.75rem;
+    }
+    tp-option:hover {
+      background: #f4f4f5;
+    }
+    .demo-form {
+      display: grid;
+      gap: 0.75rem;
+      font-family: system-ui, sans-serif;
+    }
+    .demo-form output {
+      display: block;
+      font-family: ui-monospace, monospace;
+      font-size: 0.85rem;
+      padding: 0.5rem;
+      background: #f4f4f5;
+      border-radius: 4px;
+      white-space: pre;
+      min-height: 1.5rem;
+    }
+    .demo-form button {
+      justify-self: start;
+      padding: 0.4rem 0.75rem;
+      border: 1px solid #d4d4d8;
+      border-radius: 6px;
+      background: #fafafa;
+      cursor: pointer;
+    }
+  </style>
+`;
+
+const fruitOptions = html`
+  <tp-option value="apple">Apple</tp-option>
+  <tp-option value="banana">Banana</tp-option>
+  <tp-option value="cherry">Cherry</tp-option>
+  <tp-option value="date">Date</tp-option>
+  <tp-option value="elderberry">Elderberry</tp-option>
+`;
+
+/** Default single-select. `max` defaults to `1`; the placeholder shows until a value is chosen. */
+export const SingleSelect: Story = {
   render: () => html`
-    <style>
-      ::part(selected-content-option) {
-        background: blue;
-      }
-    </style>
-    <tp-select value="veli" max="2">
-      Ali Veli 49 50
-      <tp-option value="ali">
-        <h1 class="text-rose-500">Ali</h1>
-      </tp-option>
-      <tp-option value="veli">Veli</tp-option>
-      <tp-option value="49">49</tp-option>
-      <tp-option value="50">50</tp-option>
-    </tp-select>
+    ${demoStyles}
+    <tp-select placeholder="Pick a fruit">${fruitOptions}</tp-select>
   `,
 };
 
+/** Single-select with a pre-set `value` attribute. */
+export const InitialValue: Story = {
+  render: () => html`
+    ${demoStyles}
+    <tp-select value="cherry">${fruitOptions}</tp-select>
+  `,
+};
+
+/** Multi-select with `max="3"`. Selecting a 4th option evicts the oldest one (FIFO). */
+export const MultiSelectMax: Story = {
+  render: () => html`
+    ${demoStyles}
+    <tp-select max="3" placeholder="Pick up to 3">${fruitOptions}</tp-select>
+  `,
+};
+
+/** Unbounded multi-select with `max="infinite"`. */
+export const MultiSelectInfinite: Story = {
+  render: () => html`
+    ${demoStyles}
+    <tp-select max="infinite" placeholder="Pick any">${fruitOptions}</tp-select>
+  `,
+};
+
+/** `disabled` makes the control non-interactive and excludes it from form submission. */
+export const Disabled: Story = {
+  render: () => html`
+    ${demoStyles}
+    <tp-select disabled value="banana">${fruitOptions}</tp-select>
+  `,
+};
+
+/** Custom trigger button via `slot="button"`. Embed `<tp-selected-content>` to mirror the selection. */
 export const CustomButton: Story = {
   render: () => html`
-    <tp-select>
-      <div slot="button" style="padding: 0.5rem 1rem; background: #0078d4; color: white; border-radius: 4px;">
-        Custom Button
+    ${demoStyles}
+    <style>
+      .custom-trigger {
+        padding: 0.5rem 1rem;
+        background: #0078d4;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        display: inline-flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+    </style>
+    <tp-select max="infinite">
+      <div slot="button" class="custom-trigger">
+        <span>🍇</span>
         <tp-selected-content></tp-selected-content>
       </div>
-      Ali Veli 49 50
-      <tp-option value="ali">
-        <h1 class="font-bold">Ali</h1>
-      </tp-option>
-      <tp-option value="veli">Veli</tp-option>
-      <tp-option value="49">49</tp-option>
-      <tp-option value="50">50</tp-option>
+      ${fruitOptions}
     </tp-select>
   `,
 };
 
-export const CustomPopover: Story = {
+/** Custom popover content via `slot="popover"` for full control over panel chrome. */
+export const CustomPopoverContent: Story = {
   render: () => html`
-    <tp-select>
-      <button slot="button">Custom Button</button>
+    ${demoStyles}
+    <style>
+      .panel-header {
+        padding: 0.4rem 0.75rem;
+        font-weight: 600;
+        border-bottom: 1px solid #e4e4e7;
+      }
+      .panel-footer {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.8rem;
+        color: #71717a;
+        border-top: 1px solid #e4e4e7;
+      }
+    </style>
+    <tp-select max="3" placeholder="Custom panel">
       <div slot="popover">
-        <p>Custom Popover Content</p>
+        <div class="panel-header">Fruits</div>
+        ${fruitOptions}
+        <div class="panel-footer">Pick up to 3</div>
       </div>
     </tp-select>
   `,
+};
+
+/** A standalone `<tp-selected-content>` placed outside the trigger acts as a live label. */
+export const StandaloneSelectedContent: Story = {
+  render: () => html`
+    ${demoStyles}
+    <div style="display: grid; gap: 0.5rem; font-family: system-ui, sans-serif;">
+      <tp-select max="infinite" placeholder="Pick fruits">${fruitOptions}</tp-select>
+      <div>
+        Current selection:
+        <strong>
+          <tp-selected-content></tp-selected-content>
+        </strong>
+      </div>
+    </div>
+  `,
+};
+
+/** `required` triggers `valueMissing`; the form below shows the submitted FormData. */
+export const RequiredInForm: Story = {
+  render: () => {
+    const onSubmit = (e: Event) => {
+      e.preventDefault();
+      const form = e.currentTarget as HTMLFormElement;
+      const data = new FormData(form);
+      const out = form.querySelector("output")!;
+      const entries: Record<string, string[]> = {};
+      data.forEach((value, key) => {
+        const list = (entries[key] ??= []);
+        list.push(typeof value === "string" ? value : value.name);
+      });
+      out.textContent = JSON.stringify(entries, null, 2);
+    };
+    return html`
+      ${demoStyles}
+      <form class="demo-form" @submit=${onSubmit}>
+        <label>
+          Fruit (required, single):
+          <tp-select name="fruit" required placeholder="Required">${fruitOptions}</tp-select>
+        </label>
+        <label>
+          Tags (multi):
+          <tp-select name="tags" max="infinite" placeholder="Any number">${fruitOptions}</tp-select>
+        </label>
+        <div style="display: flex; gap: 0.5rem;">
+          <button type="submit">Submit</button>
+          <button type="reset">Reset</button>
+        </div>
+        <output>(submit to see FormData)</output>
+      </form>
+    `;
+  },
+};
+
+/** Programmatic API: `selectOption` / `deselectOption` / `toggleOption` plus the `value` setter. */
+export const ProgrammaticApi: Story = {
+  render: () => {
+    const getSelect = (e: Event): SelectElement =>
+      (e.currentTarget as HTMLElement)
+        .closest(".demo-form")!
+        .querySelector("tp-select") as SelectElement;
+    return html`
+      ${demoStyles}
+      <div class="demo-form">
+        <tp-select max="infinite" placeholder="Use the buttons">${fruitOptions}</tp-select>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button @click=${(e: Event) => {
+            const s = getSelect(e);
+            const opt = s.querySelector('tp-option[value="apple"]') as OptionElement;
+            s.toggleOption(opt);
+          }}>Toggle apple</button>
+          <button @click=${(e: Event) => {
+            getSelect(e).value = "banana,cherry";
+          }}>Set value=banana,cherry</button>
+          <button @click=${(e: Event) => {
+            getSelect(e).value = "";
+          }}>Clear</button>
+        </div>
+      </div>
+    `;
+  },
 };

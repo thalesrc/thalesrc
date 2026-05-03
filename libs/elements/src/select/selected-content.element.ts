@@ -11,23 +11,35 @@ import { SHOULD_REGISTER_TO_SELECT } from "./internal-props";
 
 declare global {
   interface HTMLElementTagNameMap {
+    /**
+     * Mirrors the currently-selected `<tp-option>`(s) of an ancestor
+     * `<tp-select>`, falling back to the host's `placeholder` text when
+     * the selection is empty.
+     *
+     * Discovers its host via `@lit/context`, so it can live anywhere in
+     * the descendant composed tree — including across nested shadow DOM
+     * boundaries. Selected options are deeply cloned and projected into
+     * this element's light DOM; clones are inert (they don't register
+     * back to the select) and carry `part="selected-content-option"`.
+     *
+     * Used as the default content of the `<tp-select>` trigger button,
+     * but can be placed anywhere a label-style mirror is useful.
+     *
+     * @example
+     * ```html
+     * <tp-select>
+     *   <button slot="button">
+     *     <tp-selected-content></tp-selected-content>
+     *   </button>
+     *   <tp-option value="apple">Apple</tp-option>
+     * </tp-select>
+     * ```
+     */
     "tp-selected-content": SelectedContentElement;
   }
 }
 
 
-/**
- * Renders the current `value` of the ancestor `<tp-select>`.
- *
- * Falls back to the default slot content (typically a placeholder) when the
- * parent has no value yet.
- *
- * Discovery uses `@lit/context`, so this element can live anywhere in the
- * descendant **composed** tree — including across nested shadow DOM
- * boundaries — and still find its provider. The provider's signal-backed
- * `value` is read inside `render()` and the `SignalWatcher` mixin
- * automatically keeps us in sync.
- */
 @customElement("tp-selected-content")
 export class SelectedContentElement extends SignalWatcherLitElement {
   static styles = (() => {
@@ -37,6 +49,12 @@ export class SelectedContentElement extends SignalWatcherLitElement {
 
         tp-option {
           display: inline-block;
+
+          &:not(:last-of-type)::after {
+            content: ",";
+            white-space: pre;
+            margin-right: 0.25em;
+          }
         }
       }
     `;
@@ -62,7 +80,7 @@ export class SelectedContentElement extends SignalWatcherLitElement {
     const clones = this.#getOptionClones(selectedOptions);
 
     return !selectedOptions.length
-      ? placeholder
+      ? html`<span part="placeholder">${placeholder}</span>`
       : clones.map(clone => html`${clone}`);
   }
 

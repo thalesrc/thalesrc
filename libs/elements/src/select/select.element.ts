@@ -2,7 +2,7 @@ import { PopoverElement } from "../popover";
 
 import { provide } from "@lit/context";
 import { computed, signal, Signal } from "@lit-labs/signals";
-import { css, html, LitElement } from "lit";
+import { css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { sliceBefore } from '@telperion/js-utils/array/slice-before';
 
@@ -11,21 +11,88 @@ import { SelectedContentElement } from "./selected-content.element";
 import { OptionElement } from "./option.element";
 import { REGISTER_OPTION, UNREGISTER_OPTION } from "./internal-props";
 import { defer } from "@telperion/js-utils/function/defer";
+import { SignalWatcherLitElement } from "../utils/signal-watcher-lit-element";
 
 declare global {
   interface HTMLElementTagNameMap {
+    /**
+     * A form-associated, framework-agnostic selectbox.
+     *
+     * Composes `<tp-popover>` for placement and `<tp-option>` for items.
+     * Single-select by default; switches to multi-select via `max`.
+     *
+     * @example Single-select
+     * ```html
+     * <tp-select name="fruit" required>
+     *   <tp-option value="apple">Apple</tp-option>
+     *   <tp-option value="banana">Banana</tp-option>
+     * </tp-select>
+     * ```
+     *
+     * @example Multi-select with eviction limit
+     * ```html
+     * <tp-select name="tags" max="3">…</tp-select>
+     * <tp-select name="tags" max="infinite">…</tp-select>
+     * ```
+     *
+     * @example Custom trigger button
+     * ```html
+     * <tp-select>
+     *   <button slot="button">Open</button>
+     *   <tp-option value="a">A</tp-option>
+     * </tp-select>
+     * ```
+     *
+     * @attr value       - Comma-joined list of selected `<tp-option>` values
+     *                     (read-only; derived from `selectedOptions`).
+     * @attr placeholder - Text shown by `<tp-selected-content>` when no
+     *                     option is selected.
+     * @attr max         - `1` (default) for single-select, any positive integer
+     *                     for multi-select with FIFO eviction, or `infinite`
+     *                     for unbounded selection.
+     * @attr name        - Form field name.
+     * @attr disabled    - Non-interactive; excluded from form submission.
+     * @attr required    - Empty selection triggers `valueMissing`.
+     * @attr open        - Reflects the popover's open state (read-only).
+     *
+     * @slot button  - Replaces the default trigger button.
+     * @slot popover - Replaces the entire popover panel.
+     * @slot         - Default slot inside the popover (where `<tp-option>`s go).
+     *
+     * @csspart button            - The trigger wrapper.
+     * @csspart popover           - The `<tp-popover>` panel.
+     * @csspart selected-content  - The default `<tp-selected-content>`.
+     */
     "tp-select": SelectElement;
   }
 }
 
 @customElement("tp-select")
-export class SelectElement extends LitElement {
+export class SelectElement extends SignalWatcherLitElement {
+  static formAssociated = true;
+
   private static ALLOWED_OPTION_ELEMENTS = [OptionElement];
-  static override styles = css`
+  static styles = css`
     :host {
       position: relative;
       display: inline-flex;
       height: fit-content;
+
+      --tp-select-option-color: white;
+      --tp-select-selection-color: #0078d4;
+      --tp-select-highlight-percent: 20%;
+      --tp-select-selection-contrast-color: white;
+    }
+
+    :host([disabled]) {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    [pseudo="button"] {
+      background: white;
+      cursor: pointer;
+      display: inline-flex;
     }
 
     tp-popover {
@@ -115,16 +182,81 @@ export class SelectElement extends LitElement {
   })
   max: number = 1;
 
+  /** Form field name. Submitted with the owning `<form>`. */
+  @property({ type: String, reflect: true })
+  name: string | null = null;
+
+  /** When true, the element is non-interactive and excluded from form submission. */
+  @property({ type: Boolean, reflect: true })
+  disabled = false;
+
+  /** When true, an empty selection makes the element invalid (`valueMissing`). */
+  @property({ type: Boolean, reflect: true })
+  required = false;
+
+  @property({ type: Boolean, reflect: true })
+  open = false;
+
+  readonly #internals: ElementInternals;
+  /** Initial `value` captured at construction so `formResetCallback` can restore it. */
+  #initialValue = "";
+
+  constructor() {
+    super();
+    this.#internals = this.attachInternals();
+  }
+
+  /** Live `ElementInternals` (validity, form, labels, etc.). */
+  get internals(): ElementInternals {
+    return this.#internals;
+  }
+
+  /** Owning `<form>` element, or `null` when not associated. */
+  get form(): HTMLFormElement | null {
+    return this.#internals.form;
+  }
+
+  /** Native validity state of this control. */
+  get validity(): ValidityState {
+    return this.#internals.validity;
+  }
+
+  get validationMessage(): string {
+    return this.#internals.validationMessage;
+  }
+
+  get willValidate(): boolean {
+    return this.#internals.willValidate;
+  }
+
+  checkValidity(): boolean {
+    return this.#internals.checkValidity();
+  }
+
+  reportValidity(): boolean {
+    return this.#internals.reportValidity();
+  }
+
   protected override createRenderRoot(): ShadowRoot {
     const root = super.createRenderRoot() as ShadowRoot;
 
     root.adoptedStyleSheets = [
       ...root.adoptedStyleSheets,
       PopoverElement.styles.styleSheet!,
-      SelectedContentElement.styles.styleSheet!
+      SelectedContentElement.styles.styleSheet!,
+      OptionElement.styles.styleSheet!,
     ];
 
     return root;
+  }
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this.#initialValue = this.value;
+  }
+
+  override disconnectedCallback(): void {
+    super.disconnectedCallback();
   }
 
   protected override render(): unknown {
@@ -138,6 +270,7 @@ export class SelectElement extends LitElement {
         position="start to start / bottom"
         target="[pseudo=button]"
         @click=${this.#handlePopoverClick}
+        @toggle=${this.#handlePopoverToggle}
         part="popover">
         <slot name="popover">
           <slot></slot>
@@ -153,6 +286,67 @@ export class SelectElement extends LitElement {
       if (current.length > this.max) {
         this.selectedOptions.set(current.slice(current.length - this.max));
       }
+    }
+  }
+
+  /**
+   * Keep `ElementInternals` in sync with the current value and validity.
+   * Reading `this.value` here transitively reads `selectedOptions`, so the
+   * `SignalWatcher` base auto-tracks it and re-runs `willUpdate` whenever
+   * the selection changes — no `updateEffect` (and no microtask race) needed.
+   */
+  protected override willUpdate(_changed: Map<string, unknown>): void {
+    this.#syncForm();
+  }
+
+  // -- Form-associated callbacks ------------------------------------------
+
+  formResetCallback(): void {
+    this.value = this.#initialValue;
+  }
+
+  formDisabledCallback(disabled: boolean): void {
+    this.disabled = disabled;
+  }
+
+  formStateRestoreCallback(state: File | string | FormData | null): void {
+    if (state == null) {
+      this.value = "";
+      return;
+    }
+    if (typeof state === "string") {
+      this.value = state;
+      return;
+    }
+    if (state instanceof FormData) {
+      const values: string[] = [];
+      state.forEach((v) => {
+        if (typeof v === "string") values.push(v);
+      });
+      this.value = values.join(",");
+    }
+  }
+
+  /**
+   * Push the current selection into `ElementInternals`. Single-select forms
+   * report a string; multi-select forms report a `FormData` with one entry
+   * per selected value (so the form serialises the same way as a native
+   * `<select multiple>`). Also updates validity for `required`.
+   */
+  #syncForm(): void {
+    const values = this.value === "" ? [] : this.value.split(",");
+    if (this.max === 1) {
+      this.#internals.setFormValue(values[0] ?? "");
+    } else {
+      const fd = new FormData();
+      const fieldName = this.name ?? "";
+      for (const v of values) fd.append(fieldName, v);
+      this.#internals.setFormValue(fd);
+    }
+    if (this.required && values.length === 0) {
+      this.#internals.setValidity({ valueMissing: true }, "Please select an option.");
+    } else {
+      this.#internals.setValidity({});
     }
   }
 
@@ -199,12 +393,25 @@ export class SelectElement extends LitElement {
   }
 
   #handlePopoverClick(e: MouseEvent): void {
+    if (this.disabled) return;
+
     const option = sliceBefore(e.composedPath(), this)
       .find(el => SelectElement.ALLOWED_OPTION_ELEMENTS.some(allowed => el instanceof allowed)) as OptionElement | undefined;
 
     if (!option) return;
 
     this.toggleOption(option);
+    const count = this.selectedOptions.get().length;
+
+    // Close the popover when a new selection just filled the quota.
+    if (count >= this.max) {
+      const popover = this.shadowRoot?.querySelector("tp-popover");
+      popover?.hidePopover();
+    }
+  }
+
+  #handlePopoverToggle(e: ToggleEvent): void {
+    this.open = e.newState === "open";
   }
 
   #signalSetter<T>(signal: Signal.State<T>, propName: string, newValue: T): void {
