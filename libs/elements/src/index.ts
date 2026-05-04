@@ -16,5 +16,5 @@ export * from './details-set';
 export * from './popover';
 
 // Select components
-export * from './select/agent';
+export * from './select';
 
