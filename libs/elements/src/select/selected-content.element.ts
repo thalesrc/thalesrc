@@ -41,6 +41,12 @@ declare global {
      * when this element happens to sit inside another shadow root — which is
      * what happens by default inside `<tp-select>`, so those parts (`placeholder`,
      * `selected-content-option`) are documented on `<tp-select>`.
+     *
+     * The empty-state markup is wrapped in `<slot name="placeholder">…</slot>`.
+     * Because this element renders into light DOM, that `<slot>` ends up sitting
+     * inside its host shadow root — so when used as the default content of a
+     * `<tp-select>`, any `slot="placeholder"` child of the `<tp-select>` is
+     * projected as the empty-state label.
      */
     "tp-selected-content": SelectedContentElement;
   }
@@ -87,7 +93,7 @@ export class SelectedContentElement extends SignalWatcherLitElement {
     const clones = this.#getOptionClones(selectedOptions);
 
     return !selectedOptions.length
-      ? html`<span part="placeholder">${placeholder}</span>`
+      ? html`<slot name="placeholder"><span part="placeholder">${placeholder}</span></slot>`
       : clones.map(clone => html`${clone}`);
   }
 

@@ -69,6 +69,13 @@ declare global {
      *                   but display something else in the popover (a message,
      *                   a search field, a custom layout, …) instead of the
      *                   default option list.
+     * @slot placeholder - Replaces the default placeholder span inside
+     *                   `<tp-selected-content>` when no option is selected.
+     *                   Forwarded by the light-DOM `<slot name="placeholder">`
+     *                   that `<tp-selected-content>` renders, so any direct
+     *                   child of `<tp-select>` carrying `slot="placeholder"`
+     *                   is projected as the empty-state label (icon + text,
+     *                   custom markup, etc.).
      * @slot           - Default slot inside the popover (where `<tp-option>`s go).
      *
      * @csspart button                   - The trigger wrapper.

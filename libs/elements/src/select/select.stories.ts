@@ -150,6 +150,38 @@ export const CustomButton: Story = {
 };
 
 /**
+ * `slot="placeholder"` replaces the default placeholder span shown by the
+ * built-in `<tp-selected-content>` when nothing is selected.
+ *
+ * It's forwarded by a light-DOM `<slot name="placeholder">` inside
+ * `<tp-selected-content>`, so any direct child of `<tp-select>` carrying
+ * `slot="placeholder"` lands there — drop in an icon + text combo, a styled
+ * span, whatever you want as the empty-state label. Once a selection exists
+ * the slot is hidden and the selected option clones take over.
+ */
+export const CustomPlaceholder: Story = {
+  render: () => html`
+    ${demoStyles}
+    <style>
+      .custom-placeholder {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        color: #71717a;
+        font-style: italic;
+      }
+    </style>
+    <tp-select max="infinite">
+      <span slot="placeholder" class="custom-placeholder">
+        <span aria-hidden="true">🍽️</span>
+        <span>Choose your fruits…</span>
+      </span>
+      ${fruitOptions}
+    </tp-select>
+  `,
+};
+
+/**
  * `slot="popover"` lets the consumer **hide** the default rendering of
  * `<tp-option>` children and show arbitrary content inside the panel instead.
  *
