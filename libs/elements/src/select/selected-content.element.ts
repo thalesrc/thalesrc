@@ -34,6 +34,13 @@ declare global {
      *   <tp-option value="apple">Apple</tp-option>
      * </tp-select>
      * ```
+     *
+     * Renders into its own light DOM, so it has no slots and exposes no CSS
+     * Shadow Parts of its own. The `part` attributes it stamps onto the rendered
+     * placeholder span and cloned `<tp-option>`s only become real Shadow Parts
+     * when this element happens to sit inside another shadow root — which is
+     * what happens by default inside `<tp-select>`, so those parts (`placeholder`,
+     * `selected-content-option`) are documented on `<tp-select>`.
      */
     "tp-selected-content": SelectedContentElement;
   }

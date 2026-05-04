@@ -37,20 +37,25 @@ Framework-agnostic, form-associated selectbox built on top of [`<tp-popover>`](.
 
 ### Slots
 
-| Slot      | Purpose                                                                                                                                                                                                                                            |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `button`  | Replaces the default trigger. Embed `<tp-selected-content>` inside if you still want a live label.                                                                                                                                                 |
-| `popover` | Replaces the default rendering of the host's children inside the panel. The `<tp-option>` children remain registered in the select context (so they keep driving selection / validation / form submission) — they just aren't displayed any more. |
-| _default_ | The `<tp-option>` items projected into the popover by default.                                                                                                                                                                                     |
+| Slot        | Purpose                                                                                                                                                                                                                                            |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `button`    | Replaces the default trigger. Embed `<tp-selected-content>` inside if you still want a live label.                                                                                                                                                 |
+| `indicator` | Replaces the default open/close caret (`▾`) shown inside the trigger button. Rotated 180° while the select is `open`.                                                                                                                              |
+| `popover`   | Replaces the default rendering of the host's children inside the panel. The `<tp-option>` children remain registered in the select context (so they keep driving selection / validation / form submission) — they just aren't displayed any more. |
+| _default_   | The `<tp-option>` items projected into the popover by default.                                                                                                                                                                                     |
 
 ### CSS Parts
 
-| Part                          | Element                                                                       |
-| ----------------------------- | ----------------------------------------------------------------------------- |
-| `button`                      | The trigger wrapper.                                                          |
-| `popover`                     | The inner `<tp-popover>` panel.                                               |
-| `selected-content`            | The default `<tp-selected-content>` rendered inside the trigger.              |
-| `selected-content-option`     | Cloned `<tp-option>` mirrored inside `<tp-selected-content>` (read-only).     |
+All parts below sit inside `<tp-select>`'s shadow root, so they're styled with `tp-select::part(…)`. The last two come from the default `<tp-selected-content>` — they're exposed through this element only because `<tp-selected-content>` is light-DOM and is rendered inside the select's shadow root by default.
+
+| Part                          | Element                                                                                            |
+| ----------------------------- | -------------------------------------------------------------------------------------------------- |
+| `button`                      | The trigger wrapper.                                                                               |
+| `indicator`                   | The default open/close caret (`▾`); rotates 180° while `open`. Suppressed when the `indicator` slot is filled. |
+| `popover`                     | The inner `<tp-popover>` panel.                                                                    |
+| `selected-content`            | The default `<tp-selected-content>` rendered inside the trigger.                                   |
+| `placeholder`                 | The `<span>` rendered by the default `<tp-selected-content>` when no option is selected.           |
+| `selected-content-option`     | Each cloned `<tp-option>` mirrored by the default `<tp-selected-content>`.                         |
 
 ### Public API
 
@@ -63,6 +68,29 @@ Framework-agnostic, form-associated selectbox built on top of [`<tp-popover>`](.
 | `selectedOptions: Signal<WeakRef<…>[]>`      | Underlying signal — read for fine-grained reactivity in custom UI.                           |
 | `internals` / `form` / `validity` / …        | Standard form-associated surface from `ElementInternals`.                                    |
 | `checkValidity()` / `reportValidity()`       | Standard form validity helpers.                                                              |
+
+### Events
+
+| Event    | Type                 | Description                                                                                                                                                            |
+| -------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `change` | `SelectChangeEvent`  | Dispatched whenever the selected option set changes. Bubbles, **not** composed (mirrors the native `<select>` `change` event). Not fired on initial mount or when the selection is re-set to the same value. |
+
+`SelectChangeEvent extends Event` and exposes:
+
+| Property          | Type                       | Description                                                       |
+| ----------------- | -------------------------- | ----------------------------------------------------------------- |
+| `value`           | `string`                   | Joined value of the new selection (same as `tp-select.value`).    |
+| `selectedOptions` | `readonly OptionElement[]` | Snapshot of the currently selected `<tp-option>` elements.        |
+
+```ts
+import { SelectChangeEvent } from '@telperion/elements/select';
+
+select.addEventListener('change', e => {
+  if (e instanceof SelectChangeEvent) {
+    console.log(e.value, e.selectedOptions);
+  }
+});
+```
 
 ### Form integration
 
@@ -91,9 +119,11 @@ Framework-agnostic, form-associated selectbox built on top of [`<tp-popover>`](.
 
 ## `<tp-selected-content>`
 
-A lightweight, light-DOM mirror of the host's current selection. Falls back to the host's `placeholder` when no option is selected. Selected `<tp-option>`s are deeply cloned and projected here; the clones are inert (they do not register back) and carry `part="selected-content-option"`.
+A lightweight, light-DOM mirror of the host's current selection. Falls back to the host's `placeholder` when no option is selected. Selected `<tp-option>`s are deeply cloned and projected into this element's light DOM; the clones are inert (they do not register back) and carry `part="selected-content-option"`. The placeholder fallback is wrapped in `<span part="placeholder">`.
 
 Use it as a drop-in label inside a custom `slot="button"`, or anywhere outside the trigger (e.g. as a live status line).
+
+Because this element renders into its own light DOM, it exposes **no slots** and **no CSS Shadow Parts of its own**. The `part` attributes on the rendered nodes only become real Shadow Parts when this element lives inside another shadow root — which is what happens by default inside `<tp-select>`, where they surface as the [`placeholder`](#css-parts) and [`selected-content-option`](#css-parts) parts of `<tp-select>`. When used standalone in light DOM, those `part` attributes are inert; style the rendered content directly with descendant selectors instead.
 
 ## Examples
 

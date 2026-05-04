@@ -6,6 +6,7 @@ import "./option.element";
 import "./selected-content.element";
 import type { SelectElement } from "./select.element";
 import type { OptionElement } from "./option.element";
+import { SelectChangeEvent } from "./select-change-event";
 
 const meta: Meta = {
   title: "Elements/Select",
@@ -252,6 +253,36 @@ export const RequiredInForm: Story = {
         </div>
         <output>(submit to see FormData)</output>
       </form>
+    `;
+  },
+};
+
+/**
+ * `<tp-select>` dispatches a bubbling, non-composed `change` event of type
+ * `SelectChangeEvent` whenever the selection changes. The event payload
+ * exposes both the joined `value` string and a snapshot of the currently
+ * selected `<tp-option>` elements.
+ *
+ * The event is **not** fired on initial mount (even when a `value` attribute
+ * is present), and a no-op assignment to `.value` does not re-emit it.
+ */
+export const ChangeEvent: Story = {
+  render: () => {
+    const onChange = (e: Event) => {
+      if (!(e instanceof SelectChangeEvent)) return;
+      const log = (e.currentTarget as HTMLElement)
+        .closest(".demo-form")!
+        .querySelector("output")!;
+      const labels = e.selectedOptions.map(opt => opt.textContent?.trim() ?? "");
+      const line = `change → value=${JSON.stringify(e.value)}  options=[${labels.join(", ")}]`;
+      log.textContent = `${line}\n${log.textContent ?? ""}`.trim();
+    };
+    return html`
+      ${demoStyles}
+      <div class="demo-form" @change=${onChange}>
+        <tp-select max="infinite" placeholder="Pick a few">${fruitOptions}</tp-select>
+        <output>(change events appear here)</output>
+      </div>
     `;
   },
 };

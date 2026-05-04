@@ -10,6 +10,7 @@ import { selectContext } from "./select-context";
 import { SelectedContentElement } from "./selected-content.element";
 import { OptionElement } from "./option.element";
 import { REGISTER_OPTION, UNREGISTER_OPTION } from "./internal-props";
+import { SelectChangeEvent } from "./select-change-event";
 import { defer } from "@telperion/js-utils/function/defer";
 import { SignalWatcherLitElement } from "../utils/signal-watcher-lit-element";
 
@@ -55,19 +56,47 @@ declare global {
      * @attr required    - Empty selection triggers `valueMissing`.
      * @attr open        - Reflects the popover's open state (read-only).
      *
-     * @slot button  - Replaces the default trigger button.
-     * @slot popover - Replaces the default rendering of the host's children
-     *                 inside the panel. Use this when you want to keep the
-     *                 `<tp-option>`s registered in the select context — so
-     *                 selection, validation and form submission still work —
-     *                 but display something else in the popover (a message,
-     *                 a search field, a custom layout, …) instead of the
-     *                 default option list.
-     * @slot         - Default slot inside the popover (where `<tp-option>`s go).
+     * @slot button    - Replaces the default trigger button.
+     * @slot indicator - Replaces the default open/close caret (`▾`) shown
+     *                   inside the trigger button. Rendered next to
+     *                   `<tp-selected-content>`; rotates 180° while the
+     *                   select is `open` (via the `[pseudo="indicator"]`
+     *                   styling).
+     * @slot popover   - Replaces the default rendering of the host's children
+     *                   inside the panel. Use this when you want to keep the
+     *                   `<tp-option>`s registered in the select context — so
+     *                   selection, validation and form submission still work —
+     *                   but display something else in the popover (a message,
+     *                   a search field, a custom layout, …) instead of the
+     *                   default option list.
+     * @slot           - Default slot inside the popover (where `<tp-option>`s go).
      *
-     * @csspart button            - The trigger wrapper.
-     * @csspart popover           - The `<tp-popover>` panel.
-     * @csspart selected-content  - The default `<tp-selected-content>`.
+     * @csspart button                   - The trigger wrapper.
+     * @csspart indicator                - The default open/close caret (`▾`).
+     *                                     Rotated 180° while the select is `open`.
+     *                                     Suppressed when the `indicator` slot is
+     *                                     filled.
+     * @csspart popover                  - The `<tp-popover>` panel.
+     * @csspart selected-content         - The default `<tp-selected-content>`.
+     * @csspart placeholder              - The `<span>` rendered by the default
+     *                                     `<tp-selected-content>` when no option
+     *                                     is selected (renders the `placeholder`
+     *                                     attribute). Exposed because
+     *                                     `<tp-selected-content>` is light-DOM
+     *                                     and lives inside this element's shadow
+     *                                     root by default.
+     * @csspart selected-content-option  - Each cloned `<tp-option>` mirrored by
+     *                                     the default `<tp-selected-content>`.
+     *                                     Exposed for the same reason as
+     *                                     `placeholder`. Set on the clones
+     *                                     themselves — use
+     *                                     `tp-select::part(selected-content-option)`
+     *                                     to style them.
+     *
+     * @fires change - {@link SelectChangeEvent} dispatched when the selected
+     *                 option set changes. Bubbles, not composed (mirrors the
+     *                 native `<select>` `change` event). Not fired on initial
+     *                 mount or when the selection is re-set to the same value.
      */
     "tp-select": SelectElement;
   }
@@ -106,6 +135,11 @@ export class SelectElement extends SignalWatcherLitElement {
       cursor: pointer;
       display: inline-flex;
       align-items: center;
+      padding: 0.25em 0.5em;
+
+      tp-selected-content {
+        margin-inline-end: 0.5em;
+      }
     }
 
     [pseudo="indicator"] {
@@ -217,6 +251,12 @@ export class SelectElement extends SignalWatcherLitElement {
   readonly #internals: ElementInternals;
   /** Initial `value` captured at construction so `formResetCallback` can restore it. */
   #initialValue = "";
+  /**
+   * Last `value` for which a `change` event was emitted (or considered for
+   * emission). `null` means "no sync has happened yet" — used to suppress
+   * the very first `willUpdate` so we don't emit a phantom change on mount.
+   */
+  #lastEmittedValue: string | null = null;
 
   constructor() {
     super();
@@ -317,6 +357,7 @@ export class SelectElement extends SignalWatcherLitElement {
    */
   protected override willUpdate(_changed: Map<string, unknown>): void {
     this.#syncForm();
+    this.#dispatchChange();
   }
 
   // -- Form-associated callbacks ------------------------------------------
@@ -368,6 +409,29 @@ export class SelectElement extends SignalWatcherLitElement {
     } else {
       this.#internals.setValidity({});
     }
+  }
+
+  /**
+   * Dispatch a `SelectChangeEvent` when the joined value has actually
+   * changed. Suppresses the very first sync so consumers don't see a
+   * phantom `change` on mount (matches native `<select>` behavior).
+   */
+  #dispatchChange(): void {
+    const current = this.value;
+
+    if (current === this.#lastEmittedValue) return;
+
+    const isInitialSync = this.#lastEmittedValue === null;
+    this.#lastEmittedValue = current;
+
+    if (isInitialSync) return;
+
+    const selectedOptions = this.selectedOptions
+      .get()
+      .map(ref => ref.deref())
+      .filter(Boolean) as OptionElement[];
+
+    this.dispatchEvent(new SelectChangeEvent({ value: current, selectedOptions }));
   }
 
   selectOption(option: OptionElement): void {
