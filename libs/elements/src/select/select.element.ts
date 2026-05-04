@@ -56,7 +56,13 @@ declare global {
      * @attr open        - Reflects the popover's open state (read-only).
      *
      * @slot button  - Replaces the default trigger button.
-     * @slot popover - Replaces the entire popover panel.
+     * @slot popover - Replaces the default rendering of the host's children
+     *                 inside the panel. Use this when you want to keep the
+     *                 `<tp-option>`s registered in the select context — so
+     *                 selection, validation and form submission still work —
+     *                 but display something else in the popover (a message,
+     *                 a search field, a custom layout, …) instead of the
+     *                 default option list.
      * @slot         - Default slot inside the popover (where `<tp-option>`s go).
      *
      * @csspart button            - The trigger wrapper.
@@ -89,10 +95,21 @@ export class SelectElement extends SignalWatcherLitElement {
       opacity: 0.6;
     }
 
+    :host([open]) {
+      [pseudo="indicator"] {
+        transform: rotateX(180deg);
+      }
+    }
+
     [pseudo="button"] {
       background: white;
       cursor: pointer;
       display: inline-flex;
+      align-items: center;
+    }
+
+    [pseudo="indicator"] {
+      margin-inline-start: auto;
     }
 
     tp-popover {
@@ -264,6 +281,9 @@ export class SelectElement extends SignalWatcherLitElement {
       <div pseudo="button" part="button">
         <slot name="button">
           <tp-selected-content part="selected-content"></tp-selected-content>
+          <slot name="indicator">
+            <span part="indicator" pseudo="indicator">▾</span>
+          </slot>
         </slot>
       </div>
       <tp-popover

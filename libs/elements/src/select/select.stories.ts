@@ -148,7 +148,19 @@ export const CustomButton: Story = {
   `,
 };
 
-/** Custom popover content via `slot="popover"` for full control over panel chrome. */
+/**
+ * `slot="popover"` lets the consumer **hide** the default rendering of
+ * `<tp-option>` children and show arbitrary content inside the panel instead.
+ *
+ * The options remain children of `<tp-select>`, so they still register with
+ * the select context and participate in selection/validation/form submission —
+ * they just aren't displayed. Pair it with the programmatic API
+ * (`selectOption` / `value`) or with custom UI inside the slot to drive
+ * selection without the default option list.
+ *
+ * In this demo, the four `<tp-option>`s are kept in context but the panel
+ * shows a custom message and a button that selects programmatically.
+ */
 export const CustomPopoverContent: Story = {
   render: () => html`
     ${demoStyles}
@@ -158,18 +170,35 @@ export const CustomPopoverContent: Story = {
         font-weight: 600;
         border-bottom: 1px solid #e4e4e7;
       }
-      .panel-footer {
-        padding: 0.4rem 0.75rem;
-        font-size: 0.8rem;
-        color: #71717a;
-        border-top: 1px solid #e4e4e7;
+      .panel-body {
+        padding: 0.75rem;
+        display: grid;
+        gap: 0.5rem;
+        font-family: system-ui, sans-serif;
+        font-size: 0.9rem;
+      }
+      .panel-body button {
+        padding: 0.3rem 0.6rem;
+        border: 1px solid #d4d4d8;
+        border-radius: 4px;
+        background: #fafafa;
+        cursor: pointer;
       }
     </style>
-    <tp-select max="3" placeholder="Custom panel">
+    <tp-select max="infinite" placeholder="Featured fruits">
+      <tp-option value="apple">🍎 Apple</tp-option>
+      <tp-option value="banana">🍌 Banana</tp-option>
+      <tp-option value="cherry">🍒 Cherry</tp-option>
+      <tp-option value="grape">🍇 Grape</tp-option>
       <div slot="popover">
-        <div class="panel-header">Fruits</div>
-        ${fruitOptions}
-        <div class="panel-footer">Pick up to 3</div>
+        <div class="panel-header">Featured</div>
+        <div class="panel-body">
+          <span>Options are in context but hidden — pick via the button.</span>
+          <button @click=${(e: Event) => {
+            const select = (e.currentTarget as HTMLElement).closest("tp-select") as SelectElement;
+            select.value = "apple,cherry";
+          }}>Pick apple + cherry</button>
+        </div>
       </div>
     </tp-select>
   `,

@@ -1,7 +1,7 @@
 {
   "name": "@telperion/elements",
   "version": "0.0.0",
-  "description": "Framework-agnostic web components built with Lit: Material Symbols / Simple Icons / theSVG icons, declarative client-side router, drag-and-drop primitives, details accordion with FIFO open caps, and a CSS-anchored popover.",
+  "description": "Framework-agnostic web components built with Lit: Material Symbols / Simple Icons / theSVG icons, declarative client-side router, drag-and-drop primitives, details accordion with FIFO open caps, a CSS-anchored popover, and a form-associated selectbox with single/multi-select.",
   "keywords": [
     "web-components",
     "custom-elements",
@@ -22,7 +22,11 @@
     "accordion",
     "popover",
     "popover-api",
-    "css-anchor-positioning"
+    "css-anchor-positioning",
+    "select",
+    "selectbox",
+    "multi-select",
+    "form-associated"
   ],
   "homepage": "https://open-source.telperion.tr/elements",
   "repository": {

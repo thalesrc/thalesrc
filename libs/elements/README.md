@@ -62,6 +62,9 @@ Use the **explicit `/iife/...` path** so the CDN serves the standalone bundle (s
 
 <!-- Or just the popover module (TelperionElements.Popover) -->
 <script src="https://unpkg.com/@telperion/elements/iife/popover/index.js"></script>
+
+<!-- Or just the select module (TelperionElements.Select) -->
+<script src="https://unpkg.com/@telperion/elements/iife/select/index.js"></script>
 ```
 
 Each per-module bundle is fully self-contained: side-effect imports register the custom elements as soon as the script is evaluated. jsDelivr (`https://cdn.jsdelivr.net/npm/@telperion/elements/iife/...`) and other npm CDNs work the same way.
@@ -202,6 +205,48 @@ import "@telperion/elements/popover";
 ```
 
 [Popover Documentation →](./src/popover/README.md)
+
+---
+
+### Select
+
+Form-associated, framework-agnostic selectbox built on `<tp-popover>`. Single-select by default; switches to multi-select with FIFO eviction via `max`. Selection state is signal-backed and discoverable across nested shadow DOM boundaries via `@lit/context`.
+
+**Includes:**
+- `<tp-select>` &mdash; the selectbox itself
+- `<tp-option>` &mdash; a single selectable item
+- `<tp-selected-content>` &mdash; live mirror of the current selection (used as the trigger label by default)
+
+**Features:**
+- Form-associated custom element with full `<form>` integration via `ElementInternals` (`name`, `disabled`, `required`, reset/restore callbacks, `validity`)
+- `max` attribute &mdash; `1` for single-select, any positive integer for multi-select with FIFO eviction at the cap, or `infinite` for unbounded selection
+- Single-select submits a string; multi-select submits a `FormData` with one entry per value (matching native `<select multiple>`)
+- Auto-closes the popover when a selection fills the quota; stays open while accumulating in multi-select
+- Three slots: `slot="button"` (replace trigger), `slot="popover"` (replace panel content while keeping `<tp-option>` children registered for selection / validation / submission), and the default slot (option list)
+- `<tp-selected-content>` works anywhere in the descendant composed tree &mdash; including across shadow DOM boundaries
+- Signal-driven re-rendering via the `SignalWatcher` mixin &mdash; no manual change listeners
+
+#### JS/TS
+```ts
+import "@telperion/elements/select";
+```
+
+#### HTML
+```html
+<tp-select name="fruit" required placeholder="Pick a fruit">
+  <tp-option value="apple">Apple</tp-option>
+  <tp-option value="banana">Banana</tp-option>
+  <tp-option value="cherry">Cherry</tp-option>
+</tp-select>
+
+<!-- Multi-select with FIFO cap of 3 -->
+<tp-select name="tags" max="3">…</tp-select>
+
+<!-- Unbounded multi-select -->
+<tp-select name="tags" max="infinite">…</tp-select>
+```
+
+[Select Documentation →](./src/select/README.md)
 
 ---
 
