@@ -1,7 +1,7 @@
 import { consume } from "@lit/context";
 import { css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import { DomClone } from '@thalesrc/dom-utils';
+import { DomClone } from '@telperion/dom-utils';
 
 import { SignalWatcherLitElement } from "../utils/signal-watcher-lit-element";
 import type { SelectElement } from "./select.element";

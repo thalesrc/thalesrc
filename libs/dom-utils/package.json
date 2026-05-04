@@ -1,5 +1,5 @@
 {
-  "name": "@thalesrc/dom-utils",
+  "name": "@telperion/dom-utils",
   "version": "0.0.0",
   "description": "DOM utility functions for web development",
   "keywords": [
@@ -23,10 +23,10 @@
     "visibility",
     "position"
   ],
-  "homepage": "https://dom-utils.thalesrc.com",
+  "homepage": "https://open-source.telperion.tr/dom-utils",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thalesrc/thalesrc.git",
+    "url": "https://github.com/telperiontech/telperion.git",
     "directory": "libs/dom-utils"
   },
   "type": "module",

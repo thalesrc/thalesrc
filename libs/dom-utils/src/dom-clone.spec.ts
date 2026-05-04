@@ -55,9 +55,7 @@ describe('DomClone', () => {
   });
 
   it('mirrors child insertions and removals', async () => {
-    const mirror = new DomClone(target);
-
-    const added = document.createElement('b');
+    const mirror = new DomClone(target);    const added = document.createElement('b');
     added.textContent = 'new';
     target.appendChild(added);
     await flush();

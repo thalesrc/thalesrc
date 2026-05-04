@@ -56,7 +56,9 @@ TypeScript-specific utility types and helper functions built on top of the TypeS
 
 ### Web & DOM Utilities
 
-#### [@thalesrc/dom-utils](libs/dom-utils)
+#### [@telperion/dom-utils](libs/dom-utils)
+[![npm](https://img.shields.io/npm/v/@telperion/dom-utils.svg)](https://www.npmjs.com/package/@telperion/dom-utils)
+[![npm](https://img.shields.io/npm/dm/@telperion/dom-utils.svg)](https://www.npmjs.com/package/@telperion/dom-utils)
 
 Utility functions for DOM manipulation and browser APIs. Simplifies common DOM operations with a modern, type-safe API.
 

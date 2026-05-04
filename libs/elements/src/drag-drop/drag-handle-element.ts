@@ -1,4 +1,4 @@
-import { getParents } from "@thalesrc/dom-utils/get-parents";
+import { getParents } from "@telperion/dom-utils/get-parents";
 import { html, LitElement, type TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 

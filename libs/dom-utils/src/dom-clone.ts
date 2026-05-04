@@ -58,20 +58,25 @@ export class DomClone<T extends Element = Element> {
   #apply(records: MutationRecord[]): void {
     for (const record of records) {
       const path = this.#pathTo(record.target);
+
       if (!path) continue;
 
       const mirrored = this.#descend(path);
+
       if (!mirrored) continue;
 
       switch (record.type) {
         case 'attributes':
           this.#syncAttribute(record, mirrored as Element);
+
           break;
         case 'characterData':
           mirrored.nodeValue = record.target.nodeValue;
+
           break;
         case 'childList':
           this.#rebuildChildren(record.target as Node, mirrored);
+
           break;
       }
     }
@@ -79,6 +84,7 @@ export class DomClone<T extends Element = Element> {
 
   #syncAttribute(record: MutationRecord, mirrored: Element): void {
     const name = record.attributeName;
+
     if (!name) return;
 
     const ns = record.attributeNamespace ?? null;
@@ -99,6 +105,7 @@ export class DomClone<T extends Element = Element> {
 
   #rebuildChildren(source: Node, mirrored: Node): void {
     while (mirrored.firstChild) mirrored.removeChild(mirrored.firstChild);
+
     for (const child of Array.from(source.childNodes)) {
       mirrored.appendChild(child.cloneNode(true));
     }
@@ -113,22 +120,28 @@ export class DomClone<T extends Element = Element> {
 
     const path: number[] = [];
     let current: Node | null = node;
+
     while (current && current !== this.#target) {
       const parent: Node | null = current.parentNode;
+
       if (!parent) return null;
       path.push(Array.prototype.indexOf.call(parent.childNodes, current));
       current = parent;
     }
+
     return current === this.#target ? path.reverse() : null;
   }
 
   #descend(path: number[]): Node | null {
     let node: Node = this.clone;
+
     for (const index of path) {
       const next = node.childNodes[index];
+
       if (!next) return null;
       node = next;
     }
+
     return node;
   }
 }

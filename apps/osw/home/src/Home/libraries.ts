@@ -61,7 +61,7 @@ export const libraries: Library[] = [
 		type: 'npm'
 	},
 	{
-		name: '@thalesrc/dom-utils',
+		name: '@telperion/dom-utils',
 		description: 'Essential DOM manipulation and query utilities. Simplify browser interactions with intuitive helper functions for modern web development.',
 		category: 'Browser',
 		emoji: '🎨',

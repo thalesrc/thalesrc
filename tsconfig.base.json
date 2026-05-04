@@ -19,6 +19,8 @@
       "@telperion/ng-pack/common": ["libs/ng-pack/common/src/index.ts"],
       "@telperion/ng-pack/tsf": ["libs/ng-pack/tsf/src/index.ts"],
       "@telperion/ng-pack/utils": ["libs/ng-pack/utils/src/index.ts"],
+      "@telperion/dom-utils": ["libs/dom-utils/src/index.ts"],
+      "@telperion/dom-utils/*": ["libs/dom-utils/src/*"],
       "@thalesrc/dom-utils": ["libs/dom-utils/src/index.ts"],
       "@thalesrc/dom-utils/*": ["libs/dom-utils/src/*"],
       "@thalesrc/elements": ["libs/elements/src/index.ts"],
