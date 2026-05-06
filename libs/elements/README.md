@@ -65,6 +65,9 @@ Use the **explicit `/iife/...` path** so the CDN serves the standalone bundle (s
 
 <!-- Or just the select module (TelperionElements.Select) -->
 <script src="https://unpkg.com/@telperion/elements/iife/select/index.js"></script>
+
+<!-- Or just the button module (TelperionElements.Button) -->
+<script src="https://unpkg.com/@telperion/elements/iife/button/index.js"></script>
 ```
 
 Each per-module bundle is fully self-contained: side-effect imports register the custom elements as soon as the script is evaluated. jsDelivr (`https://cdn.jsdelivr.net/npm/@telperion/elements/iife/...`) and other npm CDNs work the same way.
@@ -247,6 +250,45 @@ import "@telperion/elements/select";
 ```
 
 [Select Documentation →](./src/select/README.md)
+
+---
+
+### Button
+
+Framework-agnostic, form-associated button built with Lit. Behaves like the native `<button>` element — tab-selectable, activates on `Space` / `Enter`, and submits or resets its containing form via `type="submit"` / `type="reset"`.
+
+**Includes:**
+- `<tp-button>` &mdash; the button itself
+
+**Features:**
+- Three variants: `solid` &middot; `outline` &middot; `text`
+- Form-associated via `ElementInternals` &mdash; `type="submit"` calls `form.requestSubmit()`, `type="reset"` calls `form.reset()`, and `.form` mirrors `HTMLButtonElement.form`
+- Tab-selectable out of the box (`tabindex="0"`); `disabled` removes the button from the tab order, blocks click/keyboard activation, and sets `aria-disabled`
+- `Space` / `Enter` activation matching native button semantics
+- Announces `role="button"` to assistive technology through element internals
+- Palette-driven color via the shared `ShadeMixerLitElement` mixin: pick a `color` token (`primary`, `secondary`, `success`, &hellip;) and tune intensity with `shade` (`0`&ndash;`1000`, `500` is the base color); `mixer` (`none` / `black` / `white`) is auto-derived from `shade`
+- **Themable design system**: every palette token (`--tp-color-primary`, `--tp-color-success`, &hellip;) is overridable at `:root` or any ancestor; add brand-specific names with a single rule (`tp-button[color="brand"] { --tp-element-color: …; }`)
+- Light-DOM rendering so consumer styling (Tailwind, CSS variables, design tokens) applies directly; pure-CSS hover, focus, and active transitions
+
+#### JS/TS
+```ts
+import "@telperion/elements/button";
+```
+
+#### HTML
+```html
+<tp-button>Click me</tp-button>
+<tp-button variant="outline" color="success">Save</tp-button>
+<tp-button variant="text" color="danger" disabled>Delete</tp-button>
+
+<form>
+  <input name="email" type="email" required />
+  <tp-button type="submit" color="primary">Subscribe</tp-button>
+  <tp-button type="reset" variant="outline">Reset</tp-button>
+</form>
+```
+
+[Button Documentation →](./src/button/README.md)
 
 ---
 

@@ -18,3 +18,6 @@ export * from './popover';
 // Select components
 export * from './select';
 
+// Button components
+export * from './button';
+
