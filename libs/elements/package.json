@@ -27,7 +27,8 @@
     "selectbox",
     "multi-select",
     "button",
-    "form-associated"
+    "form-associated",
+    "themeable"
   ],
   "homepage": "https://open-source.telperion.tr/elements",
   "repository": {
