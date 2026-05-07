@@ -502,10 +502,11 @@ export class SelectElement extends SignalWatcherLitElement {
    * select.togglePopover(false); // force close
    * ```
    */
-  override togglePopover(options?: TogglePopoverOptions | boolean): boolean {
+  override togglePopover(options?: { force?: boolean } | boolean): boolean {
     const popover = this.shadowRoot?.querySelector("tp-popover");
     if (!popover) return false;
-    return popover.togglePopover(options);
+    const force = typeof options === "boolean" ? options : options?.force;
+    return popover.togglePopover(force);
   }
 
   [REGISTER_OPTION](option: OptionElement): void {
