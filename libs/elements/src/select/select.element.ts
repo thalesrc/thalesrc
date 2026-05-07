@@ -509,8 +509,8 @@ export class SelectElement extends SignalWatcherLitElement {
    * select.togglePopover(false); // force close
    * ```
    */
-  override togglePopover(options?: { force?: boolean } | boolean): boolean {
-    return this.#popover.togglePopover(options);
+  override togglePopover(): boolean {
+    return this.#popover.togglePopover();
   }
 
   /**
@@ -550,8 +550,8 @@ export class SelectElement extends SignalWatcherLitElement {
    * document.querySelector('tp-select').showPopover();
    * ```
    */
-  override showPopover(options?: ShowPopoverOptions): void {
-    this.#popover.showPopover(options);
+  override showPopover(): void {
+    this.#popover.showPopover();
   }
 
   [REGISTER_OPTION](option: OptionElement): void {
