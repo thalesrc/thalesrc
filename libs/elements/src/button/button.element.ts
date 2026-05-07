@@ -54,6 +54,9 @@ declare global {
  *
  * @cssprop --tp-button-color - Resolved background/text color (defaults to the calculated palette color).
  * @cssprop --tp-button-contrast-color - Resolved contrast color used for `solid` text.
+ * @cssprop --tp-button-active-mixer-color - Color blended into `--tp-button-color` to compute the hover/active color. Defaults to `transparent` for `outline` / `ghost` (subtle tint) and `var(--tp-color-black)` for `solid` / `text` (slight darken).
+ * @cssprop --tp-button-active-mixer-percentage - Amount of `--tp-button-color` retained when blending against the mixer color. Defaults to `10%` for `outline` / `ghost` and `80%` for `solid` / `text`. Lower values produce a stronger hover effect.
+ * @cssprop --tp-button-active-color - Final hover/active color, computed as `color-mix(in xyz, var(--tp-button-color) var(--tp-button-active-mixer-percentage), var(--tp-button-active-mixer-color) calc(100% - var(--tp-button-active-mixer-percentage)))`. Override directly to fully customize the hover color.
  *
  * @example
  * ```html
@@ -78,6 +81,9 @@ export class ButtonElement extends ShadeMixerLitElement {
           ${ShadeMixerLitElement.shadedElementStyles}
           --tp-button-color: var(--tp-calc-element-color);
           --tp-button-contrast-color: var(--tp-calc-contrast-color);
+          --tp-button-active-mixer-color: transparent;
+          --tp-button-active-mixer-percentage: 10%;
+          --tp-button-active-color: color-mix(in xyz, var(--tp-button-color) var(--tp-button-active-mixer-percentage), var(--tp-button-active-mixer-color) calc(100% - var(--tp-button-active-mixer-percentage)));
           display: inline-block;
           border: 1px solid transparent;
           cursor: pointer;
@@ -109,25 +115,27 @@ export class ButtonElement extends ShadeMixerLitElement {
           &[variant="ghost"] {
             padding-inline: 1em;
             padding-block: 0.5em;
+
+            &:hover {
+              background-color: var(--tp-button-active-color);
+            }
           }
 
           &[variant="outline"],
           &[variant="ghost"] {
             color: var(--tp-button-color);
             background-color: transparent;
+          }
 
-            &:hover {
-              background-color: color-mix(in xyz, var(--tp-button-color) 10%, transparent 90%);
-            }
+          &[variant="solid"],
+          &[variant="text"] {
+            --tp-button-active-mixer-color: var(--tp-color-black);
+            --tp-button-active-mixer-percentage: 80%;
           }
 
           &[variant="solid"] {
             background-color: var(--tp-button-color);
             color: var(--tp-button-contrast-color);
-
-            &:hover {
-              background-color: color-mix(in xyz, var(--tp-button-color) 80%, var(--tp-color-black) 20%);
-            }
           }
 
           &[variant="outline"] {
@@ -143,7 +151,7 @@ export class ButtonElement extends ShadeMixerLitElement {
             background-color: transparent;
 
             &:hover {
-              color: color-mix(in xyz, var(--tp-button-color) 80%, var(--tp-color-black) 20%);
+              color: var(--tp-button-active-color);
               text-decoration: underline;
             }
           }

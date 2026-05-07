@@ -28,10 +28,13 @@ Framework-agnostic, form-associated button web component built with [Lit](https:
 
 ## CSS custom properties
 
-| Property                       | Default                       | Description                                              |
-| ------------------------------ | ----------------------------- | -------------------------------------------------------- |
-| `--tp-button-color`            | `var(--tp-calc-element-color)`| Background color for `solid`, foreground for the others. |
-| `--tp-button-contrast-color`   | `var(--tp-calc-contrast-color)`| Text color used by `solid`.                              |
+| Property                              | Default                                                                                                   | Description                                                                                                                            |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `--tp-button-color`                   | `var(--tp-calc-element-color)`                                                                            | Background color for `solid`, foreground for the others.                                                                               |
+| `--tp-button-contrast-color`          | `var(--tp-calc-contrast-color)`                                                                           | Text color used by `solid`.                                                                                                            |
+| `--tp-button-active-mixer-color`      | `transparent` (`outline` / `ghost`)<br>`var(--tp-color-black)` (`solid` / `text`)                         | Color blended into `--tp-button-color` to compute the hover/active color.                                                              |
+| `--tp-button-active-mixer-percentage` | `10%` (`outline` / `ghost`)<br>`80%` (`solid` / `text`)                                                   | Amount of `--tp-button-color` retained in the mix. Lower values produce a stronger hover effect.                                       |
+| `--tp-button-active-color`            | `color-mix(in xyz, var(--tp-button-color) var(--tp-button-active-mixer-percentage), var(--tp-button-active-mixer-color) calc(100% - var(--tp-button-active-mixer-percentage)))` | Final hover/active color. Override directly to bypass the mixer math entirely. |
 
 The element also inherits the full set of palette tokens from `ShadeMixerLitElement` (`--tp-color-primary`, `--tp-color-success`, &hellip;), which can be overridden globally to re-theme every shade-mixer element at once.
 
@@ -103,6 +106,38 @@ The same trick works scoped to a section &mdash; declare the rule inside any sel
 ```css
 .checkout tp-button[color="paypal"] {
   --tp-element-color: hsl(214 80% 35%);
+}
+```
+
+### Customize the hover / active color
+
+Hover (and the matching `:active` background) is computed by mixing `--tp-button-color` with `--tp-button-active-mixer-color`, controlled by `--tp-button-active-mixer-percentage`. Defaults differ per variant:
+
+| Variant            | `--tp-button-active-mixer-color` | `--tp-button-active-mixer-percentage` | Effect                        |
+| ------------------ | -------------------------------- | ------------------------------------- | ----------------------------- |
+| `outline` / `ghost`| `transparent`                    | `10%`                                 | Subtle tint of the base color |
+| `solid` / `text`   | `var(--tp-color-black)`          | `80%`                                 | Slight darken of the base     |
+
+Override either variable to tune the hover effect without touching the rest of the cascade:
+
+```css
+/* Stronger tint on outline buttons */
+tp-button[variant="outline"] {
+  --tp-button-active-mixer-percentage: 25%;
+}
+
+/* Mix toward white on dark themes */
+.dark-panel tp-button[variant="solid"] {
+  --tp-button-active-mixer-color: var(--tp-color-white);
+  --tp-button-active-mixer-percentage: 85%;
+}
+```
+
+If the mixer math doesn't fit your design, override the final `--tp-button-active-color` directly:
+
+```css
+tp-button[color="brand"] {
+  --tp-button-active-color: hsl(265 75% 35%); /* exact hover color */
 }
 ```
 
