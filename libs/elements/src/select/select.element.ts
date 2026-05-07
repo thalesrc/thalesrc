@@ -56,6 +56,16 @@ declare global {
      * @attr required    - Empty selection triggers `valueMissing`.
      * @attr open        - Reflects the popover's open state (read-only).
      *
+     * @method togglePopover - Open, close, or toggle the dropdown popover.
+     *                        Overrides the native
+     *                        {@link HTMLElement.togglePopover} and delegates
+     *                        to the inner `<tp-popover>` (the host element
+     *                        itself is not the popover). Pass `true` /
+     *                        `false` (or `{ force }`) to force a state, or
+     *                        omit to toggle. Returns the resulting open
+     *                        state, or `false` if the inner popover isn't
+     *                        reachable yet.
+     *
      * @slot button    - Replaces the default trigger button.
      * @slot indicator - Replaces the default open/close caret (`▾`) shown
      *                   inside the trigger button. Rendered next to
@@ -466,6 +476,36 @@ export class SelectElement extends SignalWatcherLitElement {
     } else {
       this.selectOption(option);
     }
+  }
+
+  /**
+   * Open, close, or toggle the dropdown popover.
+   *
+   * Overrides the native {@link HTMLElement.togglePopover} so callers can
+   * drive the select from outside without reaching into the shadow DOM.
+   * `<tp-select>` itself is not the popover element — the actual popover
+   * lives inside its shadow root — so the call is delegated to the inner
+   * `<tp-popover>`.
+   *
+   * @param options Same shape as the native API: pass `true` to force open,
+   *   `false` to force close, or a `{ force }` options bag. Omit to toggle
+   *   between the two states.
+   * @returns `true` if the popover ends up open, `false` otherwise (matching
+   *   the native return value). Returns `false` early if the inner popover
+   *   isn't reachable yet (for example, before the first render).
+   *
+   * @example
+   * ```ts
+   * const select = document.querySelector('tp-select');
+   * select.togglePopover();      // toggle
+   * select.togglePopover(true);  // force open
+   * select.togglePopover(false); // force close
+   * ```
+   */
+  override togglePopover(options?: TogglePopoverOptions | boolean): boolean {
+    const popover = this.shadowRoot?.querySelector("tp-popover");
+    if (!popover) return false;
+    return popover.togglePopover(options);
   }
 
   [REGISTER_OPTION](option: OptionElement): void {

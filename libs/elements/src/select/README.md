@@ -65,6 +65,7 @@ All parts below sit inside `<tp-select>`'s shadow root, so they're styled with `
 | `selectOption(option)`                       | Selects an option (FIFO-evicts the oldest when over `max`).                                  |
 | `deselectOption(option)`                     | Removes an option from the current selection.                                                |
 | `toggleOption(option)`                       | Toggles, applying the same FIFO eviction.                                                    |
+| `togglePopover(force?)`                      | Open / close / toggle the dropdown popover. Overrides the native [`HTMLElement.togglePopover`](https://developer.mozilla.org/docs/Web/API/HTMLElement/togglePopover) and delegates to the inner `<tp-popover>` (the host element itself is not the popover). Pass `true` / `false` (or `{ force }`) to force a state, or omit to toggle. Returns the resulting open state. |
 | `value: string`                              | Get joined values; set with a comma-separated string to map back to options.                 |
 | `selectedOptions: Signal<WeakRef<…>[]>`      | Underlying signal — read for fine-grained reactivity in custom UI.                           |
 | `internals` / `form` / `validity` / …        | Standard form-associated surface from `ElementInternals`.                                    |
