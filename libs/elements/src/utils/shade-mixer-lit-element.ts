@@ -45,18 +45,20 @@ export type ShadeMixerType = "none" | "black" | "white";
 export class ShadeMixerLitElement extends LitElement {
   static rootStyles = (() => {
     const style = css`
-      :root {
-        --tp-color-white: hsl(0 0% 100%);
-        --tp-color-black: hsl(0 0% 0%);
-        --tp-color-contrast: var(--tp-color-black);
-        --tp-color-primary: hsl(220 90% 56%);
-        --tp-color-secondary: hsl(340 82% 52%);
-        --tp-color-tertiary: hsl(50 100% 50%);
-        --tp-color-quaternary: hsl(120 100% 40%);
-        --tp-color-success: hsl(140 70% 40%);
-        --tp-color-danger: hsl(0 70% 50%);
-        --tp-color-warning: hsl(45 100% 50%);
-        --tp-color-neutral: color-mix(in xyz, var(--tp-color-white) 50%, var(--tp-color-black) 50%);
+      @layer properties {
+        :root {
+          --tp-color-white: hsl(0 0% 100%);
+          --tp-color-black: hsl(0 0% 0%);
+          --tp-color-contrast: var(--tp-color-black);
+          --tp-color-primary: hsl(220 90% 56%);
+          --tp-color-secondary: hsl(340 82% 52%);
+          --tp-color-tertiary: hsl(50 100% 50%);
+          --tp-color-quaternary: hsl(120 100% 40%);
+          --tp-color-success: hsl(140 70% 40%);
+          --tp-color-danger: hsl(0 70% 50%);
+          --tp-color-warning: hsl(45 100% 50%);
+          --tp-color-neutral: color-mix(in xyz, var(--tp-color-white) 50%, var(--tp-color-black) 50%);
+        }
       }
     `;
 
