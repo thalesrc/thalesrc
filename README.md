@@ -64,7 +64,7 @@ Utility functions for DOM manipulation and browser APIs. Simplifies common DOM o
 
 **Highlights**: DOM manipulation, Browser API helpers, Event handling
 
-#### [@telperion/elements](https://www.npmjs.com/package/@telperion/elements)
+#### [@telperion/elements](libs/elements)
 [![npm](https://img.shields.io/npm/v/@telperion/elements.svg)](https://www.npmjs.com/package/@telperion/elements)
 [![npm](https://img.shields.io/npm/dm/@telperion/elements.svg)](https://www.npmjs.com/package/@telperion/elements)
 
