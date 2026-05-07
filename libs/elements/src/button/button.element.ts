@@ -72,71 +72,74 @@ export class ButtonElement extends ShadeMixerLitElement {
   static formAssociated = true;
   static override styles = (() => {
     const style = css`
-      tp-button {
-        ${ShadeMixerLitElement.shadedElementStyles}
-        --tp-button-color: var(--tp-calc-element-color);
-        --tp-button-contrast-color: var(--tp-calc-contrast-color);
-        display: inline-block;
-        border: 1px solid transparent;
-        cursor: pointer;
-        outline-offset: 1em;
-        outline: 1px solid transparent;
-        transform: scale(1);
-        transition: all 0.18s ease;
-        transition-property: background-color, color, outline-color, outline-offset, transform, border-width;
+      @layer base {
+        tp-button {
+          ${ShadeMixerLitElement.shadedElementStyles}
+          --tp-button-color: var(--tp-calc-element-color);
+          --tp-button-contrast-color: var(--tp-calc-contrast-color);
+          display: inline-block;
+          border: 1px solid transparent;
+          cursor: pointer;
+          outline-offset: 1em;
+          outline: 1px solid transparent;
+          transform: scale(1);
+          transition: all 0.18s ease;
+          transition-property: background-color, color, outline-color, outline-offset, transform, border-width;
 
-        &:active {
-          transform: scale(0.98);
-        }
-
-        &:not(:active):focus {
-          outline-color: var(--tp-button-color);
-          outline-offset: 2px;
-        }
-
-        &[disabled] {
-          --tp-button-color: color-mix(in xyz, var(--tp-calc-element-color) 50%, var(--tp-color-white) 50%);
-          --tp-button-contrast-color: rgb(from var(--tp-calc-contrast-color) r g b / 50%);
-          pointer-events: none;
-          user-select: none;
-          cursor: not-allowed;
-        }
-
-        &[variant="solid"],
-        &[variant="outline"] {
-          padding: 0.5em 1em;
-        }
-
-        &[variant="solid"] {
-          background-color: var(--tp-button-color);
-          color: var(--tp-button-contrast-color);
-
-          &:hover {
-            background-color: color-mix(in xyz, var(--tp-button-color) 80%, var(--tp-color-black) 20%);
-          }
-        }
-
-        &[variant="outline"] {
-          color: var(--tp-button-color);
-          border-color: var(--tp-button-color);
-          background-color: transparent;
-
-          &:hover {
-            background-color: color-mix(in xyz, var(--tp-button-color) 10%, transparent 90%);
+          &:active {
+            transform: scale(0.98);
           }
 
-          &:focus-visible {
-            outline-color: transparent;
+          &:not(:active):focus {
+            outline-color: var(--tp-button-color);
+            outline-offset: 2px;
           }
-        }
 
-        &[variant="text"] {
-          color: var(--tp-button-color);
-          background-color: transparent;
+          &[disabled] {
+            --tp-button-color: color-mix(in xyz, var(--tp-calc-element-color) 50%, var(--tp-color-white) 50%);
+            --tp-button-contrast-color: rgb(from var(--tp-calc-contrast-color) r g b / 50%);
+            pointer-events: none;
+            user-select: none;
+            cursor: not-allowed;
+          }
 
-          &:hover {
-            color: color-mix(in xyz, var(--tp-button-color) 80%, var(--tp-color-black) 20%);
-            text-decoration: underline;
+          &[variant="solid"],
+          &[variant="outline"] {
+            padding-inline: 1em;
+            padding-block: 0.5em;
+          }
+
+          &[variant="solid"] {
+            background-color: var(--tp-button-color);
+            color: var(--tp-button-contrast-color);
+
+            &:hover {
+              background-color: color-mix(in xyz, var(--tp-button-color) 80%, var(--tp-color-black) 20%);
+            }
+          }
+
+          &[variant="outline"] {
+            color: var(--tp-button-color);
+            border-color: var(--tp-button-color);
+            background-color: transparent;
+
+            &:hover {
+              background-color: color-mix(in xyz, var(--tp-button-color) 10%, transparent 90%);
+            }
+
+            &:focus-visible {
+              outline-color: transparent;
+            }
+          }
+
+          &[variant="text"] {
+            color: var(--tp-button-color);
+            background-color: transparent;
+
+            &:hover {
+              color: color-mix(in xyz, var(--tp-button-color) 80%, var(--tp-color-black) 20%);
+              text-decoration: underline;
+            }
           }
         }
       }
