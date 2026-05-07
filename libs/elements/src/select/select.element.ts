@@ -63,8 +63,13 @@ declare global {
      *                        itself is not the popover). Pass `true` /
      *                        `false` (or `{ force }`) to force a state, or
      *                        omit to toggle. Returns the resulting open
-     *                        state, or `false` if the inner popover isn't
-     *                        reachable yet.
+     *                        state.
+     * @method showPopover   - Open the dropdown popover. Overrides the native
+     *                        {@link HTMLElement.showPopover} and delegates to
+     *                        the inner `<tp-popover>`.
+     * @method hidePopover   - Close the dropdown popover. Overrides the native
+     *                        {@link HTMLElement.hidePopover} and delegates to
+     *                        the inner `<tp-popover>`.
      *
      * @slot button    - Replaces the default trigger button.
      * @slot indicator - Replaces the default open/close caret (`▾`) shown
@@ -170,6 +175,9 @@ export class SelectElement extends SignalWatcherLitElement {
   `;
 
   #options = new Set<OptionElement>();
+  get #popover(): PopoverElement {
+    return this.shadowRoot?.querySelector("tp-popover")!;
+  }
 
   /**
    * Provides this `<tp-select>` instance to descendants via `@lit/context`,
@@ -180,7 +188,6 @@ export class SelectElement extends SignalWatcherLitElement {
   readonly self: SelectElement = this;
 
   readonly selectedOptions = signal<WeakRef<OptionElement>[]>([]);
-
 
   readonly #value = computed(() =>
     this.selectedOptions
@@ -503,10 +510,48 @@ export class SelectElement extends SignalWatcherLitElement {
    * ```
    */
   override togglePopover(options?: { force?: boolean } | boolean): boolean {
-    const popover = this.shadowRoot?.querySelector("tp-popover");
-    if (!popover) return false;
-    const force = typeof options === "boolean" ? options : options?.force;
-    return popover.togglePopover(force);
+    return this.#popover.togglePopover(options);
+  }
+
+  /**
+   * Close the dropdown popover.
+   *
+   * Overrides the native {@link HTMLElement.hidePopover} so callers can
+   * close the select from outside without reaching into the shadow DOM.
+   * `<tp-select>` itself is not the popover element — the actual popover
+   * lives inside its shadow root — so the call is delegated to the inner
+   * `<tp-popover>`.
+   *
+   * No-op if the popover is already closed.
+   *
+   * @example
+   * ```ts
+   * document.querySelector('tp-select').hidePopover();
+   * ```
+   */
+  override hidePopover(): void {
+    this.#popover.hidePopover();
+  }
+
+  /**
+   * Open the dropdown popover.
+   *
+   * Overrides the native {@link HTMLElement.showPopover} so callers can
+   * open the select from outside without reaching into the shadow DOM.
+   * `<tp-select>` itself is not the popover element — the actual popover
+   * lives inside its shadow root — so the call is delegated to the inner
+   * `<tp-popover>`.
+   *
+   * @param options Same shape as the native API (e.g. `{ source }` to set
+   *   the invoker for the popover invoker relationship).
+   *
+   * @example
+   * ```ts
+   * document.querySelector('tp-select').showPopover();
+   * ```
+   */
+  override showPopover(options?: ShowPopoverOptions): void {
+    this.#popover.showPopover(options);
   }
 
   [REGISTER_OPTION](option: OptionElement): void {
