@@ -26,13 +26,14 @@ jobs:
           run_install: false
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
+          node-version-file: 'package.json'
           registry-url: 'https://registry.npmjs.org'
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm config set dangerously-allow-all-builds true && pnpm install
 
       - name: Publish
         run: pnpm nx run ng-pack:publish
