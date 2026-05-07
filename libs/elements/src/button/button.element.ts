@@ -6,10 +6,11 @@ import { ShadeMixerLitElement } from "../utils/shade-mixer-lit-element";
  * Visual treatment applied by `<tp-button>`.
  *
  * - `solid`: filled background using the resolved color.
- * - `outline`: transparent background with a colored border and text.
+ * - `outline`: transparent background with a colored border and text; subtle background tint on hover.
+ * - `ghost`: like `outline` but without the border &mdash; transparent background with colored text and the same subtle tint on hover.
  * - `text`: no background or border &mdash; just colored text with an underline on hover.
  */
-export type ButtonVariant = "solid" | "outline" | "text";
+export type ButtonVariant = "solid" | "outline" | "text" | "ghost";
 
 /**
  * Mirrors the native HTML `<button>` `type` attribute.
@@ -44,7 +45,7 @@ declare global {
  *
  * @element tp-button
  *
- * @attr {"solid" | "outline" | "text"} [variant="solid"] - Visual treatment.
+ * @attr {"solid" | "outline" | "ghost" | "text"} [variant="solid"] - Visual treatment.
  * @attr {"button" | "submit" | "reset"} [type="button"] - Native button semantics.
  * @attr {boolean} [disabled=false] - Disables interaction and removes the button from the tab order.
  * @attr {string} [color="contrast"] - Palette token (`primary`, `secondary`, `success`, &hellip;) inherited from {@link ShadeMixerLitElement}.
@@ -104,9 +105,20 @@ export class ButtonElement extends ShadeMixerLitElement {
           }
 
           &[variant="solid"],
-          &[variant="outline"] {
+          &[variant="outline"],
+          &[variant="ghost"] {
             padding-inline: 1em;
             padding-block: 0.5em;
+          }
+
+          &[variant="outline"],
+          &[variant="ghost"] {
+            color: var(--tp-button-color);
+            background-color: transparent;
+
+            &:hover {
+              background-color: color-mix(in xyz, var(--tp-button-color) 10%, transparent 90%);
+            }
           }
 
           &[variant="solid"] {
@@ -119,13 +131,7 @@ export class ButtonElement extends ShadeMixerLitElement {
           }
 
           &[variant="outline"] {
-            color: var(--tp-button-color);
             border-color: var(--tp-button-color);
-            background-color: transparent;
-
-            &:hover {
-              background-color: color-mix(in xyz, var(--tp-button-color) 10%, transparent 90%);
-            }
 
             &:focus-visible {
               outline-color: transparent;

@@ -20,7 +20,7 @@ interface Args {
   disabled: boolean;
 }
 
-const VARIANTS: ButtonVariant[] = ["solid", "outline", "text"];
+const VARIANTS: ButtonVariant[] = ["solid", "outline", "text", "ghost"];
 const TYPES: ButtonType[] = ["button", "submit", "reset"];
 const COLORS: string[] = [
   "contrast",

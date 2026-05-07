@@ -261,7 +261,7 @@ Framework-agnostic, form-associated button built with Lit. Behaves like the nati
 - `<tp-button>` &mdash; the button itself
 
 **Features:**
-- Three variants: `solid` &middot; `outline` &middot; `text`
+- Four variants: `solid` &middot; `outline` &middot; `ghost` &middot; `text` (`ghost` is `outline` without the border)
 - Form-associated via `ElementInternals` &mdash; `type="submit"` calls `form.requestSubmit()`, `type="reset"` calls `form.reset()`, and `.form` mirrors `HTMLButtonElement.form`
 - Tab-selectable out of the box (`tabindex="0"`); `disabled` removes the button from the tab order, blocks click/keyboard activation, and sets `aria-disabled`
 - `Space` / `Enter` activation matching native button semantics
@@ -279,6 +279,7 @@ import "@telperion/elements/button";
 ```html
 <tp-button>Click me</tp-button>
 <tp-button variant="outline" color="success">Save</tp-button>
+<tp-button variant="ghost" color="primary">Cancel</tp-button>
 <tp-button variant="text" color="danger" disabled>Delete</tp-button>
 
 <form>

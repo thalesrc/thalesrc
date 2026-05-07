@@ -4,7 +4,7 @@ Framework-agnostic, form-associated button web component built with [Lit](https:
 
 ## Highlights
 
-- Three visual variants: `solid` &middot; `outline` &middot; `text`
+- Four visual variants: `solid` &middot; `outline` &middot; `ghost` &middot; `text`
 - Form-associated via `ElementInternals` &mdash; `type="submit"` calls `form.requestSubmit()`, `type="reset"` calls `form.reset()`, and `.form` mirrors `HTMLButtonElement.form`
 - Tab-selectable out of the box (`tabindex="0"`); `disabled` removes it from the tab order and blocks click + keyboard activation
 - Keyboard activation on `Space` / `Enter`, just like native `<button>`
@@ -17,7 +17,7 @@ Framework-agnostic, form-associated button web component built with [Lit](https:
 
 | Attribute  | Type / values                                                                                 | Default     | Description                                                                                  |
 | ---------- | --------------------------------------------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------- |
-| `variant`  | `solid` \| `outline` \| `text`                                                                | `solid`     | Visual treatment.                                                                            |
+| `variant`  | `solid` \| `outline` \| `ghost` \| `text`                                                     | `solid`     | Visual treatment. `ghost` is `outline` without the border.                                   |
 | `type`     | `button` \| `submit` \| `reset`                                                               | `button`    | Native button semantics. `submit` / `reset` act on the associated `<form>`.                  |
 | `disabled` | boolean                                                                                       | `false`     | Removes the button from the tab order and blocks click/keyboard activation.                  |
 | `color`    | `contrast` \| `primary` \| `secondary` \| `tertiary` \| `quaternary` \| `success` \| `danger` \| `warning` \| `neutral` | `contrast`  | Palette token (inherited from `ShadeMixerLitElement`).                                       |
@@ -148,6 +148,9 @@ import "@telperion/elements/button";
 
 <!-- Outline + success palette -->
 <tp-button variant="outline" color="success">Save</tp-button>
+
+<!-- Ghost: same as outline without the border -->
+<tp-button variant="ghost" color="primary">Cancel</tp-button>
 
 <!-- Text variant in danger color -->
 <tp-button variant="text" color="danger">Delete</tp-button>
