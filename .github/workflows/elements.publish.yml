@@ -33,7 +33,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --ignore-scripts=false
+        run: pnpm config set dangerously-allow-all-builds true && pnpm install
 
       - name: Publish
         run: pnpm nx run elements:publish
