@@ -39,6 +39,21 @@ type OptionDefaults<
   [K in keyof FetcherSignalOptionTypes<Result, Body, Params, QueryParams>]-?: FetcherSignalOptionTypes<Result, Body, Params, QueryParams>[K];
 }
 
+/**
+ * Options accepted by {@link fetcherSignal}.
+ *
+ * Every field accepts a plain value, a `Signal`, a `Promise`, or an `Observable`
+ * of that value. When a reactive option emits a new value, the request is
+ * re-executed (debounced by 10ms).
+ *
+ * - `url` — endpoint URL. Supports `:name` placeholders filled from `params`.
+ * - `method` — HTTP method (default: `'get'`).
+ * - `headers` — request headers.
+ * - `body` — request body for non-`get` methods.
+ * - `queryParams` — query string parameters as a plain object or `HttpParams`.
+ * - `params` — values for `:name` URL placeholders (URL-encoded; missing keys throw).
+ * - `fallback` — initial signal value AND the value emitted when the request errors.
+ */
 export type FetcherSignalOptions<
   Result,
   Body,
@@ -52,12 +67,45 @@ export type FetcherSignalOptions<
     | Observable<FetcherSignalOptionTypes<Result, Body, Params, QueryParams>[K]>;
 }
 
+/**
+ * A `Signal<Result>` extended with request state and a manual reload trigger.
+ *
+ * - call the signal to read the latest result (or `fallback` before the first response)
+ * - `error` — latest error; reset to `null` on each successful response
+ * - `loading` — `true` while a request is in flight, `false` once a value is emitted
+ * - `reload()` — re-run the current request without changing options
+ */
 export type FetcherSignal<Result> = Signal<Result> & {
   error: Signal<Error | null>;
   loading: Signal<boolean>;
   reload(): void;
 }
 
+/**
+ * Creates a reactive HTTP fetcher exposed as a `Signal`.
+ *
+ * Built on Angular's `HttpClient`. Any reactive option ({@link FetcherSignalOptions})
+ * automatically re-triggers the request when it changes. Exposes `loading` and `error`
+ * signals plus a `reload()` method.
+ *
+ * @param options Request configuration. See {@link FetcherSignalOptions}.
+ * @param injector Optional `Injector` for use outside an injection context.
+ * @returns A {@link FetcherSignal} for the response.
+ *
+ * @example
+ * ```ts
+ * const users = fetcherSignal<User[]>({
+ *   url: '/api/users',
+ *   queryParams: computed(() => ({ q: search() })),
+ *   fallback: []
+ * });
+ *
+ * users();          // current value (or fallback)
+ * users.loading();  // boolean
+ * users.error();    // Error | null
+ * users.reload();   // re-run request
+ * ```
+ */
 export function fetcherSignal<
   Result = any,
   Body = null,

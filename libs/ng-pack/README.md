@@ -222,6 +222,61 @@ export class StockTickerComponent {
 
 ---
 
+### Fetcher Signal
+
+**Import:** `@telperion/ng-pack/fetcher-signal`
+
+Reactive, signal-based HTTP fetcher for Angular built on top of `HttpClient` and Angular signals.
+
+#### Key Features
+
+- 🚦 Signal-first API — the result is a `Signal<T>` you read directly in templates
+- 🔁 Reactive options — pass signals, observables, or promises and the request re-runs automatically
+- 🛣️ Declarative `:name` path parameters and query parameters (`Record` or `HttpParams`)
+- ⚠️ Built-in `error` and `loading` signals
+- 🧯 `fallback` value used as initial state and on error
+- 🔄 Manual `reload()` to re-run the current request
+
+#### Quick Start
+
+```typescript
+import { Component, computed, signal } from '@angular/core';
+import { fetcherSignal } from '@telperion/ng-pack/fetcher-signal';
+
+interface User { id: number; name: string; }
+
+@Component({
+  selector: 'app-users',
+  standalone: true,
+  template: `
+    <input [value]="search()" (input)="search.set($any($event.target).value)" />
+
+    @if (users.loading()) {
+      <p>Loading…</p>
+    } @else {
+      <ul>
+        @for (user of users(); track user.id) {
+          <li>{{ user.name }}</li>
+        }
+      </ul>
+    }
+  `
+})
+export class UsersComponent {
+  search = signal('');
+
+  users = fetcherSignal<User[]>({
+    url: '/api/users',
+    queryParams: computed(() => ({ q: this.search() })),
+    fallback: []
+  });
+}
+```
+
+[Full documentation →](./fetcher-signal/README.md)
+
+---
+
 ### Template Signal Forms
 
 **Import:** `@telperion/ng-pack/template-signal-forms`

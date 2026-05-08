@@ -116,6 +116,7 @@ Collection of Angular utilities and libraries organized as secondary entry point
 - **common**: Pipes for extracting keys, values, and entries from Maps, Sets, and plain objects, a `times` pipe for repeating template blocks, an `ObserveSizeDirective` for reactive element size observation, and an `*tngUnless` structural directive (inverse of `*ngIf`)
 - **storage-signals**: Signal-based localStorage/sessionStorage/cookies with reactive updates, nested property access, and configurable cookie options
 - **sse-client**: HttpClient-inspired SSE client with Observable-based streaming, interceptor chain, and reactive real-time updates
+- **fetcher-signal**: Reactive signal-based HTTP fetcher built on `HttpClient` with reactive options, declarative path/query params, built-in `loading`/`error` signals, fallback values, and manual `reload()`
 - **template-signal-forms**: Signal-based forms for template-driven forms _(under construction)_
 - **utils**: Angular utilities including event modifiers, directive-as-service provider, and Promise-based HTTP client with tuple error handling
 
