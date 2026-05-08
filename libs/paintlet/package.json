@@ -34,6 +34,7 @@
   },
   "_exports": [
     "check/",
-    "rain/"
+    "rain/",
+    "low-poly-mesh/"
   ]
 }
