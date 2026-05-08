@@ -76,7 +76,8 @@
               "./storage-signals/README.md": "https://github.com/telperiontech/telperion/tree/main/libs/ng-pack/storage-signals",
               "./utils/README.md": "https://github.com/telperiontech/telperion/tree/main/libs/ng-pack/utils",
               "./sse-client/README.md": "https://github.com/telperiontech/telperion/tree/main/libs/ng-pack/sse-client",
-              "./common/README.md": "https://github.com/telperiontech/telperion/tree/main/libs/ng-pack/common"
+              "./common/README.md": "https://github.com/telperiontech/telperion/tree/main/libs/ng-pack/common",
+              "./fetcher-signal/README.md": "https://github.com/telperiontech/telperion/tree/main/libs/ng-pack/fetcher-signal"
             }
           }
         ],

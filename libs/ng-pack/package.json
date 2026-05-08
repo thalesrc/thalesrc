@@ -39,7 +39,8 @@
   "dependencies": {
     "@telperion/extra-ts-types": "^1.5.0",
     "@telperion/js-utils": "^3.5.0",
-    "@telperion/reactive-storage": "^1.2.0"
+    "@telperion/reactive-storage": "^1.2.0",
+    "@telperion/rx-utils": "^1.6.0"
   },
   "devDependencies": {
     "@angular/cli": "*"

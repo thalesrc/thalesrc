@@ -64,7 +64,8 @@
       "@telperion/ng-pack/storage-signals": [
         "libs/ng-pack/storage-signals/src/index.ts"
       ],
-      "@telperion/ng-pack/sse-client": ["libs/ng-pack/sse-client/src/index.ts"]
+      "@telperion/ng-pack/sse-client": ["libs/ng-pack/sse-client/src/index.ts"],
+      "@telperion/ng-pack/fetcher-signal": ["libs/ng-pack/fetcher-signal/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
