@@ -88,7 +88,11 @@ export class LowPolyMeshPaintlet {
     },
   ];
 
-  static LOW_POLY_DEFAULTS: LowPolyMeshConfig = {
+  static get inputProperties(): string[] {
+    return this.PROPERTIES.map((prop) => prop.name);
+  }
+
+  #LOW_POLY_DEFAULTS: LowPolyMeshConfig = {
     color1: '#ffffff',
     color2: '#a8b4c0',
     cellSize: 60,
@@ -98,25 +102,11 @@ export class LowPolyMeshPaintlet {
     strokeColor: 'rgba(0,0,0,0.08)',
   };
 
-  static get inputProperties(): string[] {
-    return this.PROPERTIES.map((prop) => prop.name);
-  }
-
-  /**
-   * Deterministic 2D hash returning a value in [0, 1).
-   * Implemented as a static method so it survives `Function#toString`
-   * serialization into the paint worklet.
-   */
-  static hash(x: number, y: number, seed: number): number {
-    const v = Math.sin(x * 127.1 + y * 311.7 + seed * 74.7) * 43758.5453123;
-    return v - Math.floor(v);
-  }
-
   /**
    * Extract configuration from CSS custom properties
    */
   #getConfig(properties: StylePropertyMapReadOnly): LowPolyMeshConfig {
-    const d = LowPolyMeshPaintlet.LOW_POLY_DEFAULTS;
+    const d = this.#LOW_POLY_DEFAULTS;
     return {
       color1: properties.get('--tp-low-poly-color-1')?.toString().trim() || d.color1,
       color2: properties.get('--tp-low-poly-color-2')?.toString().trim() || d.color2,
@@ -156,11 +146,11 @@ export class LowPolyMeshPaintlet {
       for (let i = 0; i < cols; i++) {
         const idx = j * cols + i;
         const isEdge = i === 0 || j === 0 || i === cols - 1 || j === rows - 1;
-        const jx = isEdge ? 0 : (LowPolyMeshPaintlet.hash(i, j, seed) - 0.5) * 2 * jitterX;
-        const jy = isEdge ? 0 : (LowPolyMeshPaintlet.hash(i, j, seed + 17.13) - 0.5) * 2 * jitterY;
+        const jx = isEdge ? 0 : (this.#hash(i, j, seed) - 0.5) * 2 * jitterX;
+        const jy = isEdge ? 0 : (this.#hash(i, j, seed + 17.13) - 0.5) * 2 * jitterY;
         px[idx] = i * stepX + jx;
         py[idx] = j * stepY + jy;
-        ph[idx] = LowPolyMeshPaintlet.hash(i, j, seed + 53.91);
+        ph[idx] = this.#hash(i, j, seed + 53.91);
       }
     }
 
@@ -213,6 +203,16 @@ export class LowPolyMeshPaintlet {
     }
 
     ctx.globalAlpha = 1;
+  }
+
+  /**
+   * Deterministic 2D hash returning a value in [0, 1).
+   * Implemented as a static method so it survives `Function#toString`
+   * serialization into the paint worklet.
+   */
+  #hash(x: number, y: number, seed: number): number {
+    const v = Math.sin(x * 127.1 + y * 311.7 + seed * 74.7) * 43758.5453123;
+    return v - Math.floor(v);
   }
 }
 
