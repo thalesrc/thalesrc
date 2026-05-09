@@ -1,1 +1,1 @@
-export { FieldModule } from './lib';
+export * from './lib';

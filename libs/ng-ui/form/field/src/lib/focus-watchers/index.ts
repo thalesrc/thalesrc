@@ -5,3 +5,4 @@ export const NATIVE_FOCUS_WATCHERS = [
 ];
 
 export * from "./focus-watcher";
+export * from "./input-fw.directive";
