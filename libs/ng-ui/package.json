@@ -1,0 +1,32 @@
+{
+  "name": "@telperion/ng-ui",
+  "version": "0.0.0",
+  "description": "Angular UI element library organized as secondary entry points. Includes form, field and other reusable building blocks. Tailwind v4 friendly.",
+  "keywords": [
+    "angular",
+    "angular-ui",
+    "ui",
+    "components",
+    "forms",
+    "tailwind",
+    "tailwindcss",
+    "secondary-entrypoint",
+    "typescript"
+  ],
+  "scripts": {
+    "ng": "ng"
+  },
+  "peerDependencies": {
+    "@angular/common": "*",
+    "@angular/core": "*",
+    "@angular/forms": "*",
+    "rxjs": "*"
+  },
+  "dependencies": {
+    "@telperion/ng-pack": "^3.0.1"
+  },
+  "devDependencies": {
+    "@angular/cli": "*"
+  },
+  "sideEffects": false
+}

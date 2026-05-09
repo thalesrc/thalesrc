@@ -1,0 +1,153 @@
+{
+  "name": "ng-ui",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/ng-ui/src",
+  "prefix": "tui",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:package",
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "options": {
+        "project": "libs/ng-ui/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/ng-ui/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/ng-ui/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run ng-ui:publish/prepare",
+          "nx run ng-ui:publish/to-npm"
+        ],
+        "parallel": false
+      }
+    },
+    "publish/prepare": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run ng-ui:publish/prepare/copy",
+          "nx run ng-ui:publish/prepare/fill-package-json --packageVersion=$PACKAGE_VERSION",
+          "nx run ng-ui:publish/prepare/install-deps",
+          "nx run ng-ui:publish/prepare/build"
+        ],
+        "parallel": false
+      }
+    },
+    "publish/prepare/build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["pnpm ng build"],
+        "cwd": "libs/ng-ui/.tmp"
+      }
+    },
+    "publish/prepare/install-deps": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["pnpm install"],
+        "cwd": "libs/ng-ui/.tmp"
+      }
+    },
+    "publish/prepare/copy": {
+      "executor": "@thalesrc/nx-utils:copy",
+      "options": {
+        "input": [
+          "libs/ng-ui/*",
+          "tsconfig.base.json",
+          {
+            "path": "libs/ng-ui/tsconfig.json",
+            "replace": {
+              "../../tsconfig.base.json": "./tsconfig.base.json"
+            }
+          },
+          {
+            "path": "libs/ng-ui/README.md",
+            "replace": {
+              "./form/README.md": "https://github.com/telperiontech/telperion/tree/main/libs/ng-ui/form",
+              "./form/field/README.md": "https://github.com/telperiontech/telperion/tree/main/libs/ng-ui/form/field"
+            }
+          }
+        ],
+        "output": ".tmp/"
+      }
+    },
+    "publish/prepare/fill-package-json": {
+      "executor": "@thalesrc/nx-utils:fill-package-json-v2",
+      "options": {
+        "outputPath": "libs/ng-ui/.tmp",
+        "populateExports": false
+      }
+    },
+    "publish/to-npm": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm publish --access public",
+        "cwd": "libs/ng-ui/.tmp/dist"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "tailwind": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/libs/ng-ui/.storybook/preview.compiled.css"],
+      "inputs": [
+        "{workspaceRoot}/libs/ng-ui/.storybook/preview.css",
+        "{workspaceRoot}/libs/ng-ui/src/**/*.{ts,html}",
+        "{workspaceRoot}/libs/ng-ui/form/**/*.{ts,html}"
+      ],
+      "options": {
+        "command": "pnpm tailwindcss -i ./libs/ng-ui/.storybook/preview.css -o ./libs/ng-ui/.storybook/preview.compiled.css"
+      }
+    },
+    "storybook": {
+      "executor": "@storybook/angular:start-storybook",
+      "options": {
+        "configDir": "libs/ng-ui/.storybook",
+        "port": 6008,
+        "compodoc": false,
+        "tsConfig": "libs/ng-ui/tsconfig.storybook.json",
+        "styles": ["libs/ng-ui/.storybook/preview.compiled.css"],
+        "stylePreprocessorOptions": {
+          "includePaths": []
+        }
+      },
+      "dependsOn": ["tailwind"],
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
+    },
+    "build-storybook": {
+      "executor": "@storybook/angular:build-storybook",
+      "outputs": ["{options.outputDir}"],
+      "options": {
+        "configDir": "libs/ng-ui/.storybook",
+        "outputDir": "dist/storybook/ng-ui",
+        "compodoc": false,
+        "tsConfig": "libs/ng-ui/tsconfig.storybook.json",
+        "styles": ["libs/ng-ui/.storybook/preview.compiled.css"],
+        "stylePreprocessorOptions": {
+          "includePaths": []
+        }
+      },
+      "dependsOn": ["tailwind"],
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
+    }
+  }
+}

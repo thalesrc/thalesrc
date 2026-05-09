@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@source "../src/**/*.{ts,html}";
+@source "../form/**/*.{ts,html}";
+
+@theme {
+  --color-black: #0B0F1A;
+  --color-white: #FAFAFB;
+  --color-primary: #2563EB;
+  --color-secondary: #10B981;
+  --color-tertiary: #06B6D4;
+  --color-quaternary: #A855F7;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+}

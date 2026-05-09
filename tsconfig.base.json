@@ -65,7 +65,10 @@
         "libs/ng-pack/storage-signals/src/index.ts"
       ],
       "@telperion/ng-pack/sse-client": ["libs/ng-pack/sse-client/src/index.ts"],
-      "@telperion/ng-pack/fetcher-signal": ["libs/ng-pack/fetcher-signal/src/index.ts"]
+      "@telperion/ng-pack/fetcher-signal": ["libs/ng-pack/fetcher-signal/src/index.ts"],
+      "@telperion/ng-ui": ["libs/ng-ui/src/index.ts"],
+      "@telperion/ng-ui/form": ["libs/ng-ui/form/src/index.ts"],
+      "@telperion/ng-ui/form/field": ["libs/ng-ui/form/field/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
