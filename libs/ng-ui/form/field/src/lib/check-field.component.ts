@@ -9,9 +9,6 @@ import { FieldInfoComponent } from "./info.component";
   selector: "tui-check-field",
   imports: [FieldInfoComponent],
   providers: [provideServiceDirective(FieldService, CheckFieldComponent)],
-  styles: `
-    @reference "../../../../style/tailwind-output.css";
-  `,
   template: `
     <label class="flex items-center gap-1 cursor-pointer">
       <ng-content></ng-content>
