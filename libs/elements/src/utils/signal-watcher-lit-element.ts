@@ -1,6 +1,8 @@
 import { SignalWatcher } from "@lit-labs/signals";
 import { LitElement } from "lit";
 
+import { ShadeMixerLitElement } from "./shade-mixer-lit-element";
+
 export interface EffectOptions {
     /**
      * By default effects run after the element has updated. If `beforeUpdate`
@@ -23,6 +25,12 @@ export interface EffectOptions {
  */
 export const SignalWatcherLitElement = SignalWatcher(LitElement) as ({
   new (): LitElement & {
+    updateEffect(fn: () => void, options?: EffectOptions): () => void;
+  }
+});
+
+export const ShadeMixerSignalWatcherLitElement = SignalWatcher(ShadeMixerLitElement) as ({
+  new (): ShadeMixerLitElement & {
     updateEffect(fn: () => void, options?: EffectOptions): () => void;
   }
 });

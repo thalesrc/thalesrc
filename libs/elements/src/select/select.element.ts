@@ -1,18 +1,19 @@
-import { PopoverElement } from "../popover";
-
 import { provide } from "@lit/context";
 import { computed, signal, Signal } from "@lit-labs/signals";
 import { css, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { sliceBefore } from '@telperion/js-utils/array/slice-before';
+import { defer } from "@telperion/js-utils/function/defer";
 
 import { selectContext } from "./select-context";
 import { SelectedContentElement } from "./selected-content.element";
 import { OptionElement } from "./option.element";
 import { REGISTER_OPTION, UNREGISTER_OPTION } from "./internal-props";
 import { SelectChangeEvent } from "./select-change-event";
-import { defer } from "@telperion/js-utils/function/defer";
-import { SignalWatcherLitElement } from "../utils/signal-watcher-lit-element";
+import { ShadeMixerSignalWatcherLitElement } from "../utils/signal-watcher-lit-element";
+import { ShadeMixerLitElement } from "../utils/shade-mixer-lit-element";
+import { PopoverElement } from "../popover";
+
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -51,10 +52,28 @@ declare global {
      * @attr max         - `1` (default) for single-select, any positive integer
      *                     for multi-select with FIFO eviction, or `infinite`
      *                     for unbounded selection.
+     * @attr min         - Minimum number of options that must remain selected
+     *                     (`0` by default). When the current selection size is
+     *                     at or below `min`, further deselection attempts are
+     *                     ignored — the option stays selected.
      * @attr name        - Form field name.
      * @attr disabled    - Non-interactive; excluded from form submission.
      * @attr required    - Empty selection triggers `valueMissing`.
      * @attr open        - Reflects the popover's open state (read-only).
+     * @attr color       - Palette token from the shared shade-mixer system
+     *                     (`primary`, `secondary`, `success`, … or any
+     *                     custom token defined via `--tp-element-color`).
+     *                     Drives the selected-option highlight color
+     *                     (`--tp-select-selection-color`) and its contrast
+     *                     text color. Inherited from
+     *                     `ShadeMixerLitElement`.
+     * @attr shade       - `0`–`1000` (default `500`). Lightens (`<500`,
+     *                     mixes white) or darkens (`>500`, mixes black) the
+     *                     resolved `color` before it feeds the selection
+     *                     highlight. Inherited from `ShadeMixerLitElement`.
+     * @attr mixer       - Read-only output (`none` / `black` / `white`)
+     *                     auto-derived from `shade`. Inherited from
+     *                     `ShadeMixerLitElement`.
      *
      * @method togglePopover - Open, close, or toggle the dropdown popover.
      *                        Overrides the native
@@ -125,54 +144,73 @@ declare global {
 }
 
 @customElement("tp-select")
-export class SelectElement extends SignalWatcherLitElement {
+export class SelectElement extends ShadeMixerSignalWatcherLitElement {
   static formAssociated = true;
 
   private static ALLOWED_OPTION_ELEMENTS = [OptionElement];
-  static styles = css`
-    :host {
-      position: relative;
-      display: inline-flex;
-      height: fit-content;
-
+  static styles = (() => {
+    const variables = css`
+      ${ShadeMixerLitElement.shadedElementStyles}
       --tp-select-option-color: white;
-      --tp-select-selection-color: #0078d4;
+      --tp-select-selection-color: var(--tp-calc-element-color);
       --tp-select-highlight-percent: 20%;
-      --tp-select-selection-contrast-color: white;
-    }
+      --tp-select-selection-contrast-color: var(--tp-calc-contrast-color);
+    `;
 
-    :host([disabled]) {
-      pointer-events: none;
-      opacity: 0.6;
-    }
+    const shadowStyles = css`
+      @layer base {
+        :host {
+          ${variables}
+          position: relative;
+          display: inline-flex;
+          height: fit-content;
+        }
 
-    :host([open]) {
-      [pseudo="indicator"] {
-        transform: rotateX(180deg);
+        :host([disabled]) {
+          pointer-events: none;
+          opacity: 0.6;
+        }
+
+        :host([open]) {
+          [pseudo="indicator"] {
+            transform: rotateX(180deg);
+          }
+        }
+
+        [pseudo="button"] {
+          background: white;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          padding: 0.25em 0.5em;
+
+          tp-selected-content {
+            margin-inline-end: 0.5em;
+          }
+        }
+
+        [pseudo="indicator"] {
+          margin-inline-start: auto;
+        }
+
+        tp-popover {
+          border: none;
+          padding: 0;
+        }
+      }`;
+
+    const documentStyles = css`
+      @layer base {
+        tp-select {
+          ${variables}
+        }
       }
-    }
+    `;
 
-    [pseudo="button"] {
-      background: white;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      padding: 0.25em 0.5em;
+    document.adoptedStyleSheets = [...document.adoptedStyleSheets, documentStyles.styleSheet!];
 
-      tp-selected-content {
-        margin-inline-end: 0.5em;
-      }
-    }
-
-    [pseudo="indicator"] {
-      margin-inline-start: auto;
-    }
-
-    tp-popover {
-      border: none;
-      padding: 0;
-    }
-  `;
+    return shadowStyles;
+  })();
 
   #options = new Set<OptionElement>();
   get #popover(): PopoverElement {
@@ -256,6 +294,30 @@ export class SelectElement extends SignalWatcherLitElement {
     },
   })
   max: number = 1;
+
+  /**
+   * Minimum number of options that must remain selected.
+   *
+   * Defaults to `0` (no lower bound). When the current selection size is at
+   * or below `min`, calls to {@link deselectOption} (and the click-driven
+   * toggle inside the popover) become no-ops, so the user can't drop below
+   * the floor by interacting with the control. Programmatic writes to
+   * `value` and `selectedOptions` are not policed — `min` is purely an
+   * interaction guard.
+   */
+  @property({
+    type: Number,
+    reflect: true,
+    converter: {
+      fromAttribute: (value): number => {
+        if (value === null || value === undefined || value === "") return 0;
+        const parsed = Number(String(value).trim());
+        return Number.isFinite(parsed) && parsed >= 0 ? Math.floor(parsed) : 0;
+      },
+      toAttribute: (value: number): string => String(value),
+    },
+  })
+  min: number = 0;
 
   /** Form field name. Submitted with the owning `<form>`. */
   @property({ type: String, reflect: true })
@@ -470,9 +532,11 @@ export class SelectElement extends SignalWatcherLitElement {
   }
 
   deselectOption(option: OptionElement): void {
-    const optionRef = this.selectedOptions.get().find(ref => ref.deref() === option);
+    const current = this.selectedOptions.get();
+    const optionRef = current.find(ref => ref.deref() === option);
     if (!optionRef) return;
-    this.selectedOptions.set(this.selectedOptions.get().filter(ref => ref !== optionRef));
+    if (current.length <= this.min) return;
+    this.selectedOptions.set(current.filter(ref => ref !== optionRef));
   }
 
   toggleOption(option: OptionElement): void {

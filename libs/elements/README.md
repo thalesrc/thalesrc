@@ -223,11 +223,13 @@ Form-associated, framework-agnostic selectbox built on `<tp-popover>`. Single-se
 **Features:**
 - Form-associated custom element with full `<form>` integration via `ElementInternals` (`name`, `disabled`, `required`, reset/restore callbacks, `validity`)
 - `max` attribute &mdash; `1` for single-select, any positive integer for multi-select with FIFO eviction at the cap, or `infinite` for unbounded selection
+- `min` attribute &mdash; lower-bound floor; user-driven deselection is ignored once the selection size hits `min`
 - Single-select submits a string; multi-select submits a `FormData` with one entry per value (matching native `<select multiple>`)
 - Auto-closes the popover when a selection fills the quota; stays open while accumulating in multi-select
 - Three slots: `slot="button"` (replace trigger), `slot="popover"` (replace panel content while keeping `<tp-option>` children registered for selection / validation / submission), and the default slot (option list)
 - `<tp-selected-content>` works anywhere in the descendant composed tree &mdash; including across shadow DOM boundaries
 - Signal-driven re-rendering via the `SignalWatcher` mixin &mdash; no manual change listeners
+- Palette-driven selection highlight via the shared shade-mixer mixin: pick a `color` token (`primary`, `secondary`, `success`, &hellip;) and tune intensity with `shade` (`0`&ndash;`1000`); flows into `--tp-select-selection-color` / `--tp-select-selection-contrast-color`
 
 #### JS/TS
 ```ts

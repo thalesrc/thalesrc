@@ -8,18 +8,52 @@ import type { SelectElement } from "./select.element";
 import type { OptionElement } from "./option.element";
 import { SelectChangeEvent } from "./select-change-event";
 
-const meta: Meta = {
+interface SelectArgs {
+  color: string;
+  shade: number;
+}
+
+const COLORS: string[] = [
+  "contrast",
+  "primary",
+  "secondary",
+  "tertiary",
+  "quaternary",
+  "success",
+  "danger",
+  "warning",
+  "neutral",
+];
+
+const meta: Meta<SelectArgs> = {
   title: "Elements/Select",
   component: "tp-select",
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
   },
+  argTypes: {
+    color: {
+      control: { type: "select" },
+      options: COLORS,
+      description:
+        "Shade-mixer palette token used for the selected-option highlight.",
+    },
+    shade: {
+      control: { type: "range", min: 0, max: 1000, step: 50 },
+      description:
+        "Lightens (<500, mixes white) or darkens (>500, mixes black) the resolved color.",
+    },
+  },
+  args: {
+    color: "primary",
+    shade: 500,
+  },
 };
 
 export default meta;
 
-type Story = StoryObj;
+type Story = StoryObj<SelectArgs>;
 
 /** Shared style block for the demos so stories stay readable. */
 const demoStyles = html`
@@ -85,9 +119,13 @@ const fruitOptions = html`
 
 /** Default single-select. `max` defaults to `1`; the placeholder shows until a value is chosen. */
 export const SingleSelect: Story = {
-  render: () => html`
+  render: (args) => html`
     ${demoStyles}
-    <tp-select placeholder="Pick a fruit">${fruitOptions}</tp-select>
+    <tp-select
+      placeholder="Pick a fruit"
+      color=${args.color}
+      shade=${args.shade}
+    >${fruitOptions}</tp-select>
   `,
 };
 
@@ -346,4 +384,63 @@ export const ProgrammaticApi: Story = {
       </div>
     `;
   },
+};
+
+/**
+ * Themed selection highlight via the shared shade-mixer system.
+ *
+ * `<tp-select>` extends `ShadeMixerLitElement`, so the `color` and `shade`
+ * attributes feed `--tp-select-selection-color` and
+ * `--tp-select-selection-contrast-color` automatically &mdash; the same tokens
+ * `<tp-button>` uses. Tweak the controls in the toolbar to preview every
+ * palette token at any shade.
+ */
+export const ShadeMixerPlayground: Story = {
+  render: (args) => html`
+    ${demoStyles}
+    <tp-select
+      max="infinite"
+      placeholder="Pick a few"
+      value="apple,cherry"
+      color=${args.color}
+      shade=${args.shade}
+    >${fruitOptions}</tp-select>
+  `,
+};
+
+/**
+ * Every palette token rendered side by side at the current `shade`. The
+ * selected option in each cell shows how `--tp-select-selection-color` and
+ * its contrast color resolve for that token.
+ */
+export const ColorPalette: Story = {
+  render: (args) => html`
+    ${demoStyles}
+    <style>
+      .color-grid {
+        display: grid;
+        grid-template-columns: 8rem 1fr;
+        gap: 0.5rem 1rem;
+        align-items: center;
+        font-family: system-ui, sans-serif;
+      }
+      .color-grid .row-label {
+        text-transform: capitalize;
+        font-size: 0.85rem;
+      }
+    </style>
+    <div class="color-grid">
+      ${COLORS.map(
+        (color) => html`
+          <span class="row-label">${color}</span>
+          <tp-select
+            placeholder=${`color="${color}"`}
+            value="apple"
+            color=${color}
+            shade=${args.shade}
+          >${fruitOptions}</tp-select>
+        `,
+      )}
+    </div>
+  `,
 };

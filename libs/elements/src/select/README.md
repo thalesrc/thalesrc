@@ -1,13 +1,15 @@
 # `<tp-select>`
 
-Framework-agnostic, form-associated selectbox built on top of [`<tp-popover>`](../popover/README.md). Single-select by default; switches to multi-select with FIFO eviction via the `max` attribute. Selection state is signal-backed (via [`@lit-labs/signals`](https://www.npmjs.com/package/@lit-labs/signals)), so it stays reactive across nested shadow DOM boundaries through [`@lit/context`](https://lit.dev/docs/data/context/).
+Framework-agnostic, form-associated selectbox built on top of [`<tp-popover>`](../popover/README.md). Single-select by default; switches to multi-select with FIFO eviction via the `max` attribute. Selection state is signal-backed (via [`@lit-labs/signals`](https://www.npmjs.com/package/@lit-labs/signals)), so it stays reactive across nested shadow DOM boundaries through [`@lit/context`](https://lit.dev/docs/data/context/). The selected-option highlight color is driven by the shared shade-mixer palette — set `color` and `shade` to retheme the control with the same tokens used by `<tp-button>` and any other `ShadeMixerLitElement`-based element.
 
 ## Highlights
 
 - Form-associated custom element — full `<form>` integration via `ElementInternals` (`name`, `disabled`, `required`, `formResetCallback`, `formStateRestoreCallback`, `validity`).
 - Single- or multi-select via the `max` attribute (`1` by default; any positive integer; or the literal `infinite`).
 - FIFO eviction when a new selection would exceed `max`; auto-trims when `max` is shrunk.
+- Lower-bound floor via the `min` attribute — user-driven deselection is ignored once the selection size hits `min`.
 - Auto-closes the popover when a new selection fills the quota; stays open while accumulating in multi-select.
+- Palette-driven highlight color via the shared shade-mixer mixin — `color` (`primary`, `secondary`, …), `shade` (`0`–`1000`), and the auto-derived `mixer` flow into `--tp-select-selection-color` and `--tp-select-selection-contrast-color`.
 - Composable through three slots:
   - `slot="button"` — replace the trigger.
   - `slot="popover"` — replace the panel rendering while keeping `<tp-option>` children registered in the select context.
@@ -30,10 +32,16 @@ Framework-agnostic, form-associated selectbox built on top of [`<tp-popover>`](.
 | `value`       | comma-separated string              | `""`               | Reflects the joined values of the selected `<tp-option>`s. Setting it (re-)maps to options on the next microtask.                                 |
 | `placeholder` | string                              | `Select an option` | Text shown by `<tp-selected-content>` when nothing is selected.                                                                                   |
 | `max`         | positive integer \| `infinite`      | `1`                | `1` = single-select. Any positive integer = multi-select with FIFO eviction at the cap. `infinite` = unbounded (serialised back as `"infinite"`). |
+| `min`         | non-negative integer                | `0`                | Minimum number of options that must stay selected. While the current selection is at or below `min`, user-driven deselection (clicks, `deselectOption`, `toggleOption`) is ignored — the option stays selected. Programmatic writes to `value` are not policed. |
 | `name`        | string                              | _(none)_           | Form field name.                                                                                                                                  |
 | `disabled`    | boolean                             | `false`            | Non-interactive; excluded from form submission.                                                                                                   |
 | `required`    | boolean                             | `false`            | Empty selection sets `valueMissing`.                                                                                                              |
 | `open`        | boolean                             | `false`            | Reflects the popover's open state (read-only — toggled by the popover, not by consumers).                                                         |
+| `color`       | `contrast` \| `primary` \| `secondary` \| `tertiary` \| `quaternary` \| `success` \| `danger` \| `warning` \| `neutral` \| custom token | `contrast` | Palette token (inherited from `ShadeMixerLitElement`). Drives the selected-option highlight color and its contrast text color. |
+| `shade`       | `0`&ndash;`1000`                    | `500`              | Lighten/darken the resolved `color`. `500` is the base; lower mixes white, higher mixes black. Inherited from `ShadeMixerLitElement`.            |
+| `mixer`       | `none` \| `black` \| `white`        | `none`             | Read-only output, derived from `shade`. Inherited from `ShadeMixerLitElement`.                                                                    |
+
+`color`, `shade`, and `mixer` are inherited from [`ShadeMixerLitElement`](../utils/shade-mixer-lit-element.ts) and behave the same way as on [`<tp-button>`](../button/README.md#theming) — override any palette token at `:root` (or any ancestor) to retheme every shade-mixer-aware element underneath.
 
 ### Slots
 
@@ -57,6 +65,17 @@ All parts below sit inside `<tp-select>`'s shadow root, so they're styled with `
 | `selected-content`            | The default `<tp-selected-content>` rendered inside the trigger.                                   |
 | `placeholder`                 | The `<span>` rendered by the default `<tp-selected-content>` when no option is selected.           |
 | `selected-content-option`     | Each cloned `<tp-option>` mirrored by the default `<tp-selected-content>`.                         |
+
+### CSS custom properties
+
+| Property                                  | Default                          | Description                                                                                                                              |
+| ----------------------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `--tp-select-option-color`                | `white`                          | Background color of each `<tp-option>` in the popover.                                                                                   |
+| `--tp-select-selection-color`             | `var(--tp-calc-element-color)`   | Background color of the currently selected option(s). Resolved by the shade-mixer from `color` + `shade`; override to bypass the math.   |
+| `--tp-select-selection-contrast-color`    | `var(--tp-calc-contrast-color)`  | Text color used on top of `--tp-select-selection-color`. Resolved by the shade-mixer for legibility against the highlight.               |
+| `--tp-select-highlight-percent`           | `20%`                            | Hover blend strength applied to both unselected and selected options.                                                                    |
+
+The element also inherits the full set of palette tokens from `ShadeMixerLitElement` (`--tp-color-primary`, `--tp-color-success`, &hellip;), which can be overridden globally to re-theme every shade-mixer element at once. See the [theming notes on `<tp-button>`](../button/README.md#theming) &mdash; the same overrides apply here.
 
 ### Public API
 
@@ -206,6 +225,25 @@ The `part` attributes on the rendered nodes only become real Shadow Parts when t
 
 Current selection:
 <strong><tp-selected-content></tp-selected-content></strong>
+```
+
+### Themed selection highlight
+
+```html
+<!-- Default palette token, base shade -->
+<tp-select color="primary" placeholder="Primary">…</tp-select>
+
+<!-- Lightened (shade < 500) -->
+<tp-select color="success" shade="200" placeholder="Subtle success">…</tp-select>
+
+<!-- Darkened (shade > 500) -->
+<tp-select color="danger" shade="800" placeholder="Bold danger">…</tp-select>
+
+<!-- Custom token -->
+<style>
+  tp-select[color="brand"] { --tp-element-color: hsl(265 75% 45%); }
+</style>
+<tp-select color="brand" placeholder="Brand">…</tp-select>
 ```
 
 ## Importing
