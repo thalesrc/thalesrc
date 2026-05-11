@@ -3,7 +3,7 @@ import { computed, signal, Signal } from "@lit-labs/signals";
 import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { sliceBefore } from '@telperion/js-utils/array/slice-before';
-import { defer } from "@telperion/js-utils/function/defer";
+import { debounceWithKey } from "@telperion/js-utils/function/debounce";
 
 import { selectContext } from "./select-context";
 import { SelectedContentElement } from "./selected-content.element";
@@ -227,6 +227,8 @@ export class SelectElement extends ShadeMixerSignalWatcherLitElement {
 
   readonly selectedOptions = signal<WeakRef<OptionElement>[]>([]);
 
+  #lastSetValue: string | null = null;
+  #assignValueDebouncer = Symbol("tpselect:assignValueDebouncer");
   readonly #value = computed(() =>
     this.selectedOptions
       .get()
@@ -239,17 +241,8 @@ export class SelectElement extends ShadeMixerSignalWatcherLitElement {
     return this.#value.get();
   }
   set value(next: string | null) {
-    defer(() => {
-      const values = next?.split(",").map((s) => s.trim()) ?? [];
-      const options = Array.from(this.#options);
-
-      this.selectedOptions.set(
-        values
-          .map((value) => options.find((option) => option.value === value))
-          .filter(Boolean)
-          .map((option) => new WeakRef(option!)),
-      );
-    });
+    this.#lastSetValue = next;
+    debounceWithKey(this.#assignValueDebouncer, this.#assignValue, 10, this);
   }
 
   readonly #placeholder = signal("Select an option");
@@ -620,6 +613,7 @@ export class SelectElement extends ShadeMixerSignalWatcherLitElement {
 
   [REGISTER_OPTION](option: OptionElement): void {
     this.#options.add(option);
+    debounceWithKey(this.#assignValueDebouncer, this.#assignValue, 10, this);
   }
 
   [UNREGISTER_OPTION](option: OptionElement): void {
@@ -660,5 +654,17 @@ export class SelectElement extends ShadeMixerSignalWatcherLitElement {
     if (previous === newValue) return;
     signal.set(newValue);
     this.requestUpdate(propName, previous);
+  }
+
+  #assignValue() {
+    const values = this.#lastSetValue?.split(",").map((s) => s.trim()) ?? [];
+    const options = Array.from(this.#options);
+
+    this.selectedOptions.set(
+      values
+        .map((value) => options.find((option) => option.value === value))
+        .filter(Boolean)
+        .map((option) => new WeakRef(option!)),
+    );
   }
 }
