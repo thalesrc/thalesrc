@@ -1,6 +1,7 @@
 # @telperion/elements
 
 [![npm version](https://badge.fury.io/js/@telperion%2Felements.svg)](https://badge.fury.io/js/@telperion%2Felements)
+[![Build Status](https://github.com/telperiontech/telperion/actions/workflows/elements.publish.yml/badge.svg)](https://github.com/telperiontech/telperion/actions/workflows/elements.publish.yml)
 [![npm](https://img.shields.io/npm/dm/@telperion/elements.svg)](https://www.npmjs.com/package/@telperion/elements)
 
 A collection of custom web components built with [Lit Elements](https://lit.dev/). This library provides a suite of reusable, framework-independent web components for modern web applications.
