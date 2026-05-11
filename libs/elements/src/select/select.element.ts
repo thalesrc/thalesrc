@@ -238,9 +238,9 @@ export class SelectElement extends ShadeMixerSignalWatcherLitElement {
   get value(): string {
     return this.#value.get();
   }
-  set value(next: string) {
+  set value(next: string | null) {
     defer(() => {
-      const values = next.split(",").map((s) => s.trim());
+      const values = next?.split(",").map((s) => s.trim()) ?? [];
       const options = Array.from(this.#options);
 
       this.selectedOptions.set(
