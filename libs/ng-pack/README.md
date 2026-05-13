@@ -235,7 +235,8 @@ Reactive, signal-based HTTP fetcher for Angular built on top of `HttpClient` and
 - 🛣️ Declarative `:name` path parameters and query parameters (`Record` or `HttpParams`)
 - ⚠️ Built-in `error` and `loading` signals
 - 🧯 `fallback` value used as initial state and on error
-- 🔄 Manual `reload()` to re-run the current request
+- 🔄 Manual `reload()` to re-run the current request — returns a `Promise<void>` that resolves with the next response
+- ⏳ `loaded` promise — `await` the next response without subscribing to signals
 
 #### Quick Start
 

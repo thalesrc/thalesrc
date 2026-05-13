@@ -2,9 +2,11 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { inject, Injector, signal, Signal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { map as objectMap } from '@telperion/js-utils/object/map';
+import { isFalsy } from '@telperion/js-utils/is-falsy';
+import { defer } from '@telperion/js-utils/function/defer';
 import { toObservable } from "@telperion/ng-pack/utils";
 import { shareLast } from "@telperion/rx-utils/operators/share-last";
-import { combineLatest, Observable, of, map, debounceTime, switchMap, catchError, tap, mergeWith, Subject, mapTo, startWith } from "rxjs";
+import { combineLatest, Observable, of, map, debounceTime, switchMap, catchError, tap, mergeWith, Subject, mapTo, startWith, filter, firstValueFrom } from "rxjs";
 
 interface FetcherSignalOptionTypes<
   Result,
@@ -73,12 +75,18 @@ export type FetcherSignalOptions<
  * - call the signal to read the latest result (or `fallback` before the first response)
  * - `error` — latest error; reset to `null` on each successful response
  * - `loading` — `true` while a request is in flight, `false` once a value is emitted
- * - `reload()` — re-run the current request without changing options
+ * - `reload()` — re-run the current request without changing options. Returns a
+ *   `Promise<void>` that resolves once the next value (response or fallback-on-error)
+ *   has been emitted into the signal.
+ * - `loaded` — getter returning a fresh `Promise<void>` that resolves the next time
+ *   `loading` flips back to `false`. Useful for `await`ing the next response in tests,
+ *   route resolvers, or effects without subscribing to signals.
  */
 export type FetcherSignal<Result> = Signal<Result> & {
   error: Signal<Error | null>;
   loading: Signal<boolean>;
-  reload(): void;
+  reload(): Promise<void>;
+  readonly loaded: Promise<void>;
 }
 
 /**
@@ -103,7 +111,8 @@ export type FetcherSignal<Result> = Signal<Result> & {
  * users();          // current value (or fallback)
  * users.loading();  // boolean
  * users.error();    // Error | null
- * users.reload();   // re-run request
+ * await users.loaded;     // wait for the next response
+ * await users.reload();   // re-run request and wait for the next response
  * ```
  */
 export function fetcherSignal<
@@ -188,6 +197,14 @@ export function fetcherSignal<
     loading: loadingSignal.asReadonly(),
     reload() {
       reloadTrigger.next();
+
+      return defer().then(() => this.loaded);
+    },
+    get loaded() {
+      return firstValueFrom(toObservable(loadingSignal).pipe(
+        filter(isFalsy),
+        mapTo(void 0)
+      ))
     }
   });
 }

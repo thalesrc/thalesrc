@@ -10,7 +10,8 @@ Reactive, signal-based HTTP fetcher for Angular built on top of `HttpClient` and
 - 🔍 **Query parameters** — accept a plain object or `HttpParams`
 - ⚠️ **Built-in `error` and `loading` signals** — first-class request state, no manual bookkeeping
 - 🧯 **Fallback value** — used as the initial signal value and as the emitted value on request error
-- 🔄 **Manual `reload()`** — re-trigger the current request without changing options
+- 🔄 **Manual `reload()`** — re-trigger the current request without changing options; returns a `Promise` that resolves once the new response is in
+- ⏳ **`loaded` promise** — `await` the next successful (or fallback-on-error) emission without subscribing to signals
 - 🧩 **Works inside or outside an injection context** — pass an `Injector` when needed
 - 🎯 **Fully typed generics** — `Result`, `Body`, `Params`, and `QueryParams`
 
@@ -205,14 +206,14 @@ effect(() => {
 
 ### Manual Reload
 
-Call `reload()` to re-run the current request without changing any option:
+Call `reload()` to re-run the current request without changing any option. It returns a `Promise<void>` that resolves when the next response (or the fallback value, on error) has been emitted into the signal — equivalent to awaiting [`loaded`](#awaiting-the-next-response) right after triggering the reload.
 
 ```typescript
 @Component({
   selector: 'app-stats',
   standalone: true,
   template: `
-    <button (click)="stats.reload()" [disabled]="stats.loading()">
+    <button (click)="refresh()" [disabled]="stats.loading()">
       Refresh
     </button>
 
@@ -224,8 +225,29 @@ export class StatsComponent {
     url: '/api/stats',
     fallback: {} as Stats
   });
+
+  async refresh() {
+    await this.stats.reload();
+    console.log('latest stats:', this.stats());
+  }
 }
 ```
+
+### Awaiting the Next Response
+
+`loaded` is a getter that returns a fresh `Promise<void>` resolving the next time `loading` flips back to `false` — that is, after the next successful response or after the fallback is emitted on error. It is useful in tests, route resolvers, effects, and anywhere you need to `await` the fetcher without subscribing to the signal.
+
+```typescript
+const users = fetcherSignal<User[]>({ url: '/api/users', fallback: [] });
+
+await users.loaded;       // wait for the initial response
+console.log(users());     // populated value
+
+// later, after an option changes or reload() is called:
+await users.loaded;       // wait for the next response
+```
+
+Because `loaded` is a getter, each access returns a new promise that tracks the *next* settle of the request — never a cached one.
 
 ### Use Outside an Injection Context
 
@@ -290,12 +312,13 @@ Each field accepts a plain value, `Signal`, `Promise`, or `Observable` of that v
 
 A `Signal<Result>` extended with request state and a manual reload trigger.
 
-| Member     | Type                    | Description                                                           |
-| ---------- | ----------------------- | --------------------------------------------------------------------- |
-| *(call)*   | `() => Result`          | Reads the latest result (or `fallback` before the first response).    |
-| `error`    | `Signal<Error \| null>` | Latest request error; reset to `null` on each successful response.    |
-| `loading`  | `Signal<boolean>`       | `true` while a request is in flight, `false` once a value is emitted. |
-| `reload()` | `() => void`            | Re-runs the current request without changing options.                 |
+| Member     | Type                    | Description                                                                                                                       |
+| ---------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| *(call)*   | `() => Result`          | Reads the latest result (or `fallback` before the first response).                                                                |
+| `error`    | `Signal<Error \| null>` | Latest request error; reset to `null` on each successful response.                                                                |
+| `loading`  | `Signal<boolean>`       | `true` while a request is in flight, `false` once a value is emitted.                                                             |
+| `reload()` | `() => Promise<void>`   | Re-runs the current request without changing options. The returned promise resolves once the next value is emitted (see `loaded`). |
+| `loaded`   | `Promise<void>` *(getter)* | A fresh promise that resolves the next time `loading` flips back to `false` (after a successful response or fallback-on-error). |
 
 ## Notes
 
